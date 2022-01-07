@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+   >
+
+    <data>
+        <variable
+            name="loginmodel"
+            type="com.pbt.myfarm.LoginViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".Activity.Login.LoginActivity">
+
+        <ImageView
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:padding="20dp"
+            android:src="@drawable/splashlogo"
+            app:layout_constraintBottom_toTopOf="@id/layout_login"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_login"
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:background="#007a33"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_percent="0.50"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.90">
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="0px"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/black"
+                android:text="@string/Login"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/spinner_role"
+                app:layout_constraintStart_toStartOf="@id/label_simple"
+                app:layout_constraintTop_toBottomOf="@id/spinner_role" />
+          <!--      android:onClick="@{(v)->loginmodel.login(v)}"-->                android:text="@string/Login"
+
+
+            <EditText
+                android:id="@+id/ed_password"
+                style="@style/Edittext"
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:layout_height="wrap_content"
+                android:text="@={loginmodel.password}"
+                android:background="@drawable/design_edittext"
+                android:hint="@string/Password"
+                app:layout_constraintBottom_toTopOf="@id/spinner_role"
+                app:layout_constraintTop_toBottomOf="@id/ed_email" />
+
+            <EditText
+                android:id="@+id/ed_email"
+                style="@style/Edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/design_edittext"
+                android:hint="@string/Email"
+                android:text="@={loginmodel.email}"
+                app:layout_constraintBottom_toTopOf="@id/ed_password"
+
+                app:layout_constraintTop_toBottomOf="@id/label_pleaselogin" />
+
+            <Spinner
+                android:id="@+id/spinner_role"
+                style="@style/Edittext"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+android:visibility="gone"
+                android:background="@drawable/design_edittext"
+                app:layout_constraintBottom_toTopOf="@id/btn_login"
+                app:layout_constraintTop_toBottomOf="@id/ed_password" />
+
+            <TextView
+                android:id="@+id/label_simple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/spinner_role" />
+
+            <TextView
+                android:id="@+id/label_pleaselogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="@string/welcome_pleaselogin"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/ed_email"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ForgetPass"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/btn_login"
+                app:layout_constraintStart_toStartOf="@id/spinner_role"
+                app:layout_constraintTop_toTopOf="@id/btn_login" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="20dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
