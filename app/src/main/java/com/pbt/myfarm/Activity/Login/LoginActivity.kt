@@ -35,7 +35,7 @@ var binding:ActivityLogin2Binding?=null
 
 
         val db=DbHelper(this, null)
-        db.addUser("name","password")
+        db.addUser()
         setSpinner()
 
         btn_login.setOnClickListener{

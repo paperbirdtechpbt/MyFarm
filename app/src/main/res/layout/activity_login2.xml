@@ -46,24 +46,25 @@
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
-                android:textColor="@color/black"
                 android:text="@string/Login"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/spinner_role"
                 app:layout_constraintStart_toStartOf="@id/label_simple"
                 app:layout_constraintTop_toBottomOf="@id/spinner_role" />
-          <!--      android:onClick="@{(v)->loginmodel.login(v)}"-->                android:text="@string/Login"
+            <!--      android:onClick="@{(v)->loginmodel.login(v)}"-->
+            android:text="@string/Login"
 
 
             <EditText
                 android:id="@+id/ed_password"
                 style="@style/Edittext"
                 android:layout_width="match_parent"
-                android:inputType="textPassword"
                 android:layout_height="wrap_content"
-                android:text="@={loginmodel.password}"
                 android:background="@drawable/design_edittext"
                 android:hint="@string/Password"
+                android:inputType="textPassword"
+                android:text="@={loginmodel.password}"
                 app:layout_constraintBottom_toTopOf="@id/spinner_role"
                 app:layout_constraintTop_toBottomOf="@id/ed_email" />
 
@@ -84,8 +85,8 @@
                 style="@style/Edittext"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-android:visibility="gone"
                 android:background="@drawable/design_edittext"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/btn_login"
                 app:layout_constraintTop_toBottomOf="@id/ed_password" />
 

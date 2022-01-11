@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.SelectConfigType.SelectConfigTypeActivity">
+
+    <TextView
+        android:id="@+id/lablel_selecttype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/selectConfigType"
+        android:textColor="@color/green"
+        android:textSize="19sp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/green"
+        android:id="@+id/view_line"
+        android:layout_marginTop="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lablel_selecttype"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recylcerview_selectConfigType"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_marginTop="25dp"
+        tools:listitem="@layout/item_config_type_list"
+        app:layout_constraintTop_toBottomOf="@id/view_line" />
+</androidx.constraintlayout.widget.ConstraintLayout>

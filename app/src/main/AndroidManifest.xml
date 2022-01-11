@@ -9,13 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyFarm">
-        <activity android:name=".Activity.CreateTask.CreateTaskActivity"
+        <activity android:name=".Activity.SelectConfigType.SelectConfigTypeActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.ViewTask.ViewTaskActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.CreateTask.CreateTaskActivity"
+            android:exported="true"
             android:label="Create Task">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".Activity.ViewTask.ViewTask" />
-    </activity>
-        <activity android:name=".Activity.ViewTask.ViewTask"
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.SelectConfigType.SelectConfigTypeActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.ViewTask.ViewTaskActivity"
+            android:exported="true"
             android:label="Task">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

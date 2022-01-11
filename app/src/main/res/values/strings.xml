@@ -15,8 +15,26 @@
     <string name="Login">Login</string>
     <string name="ForgetPass">Forgot your Password?</string>
     <string name="createTask">Create Task</string>
+    <string name="Nameprefix">Name Prefix</string>
+    <string name="labelDescription">Description</string>
+    <string name="labelconfigtype">Config Type</string>
+    <string name="labelCommunitygrip">CommunityGrp</string>
+    <string name="selectConfigType">Select Config Type</string>
+    <string name="label_expectedStartDate">Expected Start Date of the task</string>
+    <string name="label_expectedEndDate">Expected End Date of the task</string>
+    <string name="label_startDate">Start Date</string>
+    <string name="label_EndDate">End Date</string>
 
-    <string-array name="role_array">
+
+    <string-array name="array_task_configtype">
+        <item>TRANSPORTATION</item>
+        <item>FERMENTATION</item>
+        <item>NETTOYAGE</item>
+        <item>DEMOFERM</item>
+
+    </string-array>
+    <string-array name="array_communitygroup">
+        <item>Select</item>
         <item>Admin</item>
         <item>Producer</item>
         <item>Manager</item>
@@ -25,5 +43,16 @@
         <item>Super Admin</item>
         <item>Client</item>
     </string-array>
+    <string-array name="role_array">
+        <item>Select</item>
+        <item>Admin</item>
+        <item>Producer</item>
+        <item>Manager</item>
+        <item>Admin Local</item>
+        <item>Admin National</item>
+        <item>Super Admin</item>
+        <item>Client</item>
+    </string-array>
+
 
 </resources>

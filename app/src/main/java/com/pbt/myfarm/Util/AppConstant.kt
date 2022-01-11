@@ -22,6 +22,15 @@ class AppConstant {
         val CONST_TASK_NAME="taskname"
         val CONST_TASK_TYPE="tasktype"
         val CONST_TASK_DETAIL="taskdetail"
+        val CONST_EXPECTED_EXP_STR_DATE="expectedstartdate"
+        val CONST_EXPECTED_EXP_END_DATE="expectedenddate"
+        val CONST_EXPECTED_STR_DATE="startdate"
+        val CONST_EXPECTED_END_DATE="enddate"
+
+        //Intent PutExra
+        val CONST_CONFIGTYPE_NAME="configtypename"
+        val CONST_CONFIGTYPE_TYPE_ID="configtypeid"
+        val CONST_VIEWMODELCLASS_LIST="ViewModelClassList"
 
 
     }

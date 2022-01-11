@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.pbt.myfarm.Activity.ViewTask.ViewTask
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.R
 
@@ -35,7 +35,7 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
         holder.textView.text = item.evenetName
         holder.layout.setOnClickListener{
             if (item.evenetName=="Task"){
-                context.startActivity(Intent(context, ViewTask::class.java))
+                context.startActivity(Intent(context, ViewTaskActivity::class.java))
             }
         }
 
