@@ -15,6 +15,7 @@ class AppConstant {
         val CONST_SHARED_PREF_NAME="mysharedpreference"
         val CONST_SHARED_PREF_TOKEN="mysharedpreferenceToken"
         val CONST_SHARED_PREF_USERNAME="username"
+        val CONST_PREF_IS_LOGIN="isLogin"
 
         //TABLE NewTask
         val CONST_NEW_TASK="newtask"
@@ -31,6 +32,19 @@ class AppConstant {
         val CONST_CONFIGTYPE_NAME="configtypename"
         val CONST_CONFIGTYPE_TYPE_ID="configtypeid"
         val CONST_VIEWMODELCLASS_LIST="ViewModelClassList"
+
+        //TABLE newpack
+        val CONST_TABLE_PACK="tablepack"
+        val CONST_PACK_NAME="PACKname"
+        val CONST_PACK_TYPE="PACKtype"
+        val CONST_PACK_DETAIL="PACKdetail"
+        val CONST_PACK_GROUP="PACKgroup"
+        val CONST_PACK_ID="packid"
+        val CONST_PACK_CUSTOMER="packcustomer"
+        val CONST_PACK_UNITS="packunit"
+        val CONST_PACK_QUANTITY="packquanity"
+        val CONST_LIST_SIZE="listsize"
+
 
 
     }

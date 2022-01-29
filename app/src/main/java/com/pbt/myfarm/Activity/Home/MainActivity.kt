@@ -69,8 +69,7 @@ class MainActivity : AppCompatActivity() {
     private fun showAlertDialog() {
         AlertDialog.Builder(this)
             .setTitle("LogOut")
-            .setMessage("Are you sure you want to Logout") // Specifying a listener allows you to take an action before dismissing the dialog.
-            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setMessage("Are you sure you want to Logout")
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
                     MySharedPreference.clearPref(this)

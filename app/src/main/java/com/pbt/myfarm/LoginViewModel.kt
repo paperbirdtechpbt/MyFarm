@@ -1,15 +1,23 @@
 package com.pbt.myfarm
 
 import android.app.Application
-import android.content.Intent
 import android.view.View
-import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
-import com.pbt.myfarm.Activity.Home.MainActivity
+import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.pbt.myfarm.HttpResponse.HttpResponse
+import com.pbt.myfarm.HttpResponse.loginResult
+import com.pbt.myfarm.Service.ApiClient
+import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppUtils
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
-class LoginViewModel(val activity: Application): AndroidViewModel(activity){
+class LoginViewModel(val activity: Application): AndroidViewModel(activity),
+    Callback<HttpResponse> {
     companion object{
         const val TAG : String = "LoginViewModel"
     }
@@ -17,26 +25,29 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity){
     val context = activity
     var email: ObservableField<String>? = null
     var password: ObservableField<String>? = null
+    var userLogin: MutableLiveData<HttpResponse>? = null
     init {
         email= ObservableField("")
         password= ObservableField("")
+        userLogin = MutableLiveData<HttpResponse>()
     }
-//    fun login(view: View){
-//        if (email?.get().equals("pbt@admin") && password?.get().equals("pbt@admin")){
-//
-//            val i = Intent(context, MainActivity::class.java)
-//            context.startActivity(i)
-//
-//
-//        }
-//        else{
-//            Toast.makeText(context,"Invalid User",Toast.LENGTH_LONG).show()
-//        }
-//
-//
-//        Toast.makeText(context,"Login Button Click", Toast.LENGTH_LONG
-//        ).show()
-//    }
+    fun login(view: View){
+        ApiClient.client.create(ApiInterFace::class.java).login(
+            email = email?.get()!!, password = password?.get()!!
+        ).enqueue(this)
+
+    }
+
+    override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
+        userLogin?.value = response.body()
+        val list: loginResult = Gson().fromJson(response.body()?.data.toString(), loginResult::class.java)
+        AppUtils.logDebug(TAG, "Success Response : " + Gson().toJson(response.body()))
+    }
+
+    override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+        AppUtils.logError(TAG,  "Failure Response : " + t.message)
+
+    }
 
 
 }

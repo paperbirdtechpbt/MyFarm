@@ -9,6 +9,10 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
@@ -19,6 +23,15 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_EXP_STR_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_STR_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_NEW_TASK
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CUSTOMER
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_DETAIL
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_QUANTITY
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_UNITS
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TABLE_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_DETAIL
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_TYPE
@@ -28,6 +41,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
 import com.pbt.myfarm.Util.AppUtils
+import java.security.AccessController
 
 
 class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
@@ -56,6 +70,17 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
                 CONST_TASK_DETAIL + " TEXT" + ")")
 
         db?.execSQL(userTaskTable)
+        val userPackTable = ("CREATE TABLE " + CONST_TABLE_PACK + " ("
+                + CONST_PACK_ID + " INTEGER PRIMARY KEY, " +
+                CONST_PACK_NAME + " TEXT," +
+                CONST_PACK_TYPE + " TEXT," +
+                CONST_PACK_DETAIL + " TEXT," +
+                CONST_PACK_UNITS + " TEXT," +
+                CONST_PACK_CUSTOMER + " TEXT," +
+                CONST_PACK_QUANTITY + " TEXT," +
+                CONST_PACK_GROUP + " TEXT" + ")")
+
+        db?.execSQL(userPackTable)
 
 
     }
@@ -65,23 +90,23 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         onCreate(db)
     }
 
-    fun addUser() {
-        val values = ContentValues()
-        values.put(CONST_USERNAME, "pbt@admin")
-        values.put(CONST_USERROLE, "admin")
-        values.put(CONST_USERPASS, "pbt@admin")
-        val db = this.writableDatabase
-        db.insert(CONST_USERS_TABLE, null, values)
-        db.close()
-
-    }
+//    fun addUser() {
+//        val values = ContentValues()
+//        values.put(CONST_USERNAME, "pbt@admin")
+//        values.put(CONST_USERROLE, "admin")
+//        values.put(CONST_USERPASS, "pbt@admin")
+//        val db = this.writableDatabase
+//        db.insert(CONST_USERS_TABLE, null, values)
+//        db.close()
+//
+//    }
 
     fun addTask(username: String, viewtask: ViewTaskModelClass) {
 
         try {
             val values = ContentValues()
             values.put(CONST_USERNAME, username)
-            values.put(CONST_TASK_NAME, viewtask.ENTRYNAME+ CONST_ID)
+            values.put(CONST_TASK_NAME, viewtask.ENTRYNAME)
             values.put(CONST_TASK_TYPE, viewtask.ENTRYTYPE)
             values.put(CONST_EXPECTED_EXP_STR_DATE, viewtask.ExpectedStartDate)
             values.put(CONST_EXPECTED_EXP_END_DATE, viewtask.ExpectedEndDate)
@@ -97,8 +122,7 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
                 val intent = Intent(context, ViewTaskActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
-
-                Activity().finish()
+                CreateTaskActivity().finish()
 
 
             } else {
@@ -112,7 +136,43 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
 
 
     }
-    fun updateTask(task: ViewTaskModelClass, entryname: String):Int{
+    fun addPack(viewtask: ViewPackModelClass) {
+
+        try {
+
+            val values = ContentValues()
+            values.put(CONST_PACK_NAME, viewtask.packname)
+            values.put(CONST_PACK_DETAIL, viewtask.packdesciption)
+            values.put(CONST_PACK_TYPE, viewtask.packType)
+            values.put(CONST_PACK_GROUP, viewtask.communitygrip)
+            values.put(CONST_PACK_UNITS, viewtask.units)
+            values.put(CONST_PACK_CUSTOMER, viewtask.customer)
+            values.put(CONST_PACK_QUANTITY, viewtask.quantitiy)
+
+            val db = this.writableDatabase
+            val result = db.insert(CONST_TABLE_PACK, null, values)
+            db.close()
+            AppUtils.logDebug(TAG, result.toString())
+            if (result >= 0) {
+                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
+                val intent = Intent(context, PackActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+
+
+
+            } else {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        }catch (e:Exception){
+            AppUtils.logError(TAG,e.message!!)
+        }
+
+
+
+    }
+    fun updateTask(task: ViewTaskModelClass,entryname:String):Int{
         val db=this.writableDatabase
 
         val contentValues = ContentValues()
@@ -126,6 +186,25 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
 //        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
 //    null)
       val success=  db.update(CONST_NEW_TASK, contentValues,"$CONST_TASK_NAME = ?", arrayOf(entryname))
+        db.close()
+        return success
+    }
+    fun updatePack(task: ViewPackModelClass, entryname: String):Int{
+        val db=this.writableDatabase
+
+
+        val contentValues = ContentValues()
+        contentValues.put(CONST_PACK_NAME, task.packname)
+        contentValues.put(CONST_PACK_TYPE, task.packType)
+        contentValues.put(CONST_PACK_DETAIL, task.packdesciption)
+        contentValues.put(CONST_PACK_GROUP, task.packdesciption)
+        contentValues.put(CONST_PACK_UNITS, task.units)
+        contentValues.put(CONST_PACK_QUANTITY, task.quantitiy)
+        contentValues.put(CONST_PACK_CUSTOMER, task.customer)
+
+//        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
+//    null)
+      val success=  db.update(CONST_TABLE_PACK, contentValues,"$CONST_PACK_NAME = ?", arrayOf(entryname))
         db.close()
         return success
     }
@@ -172,12 +251,65 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         return list
 
     }
+    @SuppressLint("Range")
+    fun readPackData(): ArrayList<ViewPackModelClass> {
+        val list: ArrayList<ViewPackModelClass> = ArrayList()
+        val db = this.readableDatabase
+        val query = "Select * from $CONST_TABLE_PACK"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        var taskname: String
+        var tasktype: String
+        var taskdetail: String
+
+        var communityGroup: String
+        var units: String
+        var quantity: String
+        var customer: String
+
+
+        if (cursor.moveToFirst()) {
+            do {
+                taskname = cursor.getString(cursor.getColumnIndex(CONST_PACK_NAME))
+                tasktype = cursor.getString(cursor.getColumnIndex(CONST_PACK_TYPE))
+                taskdetail = cursor.getString(cursor.getColumnIndex(CONST_PACK_DETAIL))
+                communityGroup=cursor.getString(cursor.getColumnIndex(CONST_PACK_GROUP))
+                units=cursor.getString(cursor.getColumnIndex(CONST_PACK_UNITS))
+                quantity=cursor.getString(cursor.getColumnIndex(CONST_PACK_QUANTITY))
+                customer=cursor.getString(cursor.getColumnIndex(CONST_PACK_CUSTOMER))
+
+                val lst = ViewPackModelClass(
+
+                    packdesciption = taskdetail, packname = taskname,
+                    packType = tasktype,communitygrip = communityGroup,
+                    units = units,quantitiy = quantity,customer = customer
+                )
+                list.add(lst)
+            } while (cursor.moveToNext())
+        }
+        return list
+
+    }
 
     fun deleteTask(taskname: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(CONST_TASK_NAME, taskname)
         db.delete(CONST_NEW_TASK, "taskname=?", arrayOf(taskname))
+        db.close()
+
+    }
+    fun deletePack(taskname: String) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(CONST_PACK_NAME,taskname)
+   val succ=  db.delete(CONST_TABLE_PACK, "PACKname=?", arrayOf(taskname))
         db.close()
 
     }

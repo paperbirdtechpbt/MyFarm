@@ -3,9 +3,12 @@ package com.pbt.myfarm
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.view.View
+import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 
@@ -57,7 +60,21 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
             ExpectedStartDate = expectedStartDate?.get().toString(),
             ExpectedEndDate =expectedEndDate?.get().toString(),
             StartDate = startDate?.get().toString(), EndDate = EndDate?.get().toString() )
-        db.updateTask(newTask,newTask.ENTRYNAME)
+      val result=  db.updateTask(newTask,newTask.ENTRYNAME)
+        if (result >= 0) {
+            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, ViewTaskActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+
+            Activity().finish()
+
+
+        } else {
+            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
+
+        }
+
     }
 
 

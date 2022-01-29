@@ -36,7 +36,7 @@ object ApiClient {
 
             if (retrofit == null) {
                 retrofit = Retrofit.Builder()
-                    .baseUrl("http://cogni.paperbirdtech.com/")
+                    .baseUrl("https://farm.myfarmdata.io/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build()

@@ -51,9 +51,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/spinner_role"
                 app:layout_constraintStart_toStartOf="@id/label_simple"
-                app:layout_constraintTop_toBottomOf="@id/spinner_role" />
-            <!--      android:onClick="@{(v)->loginmodel.login(v)}"-->
-            android:text="@string/Login"
+                app:layout_constraintTop_toBottomOf="@id/spinner_role"
+                  android:onClick="@{(v)->loginmodel.login(v)}"/>
+
 
 
             <EditText

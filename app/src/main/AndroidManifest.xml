@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pbt.myfarm">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -8,8 +9,22 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.MyFarm">
-        <activity android:name=".Activity.SelectConfigType.SelectConfigTypeActivity"
+        <activity android:name=".Activity.DashBoardEvent.DashBoardEventActivity"></activity>
+        <activity
+            android:name=".Activity.CreatePack.CreatePackActivity"
+            android:label="Create a Pack" />
+        <activity
+            android:name=".Activity.Pack.PackActivity"
+            android:exported="true"
+            android:label="Pack">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.Home.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.SelectConfigType.SelectConfigTypeActivity"
             android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

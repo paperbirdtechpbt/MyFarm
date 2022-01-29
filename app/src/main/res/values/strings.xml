@@ -24,6 +24,9 @@
     <string name="label_expectedEndDate">Expected End Date of the task</string>
     <string name="label_startDate">Start Date</string>
     <string name="label_EndDate">End Date</string>
+    <string name="labelPackCustomer">Customer</string>
+    <string name="labelPackQuanitiy">Quantity</string>
+    <string name="labelPackunits">Units</string>
 
 
     <string-array name="array_task_configtype">
@@ -33,15 +36,36 @@
         <item>DEMOFERM</item>
 
     </string-array>
+    <string-array name="array_Pack_configtype">
+        <item>Darshini Pack</item>
+        <item>FEVESKKM</item>
+
+
+    </string-array>
     <string-array name="array_communitygroup">
         <item>Select</item>
-        <item>Admin</item>
-        <item>Producer</item>
-        <item>Manager</item>
-        <item>Admin Local</item>
-        <item>Admin National</item>
-        <item>Super Admin</item>
-        <item>Client</item>
+        <item>CommunityGroup_1</item>
+        <item>CommunityGroup_2</item>
+        <item>GAB_01</item>
+        <item>GAB_02</item>
+        <item>CAM_01</item>
+        <item>CAM_02</item>
+        <item>SYS</item>
+        <item>GABON</item>
+        <item>CAMERON</item>
+        <item>HAITI</item>
+        <item>JO</item>
+        <item>ALL</item>
+        <item>GAB_G1</item>
+        <item>GAB_G2</item>
+        <item>GAB_G3</item>
+        <item>GAB_G4</item>
+        <item>GAB_G5</item>
+        <item>GAB_G6</item>
+        <item>GAB_G7</item>
+        <item>GAB_G8</item>
+        <item>GAB_G9</item>
+
     </string-array>
     <string-array name="role_array">
         <item>Select</item>

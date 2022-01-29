@@ -13,8 +13,10 @@ import com.pbt.myfarm.CreatetaskViewModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CONFIGTYPE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CONFIGTYPE_TYPE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_LIST_SIZE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.databinding.ActivityCreateTaskBinding
@@ -23,6 +25,7 @@ import java.text.SimpleDateFormat
 
 import java.util.*
 import java.util.Locale
+import kotlin.collections.ArrayList
 
 
 class CreateTaskActivity : AppCompatActivity(), View.OnClickListener {
@@ -45,6 +48,8 @@ class CreateTaskActivity : AppCompatActivity(), View.OnClickListener {
         setSpinner()
 
         val viewtask = intent.getParcelableExtra<ViewTaskModelClass>(CONST_VIEWMODELCLASS_LIST)
+
+
         btn_update_task.setOnClickListener{
             viewmodel?.update()
 
@@ -93,7 +98,7 @@ class CreateTaskActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun updateLabel(view: View?) {
-        val myFormat = "dd/MM/yy"
+        val myFormat = "yyyy-MM-dd"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
         when(view?.id){
             R.id.ed_expectedDate -> {

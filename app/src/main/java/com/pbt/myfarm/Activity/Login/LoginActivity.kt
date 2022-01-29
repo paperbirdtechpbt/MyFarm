@@ -6,13 +6,17 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.LoginViewModel
 
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_IS_LOGIN
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SHARED_PREF_USERNAME
+import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityLogin2Binding
 import kotlinx.android.synthetic.main.activity_login2.*
@@ -33,22 +37,27 @@ var binding:ActivityLogin2Binding?=null
 
        binding?.loginmodel=viewModel
 
+initObservable()
 
-        val db=DbHelper(this, null)
-        db.addUser()
         setSpinner()
 
-        btn_login.setOnClickListener{
-            if (ed_email.text.toString().equals("pbt@admin")&& ed_password.text.toString().equals("pbt@admin")){
-                startActivity(Intent(this,MainActivity::class.java))
-                MySharedPreference.setStringValue(this,CONST_SHARED_PREF_USERNAME,ed_email.text.toString())
-                finish()
-            }
-            else{
-                Toast.makeText(this,"Invalid User",Toast.LENGTH_SHORT).show()
-            }
-        }
 
+    }
+
+    private fun initObservable() {
+        viewModel?.userLogin?.observe(this, Observer { response ->
+            if (response?.error == false) {
+                MySharedPreference.setStringValue(this,CONST_SHARED_PREF_USERNAME,ed_email.text.toString())
+                MySharedPreference.setStringValue(this,CONST_PREF_IS_LOGIN,"true")
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+
+                AppUtils.logDebug("LoginActivity","Login api Respose ====>> "+ Gson().toJson(response.data))
+             Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()
+            } else
+                Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()
+        })
     }
 
     private fun setSpinner() {
