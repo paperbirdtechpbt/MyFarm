@@ -4,59 +4,65 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
-import com.pbt.myfarm.ModelClass.ViewTaskModelClass
+import com.pbt.myfarm.TasklistDataModel
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.databinding.ItemlistViewtaskBinding
+import kotlinx.android.synthetic.main.itemlist_viewtask.view.*
 
 class AdapterViewTask(
-    var context: Context, var list: List<ViewTaskModelClass>,
-    var callbacks: (Int, String,Boolean,ViewTaskModelClass) -> Unit,
+    var context: Context, var list: List<TasklistDataModel>,
+    var callbacks: (Int, String, Boolean, TasklistDataModel) -> Unit,
 ) : RecyclerView.Adapter<AdapterViewTask.ViewHolder>() {
+    inner class ViewHolder(val binding: ItemlistViewtaskBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.itemlist_viewtask, parent, false)
-        return ViewHolder(view)
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ViewHolder(
+            DataBindingUtil.inflate(
+                LayoutInflater.from(parent.context), R.layout.itemlist_viewtask, parent, false
+            )
+        )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = list[position]
-        holder.bind(list.get(position))
+        with(holder) {
+            with(list[position]) {
+                binding.viewtask = list[position]
 
-        holder.deleteicon.setOnClickListener {
-            callbacks.invoke(position, item.ENTRYNAME,true,item)
+                val item = list[position]
+                binding.exapanedview.visibility = if (this.expand) View.VISIBLE else View.GONE
 
+AppUtils.logDebug("##Expand","Expand1"+this.expand.toString())
 
+                binding.layoutItemlist.setOnClickListener {
+                    this.expand = !this.expand
 
-        }
-        holder.editicon.setOnClickListener {
+                    notifyItemChanged(position)
 
-            callbacks.invoke(position, item.ENTRYNAME,false,item)
+                    AppUtils.logDebug("##Expand","Expand2"+this.expand.toString())
+                }
+                itemView.icon_delete.setOnClickListener {
+                    callbacks.invoke(position, item.name, true, item)
 
-            Toast.makeText(context, "Edit---${item.ENTRYNAME}", Toast.LENGTH_SHORT).show()
+                }
+                itemView.icon_edit.setOnClickListener {
 
+                    callbacks.invoke(position, item.name, false, item)
+
+                    Toast.makeText(context, "Edit---${item.name}", Toast.LENGTH_SHORT).show()
+
+                }
+            }
         }
     }
 
     override fun getItemCount(): Int {
         return list.size
+        AppUtils.logDebug("##listsize", list.size.toString())
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        var entryname: TextView = itemView.findViewById(R.id.txt_entryname)
-        var entrytype: TextView = itemView.findViewById(R.id.txt_type)
-        var entrydetail: TextView = itemView.findViewById(R.id.txt_details)
-        var deleteicon: ImageView = itemView.findViewById(R.id.icon_delete)
-        var editicon: ImageView = itemView.findViewById(R.id.icon_edit)
-        fun bind(blog: ViewTaskModelClass) {
-            entryname.text = blog.ENTRYNAME
-            entrytype.text = blog.ENTRYTYPE
-            entrydetail.text = blog.ENTRYDETAIL
-        }
-    }
 
 }

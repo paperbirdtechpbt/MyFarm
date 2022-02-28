@@ -9,8 +9,8 @@ android:id="@+id/layout_itemlist"
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="154dp"
-        android:layout_margin="6dp"
-        app:cardCornerRadius="2dp"
+        android:layout_margin="3dp"
+        app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true"
         app:cardMaxElevation="5dp"
@@ -22,7 +22,7 @@ android:id="@+id/layout_itemlist"
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="10dp">
+            >
 
             <ImageView
                 android:id="@+id/img_itemlist"

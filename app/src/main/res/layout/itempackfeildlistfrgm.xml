@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/field_name"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/design_edittext"
+        android:padding="10dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/field_expectedDate"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/design_edittext"
+        android:drawableRight="@drawable/ic_calender"
+        android:drawableTint="@color/green"
+        android:drawablePadding="7dp"
+        android:paddingRight="25dp"
+        app:layout_constraintTop_toBottomOf="@id/field_name" />
+
+    <EditText
+        android:id="@+id/field_spinner_Grip"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/field_expectedDate" />
+
+    <Spinner
+        android:id="@+id/field_spinner"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/field_spinner_Grip" />
+
+    <TextView
+        android:id="@+id/label_field_spinner_Grip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FieldName"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/field_spinner_Grip"
+        app:layout_constraintStart_toStartOf="@id/field_spinner_Grip" />
+
+
+    <TextView
+        android:id="@+id/label_field_expectedDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/field_expectedDate"
+        app:layout_constraintStart_toStartOf="@id/field_expectedDate" />
+
+    <TextView
+        android:id="@+id/label_field_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FieldName"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/field_spinner"
+        app:layout_constraintStart_toStartOf="@id/field_spinner" />
+
+    <TextView
+        android:id="@+id/label_fieldname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FieldName"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/field_name"
+        app:layout_constraintStart_toStartOf="@id/field_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

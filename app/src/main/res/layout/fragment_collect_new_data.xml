@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragement.CollectNewData.CollectNewData">
+    <TextView
+        android:id="@+id/label_collectactivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Collect Activity"
+
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/field_Collect_activity"
+        app:layout_constraintStart_toStartOf="@id/field_Collect_activity"/>
+    <Spinner
+        android:id="@+id/field_Collect_activity"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="parent"
+        style="@style/Edittext"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/design_edittext" />
+    <TextView
+        android:id="@+id/label_field_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activity Result"
+
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/field_spinner_result"
+        app:layout_constraintStart_toStartOf="@id/field_spinner_result"/>
+    <Spinner
+        android:id="@+id/field_spinner_result"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/field_Collect_activity"
+        style="@style/Edittext"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/design_edittext" />
+
+    <TextView
+        android:id="@+id/label_field_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Value"
+        app:layout_constraintTop_toBottomOf="@id/field_spinner_result"
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@id/ed_value"/>
+    <EditText
+        android:id="@+id/ed_value"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="visible"
+        style="@style/Edittext"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/label_field_value"/>
+    <Spinner
+        android:id="@+id/spinner_value"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/Edittext"
+        android:visibility="gone"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/label_field_value"/>
+    <EditText
+        android:id="@+id/dt_value"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/Edittext"
+        android:focusable="false"
+        android:drawableRight="@drawable/ic_calender"
+        android:visibility="gone"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/label_field_value"/>
+
+
+    <TextView
+        android:id="@+id/label_field_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor"
+
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/field_spinner_sensor"
+        app:layout_constraintStart_toStartOf="@id/field_spinner_sensor"/>
+    <Spinner
+        android:id="@+id/field_spinner_sensor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@id/label_field_value"
+        style="@style/Edittext"
+        android:layout_marginTop="85dp"
+        android:background="@drawable/design_edittext" />
+    <TextView
+        android:id="@+id/label_field_units"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unit"
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/spinner_units"
+        app:layout_constraintStart_toStartOf="@id/spinner_units"/>
+    <Spinner
+        android:id="@+id/spinner_units"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/Edittext"
+        android:visibility="visible"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/field_spinner_sensor"/>
+    <TextView
+        android:id="@+id/label_field_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Duration"
+        android:textSize="14sp"
+        android:alpha="0.7"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@id/ed_duration"
+        app:layout_constraintStart_toStartOf="@id/ed_duration"/>
+    <EditText
+        android:id="@+id/ed_duration"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        style="@style/Edittext"
+        android:visibility="visible"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/spinner_units"/>
+
+    <Button
+        android:id="@+id/btn_collectNewData"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="12dp"
+        android:text="Collect New Data"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="50dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

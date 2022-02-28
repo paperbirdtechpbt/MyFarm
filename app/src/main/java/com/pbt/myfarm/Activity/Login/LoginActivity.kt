@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.HttpResponse
+import com.pbt.myfarm.HttpResponse.loginResult
 import com.pbt.myfarm.LoginViewModel
 
 import com.pbt.myfarm.R
@@ -36,6 +38,8 @@ var binding:ActivityLogin2Binding?=null
         ).get(LoginViewModel::class.java)
 
        binding?.loginmodel=viewModel
+        viewModel?.progressBar=progressLogin
+        viewModel?.btnlogin=btn_login
 
 initObservable()
 
@@ -47,7 +51,9 @@ initObservable()
     private fun initObservable() {
         viewModel?.userLogin?.observe(this, Observer { response ->
             if (response?.error == false) {
-                MySharedPreference.setStringValue(this,CONST_SHARED_PREF_USERNAME,ed_email.text.toString())
+
+
+                MySharedPreference.setStringValue(this,CONST_SHARED_PREF_USERNAME,Gson().toJson(response.data))
                 MySharedPreference.setStringValue(this,CONST_PREF_IS_LOGIN,"true")
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)

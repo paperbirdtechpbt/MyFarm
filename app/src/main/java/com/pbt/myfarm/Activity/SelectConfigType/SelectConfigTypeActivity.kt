@@ -1,51 +1,65 @@
 package com.pbt.myfarm.Activity.SelectConfigType
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Adapter.SelectConfigType.AdapterSelectconfigType
-import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
-import com.pbt.myfarm.ModelClass.ConfigTypeModel
-import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.R
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CONFIGTYPE_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CONFIGTYPE_TYPE_ID
+import com.pbt.myfarm.Util.AppConstant
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import kotlinx.android.synthetic.main.activity_select_config_type.*
-import kotlinx.android.synthetic.main.activity_view_task.*
+
 
 class SelectConfigTypeActivity : AppCompatActivity() {
-    var configtypelist=ArrayList<ConfigTypeModel>()
+    private var adapter: AdapterSelectconfigType? = null
+    private var parentlayout: ConstraintLayout? = null
+    var viewModell: SelectConfigViewModel? = null
+
+
+    companion object {
+        val TAG = "SelectConfigTypeActivity"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_config_type)
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
+        parentlayout = findViewById(R.id.parentLayout)
+
         recylcerview_selectConfigType.layoutManager=LinearLayoutManager(this)
-        setdata()
-        setadapter()
-    }
-
-    private fun setdata() {
-        configtypelist.add(ConfigTypeModel("TRANSPORTATION"))
-        configtypelist.add(ConfigTypeModel("VTEST"))
-        configtypelist.add(ConfigTypeModel("TEST3"))
-        configtypelist.add(ConfigTypeModel("FERMENTATION"))
-        configtypelist.add(ConfigTypeModel("NETTOYAGE"))
-        configtypelist.add(ConfigTypeModel("TestTask"))
-        configtypelist.add(ConfigTypeModel("DEMOFERM"))
+        initViewModel()
 
     }
+    private fun initViewModel() {
+        viewModell = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(SelectConfigViewModel::class.java)
 
-    private fun setadapter() {
-        val adapter = AdapterSelectconfigType(this,configtypelist){position,name ->
-            val intent= Intent(this,CreateTaskActivity::class.java)
-            intent.putExtra(CONST_CONFIGTYPE_NAME,name)
-            intent.putExtra(CONST_CONFIGTYPE_TYPE_ID,position)
-            startActivity(intent)
-            finish()
-        }
-        recylcerview_selectConfigType.adapter = adapter
+
+viewModell?.progressbar=configprogress
+        viewModell?.onConfigTypeRequest(this)
+        viewModell?.configlist?.observe(this, Observer { configtype ->
+
+            recylcerview_selectConfigType?.layoutManager = LinearLayoutManager(this)
+
+            adapter = AdapterSelectconfigType(this, configtype!!) { position, taskname ,list->
+
+                val intent = Intent(this, CreateTaskActivity::class.java)
+                    intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
+                    startActivity(intent)
+                finish()
+
+            }
+            recylcerview_selectConfigType.adapter = adapter
+
+        })
     }
+
+
 }

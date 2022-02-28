@@ -13,243 +13,316 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.CreatePack.CreatePackActivity">
-    <androidx.constraintlayout.widget.ConstraintLayout
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:id="@+id/layout_header"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        android:layout_height="0px">-->
+<!--        <ImageView-->
+<!--            android:id="@+id/img_logo_createtask"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:src="@drawable/splashlogo"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            android:layout_marginTop="18dp"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/lablel_createnewtask"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Create A New Pack"-->
+<!--            android:textSize="19sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textColor="@color/green"-->
+<!--            android:layout_marginTop="6dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/img_logo_createtask"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"/>-->
+<!--        <View-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:background="@color/black"-->
+<!--            android:id="@+id/view_line"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/lablel_createnewtask"-->
+<!--            />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0px"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/layout_buttons"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/layout_header">-->
+
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0px"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+
+<!--            app:layout_constraintLeft_toLeftOf="parent">-->
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+
+<!--                app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                app:layout_constraintRight_toRightOf="parent">-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/label_namePrefix"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/Nameprefix"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_prefix"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_prefix"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:backgroundTint="#EDEDED"-->
+<!--                    android:layout_marginTop="50dp"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:text="@={viewModel.namePrefix}"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    android:editable="false"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_desciption" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/label_Description"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelDescription"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_desciption"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_desciption"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:text="@={viewModel.desciption}"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_configtype"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_prefix" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/label_config_type"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelconfigtype"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_configtype"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_configtype"-->
+<!--                    android:editable="false"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:text="@={viewModel.confiType}"-->
+<!--                    android:backgroundTint="#EDEDED"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/spinner_Grip"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_desciption"/>-->
+<!--                <TextView-->
+<!--                    android:id="@+id/label_community_Grip"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelCommunitygrip"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/spinner_Grip"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+
+<!--                <Spinner-->
+<!--                    android:id="@+id/spinner_Grip"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_configtype"/>-->
+<!--<TextView-->
+<!--    android:layout_width="wrap_content"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginTop="15dp"-->
+<!--    app:layout_constraintTop_toBottomOf="@id/label_community_Grip"-->
+<!--    app:layout_constraintBottom_toTopOf="@id/label_packcustomer"-->
+<!--    android:id="@+id/textview"/>-->
+<!--                <TextView-->
+<!--                    android:id="@+id/label_packcustomer"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelPackCustomer"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_pack_customer"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_pack_customer"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:text="@={viewModel.customer}"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/textview"/>-->
+<!--                <TextView-->
+<!--                    android:id="@+id/label_pack_units"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelPackunits"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_pack_units"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_pack_units"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:text="@={viewModel.units}"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_pack_customer"/>-->
+<!--                <TextView-->
+<!--                    android:id="@+id/label_packquantity"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/labelPackQuanitiy"-->
+<!--                    android:layout_marginLeft="25dp"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp"-->
+<!--                    app:layout_constraintBottom_toTopOf="@id/ed_pack_quantity"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    android:layout_marginTop="25dp"/>-->
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_pack_quantity"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+<!--                    android:inputType="number"-->
+<!--                    android:text="@={viewModel.quantity}"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_pack_units"/>-->
+
+
+<!--                <EditText-->
+<!--                    android:id="@+id/ed_spinner_Grip"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    style="@style/Edittext"-->
+<!--android:visibility="gone"-->
+<!--                    android:layout_marginTop="35dp"-->
+<!--                    android:background="@drawable/design_edittext"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/ed_configtype"/>-->
+
+
+
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--        </ScrollView>-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    <TextView-->
+<!--        android:id="@+id/label_field_spinner_Grip"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="FieldName"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/spinerCommunityGroup"-->
+<!--        app:layout_constraintStart_toStartOf="@id/spinerCommunityGroup" />-->
+<!--<Spinner-->
+<!--    android:id="@+id/spinerCommunityGroup"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="50dp"-->
+<!--    style="@style/Edittext"-->
+<!--    android:layout_marginTop="35dp"-->
+
+<!--    android:background="@drawable/design_edittext"-->
+<!--    app:layout_constraintBottom_toTopOf="@id/recyclerview_createPack"-->
+<!--    app:layout_constraintTop_toBottomOf="@id/nameprefix"-->
+<!--    />-->
+<!--    <TextView-->
+<!--        android:id="@+id/label_field_name"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Name Prefix"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/nameprefix"-->
+<!--        app:layout_constraintStart_toStartOf="@id/nameprefix" />-->
+<!--<EditText-->
+<!--    android:id="@+id/nameprefix"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="50dp"-->
+<!--    style="@style/Edittext"-->
+<!--    android:layout_marginTop="35dp"-->
+<!--android:editable="false"-->
+<!--    android:focusableInTouchMode="false"-->
+
+<!--    android:background="@drawable/design_edittext"-->
+<!--    app:layout_constraintBottom_toTopOf="@id/spinerCommunityGroup"-->
+<!--    app:layout_constraintTop_toBottomOf="@id/name"-->
+<!--    />-->
+<!--    <TextView-->
+<!--        android:id="@+id/label_field_prefixname"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Name"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="14sp"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/name"-->
+<!--        app:layout_constraintStart_toStartOf="@id/name" />-->
+
+<!--    <EditText-->
+<!--        android:id="@+id/name"-->
+<!--        style="@style/Edittext"-->
+<!--        android:layout_width="350dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginTop="35dp"-->
+<!--app:layout_constraintLeft_toLeftOf="parent"-->
+
+<!--        android:background="@drawable/design_edittext"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/nameprefix"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/layout_header"-->
+<!--        tools:ignore="MissingConstraints" />-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_createPack"
         android:layout_width="match_parent"
-        android:id="@+id/layout_header"
+        android:layout_height="0dp"
+        tools:listitem="@layout/itempackfeildlist"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="0px">
-        <ImageView
-            android:id="@+id/img_logo_createtask"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:src="@drawable/splashlogo"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="18dp"/>
-        <TextView
-            android:id="@+id/lablel_createnewtask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create A New Pack"
-            android:textSize="19sp"
-            android:textStyle="bold"
-            android:textColor="@color/green"
-            android:layout_marginTop="6dp"
-            app:layout_constraintTop_toBottomOf="@id/img_logo_createtask"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"/>
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/black"
-            android:id="@+id/view_line"
-            android:layout_marginTop="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/lablel_createnewtask"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        app:layout_constraintBottom_toTopOf="@id/layout_buttons"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_header">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintLeft_toLeftOf="parent">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
-
-                <TextView
-                    android:id="@+id/label_namePrefix"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Nameprefix"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_prefix"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-                <EditText
-                    android:id="@+id/ed_prefix"
-                    style="@style/Edittext"
-                    android:backgroundTint="#EDEDED"
-                    android:layout_marginTop="50dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="@={viewModel.namePrefix}"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:editable="false"
-                    android:layout_marginLeft="25dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintBottom_toTopOf="@id/ed_desciption" />
-
-                <TextView
-                    android:id="@+id/label_Description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelDescription"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_desciption"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-                <EditText
-                    android:id="@+id/ed_desciption"
-                    style="@style/Edittext"
-                    android:layout_marginTop="35dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="@={viewModel.desciption}"
-                    app:layout_constraintBottom_toTopOf="@id/ed_configtype"
-                    android:layout_marginLeft="25dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_prefix" />
-
-                <TextView
-                    android:id="@+id/label_config_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelconfigtype"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_configtype"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-
-                <EditText
-                    android:id="@+id/ed_configtype"
-                    android:editable="false"
-                    android:layout_marginTop="35dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-                    android:text="@={viewModel.confiType}"
-                    android:backgroundTint="#EDEDED"
-                    app:layout_constraintBottom_toTopOf="@id/spinner_Grip"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_desciption"/>
-                <TextView
-                    android:id="@+id/label_community_Grip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelCommunitygrip"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/spinner_Grip"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-
-                <Spinner
-                    android:id="@+id/spinner_Grip"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_configtype"/>
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="15dp"
-    app:layout_constraintTop_toBottomOf="@id/label_community_Grip"
-    app:layout_constraintBottom_toTopOf="@id/label_packcustomer"
-    android:id="@+id/textview"/>
-                <TextView
-                    android:id="@+id/label_packcustomer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelPackCustomer"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_pack_customer"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-                <EditText
-                    android:id="@+id/ed_pack_customer"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-                    android:text="@={viewModel.customer}"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/textview"/>
-                <TextView
-                    android:id="@+id/label_pack_units"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelPackunits"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_pack_units"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-                <EditText
-                    android:id="@+id/ed_pack_units"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-                    android:text="@={viewModel.units}"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_pack_customer"/>
-                <TextView
-                    android:id="@+id/label_packquantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/labelPackQuanitiy"
-                    android:layout_marginLeft="25dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@id/ed_pack_quantity"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:layout_marginTop="25dp"/>
-                <EditText
-                    android:id="@+id/ed_pack_quantity"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-                    android:inputType="number"
-                    android:text="@={viewModel.quantity}"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_pack_units"/>
-
-
-                <EditText
-                    android:id="@+id/ed_spinner_Grip"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    style="@style/Edittext"
-android:visibility="gone"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/design_edittext"
-                    app:layout_constraintTop_toBottomOf="@id/ed_configtype"/>
-
-
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintBottom_toTopOf="@id/layout_buttons"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -263,10 +336,10 @@ android:visibility="gone"
             android:id="@+id/btn_create_pack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:padding="12dp"
             android:layout_marginRight="50dp"
             android:layout_marginLeft="50dp"
-            android:onClick="@{(v)->viewModel.addPack()}"
+
             android:text="Create Pack"
             app:layout_constraintBottom_toBottomOf="parent" />
         <Button
@@ -277,7 +350,6 @@ android:visibility="gone"
             android:layout_marginRight="50dp"
             android:layout_marginLeft="50dp"
             android:visibility="gone"
-            android:onClick="@{(v)->viewModel.updatePack()}"
             android:text="Update Pack"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,9 @@ package com.pbt.myfarm
 
 import android.app.Application
 import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -26,12 +29,16 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
     var email: ObservableField<String>? = null
     var password: ObservableField<String>? = null
     var userLogin: MutableLiveData<HttpResponse>? = null
+    lateinit var progressBar:ProgressBar
+    lateinit var btnlogin:Button
     init {
         email= ObservableField("")
         password= ObservableField("")
         userLogin = MutableLiveData<HttpResponse>()
     }
     fun login(view: View){
+        progressBar.visibility=View.VISIBLE
+        btnlogin.visibility=View.GONE
         ApiClient.client.create(ApiInterFace::class.java).login(
             email = email?.get()!!, password = password?.get()!!
         ).enqueue(this)
@@ -39,12 +46,17 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
     }
 
     override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
+        progressBar.visibility=View.VISIBLE
+        btnlogin.visibility=View.GONE
         userLogin?.value = response.body()
         val list: loginResult = Gson().fromJson(response.body()?.data.toString(), loginResult::class.java)
         AppUtils.logDebug(TAG, "Success Response : " + Gson().toJson(response.body()))
     }
 
     override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+        progressBar.visibility=View.GONE
+        btnlogin.visibility=View.VISIBLE
+        Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
         AppUtils.logError(TAG,  "Failure Response : " + t.message)
 
     }

@@ -3,6 +3,7 @@ package com.pbt.myfarm.Util
 import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
+import com.pbt.myfarm.HttpResponse.loginResult
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SHARED_PREF_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SHARED_PREF_TOKEN
 
@@ -80,15 +81,15 @@ class MySharedPreference  {
             editor?.commit()
         }
 
-//        fun getUser(context: Context): UserDetailsData? {
-//            openPref(context)
-//            val user: UserDetailsData? = Gson().fromJson(
-//                preferences?.getString(PREF_USER, ""),
-//                UserDetailsData::class.java
-//            )
-//            preferences = null
-//            return user
-//        }
+        fun getUser(context: Context): loginResult? {
+            openPref(context)
+            val user: loginResult? = Gson().fromJson(
+                preferences?.getString(AppConstant.CONST_SHARED_PREF_USERNAME, ""),
+                loginResult::class.java
+            )
+            preferences = null
+            return user
+        }
     }
 
 }

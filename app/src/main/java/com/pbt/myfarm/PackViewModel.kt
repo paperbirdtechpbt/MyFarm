@@ -1,5 +1,6 @@
 package com.pbt.myfarm
 
+
 import android.app.Activity
 import android.app.Application
 import android.content.Context
@@ -7,17 +8,41 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
-import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.internal.LinkedTreeMap
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.packconfiglist
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.DataBase.DbHelper
-import java.security.AccessController.getContext
+import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.Service.ApiClient
+import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.Util.MySharedPreference
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-class PackViewModel(val activity:Application) :AndroidViewModel(activity){
+
+class PackViewModel(val activity:Application
+) :AndroidViewModel(activity)  ,
+    retrofit2.Callback<PackFieldResponse> {
+
+     val TAG: String = "PackViewModel"
     companion object {
-        const val TAG: String = "CreateTaskViewModel"
+        val packCommunityList = ArrayList<PackCommunityList>()
+        val packCommunityListname = ArrayList<String>()
+        val packconfigList = ArrayList<PackConfigFieldList>()
+        var  packconfigobject :Packconfig?=null
+
+        var groupArrayPack:ArrayList<String>?= ArrayList()
+        var groupArrayIdPack:ArrayList<String>?= ArrayList()
     }
     val context: Context =activity
+    var configlist = MutableLiveData<List<PackConfigFieldList>>()
+    lateinit var activityContext : Activity
 
 
     var namePrefix: ObservableField<String>? = null
@@ -36,6 +61,7 @@ class PackViewModel(val activity:Application) :AndroidViewModel(activity){
         units = ObservableField("")
         quantity = ObservableField("")
         customer = ObservableField("")
+        configlist = MutableLiveData<List<PackConfigFieldList >>()
 
     }
 
@@ -80,6 +106,72 @@ class PackViewModel(val activity:Application) :AndroidViewModel(activity){
         }
     }
 
+
+
+    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
+//        if (updateTaskIdBoolean){
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .packConfigFieldList("2","5", updateTaskId).enqueue(this) }
+//        else{
+        if (updateTaskId=="0"){
+            ApiClient.client.create(ApiInterFace::class.java)
+                .packConfigFieldList("2", packList?.pack_config_id.toString(), packList?.id!!).enqueue(this)
+
+        }
+        else{
+            ApiClient.client.create(ApiInterFace::class.java)
+                .packConfigFieldList("2",packconfiglist?.id.toString(),"").enqueue(this)
+        }
+
+
+//        }
+
+
+
+    }
+
+    override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
+        configlist.value = emptyList()
+        packconfigList.clear()
+        packCommunityList.clear()
+        packCommunityListname.clear()
+        val baseList : PackFieldResponse =  Gson().fromJson(
+            Gson().toJson(response.body()),
+            PackFieldResponse::class.java)
+        packconfigobject=null
+
+        packconfigobject=baseList.packconfig
+
+        baseList.data.forEach { routes ->
+            packconfigList.add(routes)
+
+        }
+        baseList.CommunityGroup.forEach { routes ->
+            packCommunityList.add(routes)
+            packCommunityListname.add(routes.name)
+        }
+
+        configlist.value = packconfigList
+        var comConfigFieldList:ArrayList<PackCommunityList>?=null
+        comConfigFieldList= Gson().fromJson(Gson().toJson(response.body()?.CommunityGroup),ArrayList<PackCommunityList>()::class.java)
+
+
+        for (i in 0 until comConfigFieldList.size){
+            val row: Any = comConfigFieldList!!.get(i)
+            val rowmap: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
+            val name = rowmap["name"].toString()
+            val communitygroupid = rowmap["id"].toString()
+
+            groupArrayPack?.add( name)
+            groupArrayIdPack?.add(communitygroupid)
+            AppUtils.logDebug(TAG,"array<String>"+ name)
+        }
+    }
+
+    override fun onFailure(call: Call<PackFieldResponse>, t: Throwable) {
+        AppUtils.logDebug(TAG,"response failure PackViewmodel"+ t.message)
+
+    }
 
 
 }

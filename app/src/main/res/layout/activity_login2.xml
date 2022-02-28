@@ -3,14 +3,7 @@
 
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-   >
-
-    <data>
-        <variable
-            name="loginmodel"
-            type="com.pbt.myfarm.LoginViewModel" />
-    </data>
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -43,18 +36,17 @@
 
             <Button
                 android:id="@+id/btn_login"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
+                android:layout_width="146dp"
+                android:layout_height="41dp"
                 android:backgroundTint="@color/white"
+                android:onClick="@{(v)->loginmodel.login(v)}"
                 android:text="@string/Login"
                 android:textColor="@color/black"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/spinner_role"
                 app:layout_constraintStart_toStartOf="@id/label_simple"
-                app:layout_constraintTop_toBottomOf="@id/spinner_role"
-                  android:onClick="@{(v)->loginmodel.login(v)}"/>
-
-
+                app:layout_constraintTop_toBottomOf="@id/spinner_role" />
 
             <EditText
                 android:id="@+id/ed_password"
@@ -64,9 +56,11 @@
                 android:background="@drawable/design_edittext"
                 android:hint="@string/Password"
                 android:inputType="textPassword"
+                android:maxLines="1"
                 android:text="@={loginmodel.password}"
-                app:layout_constraintBottom_toTopOf="@id/spinner_role"
+                app:layout_constraintBottom_toTopOf="@id/label_forgetPassword"
                 app:layout_constraintTop_toBottomOf="@id/ed_email" />
+
 
             <EditText
                 android:id="@+id/ed_email"
@@ -75,10 +69,20 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/design_edittext"
                 android:hint="@string/Email"
+                android:maxLines="1"
                 android:text="@={loginmodel.email}"
                 app:layout_constraintBottom_toTopOf="@id/ed_password"
-
                 app:layout_constraintTop_toBottomOf="@id/label_pleaselogin" />
+
+            <ProgressBar
+                android:id="@+id/progressLogin"
+                android:layout_width="146dp"
+                android:layout_height="41dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/label_forgetPassword"
+                app:layout_constraintLeft_toRightOf="@id/label_forgetPassword"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/label_forgetPassword" />
 
             <Spinner
                 android:id="@+id/spinner_role"
@@ -113,15 +117,16 @@
 
 
             <TextView
+                android:id="@+id/label_forgetPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/ForgetPass"
                 android:textColor="@color/white"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/btn_login"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@id/spinner_role"
-                app:layout_constraintTop_toTopOf="@id/btn_login" />
+                app:layout_constraintTop_toBottomOf="@id/ed_password" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -132,4 +137,11 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="20dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <data>
+
+        <variable
+            name="loginmodel"
+            type="com.pbt.myfarm.LoginViewModel" />
+    </data>
 </layout>

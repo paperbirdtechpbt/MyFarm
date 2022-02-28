@@ -28,10 +28,17 @@ class AppConstant {
         val CONST_EXPECTED_STR_DATE="startdate"
         val CONST_EXPECTED_END_DATE="enddate"
 
+
+
         //Intent PutExra
         val CONST_CONFIGTYPE_NAME="configtypename"
         val CONST_CONFIGTYPE_TYPE_ID="configtypeid"
         val CONST_VIEWMODELCLASS_LIST="ViewModelClassList"
+        val CONST_VIEWMODELCLASS_CONFIG_LIST="ViewModelClassList"
+        val CONST_TASK_UPDATE="taskupdate"
+        val CONST_TASK_UPDATE_BOOLEAN="taskupdate"
+        val CONST_TASK_UPDATE_LIST="taskupdate"
+        val CONST_PACK_UPDATE_LIST="taskupdate"
 
         //TABLE newpack
         val CONST_TABLE_PACK="tablepack"
@@ -44,6 +51,15 @@ class AppConstant {
         val CONST_PACK_UNITS="packunit"
         val CONST_PACK_QUANTITY="packquanity"
         val CONST_LIST_SIZE="listsize"
+        //collect data
+        val CONST_TABLE_COLLECT="collectid"
+        val CONST_COLLECT_ID="collectid"
+        val CONST_ACTIVITY="collectactivity"
+        val CONST_RESULT="collectresult"
+        val CONST_VALUE="collectvalue"
+        val CONST_UNITS="collectunits"
+        val CONST_SENSOR="collectsensor"
+        val CONST_DURATION="collectduration"
 
 
 

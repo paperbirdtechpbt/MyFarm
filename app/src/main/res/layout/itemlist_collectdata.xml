@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="collectdata"
+            type="com.pbt.myfarm.CollectDataFieldListItem" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_itemlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            app:cardCornerRadius="4dp"
+
+            app:cardMaxElevation="2dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/icon_delete"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="10dp"
+                    android:alpha=".7"
+                    android:src="@drawable/ic__delete"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_const"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/layout_const" />
+
+                <ImageView
+                    android:id="@+id/icon_edit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+
+                    android:layout_marginRight="10dp"
+                    android:alpha=".7"
+                    android:src="@drawable/ic__edit"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_const"
+                    app:layout_constraintRight_toLeftOf="@id/icon_delete"
+                    app:layout_constraintTop_toTopOf="@id/layout_const" />
+
+
+                <TextView
+                    android:id="@+id/txt_valueunits"
+                    android:layout_width="50dp"
+                    android:layout_height="0px"
+
+                    android:background="#FF8B82"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_const"
+                    app:layout_constraintLeft_toRightOf="@id/layout_const"
+                    app:layout_constraintTop_toTopOf="@id/layout_const" />
+
+                <TextView
+                    android:id="@+id/txt_collectactivity_USer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:textColor="@color/black"
+                    android:textSize="17sp"
+                    app:layout_constraintLeft_toRightOf="@id/txt_valueunits"
+                    app:layout_constraintRight_toLeftOf="@id/icon_edit"
+                    app:layout_constraintTop_toTopOf="@id/layout_const"
+                    app:layout_constraintBottom_toTopOf="@id/txt_collected_date" />
+
+                <TextView
+                    android:id="@+id/txt_collected_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10sp"
+                    app:layout_constraintLeft_toRightOf="@id/txt_valueunits"
+                    app:layout_constraintRight_toLeftOf="@id/icon_edit"
+                    app:layout_constraintTop_toBottomOf="@id/txt_collectactivity_USer"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_const" />
+                <View
+                    app:layout_constraintLeft_toRightOf="@id/layout_const"
+                    android:layout_width="0px"
+                    android:layout_height="1dp"
+                    android:background="@color/grey"
+                    android:alpha="0.3"
+                 app:layout_constraintBottom_toBottomOf="@id/layout_const"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#FFFFFF"
+                    app:layout_constraintTop_toBottomOf="@id/layout_const"
+                    android:id="@+id/exapanedview">
+
+
+                    <TextView
+                        android:id="@+id/txt_sensors"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:alpha="0.8"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/txt_resultname"
+                        app:layout_constraintTop_toBottomOf="@id/txt_resultname" />
+
+                    <TextView
+                        android:id="@+id/txt_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        app:layout_constraintStart_toStartOf="@id/txt_resultname"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@id/txt_resultname" />
+
+                    <TextView
+                        android:id="@+id/txt_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:alpha="0.8"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="@id/txt_resultname"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/txt_resultname"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_resultname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:textSize="12sp"
+                        android:alpha="0.8"
+                        android:layout_marginTop="3dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/red"
+                        app:layout_constraintLeft_toLeftOf="parent"
+
+                        android:layout_marginLeft="10dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_const"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:background="#45056E31"
+                    android:padding="12dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/txt_collectactivity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:textColor="@color/black"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,7 +1,6 @@
 package com.pbt.myfarm.DataBase
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
-import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
@@ -41,7 +39,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
 import com.pbt.myfarm.Util.AppUtils
-import java.security.AccessController
 
 
 class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
@@ -81,6 +78,15 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
                 CONST_PACK_GROUP + " TEXT" + ")")
 
         db?.execSQL(userPackTable)
+//        val userCollectdata = ("CREATE TABLE " + CONST_TABLE_COLLECT + " ("
+//                + CONST_COLLECT_ID + " INTEGER PRIMARY KEY, " +
+//                CONST_ACTIVITY + " TEXT," +
+//                CONST_RESULT + " TEXT," +
+//                CONST_VALUE + " TEXT," +
+//                CONST_UNITS + " TEXT," +
+//                CONST_SENSOR + " TEXT," +
+//                CONST_DURATION + " TEXT" + ")")
+//        db?.execSQL(userCollectdata)
 
 
     }
@@ -136,6 +142,82 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
 
 
     }
+//    fun addCollectData(data: CollectDataModel){
+//        try {
+//
+//            val values = ContentValues()
+//            values.put(  CONST_ACTIVITY, data.activity)
+//            values.put(CONST_RESULT, data.result)
+//            values.put(CONST_VALUE, data.value)
+//            values.put(CONST_UNITS, data.units)
+//            values.put(CONST_SENSOR, data.sensor)
+//            values.put(CONST_DURATION, data.duration)
+//
+//
+//            val db = this.writableDatabase
+//            val result = db.insert(CONST_TABLE_COLLECT, null, values)
+//            db.close()
+//            AppUtils.logDebug(TAG, result.toString())
+//            if (result >= 0) {
+//                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(context, UpdatePackActivity::class.java)
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                context.startActivity(intent)
+//
+//
+//
+//            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+//
+//            }
+//        }catch (e:Exception){
+//    }}
+    @SuppressLint("Range")
+//    fun readCollectData(): ArrayList<CollectDataModel> {
+//        val list: ArrayList<CollectDataModel> = ArrayList()
+//        val db = this.readableDatabase
+//        val query = "Select * from $CONST_TABLE_COLLECT"
+//        val cursor: Cursor?
+//        try {
+//            cursor = db.rawQuery(query, null)
+//        } catch (e: Exception) {
+//            AppUtils.logError(TAG, e.message!!)
+//            db.execSQL(query)
+//            return ArrayList()
+//        }
+//        var activity: String
+//        var result: String
+//        var value: String
+//
+//        var units: String
+//        var sensor: String
+//        var duration: String
+//
+//
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                activity = cursor.getString(cursor.getColumnIndex(CONST_ACTIVITY))
+//                result = cursor.getString(cursor.getColumnIndex(CONST_RESULT))
+//                value= cursor.getString(cursor.getColumnIndex(CONST_VALUE))
+//                units=cursor.getString(cursor.getColumnIndex(CONST_UNITS))
+//                sensor=cursor.getString(cursor.getColumnIndex(CONST_SENSOR))
+//                duration=cursor.getString(cursor.getColumnIndex(CONST_DURATION))
+//
+//
+//                val lst = CollectDataModel(
+//
+//                    activity = activity, result = result,
+//                    value = value,sensor = sensor,
+//                    units = units,duration = duration
+//                )
+//                list.add(lst)
+//            } while (cursor.moveToNext())
+//        }
+//        return list
+//
+//    }
+
     fun addPack(viewtask: ViewPackModelClass) {
 
         try {
