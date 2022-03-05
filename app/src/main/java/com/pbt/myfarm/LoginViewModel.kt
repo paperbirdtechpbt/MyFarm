@@ -50,7 +50,6 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
         btnlogin.visibility=View.GONE
         userLogin?.value = response.body()
         val list: loginResult = Gson().fromJson(response.body()?.data.toString(), loginResult::class.java)
-        AppUtils.logDebug(TAG, "Success Response : " + Gson().toJson(response.body()))
     }
 
     override fun onFailure(call: Call<HttpResponse>, t: Throwable) {

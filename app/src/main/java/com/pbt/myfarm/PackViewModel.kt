@@ -5,6 +5,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
@@ -43,6 +45,7 @@ class PackViewModel(val activity:Application
     val context: Context =activity
     var configlist = MutableLiveData<List<PackConfigFieldList>>()
     lateinit var activityContext : Activity
+     var progressbar : ProgressBar?=null
 
 
     var namePrefix: ObservableField<String>? = null
@@ -131,6 +134,8 @@ class PackViewModel(val activity:Application
     }
 
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
+        progressbar?.visibility= View.GONE
+
         configlist.value = emptyList()
         packconfigList.clear()
         packCommunityList.clear()
@@ -164,8 +169,8 @@ class PackViewModel(val activity:Application
 
             groupArrayPack?.add( name)
             groupArrayIdPack?.add(communitygroupid)
-            AppUtils.logDebug(TAG,"array<String>"+ name)
         }
+
     }
 
     override fun onFailure(call: Call<PackFieldResponse>, t: Throwable) {

@@ -13,14 +13,22 @@
         android:theme="@style/Theme.MyFarm"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
-        <activity android:name=".Fragement.PackCollect.Activity.ColllectNewData"
-            android:label="Collect New Pack"
-            ></activity>
-        <activity android:name=".Activity.PackConfigList.PackConfigListActivity" />
+        <activity android:name=".Activity.TaskFunctions.TaskFunctionActivity"></activity>
+        <activity android:name=".Activity.Graph.GraphActivity" />
+        <activity
+            android:name=".Fragement.PackCollect.Activity.ColllectNewData"
+            android:label="Collect New Pack" />
+        <activity
+            android:name=".Activity.PackConfigList.PackConfigListActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.Pack.PackActivity" />
+        </activity>
         <activity
             android:name=".Activity.UpDatePack.UpdatePackActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".Activity.DashBoardEvent.DashBoardEventActivity" />
         <activity
             android:name=".Activity.CreatePack.CreatePackActivity"

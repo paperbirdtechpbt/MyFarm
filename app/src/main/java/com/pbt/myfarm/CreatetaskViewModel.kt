@@ -106,7 +106,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
         if (updateTaskIdBoolean){
-            AppUtils.logDebug(TAG,"on APicall updateid"+updateTaskId)
             ApiClient.client.create(ApiInterFace::class.java)
                 .configFieldList("2","10", updateTaskId).enqueue(this) }
         else{
@@ -123,7 +122,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         response: Response<TaskFieldResponse>
     ) {
         progressbar?.visibility= View.GONE
-        AppUtils.logDebug(TAG,"Response Createtaskviewmode"+Gson().toJson(response.body()?.data))
       val  configlistt= Gson().fromJson(Gson().toJson(response.body()?.data), ArrayList<ConfigFieldList>()::class.java)
 
         comConfigFieldList= Gson().fromJson(Gson().toJson(response.body()?.CommunityGroup),ArrayList<ComunityGroup>()::class.java)
@@ -140,7 +138,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
             groupArray?.add( name)
             groupArrayId?.add(communitygroupid)
-            AppUtils.logDebug(TAG,"array<String>"+ name)
         }
 
 

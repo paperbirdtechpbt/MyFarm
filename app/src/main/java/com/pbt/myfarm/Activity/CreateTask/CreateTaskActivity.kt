@@ -11,11 +11,13 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.*
+import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
@@ -25,6 +27,7 @@ import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppConstant
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -45,7 +48,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     var viewtask: TasklistDataModel? = null
     var adapter: CreateTaskAdapter? = null
     val successObject = JSONArray()
-
+var toolbar:Toolbar?=null
     var updateTaskList: TasklistDataModel? = null
 
 
@@ -63,7 +66,13 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
+
+ 
+
+//        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
+//        getSupportActionBar()?.setDisplayShowHomeEnabled(true)
 
         ExpAmtArray.clear()
         ExpName.clear()
@@ -77,6 +86,18 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         ).get(CreatetaskViewModel::class.java)
          configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
         updateTaskList = intent.getParcelableExtra(AppConstant.CONST_TASK_UPDATE_LIST)
+        if (updateTaskList!=null){
+            btn_create_task.setText("Update Task")
+
+        }
+        else{
+            btn_taskFunction.visibility=View.GONE
+        }
+        btn_taskFunction.setOnClickListener{
+            val intent=Intent(this,TaskFunctionActivity::class.java)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID,updateTaskList?.id)
+            startActivity(intent)
+        }
 
         if (configtype== null) {
 
@@ -92,9 +113,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             field_prefix.setText(configtype?.name_prefix)
             field_desciption.setText(configtype?.description)
         }
-//        val mainHandler = Handler(Looper.getMainLooper()).postDelayed({
-//            layout_ProgressBar.visibility = View.GONE
-//        }, 2000)
+
 
 
 
@@ -135,7 +154,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                     fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                 }
-                AppUtils.logDebug(TAG, successObject.toString())
 
 
             }
@@ -151,7 +169,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             ) {
                 selectedCommunityGroup = groupArrayId!!.get(position)
 
-                AppUtils.logDebug(TAG, "selectedCommunityGroup" + selectedCommunityGroup)
 
             }
 
@@ -199,11 +216,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val prefix = field_desciption.text.toString()
             selectedCommunityGroup
 
-AppUtils.logDebug(TAG,"configtyep-"+updateTaskList?.id+"\n"+"desciption-"+prefix+"\n"+
-        "selecetedcommunity-"+ selectedCommunityGroup+"\n"+"uerid-"+userId.toString()+"\n"+
-        "fieldarray-"+successObject.toString()+"\n"+"nameprefix-"+updateTaskList?.name_prefix
-)
-            AppUtils.logDebug(TAG, "configtype.id--" +updateTaskList?.id)
+
 
 
             if(!updateTaskBoolen){
@@ -334,10 +347,7 @@ AppUtils.logDebug(TAG,"configtyep-"+updateTaskList?.id+"\n"+"desciption-"+prefix
         prefix: String,
         name: String
     ) {
-        AppUtils.logDebug(
-            TAG,
-            "data for api " + id + prefix + selectedCommunityGroup + userId + successObject + name
-        )
+
 //        ApiClient.client.create(ApiInterFace::class.java)
 //            .storeTask(id!!,prefix,selectedCommunityGroup,userId!!,
 //                listdata,name).enqueue(this)
@@ -362,7 +372,6 @@ AppUtils.logDebug(TAG,"configtyep-"+updateTaskList?.id+"\n"+"desciption-"+prefix
     }
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        AppUtils.logDebug(TAG, "update task onresponse" + Gson().toJson(response.body()?.msg))
         Toast.makeText(this, "Task Updated Successfully", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, ViewTaskActivity::class.java)
         startActivity(intent)

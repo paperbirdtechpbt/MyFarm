@@ -44,6 +44,7 @@
         android:layout_marginTop="40dp"
         android:layout_height="50dp"
         android:paddingRight="25dp"
+        android:focusable="false"
         android:drawableRight="@drawable/ic_calender"
         android:drawableTint="@color/green"
         android:drawablePadding="7dp"

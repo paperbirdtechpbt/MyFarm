@@ -39,6 +39,7 @@ class AppConstant {
         val CONST_TASK_UPDATE_BOOLEAN="taskupdate"
         val CONST_TASK_UPDATE_LIST="taskupdate"
         val CONST_PACK_UPDATE_LIST="taskupdate"
+        val CONST_TASKFUNCTION_TASKID="taskupdate"
 
         //TABLE newpack
         val CONST_TABLE_PACK="tablepack"

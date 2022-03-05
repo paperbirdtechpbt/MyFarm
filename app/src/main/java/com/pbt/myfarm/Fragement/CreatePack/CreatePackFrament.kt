@@ -76,13 +76,21 @@ class CreatePackFrament : Fragment(),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        progressbar_createpackfrgm.visibility=View.VISIBLE
+        initViewModel()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_pack_frament, container, false)
 //        quantity=view?.findViewById(R.id.fed_pack_quantity)
+
         initViewModel()
+
 
         val updateTask: Button = view.findViewById(R.id.btn_update_pack)
         updateTask.setOnClickListener {
@@ -96,13 +104,7 @@ class CreatePackFrament : Fragment(),
                     packList?.id.toString()
                 ).enqueue(this)
 
-            AppUtils.logDebug(
-                TAG, "configtye-" + packList?.pack_config_id.toString() + "\n" +
-                        "communi-" + packList?.com_group + "\n" + "userid-" + MySharedPreference.getUser(
-                    requireContext()
-                )?.id.toString() + "\n" +
-                        "fieldarr--" + successObject.toString() + "\n" + "taskid--" + packList?.id.toString()
-            )
+
 
         }
 
@@ -118,11 +120,15 @@ class CreatePackFrament : Fragment(),
         viewmodel =
             ViewModelProvider(this).get(PackViewModel::class.java)
         viewmodel?.onConfigFieldList(requireContext(), updateTaskBoolen, "0")
+
+
         viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
 //            setCommunityGroup()
+            if (!list.isNullOrEmpty()){
+                progressbar_createpackfrgm.visibility=View.GONE
+            }
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
-            AppUtils.logDebug(CreatePackActivity.TAG, "listofCreatePack" + config.toString())
             recycler_packFieldsFragment?.layoutManager = LinearLayoutManager(requireContext())
             adapterr =
                 CreatePackAdapter(requireContext(), config, true, packCommunityList,
@@ -153,7 +159,6 @@ class CreatePackFrament : Fragment(),
                         fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                     }
-                    AppUtils.logDebug(TAG, "SuccessObject" + successObject.toString())
 
 
                 }

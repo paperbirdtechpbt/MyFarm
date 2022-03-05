@@ -65,7 +65,7 @@ class PackActivity : AppCompatActivity() ,retrofit2.Callback<testresponse>{
             val intent = Intent(this, PackConfigListActivity::class.java)
             intent.putExtra(CONST_LIST_SIZE, listsize)
             startActivity(intent)
-            finish()
+
         }
     }
 
@@ -83,7 +83,6 @@ viewModel?.progressBAr=progressViewPack
             tasklistSize.setText("Total Tasks-" + packlist.size)
             adapter = AdapterViewPack(this, packlist!!) { position, packname, boolean, list ->
                 packList=list
-              AppUtils.logDebug(TAG,"deletepack"+list.id)
                 if (boolean) {
                 showAlertDailog(packname, position, packList!!)
             }
@@ -91,14 +90,14 @@ viewModel?.progressBAr=progressViewPack
 
                     updatePackBoolen=true
                     val intent=Intent(this, UpdatePackActivity::class.java)
-//                        intent.putExtra("fragment","1")
+//                        intent.putExtra("fragment","2")
 //                        intent.putExtra(CONST_PACK_UPDATE_LIST, packList)
 //                    val mBundle = Bundle()
 //                    mBundle.putParcelable(CONST_PACK_UPDATE_LIST, packList)
 //
 //                    CreatePackFrament().arguments = mBundle
                         startActivity(intent)
-                        finish()
+//                        finish()
 //
 
                 }
@@ -117,7 +116,6 @@ viewModel?.progressBAr=progressViewPack
 
         listsize = tasklist?.size!!
 
-        AppUtils.logDebug(TAG, tasklist?.size.toString())
 
 //        adapter = AdapterViewPack(this, tasklist!!) { position, taskname, checkAction, list ->
 //            if (checkAction) {

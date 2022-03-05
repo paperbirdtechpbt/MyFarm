@@ -41,7 +41,6 @@ class DashBoardEventActivity : AppCompatActivity() {
 
         tasklist.forEach {
             val dd = it.StartDate
-            AppUtils.logDebug(TAG, "For Each" + dd)
 
             val sdf = SimpleDateFormat("yyyy-MM-dd")
 

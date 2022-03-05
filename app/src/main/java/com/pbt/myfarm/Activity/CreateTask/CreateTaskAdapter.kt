@@ -1,6 +1,8 @@
 package com.pbt.myfarm.Activity.CreateTask
 
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -86,13 +88,13 @@ class CreateTaskAdapter(
         val valued = d["field_value"].toString()
 
 
-        AppUtils.logDebug(TAG, "Value--->" + valued)
 
         val l = list.size
         val f = fieldId!!.size
         if (l != f) {
             fieldId.add(field_id)
-            AppUtils.logDebug(TAG, "size-->" + fieldId) }
+
+        }
 
 
         if (fieldtype == "Table" || fieldtype == "List") {
@@ -113,18 +115,99 @@ class CreateTaskAdapter(
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             holder.mysppinner.setAdapter(aa)
 
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                for (i in 0 until field.size) {
-//                    if (valued == fieldListid.toString()) {
-//                        val pos = field.get(i).name
-//                        AppUtils.logDebug(TAG, "posssssss----" + pos)
-//                        val spinnerPosition: kotlin.Int = aa.getPosition(pos)
-//                        holder.mysppinner.setSelection(i)
-//                    }
-//                }
-//            }, 1500)
+        }
+        if (fieldtype == "Date") {
+            holder.name.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labelname.visibility = View.GONE
+            holder.mysppinner.visibility = View.GONE
+            holder.labelSpinner.visibility = View.GONE
 
 
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+                        holder.date.setText("")
+                    } else {
+                        holder.date.setText(valued)
+                    }
+
+                }
+            }, 3500)
+            holder.labeldate.setText(namee)
+        } else if (fieldtype == "Numeric") {
+
+            holder.date.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labeldate.visibility = View.GONE
+            holder.mysppinner.visibility = View.GONE
+            holder.labelSpinner.visibility = View.GONE
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+                        holder.name.setText("")
+                    } else {
+                        holder.name.setText(valued)
+                    }
+                }
+            }, 1500)
+
+
+            holder.labelname.setText(namee)
+
+        } else if (fieldtype == "List") {
+
+            holder.date.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.name.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labeldate.visibility = View.GONE
+            holder.labelname.visibility = View.GONE
+            holder.labelSpinner.setText(namee)
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+//                        holder.name.setText("")
+                    } else {
+                        for (i in 0 until fieldListid!!.size) {
+                            if (valued == fieldListid.get(i)) {
+                                holder.mysppinner.setSelection(i)
+
+                            }
+                        }
+                    }
+                }
+            }, 3500)
+
+
+        } else if (fieldtype == "Table") {
+
+            holder.date.visibility = View.GONE
+            holder.labeldate.visibility = View.GONE
+            holder.name.visibility = View.GONE
+            holder.labelname.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labelSpinner.setText(namee)
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+                        holder.name.setText("")
+                    } else {
+                        for (i in 0 until fieldListid!!.size) {
+                            if (valued+".0" == fieldListid.get(i)) {
+                                holder.mysppinner.setSelection(i)
+
+                            }
+                        }
+                    }
+                }
+            }, 3500)
         }
 
 
@@ -136,6 +219,28 @@ class CreateTaskAdapter(
                 position: In,
                 id: Long
             ) {
+//                for (i in 0 until fieldListid!!.size) {
+//                    if (position == fieldListid.get(i).toInt()) {
+
+
+//                        var selectedText = ""
+//                        var selectedId = ""
+//                        ExpAmtArray.add("0")
+//                        ExpName.add("0")
+//                        ExpAmtArrayKey.add("0")
+//                        ExpNameKey.add("0")
+//                        //selectedText contains spinner values ID
+//                        selectedText = fieldListid!![position]
+////                        selectedText = fieldId!![position]
+//                        //selectedId contains values of the edittext postition
+//                        selectedId = fieldId[positionn]
+//
+//                        ExpAmtArray[positionn] = selectedText
+//                        ExpName[positionn] = selectedId
+//                        ExpAmtArrayKey[positionn] = "f_id"
+//                        ExpNameKey[positionn] = "f_value"
+//                    }
+//                }
 
                 var selectedText = ""
                 var selectedId = ""
@@ -148,7 +253,6 @@ class CreateTaskAdapter(
 //                        selectedText = fieldId!![position]
                 //selectedId contains values of the edittext postition
                 selectedId = fieldId!![positionn]
-                AppUtils.logDebug(TAG,"FieldList Id and Name"+selectedText+"-"+selectedId)
                 ExpAmtArray[position] = selectedText
                 ExpName[position] = selectedId
                 ExpAmtArrayKey[position] = "f_id"
@@ -161,9 +265,9 @@ class CreateTaskAdapter(
             }
         }
                     Handler(Looper.getMainLooper()).postDelayed({
-                for (i in 0 until fieldListid!!.size) {
+                for (i in 0 until field.size) {
                     if (valued == fieldListid.toString()) {
-
+                        val pos = field.get(i).name
                         holder.mysppinner.setSelection(i)
                     }
                 }
@@ -329,9 +433,9 @@ class CreateTaskAdapter(
                                 ExpAmtArray.add("0")
                                 ExpName.add("0")
                                 ExpAmtArray[positionn] = editable.toString()
-                                AppUtils.logDebug(TAG, editable.toString())
+
                                 ExpName[positionn] = field_id
-                                AppUtils.logDebug(TAG, field_id)
+
                                 ExpAmtArrayKey[positionn] = "f_id"
                                 ExpNameKey[positionn] = "f_value"
                                 break
@@ -359,14 +463,28 @@ class CreateTaskAdapter(
             }
         })
         holder.date.setOnClickListener {
+            var settime=""
 
-            AppUtils.logDebug("TAG", "on CLick in date")
+            val c = Calendar.getInstance()
+               val  mHour = c[Calendar.HOUR_OF_DAY]
+               val  mMinute = c[Calendar.MINUTE]
+
+                val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute ->
+                   settime="$hourOfDay:$minute"
+                    AppUtils.logDebug(TAG,"settime"+settime)
+//                    txtTime.setText("$hourOfDay:$minute")
+                    updateLabel(holder.date,settime)
+
+                }, mHour, mMinute, false)
+
+            timePickerDialog.show()
+
             val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
 
                 myCalendar.set(Calendar.YEAR, year)
                 myCalendar.set(Calendar.MONTH, month)
                 myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                updateLabel(holder.date)
+                updateLabel(holder.date,settime)
             }
             DatePickerDialog(
                 context, date, myCalendar.get(Calendar.YEAR),
@@ -375,95 +493,16 @@ class CreateTaskAdapter(
         }
 
 
-        if (fieldtype == "Date") {
-            holder.name.visibility = View.GONE
-            holder.spinner.visibility = View.GONE
-            holder.labelFieldSpiiner.visibility = View.GONE
-            holder.labelname.visibility = View.GONE
-            holder.mysppinner.visibility = View.GONE
-            holder.labelSpinner.visibility = View.GONE
 
-
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (updateTaskIdBoolean) {
-                    if (valued == "null") {
-                        holder.date.setText("")
-                    } else {
-                        holder.date.setText(valued)
-                    }
-
-                }
-            }, 3500)
-            holder.labeldate.setText(namee)
-        } else if (fieldtype == "Numeric") {
-
-            holder.date.visibility = View.GONE
-            holder.spinner.visibility = View.GONE
-            holder.labelFieldSpiiner.visibility = View.GONE
-            holder.labeldate.visibility = View.GONE
-            holder.mysppinner.visibility = View.GONE
-            holder.labelSpinner.visibility = View.GONE
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (updateTaskIdBoolean) {
-                    if (valued == "null") {
-                        holder.name.setText("")
-                    } else {
-                        holder.name.setText(valued)
-                    }
-                }
-            }, 1500)
-
-
-            holder.labelname.setText(namee)
-
-        } else if (fieldtype == "List") {
-
-            holder.date.visibility = View.GONE
-            holder.spinner.visibility = View.GONE
-            holder.name.visibility = View.GONE
-            holder.labelFieldSpiiner.visibility = View.GONE
-            holder.labeldate.visibility = View.GONE
-            holder.labelname.visibility = View.GONE
-            holder.labelSpinner.setText(namee)
-
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (updateTaskIdBoolean) {
-                    if (valued == "null") {
-//                        holder.name.setText("")
-                    } else {
-                        for (i in 0 until fieldListid!!.size) {
-                            if (valued == fieldListid.get(i)) {
-                                holder.mysppinner.setSelection(i)
-
-                            }
-
-                        }
-                    }
-                }
-            }, 1500)
-
-
-        } else if (fieldtype == "Table") {
-
-            holder.date.visibility = View.GONE
-            holder.labeldate.visibility = View.GONE
-            holder.name.visibility = View.GONE
-            holder.labelname.visibility = View.GONE
-            holder.spinner.visibility = View.GONE
-            holder.labelFieldSpiiner.visibility = View.GONE
-            holder.labelSpinner.setText(namee)
-        }
 
 
     }
 
 
-    private fun updateLabel(date: EditText) {
+    private fun updateLabel(date: EditText,time:String) {
         val myFormat = "yyyy-MM-dd"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        date.setText(dateFormat.format(myCalendar.time))
+        date.setText(dateFormat.format(myCalendar.time)+"  T- "+time)
     }
 
     fun callBack() {

@@ -12,6 +12,20 @@ object ApiClient {
     private lateinit var interceptor: HttpLoggingInterceptor
     private lateinit var okHttpClient: OkHttpClient
     private var retrofit: Retrofit? = null
+    private var myretrofit: Retrofit? = null
+
+    @JvmName("getClient1")
+    fun getClient(): Retrofit? {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        myretrofit = Retrofit.Builder()
+            .baseUrl("https://farm.myfarmdata.io/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+        return myretrofit
+    }
 
     val client : Retrofit
         get() {

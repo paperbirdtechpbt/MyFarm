@@ -46,8 +46,6 @@ class SelectConfigViewModel(var activity: Application):AndroidViewModel(activity
     override fun onResponse(call: Call<ConfigResponse>, response: Response<ConfigResponse>) {
         if (response.body()?.error == false) {
 
-
-            AppUtils.logDebug(ViewTaskViewModel.TAG, " Response : " + response.body())
             configlist.value = emptyList()
             val baseList : ConfigResponse =  Gson().fromJson(
                 Gson().toJson(response.body()),
@@ -63,7 +61,6 @@ class SelectConfigViewModel(var activity: Application):AndroidViewModel(activity
             }
             configlist.value = upCommingTripList
             progressbar?.visibility= View.GONE
-            AppUtils.logDebug(TAG,"configtypelist"+ Gson().toJson(upCommingTripList))
         }
     }
 

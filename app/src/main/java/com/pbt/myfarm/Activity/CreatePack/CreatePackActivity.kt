@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter.Companion.desciptioncompanian
 
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpNameKey
@@ -37,18 +38,20 @@ import retrofit2.Call
 import retrofit2.Response
 import java.util.ArrayList
 
-class CreatePackActivity : AppCompatActivity(),retrofit2.Callback<PackFieldResponse> {
+class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResponse> {
     var viewmodel: PackViewModel? = null
     var binding: ActivityCreatePackBinding? = null
     var adapter: CreatePackAdapter? = null
     val successObject = JSONArray()
     val fieldModel = ArrayList<FieldModel>()
-    companion object{
-        val TAG="CreatePackActivity"
-var packName:String=""
-var packprefixName:String=""
-var packconfiglist:PackConfigList?=null
+
+    companion object {
+        val TAG = "CreatePackActivity"
+        var packName: String = ""
+        var packprefixName: String = ""
+        var packconfiglist: PackConfigList? = null
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        ExpAmtArray.clear()
@@ -62,20 +65,21 @@ var packconfiglist:PackConfigList?=null
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(PackViewModel::class.java)
         binding?.viewModel = viewmodel
-        viewmodel?.activityContext=this@CreatePackActivity
+        viewmodel?.activityContext = this@CreatePackActivity
+        viewmodel?.progressbar = progressbar_createPackActivity
 
-        packconfiglist=intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+        packconfiglist = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
 
 
 
         viewmodel?.onConfigFieldList(this, true, "25")
-        viewmodel?.configlist?.observe(this,Observer{list ->
+        viewmodel?.configlist?.observe(this, Observer { list ->
 //            setCommunityGroup()
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
-            AppUtils.logDebug(TAG,"listofCreatePack"+  config.toString())
             recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
-            adapter = CreatePackAdapter(this, config, true, packCommunityList,
+            adapter = CreatePackAdapter(
+                this, config, true, packCommunityList,
                 packCommunityListname
             ) { list, name ->
                 while (list.contains("0")) {
@@ -103,7 +107,6 @@ var packconfiglist:PackConfigList?=null
                     fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                 }
-                AppUtils.logDebug(TAG,"SuccessObject"+successObject.toString())
 
 
             }
@@ -113,7 +116,7 @@ var packconfiglist:PackConfigList?=null
 
 //        val viewtask = intent.getParcelableExtra<ViewPackModelClass>(AppConstant.CONST_VIEWMODELCLASS_LIST)
 //        val listSize = intent.getIntExtra(CONST_LIST_SIZE,0)+1
-        btn_update_pack.setOnClickListener{
+        btn_update_pack.setOnClickListener {
 
 //            viewmodel?.updatePack()
         }
@@ -130,13 +133,19 @@ var packconfiglist:PackConfigList?=null
 
             val userId = MySharedPreference.getUser(this)?.id
 
-
+            if (desciptioncompanian == null) {
+                desciptioncompanian = "desciption"
+            }
 
 
             ApiClient.client.create(ApiInterFace::class.java)
                 .storePack(
-                    packconfiglist?.id!!, "Api Test", selectedCommunityGroup, userId.toString(),
-                    successObject.toString(), packconfiglist?.name!!
+                    packconfiglist?.id!!,
+                    desciptioncompanian,
+                    selectedCommunityGroup,
+                    userId.toString(),
+                    successObject.toString(),
+                    packconfiglist?.name!!
                 ).enqueue(this)
 
         }
@@ -157,6 +166,7 @@ var packconfiglist:PackConfigList?=null
 //            viewmodel?.namePrefix?.set("DDD"+listSize)
 //        }
     }
+
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
 
         Toast.makeText(this, "Task Created Successfully", Toast.LENGTH_SHORT).show()

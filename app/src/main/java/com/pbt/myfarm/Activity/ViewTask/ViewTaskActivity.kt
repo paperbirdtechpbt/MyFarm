@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
 import com.pbt.myfarm.DataBase.DbHelper
@@ -73,7 +74,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
         btn_create_task.setOnClickListener {
             startActivity(Intent(this, SelectConfigTypeActivity::class.java))
-            finish()
+
         }
     }
 
@@ -91,7 +92,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         viewModell?.onEventListRequest(this)
         viewModell?.eventlist?.observe(this, Observer { eventlistt ->
 
-            AppUtils.logDebug(TAG, "---------" + eventlistt.toString())
             recyclerview_viewtask?.layoutManager = LinearLayoutManager(this)
             val animator: ItemAnimator = recyclerview_viewtask.getItemAnimator()!!
             if (animator is SimpleItemAnimator) {
@@ -104,10 +104,10 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
                 mytasklist = list
                 if (checkAction) {
+
                     showAlertDailog(taskname, position, mytasklist!!)
                 }
                 else {
-                 AppUtils.logDebug(TAG,"TAskid=="+mytasklist?.id.toString())
                     updateTaskBoolen=true
                     val intent=Intent(this,CreateTaskActivity::class.java)
                     intent.putExtra(CONST_TASK_UPDATE,mytasklist?.id)

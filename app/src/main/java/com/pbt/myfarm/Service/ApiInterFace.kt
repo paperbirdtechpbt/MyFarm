@@ -2,6 +2,7 @@ package com.pbt.myfarm.Service
 
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
+import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
 import com.pbt.myfarm.CollectdataRespose
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
@@ -150,6 +151,55 @@ interface ApiInterFace {
         @Field("result_id") result_id: String,
     ):Call<ResponsecollectAcitivityResultValue>
 
+    @FormUrlEncoded
+    @POST("api/storecollectdata")
+    fun storecollectdata(
+        @Field("pack_id") pack_id: String,
+        @Field("result_id") result_id: String,
+        @Field("collect_activity_id") collect_activity_id: String,
+        @Field("new_value") new_value: String,
+        @Field("value") value: String,
+        @Field("unit_id") unit_id: String,
+        @Field("sensor_id") sensor_id: String,
+        @Field("duration") duration: String,
+        @Field("user_id") user_id: String,
+    ):Call<ResponseCollectAcitivityResultList>
 
+    @FormUrlEncoded
+    @POST("api/deletecollectdata")
+    fun deletecollectdata(
+
+        @Field("id") id: String,
+    ):Call<ResponseCollectAcitivityResultList>
+    @FormUrlEncoded
+    @POST("api/updateCollectData")
+    fun updateCollectData(
+
+        @Field("user_id") user_id: String,
+        @Field("pack_id") pack_id: String,
+        @Field("result_id0") result_id0: String,
+        @Field("value0") value0: String,
+        @Field("unit_id0") unit_id0: String,
+        @Field("sensor_id0") sensor_id0: String,
+        @Field("duration0") duration0: String,
+        @Field("collect_id") collect_id: String,
+    ):Call<ResponseCollectAcitivityResultList>
+
+    @FormUrlEncoded
+    @POST("api/editcollectdata")
+    fun editcollectdata(
+
+        @Field("collect_id") collect_id: String,
+
+    ):Call<Responseeditcollectdata>
+
+    @FormUrlEncoded
+    @POST("api/taskFunctionList")
+    fun taskFunctionList(
+
+        @Field("user_id") user_id: String,
+        @Field("task_id") task_id: String,
+
+    ):Call<ResponseTaskFunctionaliyt>
 
 }

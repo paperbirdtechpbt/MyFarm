@@ -25,15 +25,15 @@ class AdapterViewPack(var context: Context, var list:List<PackList>,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             with(list[position]) {
-                binding.exapanedviewpack.visibility = if (this.expand) View.VISIBLE else View.GONE
-
-
-                binding.layoutItemlist.setOnClickListener {
-                    this.expand = !this.expand
-
-                    notifyItemChanged(position)
-
-                }
+//                binding.exapanedviewpack.visibility = if (this.expand) View.VISIBLE else View.GONE
+//
+//
+//                binding.layoutItemlist.setOnClickListener {
+//                    this.expand = !this.expand
+//
+//                    notifyItemChanged(position)
+//
+//                }
         holder.binding.viewpack = list[position]
         val item = list[position]
 

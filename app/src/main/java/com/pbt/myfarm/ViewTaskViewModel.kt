@@ -47,7 +47,6 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         if (response.body()?.error == false) {
             progress?.visibility= View.GONE
-            AppUtils.logDebug(TAG, " Response : " + response.body())
             eventlist.value = emptyList()
             val baseList : testresponse =  Gson().fromJson(Gson().toJson(response.body()),
                 testresponse::class.java)
@@ -56,13 +55,11 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
 
                 routes.padzero= routes.name.padStart(4, '0')
 
-                AppUtils.logError(TAG,"${routes.padzero}")
 
                     upCommingTripList.add(routes)
 
             }
             eventlist.value = upCommingTripList
-            AppUtils.logDebug(TAG,"evenlist"+ Gson().toJson(upCommingTripList))
         }
 
     }

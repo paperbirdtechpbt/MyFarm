@@ -2,6 +2,8 @@ package com.pbt.myfarm.Fragement.PackCollect
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import android.widget.ProgressBar
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -24,6 +26,7 @@ class CollectDataViewModel (val activity: Application
     }
 
     val context: Context =activity
+//    var progressBar:ProgressBar?=null
     var collectdatalist = MutableLiveData<List<CollectDataFieldListItem>>()
     init{
         collectdatalist = MutableLiveData<List<CollectDataFieldListItem >>()
@@ -36,8 +39,9 @@ class CollectDataViewModel (val activity: Application
         ).enqueue(this)
     }
     override fun onResponse(call: Call<CollectdataRespose>, response: Response<CollectdataRespose>) {
-       AppUtils.logDebug(TAG,"response collectdata"+Gson().toJson(response.body()))
         if(response.body()?.error == false){
+//            progressBar?.visibility= View.GONE
+
             var list = ArrayList<CollectDataFieldListItem>()
             var baseresponse:CollectdataRespose=Gson().fromJson(Gson().toJson(response.body()),CollectdataRespose::class.java)
             collectdatalist.value= emptyList()
@@ -46,8 +50,6 @@ class CollectDataViewModel (val activity: Application
                 list.add(it)
             }
           collectdatalist.value=list
-            AppUtils.logDebug(TAG,"response collectdata list"+Gson().toJson(collectdatalist.toString()))
-
         }
     }
 

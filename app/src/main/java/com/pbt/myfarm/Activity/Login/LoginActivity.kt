@@ -59,7 +59,6 @@ initObservable()
                 startActivity(intent)
                 finish()
 
-                AppUtils.logDebug("LoginActivity","Login api Respose ====>> "+ Gson().toJson(response.data))
              Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()
             } else
                 Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()

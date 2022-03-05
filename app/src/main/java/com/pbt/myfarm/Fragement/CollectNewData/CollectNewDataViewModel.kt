@@ -39,6 +39,8 @@ class CollectNewDataViewModel(
             val baseresponse: testresponse =
                 Gson().fromJson(Gson().toJson(response.body()), testresponse::class.java)
 
+
+
             sensorlist.clear()
             sensorname.clear()
             sensorid.clear()

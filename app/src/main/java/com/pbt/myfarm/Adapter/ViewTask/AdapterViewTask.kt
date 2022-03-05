@@ -35,14 +35,12 @@ class AdapterViewTask(
                 val item = list[position]
                 binding.exapanedview.visibility = if (this.expand) View.VISIBLE else View.GONE
 
-AppUtils.logDebug("##Expand","Expand1"+this.expand.toString())
 
                 binding.layoutItemlist.setOnClickListener {
                     this.expand = !this.expand
 
                     notifyItemChanged(position)
 
-                    AppUtils.logDebug("##Expand","Expand2"+this.expand.toString())
                 }
                 itemView.icon_delete.setOnClickListener {
                     callbacks.invoke(position, item.name, true, item)
@@ -61,7 +59,6 @@ AppUtils.logDebug("##Expand","Expand1"+this.expand.toString())
 
     override fun getItemCount(): Int {
         return list.size
-        AppUtils.logDebug("##listsize", list.size.toString())
     }
 
 

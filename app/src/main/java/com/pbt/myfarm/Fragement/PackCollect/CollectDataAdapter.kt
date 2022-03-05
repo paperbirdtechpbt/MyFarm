@@ -14,7 +14,8 @@ import com.pbt.myfarm.databinding.ItemlistCollectdataBinding
 import kotlinx.android.synthetic.main.itemlist_collectdata.view.*
 
 
-class CollectDataAdapter(private val list: List<CollectDataFieldListItem>, var context: Context) :
+class CollectDataAdapter(private val list: List<CollectDataFieldListItem>, var context: Context,
+var callbacks:(String,Boolean) -> Unit) :
     RecyclerView.Adapter<CollectDataAdapter.ViewHolder>() {
     val TAG="CollectDataAdapter"
 
@@ -27,7 +28,6 @@ class CollectDataAdapter(private val list: List<CollectDataFieldListItem>, var c
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-        AppUtils.logDebug(TAG,"list value->"+list.toString())
 //           holder.binding.collectdata = list[position]
 
         val getrow: Any = this.list.get(position)
@@ -44,20 +44,24 @@ class CollectDataAdapter(private val list: List<CollectDataFieldListItem>, var c
         val expand = t["expand"].toString().toBoolean()
 
 
-        holder.itemView.txt_valueunits.setText(unit_value)
-        holder.itemView.txt_collectactivity_USer.setText(user_collecting)
-        holder.itemView.txt_collected_date.setText(datetime_collected)
-        holder.itemView.txt_sensors.setText(sensor)
-        holder.itemView.txt_duration.setText(duration)
-        holder.itemView.txt_value.setText(value)
-        holder.itemView.txt_resultname.setText(result_name)
-        holder.itemView.txt_collectactivity.setText(collect_activity)
-        holder.itemView.txt_valueunits.setText(unit_value)
+        holder.itemView.txt_valueunitstest.setText("* Unit: "+unit_value)
+        holder.itemView.txt_collectactivity_USertest.setText("* Collecter: "+user_collecting)
+        holder.itemView.txt_collected_datetest.setText("* Date: "+datetime_collected)
+        holder.itemView.txt_sensorstest.setText("* Sensors: "+sensor)
+        holder.itemView.txt_durationtest.setText("* Duration: "+duration)
+        holder.itemView.txt_valuetest.setText("* Value: "+value)
+        holder.itemView.txt_resultnametest.setText("* Result: "+result_name)
+        holder.itemView.txt_collectactivitytest.setText(collect_activity)
+        holder.itemView.txt_valueunitstest.setText("* Unit: "+unit_value)
 
 
 
-     holder.itemView.icon_edit.setOnClickListener{
+     holder.itemView.icon_edittest.setOnClickListener{
+         callbacks.invoke(id,false)
        Toast.makeText(context, "Editing $result_name", Toast.LENGTH_SHORT).show()
+   }
+        holder.itemView.icon_deletetest.setOnClickListener{
+         callbacks.invoke(id,true)
    }
 
 

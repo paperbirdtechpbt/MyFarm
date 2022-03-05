@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    android:elevation="3dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/view_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/list_activityname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="* Activity: Fermentation"
+            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/list_activityresult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="* Result: Lots De feves"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="3dp"
+           android:layout_marginLeft="5dp"
+            app:layout_constraintTop_toBottomOf="@id/list_activityname" />
+        <TextView
+            android:id="@+id/list_activitysensor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="* Sensor: Sensor3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_activityresult" />
+        <TextView
+            android:id="@+id/list_activityvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="* Value: 10"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:layout_marginTop="3dp"
+            app:layout_constraintLeft_toRightOf="@id/view_text"
+            app:layout_constraintTop_toBottomOf="@id/list_activityUnits" />
+
+        <TextView
+            android:id="@+id/list_activityUnits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="* Units: %"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintLeft_toRightOf="@id/view_text"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+        <TextView
+            android:id="@+id/list_activityduration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="* Duration: 30"
+android:layout_marginTop="3dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            app:layout_constraintLeft_toRightOf="@id/view_text"
+            app:layout_constraintTop_toBottomOf="@id/list_activityvalue" />
+<ImageView
+    android:id="@+id/list_delete"
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:src="@drawable/ic__delete"
+    android:layout_margin="10dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>

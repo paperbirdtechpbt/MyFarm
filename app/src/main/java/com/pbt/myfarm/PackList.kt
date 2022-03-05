@@ -5,7 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PackList(
-
+    var type:String,
+    var labeldesciption:String,
     val com_group: Int,
     val created_by: Int,
     val created_date: String,
@@ -19,5 +20,4 @@ data class PackList(
     val pack_config_id: Int,
     val pack_config_name: String,
     var padzero:String="",
-    var expand : Boolean = false
 ):Parcelable

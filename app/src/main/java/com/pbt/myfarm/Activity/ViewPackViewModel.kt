@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -43,24 +44,31 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
     }
 
     override fun onResponse(call: Call<PackListModel>, response: Response<PackListModel>) {
-        AppUtils.logDebug(TAG, " Response : " + response.body())
-        packlist.value = emptyList()
-        val packListModel : PackListModel =  Gson().fromJson(
-            Gson().toJson(response.body()),
-            PackListModel::class.java)
+        if(response.body()?.error==false){
+            packlist.value = emptyList()
+            val packListModel : PackListModel =  Gson().fromJson(
+                Gson().toJson(response.body()),
+                PackListModel::class.java)
 
-        val upCommingPackList = ArrayList<PackList>()
-        packListModel.data.forEach { routes ->
+            val upCommingPackList = ArrayList<PackList>()
+            packListModel.data.forEach { routes ->
 
-            routes.padzero= routes.name.padStart(4, '0')
+                routes.padzero= routes.name.padStart(4, '0')
+                routes.type=" Type: "
+                routes.labeldesciption=" Desciption: "
 
-            AppUtils.logError(TAG,"${routes.padzero}")
-            upCommingPackList.add(routes)
+                upCommingPackList.add(routes)
 
+            }
+            packlist.value = upCommingPackList
+            progressBAr?.visibility= View.GONE
         }
-        packlist.value = upCommingPackList
-        AppUtils.logDebug(TAG, " Response save : " +Gson().toJson(packListModel))
-        progressBAr?.visibility= View.GONE
+        else{
+
+            AppUtils.logDebug(TAG,"Something went Wrong")
+//            Toast.makeText(context, "Something went Wrong", Toast.LENGTH_SHORT).show()
+        }
+      
     }
 
     override fun onFailure(call: Call<PackListModel>, t: Throwable) {

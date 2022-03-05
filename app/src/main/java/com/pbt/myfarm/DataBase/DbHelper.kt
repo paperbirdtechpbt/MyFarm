@@ -122,7 +122,6 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
             val db = this.writableDatabase
             val result = db.insert(CONST_NEW_TASK, null, values)
             db.close()
-            AppUtils.logDebug(TAG, result.toString())
             if (result >= 0) {
                 Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
                 val intent = Intent(context, ViewTaskActivity::class.java)
@@ -234,7 +233,6 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
             val db = this.writableDatabase
             val result = db.insert(CONST_TABLE_PACK, null, values)
             db.close()
-            AppUtils.logDebug(TAG, result.toString())
             if (result >= 0) {
                 Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
                 val intent = Intent(context, PackActivity::class.java)
