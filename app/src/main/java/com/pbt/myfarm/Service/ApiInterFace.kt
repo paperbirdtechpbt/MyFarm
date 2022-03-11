@@ -1,5 +1,8 @@
 package com.pbt.myfarm.Service
 
+import com.pbt.myfarm.Activity.Event.EditEventList
+import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
+import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
@@ -7,6 +10,7 @@ import com.pbt.myfarm.CollectdataRespose
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
 import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.ResponseEventList
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.Field
@@ -53,6 +57,7 @@ interface ApiInterFace {
         @Field("field_array") field_array:String,
         @Field("name_prefix") name_prefix: String,
     ):Call<testresponse>
+
    @FormUrlEncoded
     @POST("api/updateTask")
    fun updateTask(
@@ -77,6 +82,7 @@ interface ApiInterFace {
         @Field("name_prefix") name_prefix: String,
         @Field("pack_id") task_id: String,
     ):Call<testresponse>
+
    @FormUrlEncoded
     @POST("api/storePack")
    fun storePack(
@@ -201,5 +207,93 @@ interface ApiInterFace {
         @Field("task_id") task_id: String,
 
     ):Call<ResponseTaskFunctionaliyt>
+    @FormUrlEncoded
+    @POST("api/taskFunctionFieldList")
+    fun taskFunctionFieldList(
+
+        @Field("user_id") user_id: String,
+        @Field("task_id") task_id: String,
+        @Field("lists_id") lists_id: String,
+
+    ):Call<ResponseTaskFunctionaliyt>
+
+    @FormUrlEncoded
+    @POST("api/getGraphList")
+    fun getGraphList(
+
+        @Field("user_id") user_id: String,
+        @Field("pack_config_id") pack_config_id: String,
+        ):Call<ResponseTaskFunctionaliyt>
+
+    @FormUrlEncoded
+    @POST("api/getgraphdetail")
+    fun getgraphdetail(
+
+        @Field("pack_id") pack_id: String,
+        @Field("graph_id") graph_id: String,
+        ):Call<ResponseGraphDetail>
+
+
+
+    @FormUrlEncoded
+    @POST("api/eventTeamList")
+    fun eventTeamList(
+
+        @Field("user_id") user_id: String,
+        ):Call<ResponseDashBoardEvent>
+
+    @FormUrlEncoded
+    @POST("api/eventList")
+    fun myeventList(
+
+        @Field("user_id") user_id: String,
+        ):Call<ResponseEventList>
+
+    @FormUrlEncoded
+    @POST("api/deleteEvent")
+    fun deleteEvent(
+        @Field("id") id: String,
+        ):Call<ResponseEventList>
+
+//    @FormUrlEncoded
+    @FormUrlEncoded
+    @POST("api/taskExecuteFunction")
+    fun taskExecuteFunction(
+
+        @Field("task_id") task_id: String,
+        @Field("task_func") task_func: String,
+        @Field("user_id") user_id: String,
+        @Field("container") container: String,
+//        @Part( file: MultipartBody.Part),
+//    @Part file: MultipartBody.Part
+        ):Call<ResponseTaskExecution>
+
+    @FormUrlEncoded
+    @POST("api/editEvent")
+    fun editEvent(
+        @Field("user_id") user_id: String,
+        @Field("event_id") event_id: String,
+    ):Call<EditEventList>
+
+    @FormUrlEncoded
+    @POST("api/updateEvent")
+    fun updateEvent(
+        @Field("user_id") user_id: String,
+        @Field("event_id") event_id: String,
+        @Field("name") name: String,
+        @Field("description") description: String,
+        @Field("type") type: String,
+        @Field("exp_start_date") exp_start_date: String,
+        @Field("exp_end_date") exp_end_date: String,
+        @Field("exp_duration") exp_duration: String,
+        @Field("actual_start_date") actual_start_date: String,
+        @Field("actual_end_date") actual_end_date: String,
+        @Field("actual_duration") actual_duration: String,
+        @Field("community_group") community_group: String,
+        @Field("status") status: String,
+        @Field("responsible") responsible: String,
+        @Field("assigned_team") assigned_team: String,
+        @Field("closed") closed: String,
+    ):Call<ResposneUpdateEvent>
 
 }

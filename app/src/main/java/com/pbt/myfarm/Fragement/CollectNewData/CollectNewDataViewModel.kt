@@ -2,6 +2,8 @@ package com.pbt.myfarm.Fragement.CollectNewData
 
 import android.app.Application
 import android.content.Context
+import android.view.View
+import android.widget.ProgressBar
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
@@ -25,6 +27,7 @@ class CollectNewDataViewModel(
 ) : AndroidViewModel(activity),
     retrofit2.Callback<testresponse> {
     val TAG = "CollectNewDataViewModel"
+    var progressbar:ProgressBar?=null
 
     fun onCollectDataFieldList(context: Context) {
         ApiClient.client.create(ApiInterFace::class.java).collectDataFieldList(
@@ -39,7 +42,7 @@ class CollectNewDataViewModel(
             val baseresponse: testresponse =
                 Gson().fromJson(Gson().toJson(response.body()), testresponse::class.java)
 
-
+            progressbar?.visibility= View.GONE
 
             sensorlist.clear()
             sensorname.clear()
@@ -47,8 +50,8 @@ class CollectNewDataViewModel(
             baseresponse.sensors.forEach {
 
                 sensorlist.add(it)
-             sensorid.add(it.id)
-               sensorname.add(it.name)
+                sensorid.add(it.id)
+                sensorname.add(it.name)
 
 
             }
@@ -67,6 +70,8 @@ class CollectNewDataViewModel(
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
+        progressbar?.visibility= View.GONE
+
         AppUtils.logDebug(TAG, t.message.toString())
     }
 

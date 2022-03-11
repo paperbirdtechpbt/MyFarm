@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.CreateTask
 
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,11 +18,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.*
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -56,11 +63,11 @@ var toolbar:Toolbar?=null
     var configtype:ConfigTaskList?=null
 
     companion object {
-        var ExpAmtArray = ArrayList<String>()
-        var ExpName = ArrayList<String>()
-        var ExpNameKey = ArrayList<String>()
-        var ExpAmtArrayKey = ArrayList<String>()
-        var selectedCommunityGroup = ""
+//        var ExpAmtArray = ArrayList<String>()
+//        var ExpName = ArrayList<String>()
+//        var ExpNameKey = ArrayList<String>()
+//        var ExpAmtArrayKey = ArrayList<String>()
+//        var selectedCommunityGroup = ""
 
     }
 
@@ -69,7 +76,6 @@ var toolbar:Toolbar?=null
 //        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
 
- 
 
 //        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 //        getSupportActionBar()?.setDisplayShowHomeEnabled(true)
@@ -79,103 +85,114 @@ var toolbar:Toolbar?=null
         ExpNameKey.clear()
         ExpAmtArrayKey.clear()
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
-        viewmodel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(CreatetaskViewModel::class.java)
-         configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
         updateTaskList = intent.getParcelableExtra(AppConstant.CONST_TASK_UPDATE_LIST)
-        if (updateTaskList!=null){
-            btn_create_task.setText("Update Task")
+
+        if (checkInternetConnection()) {
+            initViewModel()
 
         }
-        else{
-            btn_taskFunction.visibility=View.GONE
-        }
-        btn_taskFunction.setOnClickListener{
-            val intent=Intent(this,TaskFunctionActivity::class.java)
-            intent.putExtra(CONST_TASKFUNCTION_TASKID,updateTaskList?.id)
+        btn_taskfuntion.setOnClickListener{
+          val intent=  Intent(this,TaskFunctionActivity::class.java)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID,"12")
             startActivity(intent)
+
         }
 
-        if (configtype== null) {
 
-            field_prefix.setText(updateTaskList?.name_prefix)
-            field_desciption.setText(updateTaskList?.description)
+    }
+
+    private fun initViewModel() {
+
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
+            viewmodel = ViewModelProvider(
+                this,
+                ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+            ).get(CreatetaskViewModel::class.java)
+            configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+            if (updateTaskList!=null){
+                btn_create_task.setText("Update Task")
+
+            }
+
+
+
+            if (configtype== null) {
+
+                field_prefix.setText(updateTaskList?.name_prefix)
+                field_desciption.setText(updateTaskList?.description)
 //            btn_create_task.visibility=View.GONE
 //            btn_update_task.visibility=View.VISIBLE
-        }
-        else
-        {
-
-
-            field_prefix.setText(configtype?.name_prefix)
-            field_desciption.setText(configtype?.description)
-        }
-
-
-
-
-        binding?.viewModel = viewmodel
-        viewmodel?.progressbar = createtaskProgressbar
-        viewmodel?.onConfigFieldList(this, updateTaskBoolen, updateTaskList?.id.toString())
-
-        viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
-
-
-            val config =
-                Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
-            recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
-            adapter = CreateTaskAdapter(this, config, true) { list, name ->
-                while (list.contains("0")) {
-                    list.remove("0")
-                }
-                while (name.contains("0")) {
-                    name.remove("0")
-                }
-                while (ExpNameKey.contains("0")) {
-                    ExpNameKey.remove("0")
-                }
-                while (ExpAmtArrayKey.contains("0")) {
-                    ExpAmtArrayKey.remove("0")
-                }
-
-
-
-
-
-                for (i in 0 until name.size) {
-                    val jsonObject = JSONObject()
-                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
-                    jsonObject.put(ExpNameKey.get(i), list.get(i))
-
-                    successObject.put(jsonObject)
-                    fieldModel.add(FieldModel(name.get(i), list.get(i)))
-
-                }
-
-
             }
-            recycler_taskconfiglist.adapter = adapter
-        })
+            else
+            {
 
 
-        val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
-        setCommunityGroup(communitGroup)
-        communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, id: Long
-            ) {
-                selectedCommunityGroup = groupArrayId!!.get(position)
-
-
+                field_prefix.setText(configtype?.name_prefix)
+                field_desciption.setText(configtype?.description)
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
 
+
+
+            binding?.viewModel = viewmodel
+            viewmodel?.progressbar = createtaskProgressbar
+            viewmodel?.onConfigFieldList(this, updateTaskBoolen, updateTaskList?.id.toString())
+
+            viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
+
+
+                val config =
+                    Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
+                recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
+                adapter = CreateTaskAdapter(this, config, true) { list, name ->
+                    while (list.contains("0")) {
+                        list.remove("0")
+                    }
+                    while (name.contains("0")) {
+                        name.remove("0")
+                    }
+                    while (ExpNameKey.contains("0")) {
+                        ExpNameKey.remove("0")
+                    }
+                    while (ExpAmtArrayKey.contains("0")) {
+                        ExpAmtArrayKey.remove("0")
+                    }
+
+
+
+
+
+                    for (i in 0 until name.size) {
+                        val jsonObject = JSONObject()
+                        jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
+                        jsonObject.put(ExpNameKey.get(i), list.get(i))
+
+                        successObject.put(jsonObject)
+                        fieldModel.add(FieldModel(name.get(i), list.get(i)))
+
+                    }
+
+
+                }
+                recycler_taskconfiglist.adapter = adapter
+            })
+
+
+            val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
+            setCommunityGroup(communitGroup)
+            communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>, view: View, position: Int, id: Long
+                ) {
+                    selectedCommunityGroup = groupArrayId!!.get(position)
+
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+
+                }
             }
-        }
 
 
 //        viewmodel?.configlist?.observe(this, Observer { configlist ->
@@ -201,37 +218,37 @@ var toolbar:Toolbar?=null
 //
 //
 //        }
-        btn_create_task.setOnClickListener {
-            adapter?.callBack()
-            val listdata = ArrayList<String>()
+            btn_create_task.setOnClickListener {
+                adapter?.callBack()
+                val listdata = ArrayList<String>()
 
-            if (successObject != null) {
-                for (i in 0 until successObject.length()) {
-                    listdata.add(successObject.getString(i))
+                if (successObject != null) {
+                    for (i in 0 until successObject.length()) {
+                        listdata.add(successObject.getString(i))
+                    }
                 }
-            }
 
 //            AppUtils.logDebug(TAG,"-->>"+successObject)
-            val userId = MySharedPreference.getUser(this)?.id
-            val prefix = field_desciption.text.toString()
-            selectedCommunityGroup
+                val userId = MySharedPreference.getUser(this)?.id
+                val prefix = field_desciption.text.toString()
+                selectedCommunityGroup
 
 
 
 
-            if(!updateTaskBoolen){
-            ApiClient.client.create(ApiInterFace::class.java)
-                .storeTask(
-                    updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                    successObject.toString(), updateTaskList?.name_prefix.toString()
-                ).enqueue(this)}
-            else{
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .updateTask(
-                      "10", prefix, selectedCommunityGroup, userId.toString(),
-                        successObject.toString(), updateTaskList?.name_prefix.toString(),
-                                updateTaskList?.id.toString() ).enqueue(this)
-            }
+                if(!updateTaskBoolen){
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .storeTask(
+                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                            successObject.toString(), updateTaskList?.name_prefix.toString()
+                        ).enqueue(this)}
+                else{
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .updateTask(
+                            "10", prefix, selectedCommunityGroup, userId.toString(),
+                            successObject.toString(), updateTaskList?.name_prefix.toString(),
+                            updateTaskList?.id.toString() ).enqueue(this)
+                }
 //            CallApiForNewTask(fieldModel,userId,configtype?.id,selectedCommunityGroup.toInt()
 //                ,prefix,configtype!!.name_prefix)
 
@@ -239,7 +256,7 @@ var toolbar:Toolbar?=null
 //            viewmodel?.login(it)
 //            finish()
 //            AppUtils.logDebug(TAG, ravi)
-        }
+            }
 //        if (ViewTaskActivity.mytasklist !=null){
 //            AppUtils.logDebug(TAG,viewtask.toString())
 //            btn_create_task.visibility=View.GONE
@@ -337,6 +354,16 @@ var toolbar:Toolbar?=null
 //        ).show()
 
 
+    }
+
+    private fun checkInternetConnection(): Boolean {
+        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected == true) {
+            return true
+        } else {
+            return false
+        }
     }
 
     private fun CallApiForNewTask(

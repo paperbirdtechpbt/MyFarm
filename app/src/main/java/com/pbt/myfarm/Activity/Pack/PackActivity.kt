@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -33,19 +34,19 @@ import retrofit2.Response
 import java.util.*
 
 
-class PackActivity : AppCompatActivity() ,retrofit2.Callback<testresponse>{
+class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     private var adapter: AdapterViewPack? = null
     var db: DbHelper? = null
     var viewModel: ViewPackViewModel? = null
     var listsize = 0
+    val mypacklist= ArrayList<PackList>()
     var tasklist: ArrayList<ViewPackModelClass>? = null
 //    var binding: ActivityPackBinding? = null
 
     companion object {
         var TAG = "PackActivity"
-
         var packList: PackList? = null
-        var updatePackBoolen=false
+        var updatePackBoolen = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,9 +57,46 @@ class PackActivity : AppCompatActivity() ,retrofit2.Callback<testresponse>{
 
 
 //        getDataFromDatabase()
+        val checkInternet = checkInternetConnection()
+        if (checkInternet) {
+            initViewModel()
+        } else {
+        
 
-        initViewModel()
+            db = DbHelper(this, null)
+            tasklist = db!!.readPackData()
 
+            if (!tasklist.isNullOrEmpty()){
+                for(i in 0 until tasklist!!.size){
+                    val it= tasklist!!.get(i)
+                    it.padzero= it.name.padStart(4, '0')
+                    mypacklist.add(
+                        PackList(
+                            it.id, it.name, it.name_prefix,
+                            it.pack_config_id,
+                            it.pack_config_name, " Type: ", " Desciption: ", it.description,
+                            it.com_group, it.created_by, it.padzero
+                        )
+                    )
+                }
+                if (!mypacklist.isNullOrEmpty()){
+
+                    adapter = AdapterViewPack(this, mypacklist){e,p,ee,w ->
+
+                    }
+                    recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
+                    recyclerview_viewtask.adapter = adapter
+                    progressViewPack?.visibility= View.GONE
+                }
+
+
+
+
+            }
+
+            
+     
+        }
 
 
         btn_create_task.setOnClickListener {
@@ -69,6 +107,18 @@ class PackActivity : AppCompatActivity() ,retrofit2.Callback<testresponse>{
         }
     }
 
+    private fun checkInternetConnection(): Boolean {
+
+        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected == true) {
+            return true
+        } else {
+            return false
+        }
+
+    }
+
     private fun initViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -76,29 +126,21 @@ class PackActivity : AppCompatActivity() ,retrofit2.Callback<testresponse>{
         ).get(ViewPackViewModel::class.java)
 //        binding?.viewmodel = viewModel
 
-viewModel?.progressBAr=progressViewPack
+        viewModel?.progressBAr = progressViewPack
         viewModel?.onPackListRequest(this)
+        viewModel?.checkInteretConnection(this)
         viewModel?.packlist?.observe(this, androidx.lifecycle.Observer { packlist ->
 
             tasklistSize.setText("Total Tasks-" + packlist.size)
             adapter = AdapterViewPack(this, packlist!!) { position, packname, boolean, list ->
-                packList=list
+                packList = list
                 if (boolean) {
-                showAlertDailog(packname, position, packList!!)
-            }
-                else{
+                    showAlertDailog(packname, position, packList!!)
+                } else {
 
-                    updatePackBoolen=true
-                    val intent=Intent(this, UpdatePackActivity::class.java)
-//                        intent.putExtra("fragment","2")
-//                        intent.putExtra(CONST_PACK_UPDATE_LIST, packList)
-//                    val mBundle = Bundle()
-//                    mBundle.putParcelable(CONST_PACK_UPDATE_LIST, packList)
-//
-//                    CreatePackFrament().arguments = mBundle
-                        startActivity(intent)
-//                        finish()
-//
+                    updatePackBoolen = true
+                    val intent = Intent(this, UpdatePackActivity::class.java)
+                    startActivity(intent)
 
                 }
             }
@@ -108,42 +150,7 @@ viewModel?.progressBAr=progressViewPack
         })
     }
 
-    @SuppressLint("Range")
-    fun getDataFromDatabase() {
 
-        db = DbHelper(this, null)
-        tasklist = db!!.readPackData()
-
-        listsize = tasklist?.size!!
-
-
-//        adapter = AdapterViewPack(this, tasklist!!) { position, taskname, checkAction, list ->
-//            if (checkAction) {
-//                showAlertDailog(taskname, position)
-//            } else {
-//
-//
-//                Packlist = list
-//
-//                val intent = Intent(this, UpdatePackActivity::class.java)
-//                intent.putExtra("fragment", 1)
-////                val bundle = Bundle()
-////                bundle.putParcelable(CONST_VIEWMODELCLASS_LIST, list)
-////                intent.putExtras(bundle)
-//
-//
-//                AppUtils.logDebug(TAG, list.toString())
-//
-//                startActivity(intent)
-//
-//
-//            }
-//
-//        }
-//        recyclerview_viewtask.adapter = adapter
-//        checkListEmptyOrNot(tasklist!!)
-
-    }
 
     private fun showAlertDailog(taskname: String, position: Int, list: PackList) {
         AlertDialog.Builder(this)

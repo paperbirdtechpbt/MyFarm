@@ -68,46 +68,42 @@ class PackViewModel(val activity:Application
 
     }
 
-    fun addPack() {
-        val db = DbHelper(activity, null)
+//    fun addPack() {
+//        val db = DbHelper(activity, null)
+//
+//        val newTask= ViewPackModelClass( packname = namePrefix?.get().toString(),
+//            packType = confiType?.get().toString(),packdesciption =  desciption?.get().toString(),
+//          communitygrip = communityGroup?.get().toString(),customer = customer?.get().toString(),
+//            quantitiy = quantity?.get().toString(),units = units?.get().toString()
+//        )
+//
+//        db.addPack(newTask)
+//
+//    }
 
-        val newTask= ViewPackModelClass( packname = namePrefix?.get().toString(),
-            packType = confiType?.get().toString(),packdesciption =  desciption?.get().toString(),
-          communitygrip = communityGroup?.get().toString(),customer = customer?.get().toString(),
-            quantitiy = quantity?.get().toString(),units = units?.get().toString()
-        )
-
-        db.addPack(newTask)
-
-
-
-
-
-    }
-
-    fun updatePack() {
-        val db= DbHelper(context,null)
-        val newTask= ViewPackModelClass(
-        packname = namePrefix?.get().toString(),
-        packdesciption = desciption?.get().toString(),
-        packType =confiType?.get().toString(),
-        communitygrip = communityGroup?.get().toString(),customer = customer?.get().toString(),
-            quantitiy = quantity?.get().toString(),units = units?.get().toString())
-       val result= db.updatePack(newTask, namePrefix?.get()!!)
-        if (result >= 0) {
-            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, PackActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-
-
-
-
-        } else {
-            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
-
-        }
-    }
+//    fun updatePack() {
+//        val db= DbHelper(context,null)
+//        val newTask= ViewPackModelClass(
+//        packname = namePrefix?.get().toString(),
+//        packdesciption = desciption?.get().toString(),
+//        packType =confiType?.get().toString(),
+//        communitygrip = communityGroup?.get().toString(),customer = customer?.get().toString(),
+//            quantitiy = quantity?.get().toString(),units = units?.get().toString())
+//       val result= db.updatePack(newTask, namePrefix?.get()!!)
+//        if (result >= 0) {
+//            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(context, PackActivity::class.java)
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            context.startActivity(intent)
+//
+//
+//
+//
+//        } else {
+//            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
+//
+//        }
+//    }
 
 
 
@@ -118,12 +114,14 @@ class PackViewModel(val activity:Application
 //        else{
         if (updateTaskId=="0"){
             ApiClient.client.create(ApiInterFace::class.java)
-                .packConfigFieldList("2", packList?.pack_config_id.toString(), packList?.id!!).enqueue(this)
+                .packConfigFieldList(MySharedPreference.getUser(context)?.id.toString(),
+                    packList?.pack_config_id.toString(), packList?.id!!).enqueue(this)
 
         }
         else{
             ApiClient.client.create(ApiInterFace::class.java)
-                .packConfigFieldList("2",packconfiglist?.id.toString(),"").enqueue(this)
+                .packConfigFieldList(MySharedPreference.getUser(context)?.id.toString(),
+                    packconfiglist?.id.toString(),"").enqueue(this)
         }
 
 

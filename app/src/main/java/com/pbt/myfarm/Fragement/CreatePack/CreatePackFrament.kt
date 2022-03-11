@@ -16,9 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
+import com.pbt.myfarm.Activity.Graph.GraphActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
@@ -31,6 +32,7 @@ import com.pbt.myfarm.PackViewModel.Companion.packconfigList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppConstant.Companion.PACK_LIST_PACKID
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_create_pack.*
@@ -93,6 +95,7 @@ class CreatePackFrament : Fragment(),
 
 
         val updateTask: Button = view.findViewById(R.id.btn_update_pack)
+        val btnViewTask: Button = view.findViewById(R.id.btn_viewgraph)
         updateTask.setOnClickListener {
             adapterr?.callBack()
             ApiClient.client.create(ApiInterFace::class.java)
@@ -103,9 +106,11 @@ class CreatePackFrament : Fragment(),
                     successObject.toString(), packList?.name_prefix!!,
                     packList?.id.toString()
                 ).enqueue(this)
-
-
-
+        }
+        btnViewTask.setOnClickListener{
+            val intent=Intent(requireContext(),GraphActivity::class.java)
+            intent.putExtra(PACK_LIST_PACKID,  packList?.pack_config_id.toString())
+            startActivity(intent)
         }
 
 

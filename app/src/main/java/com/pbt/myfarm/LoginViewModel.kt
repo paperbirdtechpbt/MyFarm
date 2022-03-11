@@ -46,10 +46,17 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
     }
 
     override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
-        progressBar.visibility=View.VISIBLE
-        btnlogin.visibility=View.GONE
-        userLogin?.value = response.body()
-        val list: loginResult = Gson().fromJson(response.body()?.data.toString(), loginResult::class.java)
+        if (response.body()?.error==false){
+            progressBar.visibility=View.GONE
+            btnlogin.visibility=View.VISIBLE
+            userLogin?.value = response.body()
+        }
+        else{
+            progressBar.visibility=View.GONE
+            btnlogin.visibility=View.VISIBLE
+        }
+
+//        val list: loginResult = Gson().fromJson(Gson().toJson(response.body()?.data), loginResult::class.java)
     }
 
     override fun onFailure(call: Call<HttpResponse>, t: Throwable) {

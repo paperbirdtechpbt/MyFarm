@@ -13,8 +13,15 @@ data class UnitList (
     @SerializedName("id")val id:String ,
     @SerializedName("name")val name:String,)
 
+
+
 data class Data (
     @SerializedName("type")val type:String,
     @SerializedName("list_id")val list_id:String="0",
-    @SerializedName("list_array")val list_array:JsonArray,
+    @SerializedName("list_array")val list_array:List<List_array>,
         )
+data class List_array (
+    @SerializedName("id")val id:String ,
+    @SerializedName("lists_id")val lists_id:String,
+    @SerializedName("name")val name:String,
+)

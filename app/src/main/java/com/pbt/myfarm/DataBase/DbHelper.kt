@@ -9,10 +9,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.HttpResponse.PackCommunityList
+import com.pbt.myfarm.HttpResponse.PackConfigFieldList
+import com.pbt.myfarm.HttpResponse.PackFieldList
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
+import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_VERSION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_END_DATE
@@ -21,14 +24,42 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_EXP_STR_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_STR_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_NEW_TASK
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CUSTOMER
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACKCONFIG_FIELDLIST_TABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACKCONFIG_FIELDLIST_field_list_TABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACKCONFIG_LIST_TABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACKS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIGLIST_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIGLIST_ITEM
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIGLIST_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_ITEM
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_description
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_description_fieldid
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_id
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_id_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_name
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_name_name
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_type
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_type_packid
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_value
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_field_value_configid
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CONFIG_FIELDLIST_fieldlist_ITEM
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CREATEDBY
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CommunityGroupID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CommunityGroupITEM_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CommunityGroupNAME
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CommunityGroupTABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_CommunityGroupcommunity_group
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_DETAIL
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_LABELTYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_LABEL_DESCIPTION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_QUANTITY
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_NAME_PREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_NAME_PREFIX_padzero
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_PADZERO
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_TYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_UNITS
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PACK_TYPE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TABLE_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_DETAIL
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_NAME
@@ -41,10 +72,10 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
 import com.pbt.myfarm.Util.AppUtils
 
 
-class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
+class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, CONST_DATABASE_NAME, factory, CONST_DATABASE_VERSION) {
 
-    private  val TAG = "DbHelper"
+    private val TAG = "DbHelper"
 
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -67,17 +98,58 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
                 CONST_TASK_DETAIL + " TEXT" + ")")
 
         db?.execSQL(userTaskTable)
+
         val userPackTable = ("CREATE TABLE " + CONST_TABLE_PACK + " ("
                 + CONST_PACK_ID + " INTEGER PRIMARY KEY, " +
+                CONST_PACKS_ID + " TEXT," +
                 CONST_PACK_NAME + " TEXT," +
                 CONST_PACK_TYPE + " TEXT," +
+                CONST_PACK_LABELTYPE + " TEXT," +
+                CONST_PACK_TYPE_ID + " TEXT," +
+                CONST_PACK_LABEL_DESCIPTION + " TEXT," +
                 CONST_PACK_DETAIL + " TEXT," +
-                CONST_PACK_UNITS + " TEXT," +
-                CONST_PACK_CUSTOMER + " TEXT," +
-                CONST_PACK_QUANTITY + " TEXT," +
+                CONST_PACK_NAME_PREFIX_padzero + " TEXT," +
+                CONST_PACK_NAME_PREFIX + " TEXT," +
+                CONST_PACK_CREATEDBY + " TEXT," +
+                CONST_PACK_PADZERO + " TEXT," +
                 CONST_PACK_GROUP + " TEXT" + ")")
 
         db?.execSQL(userPackTable)
+
+        val packConfigListTable = ("CREATE TABLE " + CONST_PACKCONFIG_LIST_TABLE + " ("
+                + CONST_PACK_CONFIGLIST_ITEM + " INTEGER PRIMARY KEY, " +
+                CONST_PACK_CONFIGLIST_NAME + " TEXT," +
+                CONST_PACK_CONFIGLIST_ID + " TEXT" + ")")
+
+        db?.execSQL(packConfigListTable)
+
+        val packConfigFieldListTable = ("CREATE TABLE " + CONST_PACKCONFIG_FIELDLIST_TABLE + " ("
+                + CONST_PACK_CONFIG_FIELDLIST_ITEM + " INTEGER PRIMARY KEY, " +
+                CONST_PACK_CONFIG_FIELDLIST_field_id + " TEXT," +
+                CONST_PACK_CONFIG_FIELDLIST_field_name + " TEXT," +
+                CONST_PACK_CONFIG_FIELDLIST_field_description + " TEXT," +
+                CONST_PACK_CONFIG_FIELDLIST_field_type + " TEXT," +
+                CONST_PACK_CONFIG_FIELDLIST_field_value + " TEXT" + ")")
+        db?.execSQL(packConfigFieldListTable)
+
+        val packConfigFieldList_FieldList_Table =
+            ("CREATE TABLE " + CONST_PACKCONFIG_FIELDLIST_field_list_TABLE + " ("
+                    + CONST_PACK_CONFIG_FIELDLIST_fieldlist_ITEM + " INTEGER PRIMARY KEY, " +
+                    CONST_PACK_CONFIG_FIELDLIST_field_id_ID + " TEXT," +
+                    CONST_PACK_CONFIG_FIELDLIST_field_name_name + " TEXT," +
+                    CONST_PACK_CONFIG_FIELDLIST_field_description_fieldid + " TEXT," +
+                    CONST_PACK_CONFIG_FIELDLIST_field_type_packid + " TEXT," +
+                    CONST_PACK_CONFIG_FIELDLIST_field_value_configid + " TEXT" + ")")
+        db?.execSQL(packConfigFieldList_FieldList_Table)
+
+        val packCommunityGroup = ("CREATE TABLE " + CONST_PACK_CommunityGroupTABLE + " ("
+                + CONST_PACK_CommunityGroupITEM_ID + " INTEGER PRIMARY KEY, " +
+                CONST_PACK_CommunityGroupID + " TEXT," +
+                CONST_PACK_CommunityGroupNAME + " TEXT," +
+                CONST_PACK_CommunityGroupcommunity_group + " TEXT" + ")")
+        db?.execSQL(packCommunityGroup)
+
+
 //        val userCollectdata = ("CREATE TABLE " + CONST_TABLE_COLLECT + " ("
 //                + CONST_COLLECT_ID + " INTEGER PRIMARY KEY, " +
 //                CONST_ACTIVITY + " TEXT," +
@@ -134,14 +206,14 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
                 Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
             }
-        }catch (e:Exception){
-            AppUtils.logError(TAG,e.message!!)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
         }
 
 
-
     }
-//    fun addCollectData(data: CollectDataModel){
+
+    //    fun addCollectData(data: CollectDataModel){
 //        try {
 //
 //            val values = ContentValues()
@@ -217,43 +289,43 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
 //
 //    }
 
+
     fun addPack(viewtask: ViewPackModelClass) {
 
         try {
 
             val values = ContentValues()
-            values.put(CONST_PACK_NAME, viewtask.packname)
-            values.put(CONST_PACK_DETAIL, viewtask.packdesciption)
-            values.put(CONST_PACK_TYPE, viewtask.packType)
-            values.put(CONST_PACK_GROUP, viewtask.communitygrip)
-            values.put(CONST_PACK_UNITS, viewtask.units)
-            values.put(CONST_PACK_CUSTOMER, viewtask.customer)
-            values.put(CONST_PACK_QUANTITY, viewtask.quantitiy)
+            values.put(CONST_PACK_NAME, viewtask.name)
+            values.put(CONST_PACKS_ID, viewtask.id)
+            values.put(CONST_PACK_DETAIL, viewtask.description)
+            values.put(CONST_PACK_TYPE, viewtask.pack_config_name)
+            values.put(CONST_PACK_TYPE_ID, viewtask.pack_config_id)
+            values.put(CONST_PACK_GROUP, viewtask.com_group)
+            values.put(CONST_PACK_NAME_PREFIX, viewtask.name_prefix)
+            values.put(CONST_PACK_LABELTYPE, viewtask.type)
+            values.put(CONST_PACK_LABEL_DESCIPTION, viewtask.labeldesciption)
+            values.put(CONST_PACK_PADZERO, viewtask.padzero)
+            values.put(CONST_PACK_CREATEDBY, viewtask.created_by)
+            values.put(CONST_PACK_NAME_PREFIX_padzero, viewtask.name_prefix + viewtask.padzero)
+
 
             val db = this.writableDatabase
             val result = db.insert(CONST_TABLE_PACK, null, values)
             db.close()
             if (result >= 0) {
-                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
-                val intent = Intent(context, PackActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(intent)
-
-
-
+                AppUtils.logDebug(TAG, "ADDed packlist to database ")
             } else {
-                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
+                AppUtils.logDebug(TAG, "Failed to Add Packlist to database ")
             }
-        }catch (e:Exception){
-            AppUtils.logError(TAG,e.message!!)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
         }
 
 
-
     }
-    fun updateTask(task: ViewTaskModelClass,entryname:String):Int{
-        val db=this.writableDatabase
+
+    fun updateTask(task: ViewTaskModelClass, entryname: String): Int {
+        val db = this.writableDatabase
 
         val contentValues = ContentValues()
         contentValues.put(CONST_TASK_NAME, task.ENTRYNAME)
@@ -265,29 +337,30 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         contentValues.put(CONST_EXPECTED_END_DATE, task.EndDate)
 //        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
 //    null)
-      val success=  db.update(CONST_NEW_TASK, contentValues,"$CONST_TASK_NAME = ?", arrayOf(entryname))
+        val success =
+            db.update(CONST_NEW_TASK, contentValues, "$CONST_TASK_NAME = ?", arrayOf(entryname))
         db.close()
         return success
     }
-    fun updatePack(task: ViewPackModelClass, entryname: String):Int{
-        val db=this.writableDatabase
-
-
-        val contentValues = ContentValues()
-        contentValues.put(CONST_PACK_NAME, task.packname)
-        contentValues.put(CONST_PACK_TYPE, task.packType)
-        contentValues.put(CONST_PACK_DETAIL, task.packdesciption)
-        contentValues.put(CONST_PACK_GROUP, task.packdesciption)
-        contentValues.put(CONST_PACK_UNITS, task.units)
-        contentValues.put(CONST_PACK_QUANTITY, task.quantitiy)
-        contentValues.put(CONST_PACK_CUSTOMER, task.customer)
-
-//        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
-//    null)
-      val success=  db.update(CONST_TABLE_PACK, contentValues,"$CONST_PACK_NAME = ?", arrayOf(entryname))
-        db.close()
-        return success
-    }
+//    fun updatePack(task: ViewPackModelClass, entryname: String):Int{
+//        val db=this.writableDatabase
+//
+//
+//        val contentValues = ContentValues()
+//        contentValues.put(CONST_PACK_NAME, task.packname)
+//        contentValues.put(CONST_PACK_TYPE, task.packType)
+//        contentValues.put(CONST_PACK_DETAIL, task.packdesciption)
+//        contentValues.put(CONST_PACK_GROUP, task.packdesciption)
+//        contentValues.put(CONST_PACK_UNITS, task.units)
+//        contentValues.put(CONST_PACK_QUANTITY, task.quantitiy)
+//        contentValues.put(CONST_PACK_CUSTOMER, task.customer)
+//
+////        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
+////    null)
+//      val success=  db.update(CONST_TABLE_PACK, contentValues,"$CONST_PACK_NAME = ?", arrayOf(entryname))
+//        db.close()
+//        return success
+//    }
 
     @SuppressLint("Range")
     fun readData(): ArrayList<ViewTaskModelClass> {
@@ -305,24 +378,28 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         var taskname: String
         var tasktype: String
         var taskdetail: String
-        var expectedStartDate:String
-        var expectedEndDate:String
-        var startdate:String
-        var endDate:String
+        var expectedStartDate: String
+        var expectedEndDate: String
+        var startdate: String
+        var endDate: String
         if (cursor.moveToFirst()) {
             do {
                 taskname = cursor.getString(cursor.getColumnIndex(CONST_TASK_NAME))
                 tasktype = cursor.getString(cursor.getColumnIndex(CONST_TASK_TYPE))
                 taskdetail = cursor.getString(cursor.getColumnIndex(CONST_TASK_DETAIL))
-                expectedStartDate = cursor.getString(cursor.getColumnIndex(
-                    CONST_EXPECTED_EXP_STR_DATE))
-                expectedEndDate = cursor.getString(cursor.getColumnIndex(CONST_EXPECTED_EXP_END_DATE))
+                expectedStartDate = cursor.getString(
+                    cursor.getColumnIndex(
+                        CONST_EXPECTED_EXP_STR_DATE
+                    )
+                )
+                expectedEndDate =
+                    cursor.getString(cursor.getColumnIndex(CONST_EXPECTED_EXP_END_DATE))
                 startdate = cursor.getString(cursor.getColumnIndex(CONST_EXPECTED_STR_DATE))
                 endDate = cursor.getString(cursor.getColumnIndex(CONST_EXPECTED_END_DATE))
                 val lst = ViewTaskModelClass(
                     ENTRYDETAIL = taskdetail, ENTRYNAME = taskname,
-                    ENTRYTYPE = tasktype,ExpectedStartDate = expectedStartDate,
-                    ExpectedEndDate = expectedEndDate,StartDate = startdate,
+                    ENTRYTYPE = tasktype, ExpectedStartDate = expectedStartDate,
+                    ExpectedEndDate = expectedEndDate, StartDate = startdate,
                     EndDate = endDate
                 )
                 list.add(lst)
@@ -331,6 +408,7 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         return list
 
     }
+
     @SuppressLint("Range")
     fun readPackData(): ArrayList<ViewPackModelClass> {
         val list: ArrayList<ViewPackModelClass> = ArrayList()
@@ -344,31 +422,51 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
             db.execSQL(query)
             return ArrayList()
         }
-        var taskname: String
-        var tasktype: String
-        var taskdetail: String
 
-        var communityGroup: String
-        var units: String
-        var quantity: String
-        var customer: String
+        var PACK_NAME: String
+        var PACKS_ID: String
+        var PACK_DETAIL: String
+        var PACK_TYPE: String
+        var PACK_TYPE_ID: String
+        var PACK_GROUP: String
+        var PACK_NAME_PREFIX: String
+        var PACK_LABELTYPE: String
+        var PACK_LABEL_DESCIPTION: String
+        var PACK_PADZERO: String
+        var PACK_NAME_PREFIX_padzero: String
+        var PACK_CREATEDBY: String
+
 
 
         if (cursor.moveToFirst()) {
             do {
-                taskname = cursor.getString(cursor.getColumnIndex(CONST_PACK_NAME))
-                tasktype = cursor.getString(cursor.getColumnIndex(CONST_PACK_TYPE))
-                taskdetail = cursor.getString(cursor.getColumnIndex(CONST_PACK_DETAIL))
-                communityGroup=cursor.getString(cursor.getColumnIndex(CONST_PACK_GROUP))
-                units=cursor.getString(cursor.getColumnIndex(CONST_PACK_UNITS))
-                quantity=cursor.getString(cursor.getColumnIndex(CONST_PACK_QUANTITY))
-                customer=cursor.getString(cursor.getColumnIndex(CONST_PACK_CUSTOMER))
+
+                PACK_NAME = cursor.getString(cursor.getColumnIndex(CONST_PACK_NAME))
+                PACKS_ID = cursor.getString(cursor.getColumnIndex(CONST_PACKS_ID))
+                PACK_DETAIL = cursor.getString(cursor.getColumnIndex(CONST_PACK_DETAIL))
+                PACK_TYPE = cursor.getString(cursor.getColumnIndex(CONST_PACK_TYPE))
+                PACK_TYPE_ID = cursor.getString(cursor.getColumnIndex(CONST_PACK_TYPE_ID))
+                PACK_GROUP = cursor.getString(cursor.getColumnIndex(CONST_PACK_GROUP))
+                PACK_NAME_PREFIX = cursor.getString(cursor.getColumnIndex(CONST_PACK_NAME_PREFIX))
+                PACK_LABELTYPE = cursor.getString(cursor.getColumnIndex(CONST_PACK_LABELTYPE))
+                PACK_LABEL_DESCIPTION =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_LABEL_DESCIPTION))
+                PACK_PADZERO = cursor.getString(cursor.getColumnIndex(CONST_PACK_PADZERO))
+                PACK_CREATEDBY = cursor.getString(cursor.getColumnIndex(CONST_PACK_CREATEDBY))
+                PACK_NAME_PREFIX_padzero =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_NAME_PREFIX_padzero))
 
                 val lst = ViewPackModelClass(
+                    name = PACK_NAME, id = PACKS_ID,
+                    description = PACK_DETAIL,
+                    pack_config_name = PACK_TYPE,
+                    pack_config_id = PACK_TYPE_ID,
+                    com_group = PACK_GROUP,
+                    name_prefix = PACK_NAME_PREFIX,
+                    type = PACK_LABELTYPE,
+                    labeldesciption = PACK_LABEL_DESCIPTION,
+                    padzero = PACK_NAME_PREFIX_padzero, created_by = PACK_CREATEDBY
 
-                    packdesciption = taskdetail, packname = taskname,
-                    packType = tasktype,communitygrip = communityGroup,
-                    units = units,quantitiy = quantity,customer = customer
                 )
                 list.add(lst)
             } while (cursor.moveToNext())
@@ -376,6 +474,7 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         return list
 
     }
+
 
     fun deleteTask(taskname: String) {
         val db = this.writableDatabase
@@ -385,14 +484,334 @@ class DbHelper(var context: Context,  factory: SQLiteDatabase.CursorFactory?) :
         db.close()
 
     }
+
     fun deletePack(taskname: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
-        contentValues.put(CONST_PACK_NAME,taskname)
-   val succ=  db.delete(CONST_TABLE_PACK, "PACKname=?", arrayOf(taskname))
+        contentValues.put(CONST_PACK_NAME, taskname)
+        val succ = db.delete(CONST_TABLE_PACK, "PACKname=?", arrayOf(taskname))
         db.close()
 
     }
 
+    fun dropPackTable() {
+
+        val selectQuery = "DELETE FROM $CONST_TABLE_PACK"
+        val db = this.writableDatabase
+
+        db.execSQL(selectQuery)
+    }
+
+    fun addPackConfigList(packconfiglist: PackConfigList) {
+        try {
+
+            val values = ContentValues()
+            values.put(CONST_PACK_CONFIGLIST_NAME, packconfiglist.name)
+            values.put(CONST_PACK_CONFIGLIST_ID, packconfiglist.id)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(CONST_PACKCONFIG_LIST_TABLE, null, values)
+            db.close()
+            if (result >= 0) {
+                AppUtils.logDebug(TAG, "ADDed packconfiglist to database ")
+            } else {
+                AppUtils.logDebug(TAG, "Failed to Add packconfiglist to database ")
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+    }
+
+    @SuppressLint("Range")
+    fun readPackConfiglistData(): ArrayList<PackConfigList> {
+        val list: ArrayList<PackConfigList> = ArrayList()
+        val db = this.readableDatabase
+        val query = "Select * from $CONST_PACKCONFIG_LIST_TABLE"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+
+        var config_NAME: String
+        var config_ID: String
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                config_NAME = cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIGLIST_NAME))
+                config_ID = cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIGLIST_ID))
+
+                val lst = PackConfigList(name = config_NAME, id = config_ID)
+
+                list.add(lst)
+            } while (cursor.moveToNext())
+        }
+        return list
+
+    }
+
+    fun dropPackConfigTable() {
+        val selectQuery = "DELETE FROM $CONST_PACKCONFIG_LIST_TABLE"
+        val db = this.writableDatabase
+
+        db.execSQL(selectQuery)
+    }
+
+    fun addPackConfigffIELDList(packconfiglist: PackConfigFieldList) {
+        try {
+
+
+            val values = ContentValues()
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_id, packconfiglist.field_id)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_name, packconfiglist.field_name)
+            values.put(
+                CONST_PACK_CONFIG_FIELDLIST_field_description,
+                packconfiglist.field_description
+            )
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_type, packconfiglist.field_type)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_value, packconfiglist.field_value)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(CONST_PACKCONFIG_FIELDLIST_TABLE, null, values)
+            db.close()
+            if (result >= 0) {
+                AppUtils.logDebug(TAG, "ADDed packconfigFieldlist to database ")
+            } else {
+                AppUtils.logDebug(TAG, "Failed to Add packconfigFieldlist to database ")
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+    }
+
+    fun addPackConfigffIELD_field_list(
+        packconfiglist: PackFieldList,
+        routes: String,
+        get: PackConfigList
+    ) {
+        try {
+
+            val values = ContentValues()
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_id_ID, packconfiglist.id)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_name_name, packconfiglist.name)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_description_fieldid, routes)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_type_packid, get.id)
+            values.put(CONST_PACK_CONFIG_FIELDLIST_field_value_configid, get.id)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(CONST_PACKCONFIG_FIELDLIST_field_list_TABLE, null, values)
+            db.close()
+            if (result >= 0) {
+                AppUtils.logDebug(TAG, "ADDed addPackConfigffIELD_field_list to database ")
+            } else {
+                AppUtils.logDebug(TAG, "Failed to Add addPackConfigffIELD_field_list to database ")
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+    }
+
+    fun addPackCommunityGroup(packcommunityGroup: PackCommunityList) {
+        try {
+
+            val values = ContentValues()
+            values.put(CONST_PACK_CommunityGroupID, packcommunityGroup.id)
+            values.put(CONST_PACK_CommunityGroupNAME, packcommunityGroup.name)
+            values.put(CONST_PACK_CommunityGroupcommunity_group, packcommunityGroup.community_group)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(CONST_PACK_CommunityGroupTABLE, null, values)
+            db.close()
+            if (result >= 0) {
+                AppUtils.logDebug(TAG, "ADDed addPackCommunityGroup to database ")
+            } else {
+                AppUtils.logDebug(TAG, "Failed to Add addPackCommunityGroup to database ")
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+    }
+
+    fun dropPackConfigffIELDFieldList() {
+        val selectQuery = "DELETE FROM $CONST_PACKCONFIG_FIELDLIST_field_list_TABLE"
+        val db = this.writableDatabase
+
+        db.execSQL(selectQuery)
+    }
+
+
+    fun dropPackConfigffIELDList() {
+        val selectQuery = "DELETE FROM $CONST_PACKCONFIG_FIELDLIST_TABLE"
+        val db = this.writableDatabase
+
+        db.execSQL(selectQuery)
+    }
+
+    fun dropPackCommunityGroupTable() {
+        val selectQuery = "DELETE FROM $CONST_PACK_CommunityGroupTABLE"
+        val db = this.writableDatabase
+        db.execSQL(selectQuery)
+    }
+
+    @SuppressLint("Range")
+    fun readPackConfigFieldList(): ArrayList<PackConfigFieldList> {
+        val list: ArrayList<PackConfigFieldList> = ArrayList()
+        val db = this.readableDatabase
+        val query = "Select * from $CONST_PACKCONFIG_FIELDLIST_TABLE"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+
+        var field_id: String
+        var field_name: String
+        var field_description: String
+        var field_type: String
+        var field_value: String
+
+
+
+
+        if (cursor.moveToFirst()) {
+            do {
+
+
+                field_id =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_id))
+                field_name =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_name))
+                field_description = cursor.getString(
+                    cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_description)
+                )
+                field_type =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_type))
+
+
+                val emptylist = ArrayList<PackFieldList>()
+
+                val lst = PackConfigFieldList(
+                    field_id, field_name, field_description,
+                    field_type, "", "", emptylist
+                )
+                list.add(lst)
+            } while (cursor.moveToNext())
+        }
+        return list
+
+    }
+
+    @SuppressLint("Range")
+    fun readPackConfigFieldList_fieldlist(): ArrayList<PackFieldList> {
+        val list: ArrayList<PackFieldList> = ArrayList()
+        val db = this.readableDatabase
+        val query = "Select * from $CONST_PACKCONFIG_FIELDLIST_field_list_TABLE"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+
+        var field_id_ID: String
+        var field_name_NAME: String
+        var field_packid: String
+        var field_config_id: String
+        var field_id: String
+
+
+
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                field_id_ID =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_id_ID))
+                field_name_NAME = cursor.getString(
+                    cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_name_name)
+                )
+                field_packid = cursor.getString(
+                    cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_description_fieldid)
+                )
+                field_config_id = cursor.getString(
+                    cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_type_packid)
+                )
+                field_id = cursor.getString(
+                    cursor.getColumnIndex(CONST_PACK_CONFIG_FIELDLIST_field_value_configid)
+                )
+
+
+                val lst = PackFieldList(
+                    field_id_ID, field_name_NAME, field_packid,
+                    field_config_id, field_id
+                )
+                list.add(lst)
+            } while (cursor.moveToNext())
+        }
+        return list
+
+    }
+
+    @SuppressLint("Range")
+
+    fun readPackCommunityGroup(): ArrayList<PackCommunityList> {
+        val list: ArrayList<PackCommunityList> = ArrayList()
+        val db = this.readableDatabase
+        val query = "Select * from $CONST_PACK_CommunityGroupTABLE"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+
+        var commnutiyId: String
+        var commnutiyNAME: String
+        var commnutiycommunityGroup: String
+
+
+
+
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                commnutiyId = cursor.getString(cursor.getColumnIndex(CONST_PACK_CommunityGroupID))
+                commnutiyNAME =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CommunityGroupNAME))
+                commnutiycommunityGroup =
+                    cursor.getString(cursor.getColumnIndex(CONST_PACK_CommunityGroupcommunity_group))
+
+
+                val lst = PackCommunityList(
+                    id = commnutiyId,
+                    name = commnutiyNAME,
+                    community_group = commnutiycommunityGroup
+                )
+                list.add(lst)
+            } while (cursor.moveToNext())
+        }
+        return list
+
+    }
 
 }

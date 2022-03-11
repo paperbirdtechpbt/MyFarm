@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.CreatePack
 
 
 import android.content.Intent
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -12,11 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter.Companion.desciptioncompanian
 
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpNameKey
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldResponse
@@ -60,6 +65,66 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 //        ExpAmtArrayKey.clear()
 //        setContentView(R.layout.activity_create_pack)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_pack)
+        val db= DbHelper(this,null)
+
+
+
+        if(checkInternetConnection()){
+            initViewModel()
+        }
+//        else
+//        {
+//            val list=   db.readPackConfigFieldList()
+//
+//            val field=   db.readPackConfigFieldList_fieldlist()
+//            val communitGroup=db.readPackCommunityGroup()
+//            AppUtils.logDebug(TAG,Gson().toJson(list+"\n"+field+"\n"+communitGroup))
+//            var packCommunityname = ArrayList<String>()
+//            for (i in 0 until communitGroup.size){
+//                packCommunityname.add(communitGroup.get(i).name)
+//
+//            }
+//            recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
+//            adapter = CreatePackAdapter(
+//                this, list, true, communitGroup,
+//                packCommunityname
+//            ) { list, name ->
+//                while (list.contains("0")) {
+//                    list.remove("0")
+//                }
+//                while (name.contains("0")) {
+//                    name.remove("0")
+//                }
+//                while (ExpNameKey.contains("0")) {
+//                    ExpNameKey.remove("0")
+//                }
+//                while (ExpAmtArrayKey.contains("0")) {
+//                    ExpAmtArrayKey.remove("0")
+//                }
+//
+//
+//
+//
+//                for (i in 0 until name.size) {
+//                    val jsonObject = JSONObject()
+//                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
+//                    jsonObject.put(ExpNameKey.get(i), list.get(i))
+//
+//                    successObject.put(jsonObject)
+//                    fieldModel.add(FieldModel(name.get(i), list.get(i)))
+//
+//                }
+//
+//
+//            }
+//            recyclerview_createPack.adapter = adapter
+//
+//
+//        }
+
+    }
+
+    private fun initViewModel() {
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
@@ -165,6 +230,16 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 //            viewmodel?.confiType?.set(configTypeName)
 //            viewmodel?.namePrefix?.set("DDD"+listSize)
 //        }
+    }
+
+    private fun checkInternetConnection(): Boolean {
+        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected == true) {
+            return true
+        } else {
+            return false
+        }
     }
 
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {

@@ -76,7 +76,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
     var getSensorId: String = ""
     var adapterAddmultiple: AdapterAddmultiple? = null
     var listmultipleData = ArrayList<ListMultipleCollcetdata>()
-   val handler: Handler  = Handler(Looper.getMainLooper())
+    val handler: Handler = Handler(Looper.getMainLooper())
     override fun onStop() {
         super.onStop()
         handler.removeCallbacksAndMessages(null)
@@ -84,7 +84,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
 
 
     companion object {
-        var objectmultipleData:ListMultipleCollcetdata?=null
+        var objectmultipleData: ListMultipleCollcetdata? = null
         var sensorlist = ArrayList<SensorsList>()
         var collectActivityList = ArrayList<CollectActivityList>()
         var sensorid = ArrayList<String>()
@@ -108,8 +108,9 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
 
     override fun onResume() {
         super.onResume()
-        if (listmultipleData!=null){
-
+        progressbar_collectnewdata.visibility = View.GONE
+        if (listmultipleData != null) {
+            progressbar_collectnewdata.visibility = View.GONE
             adapterAddmultiple = AdapterAddmultiple(requireContext(), listmultipleData)
             recyclerview_addmultipledata.adapter = adapterAddmultiple
 
@@ -145,13 +146,13 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
 
         initViewModel()
         if (collectid != null) {
-           handler.postDelayed({
+            handler.postDelayed({
                 setSpinner(collectActivity, sensonser, false)
 
             }, 1000)
 
         } else {
-         handler.postDelayed({
+            handler.postDelayed({
                 setSpinner(collectActivity, sensonser, false)
 
             }, 1200)
@@ -281,17 +282,19 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
             })
         }
         button.setOnClickListener {
-            progressbar_collectnewdata.visibility = View.VISIBLE
-            if(listmultipleData!=null){
-                for (i in 0 until listmultipleData.size){
-                    objectmultipleData=listmultipleData.get(i)
+                            progressbar_collectnewdata.visibility = View.VISIBLE
+
+//            if (!listmultipleData.isNullOrEmpty()) {
+if (listmultipleData.size>=1){
+                for (i in 0 until listmultipleData.size) {
+                    objectmultipleData = listmultipleData.get(i)
                     callMyApi("Value", objectmultipleData!!)
                 }
-                listmultipleData.clear()
-                objectmultipleData=null
 
-            }
-            else{
+                listmultipleData.clear()
+                objectmultipleData = null
+
+            } else {
                 if (ed_value != null) {
                     edValue = ed_value.text.toString()
                 } else if (dt_value != null) {
@@ -306,7 +309,6 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                     dtvalue, spinnervalue, duration, sensorId, collectId, resultid, spinnerUnitId
                 )
             }
-
 
 
         }
@@ -333,7 +335,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                     valuee, duration
                 )
             )
-            Toast.makeText(requireContext(),"Added $collectNAME",Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Added $collectNAME", Toast.LENGTH_SHORT).show()
 
             adapterAddmultiple = AdapterAddmultiple(requireContext(), listmultipleData)
             recyclerview_addmultipledata.adapter = adapterAddmultiple
@@ -350,7 +352,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                 valuedate?.setText("")
 
             } else {
-              valueSpinner?.setSelection(0)
+                valueSpinner?.setSelection(0)
 
             }
         }
@@ -364,7 +366,8 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
         return view
     }
 
-    private fun callStoreCollectDataAPi(
+    private fun
+             callStoreCollectDataAPi(
         edValue: String,
         dtvalue: String,
         spinnervalue: String,
@@ -380,7 +383,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
 
 
         } else if (dtvalue != null) {
-            callMyApi(edValue,objectmultipleData!!)
+            callMyApi(dtvalue, objectmultipleData!!)
         } else {
             callMyApi(spinnervalue, objectmultipleData!!)
 
@@ -391,25 +394,29 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
     private fun callMyApi(edValue: String, objectmultipleDataa: ListMultipleCollcetdata) {
 
 
-
         if (edValue != null) {
 
             if (collectId == null) {
                 collectId = collectActivityList.get(0).id.toInt()
             }
-            var apiInterFace:Call<ResponseCollectAcitivityResultList>?=null
+            var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
 
 
             val service = ApiClient.client.create(ApiInterFace::class.java)
-            if (objectmultipleDataa!=null){
-                 apiInterFace = service.storecollectdata(
-                    packList?.id.toString(), objectmultipleDataa.resultID, objectmultipleDataa.activityID,
-                     objectmultipleDataa.valueID, objectmultipleDataa.valueID ,objectmultipleDataa.unitID,
-                     objectmultipleDataa.sensorID,objectmultipleDataa.duration,
+            if (objectmultipleDataa != null) {
+                apiInterFace = service.storecollectdata(
+                    packList?.id.toString(),
+                    objectmultipleDataa.resultID,
+                    objectmultipleDataa.activityID,
+                    objectmultipleDataa.valueID,
+                    objectmultipleDataa.valueID,
+                    objectmultipleDataa.unitID,
+                    objectmultipleDataa.sensorID,
+                    objectmultipleDataa.duration,
                     MySharedPreference.getUser(requireContext())?.id.toString(),
                 )
-            }else{
-                 apiInterFace = service.storecollectdata(
+            } else {
+                apiInterFace = service.storecollectdata(
                     packList?.id.toString(), resultid.toString(), collectId.toString(),
 
                     edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
@@ -442,6 +449,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                     call: Call<ResponseCollectAcitivityResultList>,
                     t: Throwable
                 ) {
+                    progressbar_collectnewdata?.visibility = View.GONE
                     try {
                         AppUtils.logError(TAG, t.message.toString())
                     } catch (e: Exception) {
@@ -568,6 +576,7 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
 
     private fun initViewModel() {
         viewmodel = ViewModelProvider(this).get(CollectNewDataViewModel::class.java)
+        viewmodel?.progressbar = progressbar_collectnewdata
         viewmodel?.onCollectDataFieldList(requireContext())
 
     }
@@ -595,7 +604,6 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                 setSpinnerResult(collectactivitylistName)
 
             }
-
 
 
         }
@@ -690,11 +698,23 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
                     val data: Data = basrespose.data
                     val unitList = ArrayList<UnitList>()
                     val unitListname = ArrayList<String>()
+                    val valueListname = ArrayList<String>()
+                    val valueListid = ArrayList<String>()
 
                     basrespose.unit_list.forEach {
                         unitList.add(it)
                         unitListname.add(it.name)
                     }
+                    data.list_array.forEach {
+                        valueListname.add(it.name)
+                        valueListid.add(it.id)
+
+                    }
+                    if (!data.list_array.isNullOrEmpty()) {
+                        setUnitSpinner(valueListid, valueListname, data)
+
+                    }
+
                     setValueSpinner(unitList, unitListname, data)
                 }
             }
@@ -711,10 +731,75 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
         })
     }
 
+    private fun setUnitSpinner(
+        valueListid: ArrayList<String>, valueListname: ArrayList<String>, data: Data
+    ) {
+
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            valueListname
+        )
+        spinner_value?.adapter = adapter
+
+    }
+
     private fun setValueSpinner(
         unitList: ArrayList<UnitList>, unitListname: ArrayList<String>, data: Data
     ) {
         try {
+            if (data.type == "date") {
+
+                spinner_value?.visibility = View.GONE
+                ed_value?.visibility = View.GONE
+                dt_value.visibility = View.VISIBLE
+                dt_value.setText(dataa?.value)
+                dt_value.setOnClickListener {
+                    var settime = ""
+
+                    val c = Calendar.getInstance()
+                    val mHour = c[Calendar.HOUR_OF_DAY]
+                    val mMinute = c[Calendar.MINUTE]
+
+                    val timePickerDialog = TimePickerDialog(
+                        context,
+                        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                            settime = "$hourOfDay:$minute"
+                            AppUtils.logDebug(TAG, "settime" + settime)
+//                    txtTime.setText("$hourOfDay:$minute")
+                            updateLabel(dt_value, settime)
+
+                        }, mHour, mMinute, false
+                    )
+
+                    timePickerDialog.show()
+
+                    val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
+
+                        myCalendar.set(Calendar.YEAR, year)
+                        myCalendar.set(Calendar.MONTH, month)
+                        myCalendar.set(Calendar.DAY_OF_MONTH, day)
+                        updateLabel(dt_value, settime)
+                    }
+                    DatePickerDialog(
+                        requireContext(), date, myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
+                    ).show()
+                }
+
+            } else if (data.type == "numeric" || data.type == "text") {
+                ed_value?.visibility = View.VISIBLE
+                dt_value?.visibility = View.GONE
+                spinner_value?.visibility = View.GONE
+                ed_value?.setText(dataa?.value)
+            } else if (data.type == "list" || data.type == "List" || data.type == "table" || data.type == "Table") {
+
+
+                spinner_value?.visibility = View.VISIBLE
+                ed_value?.visibility = View.GONE
+                dt_value.visibility = View.GONE
+            }
             val adapter = ArrayAdapter(
                 requireContext(),
                 android.R.layout.simple_spinner_dropdown_item, unitListname
@@ -725,52 +810,6 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
         }
 
 
-
-        if (data.type == "date") {
-
-            spinner_value?.visibility = View.GONE
-            ed_value?.visibility = View.GONE
-            dt_value.visibility = View.VISIBLE
-            dt_value.setText(dataa?.value)
-            dt_value.setOnClickListener {
-                var settime = ""
-
-                val c = Calendar.getInstance()
-                val mHour = c[Calendar.HOUR_OF_DAY]
-                val mMinute = c[Calendar.MINUTE]
-
-                val timePickerDialog = TimePickerDialog(
-                    context,
-                    TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                        settime = "$hourOfDay:$minute"
-                        AppUtils.logDebug(TAG, "settime" + settime)
-//                    txtTime.setText("$hourOfDay:$minute")
-                        updateLabel(dt_value, settime)
-
-                    }, mHour, mMinute, false
-                )
-
-                timePickerDialog.show()
-
-                val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
-
-                    myCalendar.set(Calendar.YEAR, year)
-                    myCalendar.set(Calendar.MONTH, month)
-                    myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                    updateLabel(dt_value, settime)
-                }
-                DatePickerDialog(
-                    requireContext(), date, myCalendar.get(Calendar.YEAR),
-                    myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
-                ).show()
-            }
-
-        } else if (data.type == "numeric" || data.type == "text") {
-            ed_value?.visibility = View.VISIBLE
-            dt_value?.visibility = View.GONE
-            spinner_value?.visibility = View.GONE
-            ed_value?.setText(dataa?.value)
-        }
 
 
 

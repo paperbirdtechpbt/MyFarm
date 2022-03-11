@@ -15,6 +15,7 @@ import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.ViewTaskViewModel
 import retrofit2.Call
 import retrofit2.Response
@@ -39,7 +40,7 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
     fun onConfigTypeRequest(context: Context) {
 
         ApiClient.client.create(ApiInterFace::class.java)
-            .packConfigList("2").enqueue(this)
+            .packConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
 
     }
 
@@ -50,22 +51,29 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
     override fun onResponse(call: Call<PackConfigResponse>, response: Response<PackConfigResponse>
     ) {
 
-        configlist.value = emptyList()
-        val baseList : PackConfigResponse =  Gson().fromJson(
-            Gson().toJson(response.body()),
-            PackConfigResponse::class.java)
-        val upCommingTripList = ArrayList<PackConfigList>()
-        baseList.data.forEach { routes ->
+        if (response.body()?.error==false){
 
+            try{
+                configlist.value = emptyList()
+                val baseList : PackConfigResponse =  Gson().fromJson(
+                    Gson().toJson(response.body()),
+                    PackConfigResponse::class.java)
+                val upCommingTripList = ArrayList<PackConfigList>()
+                baseList.data.forEach { routes ->
+                    upCommingTripList.add(routes)
 
+                }
+                configlist.value = upCommingTripList
 
-
-            upCommingTripList.add(routes)
+                progressbar?.visibility= View.GONE
+            }
+            catch (e:Exception){
+                AppUtils.logDebug(TAG,e.message.toString())
+            }
 
         }
-        configlist.value = upCommingTripList
 
-        progressbar?.visibility= View.GONE
+
 
     }
 

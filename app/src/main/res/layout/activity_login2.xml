@@ -57,6 +57,8 @@
                 android:hint="@string/Password"
                 android:inputType="textPassword"
                 android:maxLines="1"
+                android:lines="1"
+                android:textColor="@color/white"
                 android:text="@={loginmodel.password}"
                 app:layout_constraintBottom_toTopOf="@id/label_forgetPassword"
                 app:layout_constraintTop_toBottomOf="@id/ed_email" />
@@ -70,6 +72,8 @@
                 android:background="@drawable/design_edittext"
                 android:hint="@string/Email"
                 android:maxLines="1"
+                android:textColor="@color/white"
+                android:lines="1"
                 android:text="@={loginmodel.email}"
                 app:layout_constraintBottom_toTopOf="@id/ed_password"
                 app:layout_constraintTop_toBottomOf="@id/label_pleaselogin" />

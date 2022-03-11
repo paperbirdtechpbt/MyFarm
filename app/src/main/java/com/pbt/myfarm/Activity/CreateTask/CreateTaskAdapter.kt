@@ -15,10 +15,11 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpAmtArray
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpName
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.ExpNameKey
+
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.HttpResponse.Field
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList

@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_login2.*
 
 class LoginActivity : AppCompatActivity() {
     var viewModel: LoginViewModel? = null
-var binding:ActivityLogin2Binding?=null
+    var binding: ActivityLogin2Binding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +37,11 @@ var binding:ActivityLogin2Binding?=null
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(LoginViewModel::class.java)
 
-       binding?.loginmodel=viewModel
-        viewModel?.progressBar=progressLogin
-        viewModel?.btnlogin=btn_login
+        binding?.loginmodel = viewModel
+        viewModel?.progressBar = progressLogin
+        viewModel?.btnlogin = btn_login
 
-initObservable()
+        initObservable()
 
         setSpinner()
 
@@ -49,24 +49,30 @@ initObservable()
     }
 
     private fun initObservable() {
+
         viewModel?.userLogin?.observe(this, Observer { response ->
             if (response?.error == false) {
 
 
-                MySharedPreference.setStringValue(this,CONST_SHARED_PREF_USERNAME,Gson().toJson(response.data))
-                MySharedPreference.setStringValue(this,CONST_PREF_IS_LOGIN,"true")
+                MySharedPreference.setStringValue(
+                    this,
+                    CONST_SHARED_PREF_USERNAME,
+                    Gson().toJson(response.data)
+                )
+                MySharedPreference.setStringValue(this, CONST_PREF_IS_LOGIN, "true")
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
 
-             Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${response.message}", Toast.LENGTH_LONG).show()
             } else
-                Toast.makeText(this,"${response.message}",Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${response.message}", Toast.LENGTH_LONG).show()
         })
     }
 
     private fun setSpinner() {
-        ArrayAdapter.createFromResource(this, R.array.role_array, android.R.layout.simple_spinner_item
+        ArrayAdapter.createFromResource(
+            this, R.array.role_array, android.R.layout.simple_spinner_item
         ).also { adapter ->
 
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

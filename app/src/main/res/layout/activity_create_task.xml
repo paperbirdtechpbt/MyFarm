@@ -16,33 +16,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.CreateTask.CreateTaskActivity">
-            <androidx.appcompat.widget.Toolbar
-            app:layout_constraintTop_toTopOf="parent"
-            android:id="@+id/mytoolbar"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:titleTextColor="@android:color/white"
-            android:background="?attr/colorPrimary">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btn_taskFunction"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#71D5A1"
-                android:text="TASK Function"
-                android:layout_marginRight="10dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"
-                />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintRight_toRightOf="parent"
+    android:text="Task Funciton"
+    android:id="@+id/btn_taskfuntion"
 
-        </androidx.appcompat.widget.Toolbar>
+    tools:ignore="MissingConstraints" />
+
+
 
         <ProgressBar
             android:id="@+id/createtaskProgressbar"
@@ -328,8 +313,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/staticEdittexxt"
-           app:layout_constraintTop_toBottomOf="@id/mytoolbar"
-            >
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
             <TextView
                 android:id="@+id/label_prefix"
                 android:layout_width="wrap_content"
@@ -343,10 +328,10 @@
             <EditText
                 android:id="@+id/field_prefix"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 style="@style/Edittext"
                 android:padding="10dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="60dp"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/design_edittext"
                 tools:ignore="MissingConstraints" />
@@ -364,10 +349,10 @@
             <Spinner
                 android:id="@+id/field_communitygroup"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 style="@style/Edittext"
                 android:padding="10dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
                 app:layout_constraintTop_toBottomOf="@id/field_desciption"
                 android:background="@drawable/design_edittext"
                 tools:ignore="MissingConstraints" />
@@ -384,10 +369,10 @@
             <EditText
                 android:id="@+id/field_desciption"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 style="@style/Edittext"
                 android:padding="10dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
                 app:layout_constraintTop_toBottomOf="@id/field_prefix"
                 android:background="@drawable/design_edittext"
                 tools:ignore="MissingConstraints" />

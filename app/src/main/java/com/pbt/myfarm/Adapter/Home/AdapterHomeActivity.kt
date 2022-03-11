@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.Activity.DashBoardEvent.DashBoardEventActivity
+import com.pbt.myfarm.Activity.Event.ViewEventActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.ModelClass.EventList
@@ -44,6 +45,9 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
                 context.startActivity(Intent(context, PackActivity::class.java))}
             else if(item.evenetName=="DashBoard Event"){
                 context.startActivity(Intent(context, DashBoardEventActivity::class.java))
+            }
+            else if(item.evenetName=="Event"){
+                context.startActivity(Intent(context, ViewEventActivity::class.java))
             }
 
         }

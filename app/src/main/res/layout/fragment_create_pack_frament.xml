@@ -5,12 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginTop="25dp"
+
     tools:context=".Fragement.CreatePack.CreatePackFrament">
+    <Button
+        android:id="@+id/btn_viewgraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="View Graph"
+        android:backgroundTint="@color/grey"
+        android:layout_margin="5dp"
+        app:layout_constraintTop_toTopOf="parent"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_packFieldsFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="50dp"
         tools:listitem="@layout/itempackfeildlist"
 
         app:layout_constraintTop_toTopOf="parent"

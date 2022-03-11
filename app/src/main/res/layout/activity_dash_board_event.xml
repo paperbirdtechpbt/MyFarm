@@ -1,21 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.DashBoardEvent.DashBoardEventActivity">
-    <com.applandeo.materialcalendarview.CalendarView
-        android:id="@+id/calendarView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Responsible"
+        app:layout_constraintBottom_toTopOf="@id/spinner_responsible"
+        app:layout_constraintStart_toStartOf="@id/spinner_responsible"/>
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Team"
+        app:layout_constraintBottom_toTopOf="@id/spinner_responsibleTeam"
+        app:layout_constraintStart_toStartOf="@id/spinner_responsibleTeam"/>
+    <Spinner
+        android:id="@+id/spinner_responsible"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:headerColor="@color/red"
-        android:visibility="visible"
-          app:selectionColor="@color/green"
+        android:background="@drawable/design_edittext"
+        style="@style/Edittext"/>
+    <Spinner
+        android:id="@+id/spinner_responsibleTeam"
         android:layout_width="match_parent"
-        app:layout_constraintHeight_percent="0.45"
+        android:layout_height="45dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/spinner_responsible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@drawable/design_edittext"
+        style="@style/Edittext"/>
+
+    <com.applandeo.materialcalendarview.CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:visibility="visible"
+        app:headerColor="@color/red"
+        android:layout_marginTop="15dp"
         app:layout_constraintBottom_toTopOf="@id/btn_select_month"
-        android:layout_height="wrap_content"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_responsibleTeam"
+        app:selectionColor="@color/green"
         tools:ignore="MissingConstraints" />
 
 <Button
@@ -26,16 +64,17 @@
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintBottom_toTopOf="@id/recyclerview_events"
-    app:layout_constraintTop_toBottomOf="@id/calendarView"/>
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview_events"
         android:layout_width="match_parent"
-        android:layout_height="0px"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
         tools:listitem="@layout/item_eventlist"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_select_month"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -157,10 +157,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/recyclerview_viewtask"
             tools:listitem="@layout/itemlist_pack"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/view_blueHeader"
             android:layout_marginTop="10dp" />
 
