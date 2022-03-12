@@ -3,19 +3,17 @@ package com.pbt.myfarm.DataBase
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
-import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldList
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.PackConfigList
+import com.pbt.myfarm.TasknewOffline
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_VERSION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_END_DATE
@@ -85,6 +83,27 @@ import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Status
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_TABLENAME
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Updated_at
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_CONFIGID
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Created_at
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_NAMEPREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Status
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_TASKFUNC
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Updated_at
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_enddate
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangedby
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangeddate
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_startdate
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_taskid
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_value
+import com.pbt.myfarm.Util.AppConstant.Companion.TASKNEW_TABLENAME
 import com.pbt.myfarm.Util.AppUtils
 
 
@@ -185,6 +204,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 PACKFIELDS_value + " TEXT" + ")")
         db?.execSQL(pack_fields)
 
+        val task_new = ("CREATE TABLE " + TASKNEW_TABLENAME + " ("
+                + TABLENEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                TABLENEW_NAMEPREFIX + " TEXT," +
+                TABLENEW_NAME + " TEXT," +
+                TABLENEW_DESC + " TEXT," +
+                TABLENEW_CONFIGID + " TEXT," +
+                TABLENEW_GROUP + " TEXT," +
+                TABLENEW_startdate + " TEXT," +
+                TABLENEW_enddate + " TEXT," +
+                TABLENEW_lastchangedby + " TEXT," +
+                TABLENEW_TASKFUNC + " TEXT," +
+                TABLENEW_lastchangeddate + " TEXT," +
+                TABLENEW_Status + " TEXT," +
+                TABLENEW_Created_at + " TEXT," +
+                TABLENEW_Updated_at + " TEXT," +
+                TABLENEW_deleted_at + " TEXT" + ")")
+        db?.execSQL(task_new)
+
+        val task_fields = ("CREATE TABLE " + TASKFIELDS_TABLENAME + " ("
+                + TASKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                TASKFIELDS_taskid + " TEXT," +
+                TASKFIELDS_fieldid + " TEXT," +
+                TASKFIELDS_value + " TEXT" + ")")
+        db?.execSQL(task_fields)
+
+
+
 
 //        val userCollectdata = ("CREATE TABLE " + CONST_TABLE_COLLECT + " ("
 //                + CONST_COLLECT_ID + " INTEGER PRIMARY KEY, " +
@@ -233,6 +279,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
+    @SuppressLint("Range")
+    fun getLastValue_task_new(configid: String): String {
+
+        var myid = ""
+        val db = this.readableDatabase
+
+        val selectQuery = "SELECT  * FROM $TASKNEW_TABLENAME WHERE $TABLENEW_CONFIGID =$configid "
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(selectQuery, null)
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(selectQuery)
+            return myid
+        }
+        if (cursor.moveToFirst()) {
+            do {
+                val result = cursor.getInt(0)
+                AppUtils.logDebug(TAG, "resultt" + result)
+                myid = cursor.getString(cursor.getColumnIndex(TABLENEW_NAME))
+            } while (cursor.moveToNext())
+        }
+        return myid
+
+    }
+
 
 //    fun addUser() {
 //        val values = ContentValues()
@@ -245,44 +319,42 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //
 //    }
 
-    fun addTask(username: String, viewtask: ViewTaskModelClass) {
+//    fun addTask(username: String, viewtask: ViewTaskModelClass) {
+//
+//        try {
+//            val values = ContentValues()
+//            values.put(CONST_USERNAME, username)
+//            values.put(CONST_TASK_NAME, viewtask.ENTRYNAME)
+//            values.put(CONST_TASK_TYPE, viewtask.ENTRYTYPE)
+//            values.put(CONST_EXPECTED_EXP_STR_DATE, viewtask.ExpectedStartDate)
+//            values.put(CONST_EXPECTED_EXP_END_DATE, viewtask.ExpectedEndDate)
+//            values.put(CONST_EXPECTED_STR_DATE, viewtask.StartDate)
+//            values.put(CONST_EXPECTED_END_DATE, viewtask.EndDate)
+//            values.put(CONST_TASK_DETAIL, viewtask.ENTRYDETAIL)
+//            val db = this.writableDatabase
+//            val result = db.insert(CONST_NEW_TASK, null, values)
+//            db.close()
+//            if (result >= 0) {
+//                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
+//                val intent = Intent(context, ViewTaskActivity::class.java)
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                context.startActivity(intent)
+//                CreateTaskActivity().finish()
+//
+//
+//            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+//
+//            }
+//        } catch (e: Exception) {
+//            AppUtils.logError(TAG, e.message!!)
+//        }
+//
+//
+//    }
 
-        try {
-            val values = ContentValues()
-            values.put(CONST_USERNAME, username)
-            values.put(CONST_TASK_NAME, viewtask.ENTRYNAME)
-            values.put(CONST_TASK_TYPE, viewtask.ENTRYTYPE)
-            values.put(CONST_EXPECTED_EXP_STR_DATE, viewtask.ExpectedStartDate)
-            values.put(CONST_EXPECTED_EXP_END_DATE, viewtask.ExpectedEndDate)
-            values.put(CONST_EXPECTED_STR_DATE, viewtask.StartDate)
-            values.put(CONST_EXPECTED_END_DATE, viewtask.EndDate)
-            values.put(CONST_TASK_DETAIL, viewtask.ENTRYDETAIL)
-            val db = this.writableDatabase
-            val result = db.insert(CONST_NEW_TASK, null, values)
-            db.close()
-            if (result >= 0) {
-                Toast.makeText(context, "Added", Toast.LENGTH_SHORT).show()
-                val intent = Intent(context, ViewTaskActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                context.startActivity(intent)
-                CreateTaskActivity().finish()
 
-
-            } else {
-                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
-            }
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-        }
-
-
-    }
-
-    fun addNewPack(
-        viewtask: ViewPackModelClass,
-        created_at: String,
-        deleted_at: String,
+    fun addNewPack(viewtask: ViewPackModelClass, created_at: String, deleted_at: String,
         updated_at: String
     ) {
         AppUtils.logDebug(TAG, "viewTask====" + viewtask.toString())
@@ -317,19 +389,78 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     fun addpackFieldValue(id: String, packid: String, value: String) {
-
         try {
             val values = ContentValues()
             values.put(PACKFIELDS_fieldid, id)
             values.put(PACKFIELDS_packid, packid)
             values.put(PACKFIELDS_value, value)
 
-
             val db = this.writableDatabase
             val result = db.insert(PACKFIELDS_TABLENAME, null, values)
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added PackFieldSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+    fun addNewTask(task: TasknewOffline) {
+
+        try {
+            val values = ContentValues()
+
+            values.put(TABLENEW_DESC, task.desciption)
+            values.put(TABLENEW_NAME, task.name)
+            values.put(TABLENEW_GROUP, task.com_group)
+            values.put(TABLENEW_CONFIGID, task.task_config_id)
+            values.put(TABLENEW_Status, task.status)
+            values.put(TABLENEW_Created_at, task.created_at)
+            values.put(TABLENEW_Updated_at, task.last_changed_date)
+            values.put(TABLENEW_startdate, task.startDate)
+            values.put(TABLENEW_enddate, task.startDate)
+            values.put(TABLENEW_deleted_at, task.deleted_at)
+            values.put(TABLENEW_lastchangedby, task.lastchanged_by)
+            values.put(TABLENEW_lastchangeddate, task.last_changed_date)
+            values.put(TABLENEW_TASKFUNC, task.task_func)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TASKNEW_TABLENAME, null, values)
+            db.close()
+            if (result >= 0) {
+                Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
+
+
+            } else {
+                Toast.makeText(context, "Failed to add task", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+
+    }
+
+    fun addtaskFieldValue(task_id: String, field_id: String, value: String) {
+
+        try {
+            val values = ContentValues()
+
+            values.put(TASKFIELDS_taskid, task_id)
+            values.put(TASKFIELDS_fieldid, field_id)
+            values.put(TASKFIELDS_value, value)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TASKFIELDS_TABLENAME, null, values)
+            db.close()
+            if (result >= 0) {
+                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
             } else {
@@ -641,6 +772,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val success = db.delete(
             PACKNEW_TABLENAME,
             PACKNEW_CONFIGID + "=" + configid + " and " + PACKNEW_NAME + "=" + packid,
+            null
+        )
+        if (success > 0) {
+            Toast.makeText(context, "DeleteSuccessFull", Toast.LENGTH_SHORT).show()
+        }
+        db.close()
+
+    }
+
+    fun deletenewTask(taskid: String, configid: String) {
+
+        val db = this.writableDatabase
+        val success = db.delete(
+            TASKNEW_TABLENAME,
+            TABLENEW_CONFIGID + "=" + configid + " and " + TABLENEW_NAME + "=" + taskid,
             null
         )
         if (success > 0) {
