@@ -69,6 +69,22 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERPASS
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_fieldid
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_packid
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_value
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_CONFIGID
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Created_at
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAMEPREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Status
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Updated_at
 import com.pbt.myfarm.Util.AppUtils
 
 
@@ -149,6 +165,26 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 CONST_PACK_CommunityGroupcommunity_group + " TEXT" + ")")
         db?.execSQL(packCommunityGroup)
 
+        val pack_new = ("CREATE TABLE " + PACKNEW_TABLENAME + " ("
+                + PACKNEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                PACKNEW_NAMEPREFIX + " TEXT," +
+                PACKNEW_NAME + " TEXT," +
+                PACKNEW_DESC + " TEXT," +
+                PACKNEW_CONFIGID + " TEXT," +
+                PACKNEW_GROUP + " TEXT," +
+                PACKNEW_Status + " TEXT," +
+                PACKNEW_Created_at + " TEXT," +
+                PACKNEW_Updated_at + " TEXT," +
+                PACKNEW_Deleted_at + " TEXT" + ")")
+        db?.execSQL(pack_new)
+
+        val pack_fields = ("CREATE TABLE " + PACKFIELDS_TABLENAME + " ("
+                + PACKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                PACKFIELDS_packid + " TEXT," +
+                PACKFIELDS_fieldid + " TEXT," +
+                PACKFIELDS_value + " TEXT" + ")")
+        db?.execSQL(pack_fields)
+
 
 //        val userCollectdata = ("CREATE TABLE " + CONST_TABLE_COLLECT + " ("
 //                + CONST_COLLECT_ID + " INTEGER PRIMARY KEY, " +
@@ -167,6 +203,36 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db?.execSQL("DROP TABLE IF EXISTS " + CONST_USERS_TABLE)
         onCreate(db)
     }
+
+    @SuppressLint("Range")
+    fun getLastValue_pack_new(configid: String): String {
+
+        var myid = ""
+        val list: ArrayList<PackCommunityList> = ArrayList()
+        val db = this.readableDatabase
+
+        val selectQuery = "SELECT  * FROM $PACKNEW_TABLENAME WHERE $PACKNEW_CONFIGID =$configid "
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(selectQuery, null)
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(selectQuery)
+            return myid
+        }
+        if (cursor.moveToFirst()) {
+            do {
+                val result = cursor.getInt(0)
+                AppUtils.logDebug(TAG, "resultt" + result)
+                myid = cursor.getString(cursor.getColumnIndex(PACKNEW_NAME))
+            } while (cursor.moveToNext())
+        }
+        return myid
+
+    }
+
 
 //    fun addUser() {
 //        val values = ContentValues()
@@ -200,6 +266,70 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
                 CreateTaskActivity().finish()
+
+
+            } else {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+
+    }
+
+    fun addNewPack(
+        viewtask: ViewPackModelClass,
+        created_at: String,
+        deleted_at: String,
+        updated_at: String
+    ) {
+        AppUtils.logDebug(TAG, "viewTask====" + viewtask.toString())
+
+        try {
+            val values = ContentValues()
+            values.put(PACKNEW_NAME, viewtask.name)
+            values.put(PACKNEW_CONFIGID, viewtask.pack_config_id)
+            values.put(PACKNEW_Created_at, created_at)
+            values.put(PACKNEW_Deleted_at, deleted_at)
+            values.put(PACKNEW_Updated_at, updated_at)
+            values.put(PACKNEW_DESC, viewtask.description)
+            values.put(PACKNEW_GROUP, viewtask.com_group)
+            values.put(PACKNEW_Status, "0")
+
+            val db = this.writableDatabase
+            val result = db.insert(PACKNEW_TABLENAME, null, values)
+            db.close()
+            if (result >= 0) {
+                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+
+
+            } else {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+
+
+    }
+
+    fun addpackFieldValue(id: String, packid: String, value: String) {
+
+        try {
+            val values = ContentValues()
+            values.put(PACKFIELDS_fieldid, id)
+            values.put(PACKFIELDS_packid, packid)
+            values.put(PACKFIELDS_value, value)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(PACKFIELDS_TABLENAME, null, values)
+            db.close()
+            if (result >= 0) {
+                Toast.makeText(context, "Added PackFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
             } else {
@@ -342,6 +472,26 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.close()
         return success
     }
+
+//    fun updateTask(task: ViewTaskModelClass, entryname: String): Int {
+//
+//        val db = this.writableDatabase
+//
+//        val contentValues = ContentValues()
+//        contentValues.put(CONST_TASK_NAME, task.ENTRYNAME)
+//        contentValues.put(CONST_TASK_TYPE, task.ENTRYTYPE)
+//        contentValues.put(CONST_TASK_DETAIL, task.ENTRYDETAIL)
+//        contentValues.put(CONST_EXPECTED_EXP_STR_DATE, task.ExpectedStartDate)
+//        contentValues.put(CONST_EXPECTED_EXP_END_DATE, task.ExpectedEndDate)
+//        contentValues.put(CONST_EXPECTED_STR_DATE, task.StartDate)
+//        contentValues.put(CONST_EXPECTED_END_DATE, task.EndDate)
+////        val success=db.update(CONST_NEW_TASK,contentValues,"$CONST_TASK_NAME="+task.ENTRYNAME,
+////    null)
+//        val success =
+//            db.update(CONST_NEW_TASK, contentValues, "$CONST_TASK_NAME = ?", arrayOf(entryname))
+//        db.close()
+//        return success
+//    }
 //    fun updatePack(task: ViewPackModelClass, entryname: String):Int{
 //        val db=this.writableDatabase
 //
@@ -485,11 +635,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
+    fun deletenewPack(packid: String, configid: String) {
+
+        val db = this.writableDatabase
+        val success = db.delete(
+            PACKNEW_TABLENAME,
+            PACKNEW_CONFIGID + "=" + configid + " and " + PACKNEW_NAME + "=" + packid,
+            null
+        )
+        if (success > 0) {
+            Toast.makeText(context, "DeleteSuccessFull", Toast.LENGTH_SHORT).show()
+        }
+        db.close()
+
+    }
+
     fun deletePack(taskname: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(CONST_PACK_NAME, taskname)
         val succ = db.delete(CONST_TABLE_PACK, "PACKname=?", arrayOf(taskname))
+
         db.close()
 
     }
