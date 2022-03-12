@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         recyclerview_main.setLayoutManager(mLayoutManager)
         if (checkInternetConnection()){
             initViewModel()
+
          }
 
         setdata()
@@ -54,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
+
         viewModel?.packConfigList(this)
 //        viewModel?.packCOnfigFielList(this, packconfiglist)
     }

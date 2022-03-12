@@ -14,6 +14,23 @@ import com.pbt.myfarm.HttpResponse.PackFieldList
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.TasknewOffline
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_collect_activity_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_created_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_deleted_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_duration
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_new_value
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_packid
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_result_class
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_resultid
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_sensor_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_unit_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_value
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_VERSION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_END_DATE
@@ -104,6 +121,22 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_taskid
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_value
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKNEW_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_Key
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_TABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_collectactiivtid
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_deleted_by
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_list_id
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_result_class
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_result_name
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_type_id
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_Key
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_TABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_collectactiivtid
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_id
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_unitid
+import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_updated_at
 import com.pbt.myfarm.Util.AppUtils
 
 
@@ -145,7 +178,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 CONST_PACK_DETAIL + " TEXT," +
                 CONST_PACK_NAME_PREFIX_padzero + " TEXT," +
                 CONST_PACK_NAME_PREFIX + " TEXT," +
-                CONST_PACK_CREATEDBY + " TEXT," +
+                CONST_PACK_CREATEDBY + " TEX T," +
                 CONST_PACK_PADZERO + " TEXT," +
                 CONST_PACK_GROUP + " TEXT" + ")")
 
@@ -229,6 +262,46 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 TASKFIELDS_value + " TEXT" + ")")
         db?.execSQL(task_fields)
 
+        val collectdata = ("CREATE TABLE " + COLLECTDATA_TABLENAME + " ("
+                + COLLECTDATA_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COLLECTDATA_packid + " TEXT," +
+                COLLECTDATA_resultid + " TEXT," +
+                COLLECTDATA_result_class + " TEXT," +
+                COLLECTDATA_collect_activity_id + " TEXT," +
+                COLLECTDATA_new_value + " TEXT," +
+                COLLECTDATA_value + " TEXT," +
+                COLLECTDATA_unit_id + " TEXT," +
+                COLLECTDATA_sensor_id + " TEXT," +
+                COLLECTDATA_duration + " TEXT," +
+                COLLECTDATA_updated_by + " TEXT," +
+                COLLECTDATA_created_by + " TEXT," +
+                COLLECTDATA_deleted_by + " TEXT," +
+                COLLECTDATA_created_at + " TEXT," +
+                COLLECTDATA_deleted_at + " TEXT," +
+                COLLECTDATA_updated_at + " TEXT" + ")")
+        db?.execSQL(collectdata)
+
+        val collect_activity_results = ("CREATE TABLE " + colctactyrslt_TABLE + " ("
+                + colctactyrslt_Key + " INTEGER PRIMARY KEY, " +
+                colctactyrslt_collectactiivtid + " TEXT," +
+                colctactyrslt_result_name + " TEXT," +
+                colctactyrslt_unit_id + " TEXT," +
+                colctactyrslt_type_id + " TEXT," +
+                colctactyrslt_list_id + " TEXT," +
+                colctactyrslt_result_class + " TEXT," +
+                colctactyrslt_created_by + " TEXT," +
+                colctactyrslt_deleted_by + " TEXT," +
+                colctactyrslt_updated_at + " TEXT," +
+                colctactyrslt_deleted_at + " TEXT" + ")")
+        db?.execSQL(collect_activity_results)
+
+
+        val collect_activity_results_unit = ("CREATE TABLE " + colctactyrslt_unit_TABLE + " ("
+                + colctactyrslt_unit_Key + " INTEGER PRIMARY KEY, " +
+                colctactyrslt_unit_collectactiivtid + " TEXT," +
+                colctactyrslt_unit_unitid + " TEXT" + ")")
+        db?.execSQL(collect_activity_results_unit)
+
 
 
 
@@ -304,7 +377,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             } while (cursor.moveToNext())
         }
         return myid
-
     }
 
 
@@ -781,16 +853,16 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
-    fun deletenewTask(taskid: String, configid: String) {
+    fun deletenewTask(taskid: String, taskconfigid: String) {
 
         val db = this.writableDatabase
         val success = db.delete(
             TASKNEW_TABLENAME,
-            TABLENEW_CONFIGID + "=" + configid + " and " + TABLENEW_NAME + "=" + taskid,
+            TABLENEW_CONFIGID + "=" + taskconfigid + " and " + TABLENEW_NAME + "=" + taskid,
             null
         )
         if (success > 0) {
-            Toast.makeText(context, "DeleteSuccessFull", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Delete SuccessFull", Toast.LENGTH_SHORT).show()
         }
         db.close()
 

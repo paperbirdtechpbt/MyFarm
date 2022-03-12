@@ -116,6 +116,93 @@ class AppConstant {
         val CONST_EDITEVENT_ID="editeventid"
         val CONST_CREATEEVENT="createevent"
 
+        //TABLE
+        val PACKNEW_TABLENAME="packnewtablename"
+        val PACKNEW_PRIMARYKEY="packnewprimarykey"
+        val PACKNEW_NAMEPREFIX="packnewnameprefix"
+        val PACKNEW_DESC="packnewdesc"
+        val PACKNEW_CONFIGID="packnewid"
+        val PACKNEW_GROUP="packnewGroup"
+        val PACKNEW_Status="Status"
+        val PACKNEW_NAME="PACKNEW_NAME"
+        val PACKNEW_Created_at="Created_at"
+        val PACKNEW_Updated_at="Updated_at"
+        val PACKNEW_Deleted_at="Deleted_at"
+
+        //TABLE_packFields
+        val PACKFIELDS_TABLENAME="packfieldtablename"
+        val PACKFIELDS_PRIMARYKEY="packfieldsprimarykey"
+        val PACKFIELDS_packid="packfieldpackid"
+        val PACKFIELDS_fieldid="packfieldfieldid"
+        val PACKFIELDS_value="packfieldvalue"
+        //TABLE_taskfields
+        val TASKFIELDS_TABLENAME="taskfieldtablename"
+        val TASKFIELDS_PRIMARYKEY="taskfieldsprimarykey"
+        val TASKFIELDS_taskid="taskfieldtaskid"
+        val TASKFIELDS_fieldid="taskfieldfieldid"
+        val TASKFIELDS_value="taskfieldvalue"
+
+        //TABLE taskfields
+
+        val TASKNEW_TABLENAME="TASKNEW_TABLENAME"
+        val TABLENEW_PRIMARYKEY="TABLENEW_PRIMARYKEY"
+        val TABLENEW_NAMEPREFIX="TABLENEW_NAMEPREFIX"
+        val TABLENEW_NAME="TABLENEW_NAME"
+        val TABLENEW_DESC="TABLENEW_DESC"
+        val TABLENEW_GROUP="TABLENEW_GROUP"
+        val TABLENEW_CONFIGID="TABLENEW_CONFIGID"
+        val TABLENEW_Status="TABLENEW_Status"
+        val TABLENEW_Created_at="TABLENEW_Created_at"
+        val TABLENEW_Updated_at="TABLENEW_Updated_at"
+        val TABLENEW_deleted_at="TABLENEW_delted_at"
+        val TABLENEW_startdate="TABLENEW_startdate"
+        val TABLENEW_enddate="TABLENEW_enddate"
+        val TABLENEW_lastchangedby="TABLENEW_lastchangedby"
+        val TABLENEW_lastchangeddate="TABLENEW_lastchangeddate"
+        val TABLENEW_TASKFUNC="TABLENEW_taskfunc"
+
+        //collect_data TABLE
+        val COLLECTDATA_TABLENAME="COLLECTDATA_TABLENAME"
+        val COLLECTDATA_PRIMARYKEY="id"
+        val COLLECTDATA_packid="packid"
+        val COLLECTDATA_resultid="result_id"
+        val COLLECTDATA_result_class="result_class"
+        val COLLECTDATA_collect_activity_id="collect_activity_id"
+        val COLLECTDATA_new_value="new_value"
+        val COLLECTDATA_value="value"
+        val COLLECTDATA_unit_id="unit_id"
+        val COLLECTDATA_sensor_id="sensor_id"
+        val COLLECTDATA_duration="duration"
+        val COLLECTDATA_updated_by="updated_by"
+        val COLLECTDATA_created_by="created_by"
+        val COLLECTDATA_deleted_by="deleted_by"
+        val COLLECTDATA_created_at="created_at"
+        val COLLECTDATA_updated_at="updated_at"
+        val COLLECTDATA_deleted_at="deleted_at"
+
+   //collect_activity_results
+        val colctactyrslt_TABLE="collect_activity_results"
+        val colctactyrslt_Key="id"
+        val colctactyrslt_collectactiivtid="collect_activity_id"
+        val colctactyrslt_result_name="resultname"
+        val colctactyrslt_unit_id="unit_id"
+        val colctactyrslt_type_id="collect_activity_results"
+        val colctactyrslt_list_id="collect_activity_results"
+        val colctactyrslt_result_class="collect_activity_results"
+        val colctactyrslt_created_by="created_by"
+        val colctactyrslt_deleted_by="deleted_by"
+        val colctactyrslt_created_at="created_at"
+        val colctactyrslt_updated_at="updated_at"
+        val colctactyrslt_deleted_at="deleted_at"
+
+        //collect_activity_result_unit
+        val colctactyrslt_unit_TABLE="collect_activity_results_unit"
+        val colctactyrslt_unit_Key="id"
+        val colctactyrslt_unit_collectactiivtid="collect_activity_result_id"
+        val colctactyrslt_unit_unitid="unit_id"
+
+
+
 
     }
 }

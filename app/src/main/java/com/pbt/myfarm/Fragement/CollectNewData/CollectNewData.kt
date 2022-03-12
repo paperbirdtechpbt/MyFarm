@@ -294,7 +294,8 @@ if (listmultipleData.size>=1){
                 listmultipleData.clear()
                 objectmultipleData = null
 
-            } else {
+            }
+                  else {
                 if (ed_value != null) {
                     edValue = ed_value.text.toString()
                 } else if (dt_value != null) {
@@ -304,10 +305,10 @@ if (listmultipleData.size>=1){
                 }
                 duration = myduration?.text.toString()
 
-                callStoreCollectDataAPi(
-                    edValue,
-                    dtvalue, spinnervalue, duration, sensorId, collectId, resultid, spinnerUnitId
-                )
+//                callStoreCollectDataAPi(
+//                    edValue,
+//                    dtvalue, spinnervalue, duration, sensorId, collectId, resultid, spinnerUnitId
+//                )
             }
 
 

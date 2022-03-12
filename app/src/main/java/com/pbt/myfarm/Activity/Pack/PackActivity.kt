@@ -1,6 +1,5 @@
 package com.pbt.myfarm.Activity.Pack
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -35,6 +34,7 @@ import java.util.*
 
 
 class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
+
     private var adapter: AdapterViewPack? = null
     var db: DbHelper? = null
     var viewModel: ViewPackViewModel? = null
@@ -60,9 +60,8 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         val checkInternet = checkInternetConnection()
         if (checkInternet) {
             initViewModel()
-        } else {
-        
-
+        } else
+        {
             db = DbHelper(this, null)
             tasklist = db!!.readPackData()
 
@@ -70,14 +69,29 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 for(i in 0 until tasklist!!.size){
                     val it= tasklist!!.get(i)
                     it.padzero= it.name.padStart(4, '0')
-                    mypacklist.add(
-                        PackList(
-                            it.id, it.name, it.name_prefix,
-                            it.pack_config_id,
-                            it.pack_config_name, " Type: ", " Desciption: ", it.description,
-                            it.com_group, it.created_by, it.padzero
+                    if (it.name_prefix.isNullOrEmpty()){
+                        val dd="."
+                        mypacklist.add(
+                            PackList(
+                                it.id, it.name,dd,
+                                it.pack_config_id!!,
+                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
+                                it.com_group, it.created_by, it.padzero
+                            )
                         )
-                    )
+                    }
+                    else{
+                        mypacklist.add(
+                            PackList(
+                                it.id, it.name,it.name_prefix!!,
+                                it.pack_config_id!!,
+                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
+                                it.com_group, it.created_by, it.padzero
+                            )
+                        )
+                    }
+
+
                 }
                 if (!mypacklist.isNullOrEmpty()){
 
@@ -158,8 +172,12 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             .setMessage("Are you sure you want to Delete $taskname") // Specifying a listener allows you to take an action before dismissing the dialog.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id)
-                        .enqueue(this)
+//                    ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id)
+//                        .enqueue(this)
+                    val db=DbHelper(this,null)
+                    db.deletenewPack("11114","4")
+
+
 //                    db?.deletePack(taskname)
 //                    tasklist?.removeAt(position)
 //                    adapter?.notifyItemRemoved(position)

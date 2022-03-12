@@ -163,14 +163,11 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id)
-                        .enqueue(this)
+//                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id)
+//                        .enqueue(this)
+                    val db=DbHelper(this,null)
+                    db.deletenewTask("2","5")
 
-//                    db?.deleteTask(taskname)
-//                    tasklist?.removeAt(position)
-//                    adapter?.notifyItemRemoved(position)
-//                    adapter?.notifyDataSetChanged()
-//                    checkListEmptyOrNot(tasklist!!)
                     Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
                 })
             .setNegativeButton(android.R.string.no, null)

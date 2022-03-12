@@ -21,6 +21,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
@@ -34,6 +35,7 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
+import com.pbt.myfarm.ViewTaskViewModel
 import com.pbt.myfarm.databinding.ActivityCreatePackBinding
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_create_task.*
@@ -41,7 +43,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import java.util.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResponse> {
     var viewmodel: PackViewModel? = null
@@ -72,55 +75,55 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         if(checkInternetConnection()){
             initViewModel()
         }
-//        else
-//        {
-//            val list=   db.readPackConfigFieldList()
-//
-//            val field=   db.readPackConfigFieldList_fieldlist()
-//            val communitGroup=db.readPackCommunityGroup()
-//            AppUtils.logDebug(TAG,Gson().toJson(list+"\n"+field+"\n"+communitGroup))
-//            var packCommunityname = ArrayList<String>()
-//            for (i in 0 until communitGroup.size){
-//                packCommunityname.add(communitGroup.get(i).name)
-//
-//            }
-//            recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
-//            adapter = CreatePackAdapter(
-//                this, list, true, communitGroup,
-//                packCommunityname
-//            ) { list, name ->
-//                while (list.contains("0")) {
-//                    list.remove("0")
-//                }
-//                while (name.contains("0")) {
-//                    name.remove("0")
-//                }
-//                while (ExpNameKey.contains("0")) {
-//                    ExpNameKey.remove("0")
-//                }
-//                while (ExpAmtArrayKey.contains("0")) {
-//                    ExpAmtArrayKey.remove("0")
-//                }
-//
-//
-//
-//
-//                for (i in 0 until name.size) {
-//                    val jsonObject = JSONObject()
-//                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
-//                    jsonObject.put(ExpNameKey.get(i), list.get(i))
-//
-//                    successObject.put(jsonObject)
-//                    fieldModel.add(FieldModel(name.get(i), list.get(i)))
-//
-//                }
-//
-//
-//            }
-//            recyclerview_createPack.adapter = adapter
-//
-//
-//        }
+        else
+        {
+            val list=   db.readPackConfigFieldList()
+
+            val field=   db.readPackConfigFieldList_fieldlist()
+            val communitGroup=db.readPackCommunityGroup()
+            AppUtils.logDebug(TAG,Gson().toJson(list+"\n"+field+"\n"+communitGroup))
+            val packCommunityname = ArrayList<String>()
+            for (i in 0 until communitGroup.size){
+                packCommunityname.add(communitGroup.get(i).name)
+
+            }
+            recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
+            adapter = CreatePackAdapter(
+                this, list, true, communitGroup,
+                packCommunityname
+            ) { list, name ->
+                while (list.contains("0")) {
+                    list.remove("0")
+                }
+                while (name.contains("0")) {
+                    name.remove("0")
+                }
+                while (ExpNameKey.contains("0")) {
+                    ExpNameKey.remove("0")
+                }
+                while (ExpAmtArrayKey.contains("0")) {
+                    ExpAmtArrayKey.remove("0")
+                }
+
+
+
+
+                for (i in 0 until name.size) {
+                    val jsonObject = JSONObject()
+                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
+                    jsonObject.put(ExpNameKey.get(i), list.get(i))
+
+                    successObject.put(jsonObject)
+                    fieldModel.add(FieldModel(name.get(i), list.get(i)))
+
+                }
+
+
+            }
+            recyclerview_createPack.adapter = adapter
+
+
+        }
 
     }
 
@@ -185,33 +188,81 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 //            viewmodel?.updatePack()
         }
+
+
         btn_create_pack.setOnClickListener {
             adapter?.callBackss()
-//            viewmodel?.addPack()
-            val listdata = ArrayList<String>()
 
-            if (successObject != null) {
-                for (i in 0 until successObject.length()) {
-                    listdata.add(successObject.getString(i))
+
+            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val currentDate = sdf.format(Date())
+            val db=DbHelper(this,null)
+            val viewtasklist=ArrayList<ViewPackModelClass>()
+
+            val d=db.getLastValue_pack_new("4")
+
+            if (d.isEmpty()){
+                viewtasklist.add(
+                    ViewPackModelClass("4","1","",
+                        "4","FEVESKKM",
+                        "FEVESKKM","",
+                        "Test","1","2","",))
+                val viewTask=viewtasklist.get(0)
+                db.addNewPack(viewTask,currentDate,"","")
+                for(i in 0 until ExpAmtArray.size){
+                    db.addpackFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                }
+
+            }
+            else{
+                val newPackname:Int=  d.toInt()+1
+
+                viewtasklist.add(
+                    ViewPackModelClass("12",newPackname.toString(),
+                    "5","4",
+                    "FEVESKKM","",
+                    "Test","1","2","",))
+                val viewTask=viewtasklist.get(0)
+                db.addNewPack(viewTask,currentDate,"","")
+                for(i in 0 until ExpAmtArray.size){
+                    db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
                 }
             }
 
-            val userId = MySharedPreference.getUser(this)?.id
-
-            if (desciptioncompanian == null) {
-                desciptioncompanian = "desciption"
-            }
 
 
-            ApiClient.client.create(ApiInterFace::class.java)
-                .storePack(
-                    packconfiglist?.id!!,
-                    desciptioncompanian,
-                    selectedCommunityGroup,
-                    userId.toString(),
-                    successObject.toString(),
-                    packconfiglist?.name!!
-                ).enqueue(this)
+
+
+
+
+
+
+//            adapter?.callBackss()
+////            viewmodel?.addPack()
+//            val listdata = ArrayList<String>()
+//
+//            if (successObject != null) {
+//                for (i in 0 until successObject.length()) {
+//                    listdata.add(successObject.getString(i))
+//                }
+//            }
+//
+//            val userId = MySharedPreference.getUser(this)?.id
+//
+//            if (desciptioncompanian == null) {
+//                desciptioncompanian = "desciption"
+//            }
+//
+//
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .storePack(
+//                    packconfiglist?.id!!,
+//                    desciptioncompanian,
+//                    selectedCommunityGroup,
+//                    userId.toString(),
+//                    successObject.toString(),
+//                    packconfiglist?.name!!
+//                ).enqueue(this)
 
         }
 

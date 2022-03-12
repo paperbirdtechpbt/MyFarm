@@ -57,15 +57,15 @@ class CreatePackAdapter(
         var labelname: TextView = itemView.findViewById(R.id.pack_label_fieldname)
         var labeldate: TextView = itemView.findViewById(R.id.pack_label_field_expectedDate)
         var labelSpinner: TextView = itemView.findViewById(R.id.pack_label_field_spinner)
-//        var labelDesciption: TextView = itemView.findViewById(R.id.pack_label_desciption)
+        var labelDesciption: TextView = itemView.findViewById(R.id.pack_label_desciption)
 
-//        var labelpackname: TextView = itemView.findViewById(R.id.pack_label_fieldname_name)
-//        var labelnameprefix: TextView = itemView.findViewById(R.id.pack_label_fieldname_nameprefix)
-//        var labelcommunityGroup: TextView = itemView.findViewById(R.id.pack_label_fieldname_spinner)
-//        var packname: EditText = itemView.findViewById(R.id.pack_field_name_name)
-//        var nameprefix: EditText = itemView.findViewById(R.id.pack_field_name_nameprefix)
-//        var communityGroup: Spinner = itemView.findViewById(R.id.pack_field_spinner_communityGroup)
-//        var desciption: EditText = itemView.findViewById(R.id.pack_field_desciption)
+        var labelpackname: TextView = itemView.findViewById(R.id.pack_label_fieldname_name)
+        var labelnameprefix: TextView = itemView.findViewById(R.id.pack_label_fieldname_nameprefix)
+        var labelcommunityGroup: TextView = itemView.findViewById(R.id.pack_label_fieldname_spinner)
+        var packname: EditText = itemView.findViewById(R.id.pack_field_name_name)
+        var nameprefix: EditText = itemView.findViewById(R.id.pack_field_name_nameprefix)
+        var communityGroup: Spinner = itemView.findViewById(R.id.pack_field_spinner_communityGroup)
+        var desciption: EditText = itemView.findViewById(R.id.pack_field_desciption)
 
     }
 
@@ -156,8 +156,8 @@ class CreatePackAdapter(
         if (fieldtype == "Numeric" || fieldtype == "Text") {
 
 
-//            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-//            holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
+            holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
 
             holder.date.visibility = View.GONE
             holder.labeldate.visibility = View.GONE
@@ -195,8 +195,8 @@ class CreatePackAdapter(
             holder.mysppinner.visibility = View.VISIBLE
 
             holder.labelSpinner.setText(namee)
-//            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-//                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
+                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
 
 
         } else if (fieldtype == "Date") {
@@ -206,8 +206,8 @@ class CreatePackAdapter(
             holder.labelname.visibility = View.GONE
             holder.mysppinner.visibility = View.GONE
             holder.labelSpinner.visibility = View.GONE
-//            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-//                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
+                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
 
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
@@ -452,7 +452,8 @@ class CreatePackAdapter(
             boolean = false
 //            },1000)
 
-        } else {
+        }
+        else{
             labelcommunityGroup.visibility = View.GONE
             communityGroup.visibility = View.GONE
             labelpackname.visibility = View.GONE

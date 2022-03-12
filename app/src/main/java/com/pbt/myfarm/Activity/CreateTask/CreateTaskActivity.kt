@@ -23,6 +23,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
+import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
@@ -44,6 +45,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -108,6 +110,7 @@ var toolbar:Toolbar?=null
                 this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             ).get(CreatetaskViewModel::class.java)
+
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
             if (updateTaskList!=null){
                 btn_create_task.setText("Update Task")
@@ -130,8 +133,6 @@ var toolbar:Toolbar?=null
                 field_prefix.setText(configtype?.name_prefix)
                 field_desciption.setText(configtype?.description)
             }
-
-
 
 
             binding?.viewModel = viewmodel
@@ -159,9 +160,6 @@ var toolbar:Toolbar?=null
                     }
 
 
-
-
-
                     for (i in 0 until name.size) {
                         val jsonObject = JSONObject()
                         jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
@@ -169,14 +167,11 @@ var toolbar:Toolbar?=null
 
                         successObject.put(jsonObject)
                         fieldModel.add(FieldModel(name.get(i), list.get(i)))
-
                     }
-
 
                 }
                 recycler_taskconfiglist.adapter = adapter
             })
-
 
             val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
             setCommunityGroup(communitGroup)
@@ -185,8 +180,6 @@ var toolbar:Toolbar?=null
                     parent: AdapterView<*>, view: View, position: Int, id: Long
                 ) {
                     selectedCommunityGroup = groupArrayId!!.get(position)
-
-
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -222,6 +215,54 @@ var toolbar:Toolbar?=null
                 adapter?.callBack()
                 val listdata = ArrayList<String>()
 
+
+                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                val currentDate = sdf.format(Date())
+                val db=DbHelper(this,null)
+                val viewtasklist=ArrayList<TasknewOffline>()
+
+                val d=db.getLastValue_task_new("12")
+
+                if (d.isEmpty()){
+                    viewtasklist.add(
+                        TasknewOffline("1","1","12",
+                            "4","3",
+                            "0","",
+                            "Test","2",currentDate,"2",currentDate,
+                            "")
+                    )
+                    val viewTask=viewtasklist.get(0)
+                    db.addNewTask(viewTask)
+                    for(i in 0 until ExpAmtArray.size){
+                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                    }
+
+                }
+                else{
+                    val newtaskname:Int=  d.toInt()+1
+
+                    viewtasklist.add(
+                        TasknewOffline(newtaskname.toString(),"tst",
+                            "15","",
+                            "2","0",
+                            currentDate,"","2",currentDate,"","",
+                            "")
+                    )
+                    val viewTask=viewtasklist.get(0)
+                    db.addNewTask(viewTask)
+                    while (ExpName.contains("0")){
+                        ExpName.remove("0")
+                    }
+                    while (ExpAmtArray.contains("0")){
+                        ExpAmtArray.remove("0")
+                    }
+                    for(i in 0 until ExpAmtArray.size){
+                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+                    }
+                }
+
+
+
                 if (successObject != null) {
                     for (i in 0 until successObject.length()) {
                         listdata.add(successObject.getString(i))
@@ -236,19 +277,24 @@ var toolbar:Toolbar?=null
 
 
 
-                if(!updateTaskBoolen){
-                    ApiClient.client.create(ApiInterFace::class.java)
-                        .storeTask(
-                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.name_prefix.toString()
-                        ).enqueue(this)}
-                else{
-                    ApiClient.client.create(ApiInterFace::class.java)
-                        .updateTask(
-                            "10", prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.name_prefix.toString(),
-                            updateTaskList?.id.toString() ).enqueue(this)
-                }
+//                if(!updateTaskBoolen){
+//                    ApiClient.client.create(ApiInterFace::class.java)
+//                        .storeTask(
+//                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+//                            successObject.toString(), updateTaskList?.name_prefix.toString()
+//                        ).enqueue(this)}
+//                else{
+//                    ApiClient.client.create(ApiInterFace::class.java)
+//                        .updateTask(
+//                            "10", prefix, selectedCommunityGroup, userId.toString(),
+//                            successObject.toString(), updateTaskList?.name_prefix.toString(),
+//                            updateTaskList?.id.toString() ).enqueue(this)
+//                }
+
+                //-------|||do not uncomment  below code-------------------------|||||||
+
+
+
 //            CallApiForNewTask(fieldModel,userId,configtype?.id,selectedCommunityGroup.toInt()
 //                ,prefix,configtype!!.name_prefix)
 
@@ -352,6 +398,8 @@ var toolbar:Toolbar?=null
 //            this, date, myCalendar.get(Calendar.YEAR),
 //            myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
 //        ).show()
+
+        //---------||||| do not uncommnet above code ---------------|||||||||||||----------------||||||||||||||||||||||
 
 
     }

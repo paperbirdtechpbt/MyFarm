@@ -49,6 +49,7 @@ import java.util.*
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
+//this fragement is for update pack
 
 class CreatePackFrament : Fragment(),
     retrofit2.Callback<testresponse> {

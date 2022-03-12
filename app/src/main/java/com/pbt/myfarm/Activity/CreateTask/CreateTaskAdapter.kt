@@ -469,6 +469,7 @@ class CreateTaskAdapter(
             val c = Calendar.getInstance()
                val  mHour = c[Calendar.HOUR_OF_DAY]
                val  mMinute = c[Calendar.MINUTE]
+               val  mSecond = c[Calendar.SECOND]
 
                 val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute ->
                    settime="$hourOfDay:$minute"

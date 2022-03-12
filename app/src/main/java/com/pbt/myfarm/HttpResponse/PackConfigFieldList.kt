@@ -3,6 +3,7 @@ package com.pbt.myfarm.HttpResponse
 import com.google.gson.annotations.SerializedName
 
 data class PackConfigFieldList(
+
     @SerializedName("field_id")var field_id:String,
     @SerializedName("field_name")var field_name:String,
     @SerializedName("field_description")var field_description:String,

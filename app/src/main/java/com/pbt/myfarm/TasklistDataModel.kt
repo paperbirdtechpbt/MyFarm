@@ -19,3 +19,21 @@ data class TasklistDataModel(
     var expand : Boolean = false
 
 ): Parcelable
+
+
+
+data class TasknewOffline(
+     val name: String,
+     val desciption: String,
+    val task_config_id: String,
+  val task_func: String,
+    var com_group:String,
+    var status:String,
+    var startDate:String="",
+    var EndDate:String="",
+    var created_By:String="",
+    var created_at:String="",
+    var lastchanged_by : String,
+    var last_changed_date : String,
+    var deleted_at :String
+    )
