@@ -215,81 +215,88 @@ var toolbar:Toolbar?=null
                 adapter?.callBack()
                 val listdata = ArrayList<String>()
 
-
-                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                val currentDate = sdf.format(Date())
-                val db=DbHelper(this,null)
-                val viewtasklist=ArrayList<TasknewOffline>()
-
-                val d=db.getLastValue_task_new("12")
-
-                if (d.isEmpty()){
-                    viewtasklist.add(
-                        TasknewOffline("1","1","12",
-                            "4","3",
-                            "0","",
-                            "Test","2",currentDate,"2",currentDate,
-                            "")
-                    )
-                    val viewTask=viewtasklist.get(0)
-                    db.addNewTask(viewTask)
-                    for(i in 0 until ExpAmtArray.size){
-                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                if (checkInternetConnection()){
+                    if (successObject != null) {
+                        for (i in 0 until successObject.length()) {
+                            listdata.add(successObject.getString(i))
+                        }
                     }
-
-                }
-                else{
-                    val newtaskname:Int=  d.toInt()+1
-
-                    viewtasklist.add(
-                        TasknewOffline(newtaskname.toString(),"tst",
-                            "15","",
-                            "2","0",
-                            currentDate,"","2",currentDate,"","",
-                            "")
-                    )
-                    val viewTask=viewtasklist.get(0)
-                    db.addNewTask(viewTask)
-                    while (ExpName.contains("0")){
-                        ExpName.remove("0")
-                    }
-                    while (ExpAmtArray.contains("0")){
-                        ExpAmtArray.remove("0")
-                    }
-                    for(i in 0 until ExpAmtArray.size){
-                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
-                    }
-                }
-
-
-
-                if (successObject != null) {
-                    for (i in 0 until successObject.length()) {
-                        listdata.add(successObject.getString(i))
-                    }
-                }
 
 //            AppUtils.logDebug(TAG,"-->>"+successObject)
-                val userId = MySharedPreference.getUser(this)?.id
-                val prefix = field_desciption.text.toString()
-                selectedCommunityGroup
+                    val userId = MySharedPreference.getUser(this)?.id
+                    val prefix = field_desciption.text.toString()
+                    selectedCommunityGroup
 
 
 
 
-//                if(!updateTaskBoolen){
-//                    ApiClient.client.create(ApiInterFace::class.java)
-//                        .storeTask(
-//                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-//                            successObject.toString(), updateTaskList?.name_prefix.toString()
-//                        ).enqueue(this)}
-//                else{
-//                    ApiClient.client.create(ApiInterFace::class.java)
-//                        .updateTask(
-//                            "10", prefix, selectedCommunityGroup, userId.toString(),
-//                            successObject.toString(), updateTaskList?.name_prefix.toString(),
-//                            updateTaskList?.id.toString() ).enqueue(this)
-//                }
+                    if(!updateTaskBoolen){
+                        ApiClient.client.create(ApiInterFace::class.java)
+                            .storeTask(
+                                updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                successObject.toString(), updateTaskList?.name_prefix.toString()
+                            ).enqueue(this)}
+                    else{
+                        ApiClient.client.create(ApiInterFace::class.java)
+                            .updateTask(
+                                "10", prefix, selectedCommunityGroup, userId.toString(),
+                                successObject.toString(), updateTaskList?.name_prefix.toString(),
+                                updateTaskList?.id.toString() ).enqueue(this)
+                    }
+                }
+                else{
+
+                    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                    val currentDate = sdf.format(Date())
+                    val db=DbHelper(this,null)
+                    val viewtasklist=ArrayList<TasknewOffline>()
+
+                    val d=db.getLastValue_task_new("12")
+
+                    if (d.isEmpty()){
+                        viewtasklist.add(
+                            TasknewOffline("1","1","12",
+                                "4","3",
+                                "0","",
+                                "Test","2",currentDate,"2",currentDate,
+                                "")
+                        )
+                        val viewTask=viewtasklist.get(0)
+                        db.addNewTask(viewTask)
+                        for(i in 0 until ExpAmtArray.size){
+                            db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                        }
+
+                    }
+                    else{
+                        val newtaskname:Int=  d.toInt()+1
+
+                        viewtasklist.add(
+                            TasknewOffline(newtaskname.toString(),"tst",
+                                "15","",
+                                "2","0",
+                                currentDate,"","2",currentDate,"","",
+                                "")
+                        )
+                        val viewTask=viewtasklist.get(0)
+                        db.addNewTask(viewTask)
+                        while (ExpName.contains("0")){
+                            ExpName.remove("0")
+                        }
+                        while (ExpAmtArray.contains("0")){
+                            ExpAmtArray.remove("0")
+                        }
+                        for(i in 0 until ExpAmtArray.size){
+                            db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+                        }
+                    }
+                }
+
+
+
+
+
+
 
                 //-------|||do not uncomment  below code-------------------------|||||||
 

@@ -191,78 +191,74 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
         btn_create_pack.setOnClickListener {
-            adapter?.callBackss()
+
+            if(checkInternetConnection()){
 
 
-            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            val currentDate = sdf.format(Date())
-            val db=DbHelper(this,null)
-            val viewtasklist=ArrayList<ViewPackModelClass>()
+                adapter?.callBackss()
+//            viewmodel?.addPack()
+                val listdata = ArrayList<String>()
 
-            val d=db.getLastValue_pack_new("4")
-
-            if (d.isEmpty()){
-                viewtasklist.add(
-                    ViewPackModelClass("4","1","",
-                        "4","FEVESKKM",
-                        "FEVESKKM","",
-                        "Test","1","2","",))
-                val viewTask=viewtasklist.get(0)
-                db.addNewPack(viewTask,currentDate,"","")
-                for(i in 0 until ExpAmtArray.size){
-                    db.addpackFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                if (successObject != null) {
+                    for (i in 0 until successObject.length()) {
+                        listdata.add(successObject.getString(i))
+                    }
                 }
 
+                val userId = MySharedPreference.getUser(this)?.id
+
+                if (desciptioncompanian == null) {
+                    desciptioncompanian = "desciption"
+                }
+
+
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .storePack(
+                        packconfiglist?.id!!,
+                        desciptioncompanian,
+                        selectedCommunityGroup,
+                        userId.toString(),
+                        successObject.toString(),
+                        packconfiglist?.name!!
+                    ).enqueue(this)
             }
             else{
-                val newPackname:Int=  d.toInt()+1
+                adapter?.callBackss()
 
-                viewtasklist.add(
-                    ViewPackModelClass("12",newPackname.toString(),
-                    "5","4",
-                    "FEVESKKM","",
-                    "Test","1","2","",))
-                val viewTask=viewtasklist.get(0)
-                db.addNewPack(viewTask,currentDate,"","")
-                for(i in 0 until ExpAmtArray.size){
-                    db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+
+                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                val currentDate = sdf.format(Date())
+                val db=DbHelper(this,null)
+                val viewtasklist=ArrayList<ViewPackModelClass>()
+
+                val d=db.getLastValue_pack_new("4")
+
+                if (d.isEmpty()){
+                    viewtasklist.add(
+                        ViewPackModelClass("4","1","",
+                            "4","FEVESKKM",
+                            "FEVESKKM","",
+                            "Test","1","2","",))
+                    val viewTask=viewtasklist.get(0)
+                    db.addNewPack(viewTask,currentDate,"","")
+                    for(i in 0 until ExpAmtArray.size){
+                        db.addpackFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+                    }
+                }
+                else{
+                    val newPackname:Int=  d.toInt()+1
+                    viewtasklist.add(
+                        ViewPackModelClass("12",newPackname.toString(),
+                            "5","4",
+                            "FEVESKKM","",
+                            "Test","1","2","",))
+                    val viewTask=viewtasklist.get(0)
+                    db.addNewPack(viewTask,currentDate,"","")
+                    for(i in 0 until ExpAmtArray.size){
+                        db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+                    }
                 }
             }
-
-
-
-
-
-
-
-
-
-//            adapter?.callBackss()
-////            viewmodel?.addPack()
-//            val listdata = ArrayList<String>()
-//
-//            if (successObject != null) {
-//                for (i in 0 until successObject.length()) {
-//                    listdata.add(successObject.getString(i))
-//                }
-//            }
-//
-//            val userId = MySharedPreference.getUser(this)?.id
-//
-//            if (desciptioncompanian == null) {
-//                desciptioncompanian = "desciption"
-//            }
-//
-//
-//            ApiClient.client.create(ApiInterFace::class.java)
-//                .storePack(
-//                    packconfiglist?.id!!,
-//                    desciptioncompanian,
-//                    selectedCommunityGroup,
-//                    userId.toString(),
-//                    successObject.toString(),
-//                    packconfiglist?.name!!
-//                ).enqueue(this)
 
         }
 
