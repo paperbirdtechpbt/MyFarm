@@ -211,7 +211,8 @@ var toolbar:Toolbar?=null
 //
 //
 //        }
-            btn_create_task.setOnClickListener {
+        btn_create_task.setOnClickListener {
+
                 adapter?.callBack()
                 val listdata = ArrayList<String>()
 
@@ -221,25 +222,24 @@ var toolbar:Toolbar?=null
                             listdata.add(successObject.getString(i))
                         }
                     }
+               //  AppUtils.logDebug(TAG,"-->>"+successObject)
 
-//            AppUtils.logDebug(TAG,"-->>"+successObject)
                     val userId = MySharedPreference.getUser(this)?.id
                     val prefix = field_desciption.text.toString()
                     selectedCommunityGroup
 
-
-
-
                     if(!updateTaskBoolen){
+                        AppUtils.logDebug(TAG,   configtype?.id.toString() + prefix+selectedCommunityGroup+ userId.toString()+
+                            successObject.toString() + configtype?.name_prefix.toString())
                         ApiClient.client.create(ApiInterFace::class.java)
                             .storeTask(
-                                updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                                successObject.toString(), updateTaskList?.name_prefix.toString()
+                                configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                successObject.toString(), configtype?.name_prefix.toString()
                             ).enqueue(this)}
                     else{
                         ApiClient.client.create(ApiInterFace::class.java)
                             .updateTask(
-                                "10", prefix, selectedCommunityGroup, userId.toString(),
+                                updateTaskList?.task_config_id.toString(), prefix, selectedCommunityGroup, userId.toString(),
                                 successObject.toString(), updateTaskList?.name_prefix.toString(),
                                 updateTaskList?.id.toString() ).enqueue(this)
                     }
@@ -254,13 +254,36 @@ var toolbar:Toolbar?=null
                     val d=db.getLastValue_task_new("12")
 
                     if (d.isEmpty()){
+
+                        var startdate=""
+                        var enddate=""
+                        for(i in  0 until ExpName.size){
+                            if (ExpName.get(i)=="134"){
+                                startdate= ExpAmtArray.get(i)
+                            }
+                            if (ExpName.get(i)=="135"){
+
+                                enddate= ExpAmtArray.get(i)
+                            }
+                        }
+
+
                         viewtasklist.add(
-                            TasknewOffline("1","1","12",
-                                "4","3",
-                                "0","",
-                                "Test","2",currentDate,"2",currentDate,
+                            TasknewOffline("1",
+                                field_desciption.text.toString(),
+                                updateTaskList?.id.toString(),
+                                "0",
+                                selectedCommunityGroup,
+                                "0",
+                                startdate,
+                                enddate,
+                                MySharedPreference.getUser(this)?.id.toString(),
+                                currentDate,
+                                MySharedPreference.getUser(this)?.id.toString(),
+                                currentDate,
                                 "")
                         )
+
                         val viewTask=viewtasklist.get(0)
                         db.addNewTask(viewTask)
                         for(i in 0 until ExpAmtArray.size){
@@ -269,23 +292,50 @@ var toolbar:Toolbar?=null
 
                     }
                     else{
+
+//                        val viewTask=viewtasklist.get(0)
+//                        db.addNewTask(viewTask)
+//                        while (ExpName.contains("0")){
+//                            ExpName.remove("0")
+//                        }
+//                        while (ExpAmtArray.contains("0")){
+//                            ExpAmtArray.remove("0")
+//                        }
+
+    var startdate=""
+                        var enddate=""
+                        for(i in  0 until ExpName.size){
+                            if (ExpName.get(i)=="134"){
+                                startdate= ExpAmtArray.get(i)
+                            }
+                            if (ExpName.get(i)=="135"){
+
+                                enddate= ExpAmtArray.get(i)
+                            }
+                        }
+
+
                         val newtaskname:Int=  d.toInt()+1
 
                         viewtasklist.add(
-                            TasknewOffline(newtaskname.toString(),"tst",
-                                "15","",
-                                "2","0",
-                                currentDate,"","2",currentDate,"","",
-                                "")
-                        )
-                        val viewTask=viewtasklist.get(0)
-                        db.addNewTask(viewTask)
-                        while (ExpName.contains("0")){
-                            ExpName.remove("0")
-                        }
-                        while (ExpAmtArray.contains("0")){
-                            ExpAmtArray.remove("0")
-                        }
+                            TasknewOffline(
+                                newtaskname.toString(),
+                                field_desciption.text.toString(),
+                                updateTaskList?.id.toString(),
+                                 "",
+                                selectedCommunityGroup,
+                                "0",
+                                startdate,
+                                enddate,
+                                MySharedPreference.getUser(this)?.id.toString(),
+                                currentDate,
+                                MySharedPreference.getUser(this)?.id.toString(),
+                                currentDate,
+                                ""))
+
+
+
+
                         for(i in 0 until ExpAmtArray.size){
                             db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
                         }
@@ -454,10 +504,16 @@ var toolbar:Toolbar?=null
     }
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        Toast.makeText(this, "Task Updated Successfully", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, ViewTaskActivity::class.java)
-        startActivity(intent)
-        finish()
+//        AppUtils.logError(TAG,response.body()?.msg.toString())
+
+        if (response.body()?.error==false){
+            Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
+            updateTaskBoolen=false
+            val intent = Intent(this, ViewTaskActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {

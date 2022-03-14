@@ -118,10 +118,11 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_viewMedia"
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
+            android:visibility="visible"
+            android:layout_height="0dp"
+            android:layout_marginTop="120dp"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_execute"
             app:layout_constraintTop_toBottomOf="@id/taskfunction_field"
             tools:listitem="@layout/item_viewmedia"/>
 

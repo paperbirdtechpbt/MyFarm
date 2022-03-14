@@ -124,8 +124,6 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
             val item = list.get(i)
 
 
-
-
             for (g in 0 until item.field_com_group_list.size) {
                 val itemi = item.field_com_group_list.get(g)
                 communityGroupid.add(itemi.id.toString())
@@ -200,7 +198,6 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
         setselectedId(data.field_type, tyepid, sp_event_type)
         setselectedId(data.field_assigned_team, teamid, sp_event_team)
         setselectedId(data.field_status, statusid, sp_event_status)
-
 
     }
 

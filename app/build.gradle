@@ -84,6 +84,8 @@ dependencies {
     implementation 'com.android.support:design:23.0.1'
 
 
+implementation 'net.gotev:uploadservice:2.1'
+    implementation 'com.github.SimpleMobileTools:Simple-Commons:ee9863c9c5'
 
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'

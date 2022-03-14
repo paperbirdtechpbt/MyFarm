@@ -186,9 +186,9 @@ class AppConstant {
         val colctactyrslt_collectactiivtid="collect_activity_id"
         val colctactyrslt_result_name="resultname"
         val colctactyrslt_unit_id="unit_id"
-        val colctactyrslt_type_id="collect_activity_results"
-        val colctactyrslt_list_id="collect_activity_results"
-        val colctactyrslt_result_class="collect_activity_results"
+        val colctactyrslt_type_id="type"
+        val colctactyrslt_list_id="listid"
+        val colctactyrslt_result_class="result_class"
         val colctactyrslt_created_by="created_by"
         val colctactyrslt_deleted_by="deleted_by"
         val colctactyrslt_created_at="created_at"
@@ -196,9 +196,9 @@ class AppConstant {
         val colctactyrslt_deleted_at="deleted_at"
 
         //collect_activity_result_unit
-        val colctactyrslt_unit_TABLE="collect_activity_results_unit"
+        val colctactyrslt_unit_TABLE="collect_activity_units"
         val colctactyrslt_unit_Key="id"
-        val colctactyrslt_unit_collectactiivtid="collect_activity_result_id"
+        val colctactyrslt_unit_collectactiivtid="collect_activity_id"
         val colctactyrslt_unit_unitid="unit_id"
 
 

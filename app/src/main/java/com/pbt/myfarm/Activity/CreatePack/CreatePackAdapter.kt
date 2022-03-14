@@ -2,7 +2,6 @@ package com.pbt.myfarm.Activity.CreatePack
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.os.Looper
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -24,8 +23,6 @@ import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.Handler
-import kotlin.collections.ArrayList
 
 
 class CreatePackAdapter(
@@ -153,7 +150,7 @@ class CreatePackAdapter(
             }
 
         }
-        if (fieldtype == "Numeric" || fieldtype == "Text") {
+        if (fieldtype == "Numeric" ) {
 
 
             setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
@@ -183,7 +180,39 @@ class CreatePackAdapter(
             }
 //            }, 3500)
 
-        } else if (fieldtype == "List" || fieldtype == "Table") {
+        }
+        else if ( fieldtype == "Text"){
+
+
+            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
+                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+
+            holder.date.visibility = View.GONE
+            holder.labeldate.visibility = View.GONE
+            holder.mysppinner.visibility = View.GONE
+            holder.labelSpinner.visibility = View.GONE
+
+
+
+            holder.labelname.visibility = View.VISIBLE
+            holder.name.visibility = View.VISIBLE
+
+            holder.labelname.setText(namee)
+            if (namee == "QUANTITY") {
+                holder.name.setInputType(InputType.TYPE_CLASS_NUMBER)
+            }
+//            Handler(Looper.getMainLooper()).postDelayed ({
+            if (updateTaskIdBoolean) {
+                if (valued == "null") {
+                    holder.name.setText("")
+                } else {
+                    holder.name.setText(valued)
+                }
+            }
+//            }, 3500)
+
+        }
+        else if (fieldtype == "List" || fieldtype == "Table") {
             val d = fieldtype
             holder.date.visibility = View.GONE
             holder.name.visibility = View.GONE
@@ -309,61 +338,7 @@ class CreatePackAdapter(
                 }
             }
         })
-//        holder.desciption.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(
-//                charSequence: CharSequence, i: Int, i1: Int, i2: Int
-//            ) {
-//            }
-//
-//            override fun onTextChanged(
-//                charSequence: CharSequence,
-//                i: Int,
-//                i1: Int,
-//                i2: Int
-//            ) {
-//                isOnTextChanged = true
-//            }
-//
-//            override fun afterTextChanged(editable: Editable) {
-//                if (isOnTextChanged) {
-//                    isOnTextChanged = false
-//                    try {
-//desciptioncompanian=holder.desciption.text.toString()
-//
-//
-//
-//
-//                    } catch (e: NumberFormatException) {
-//                        AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
-//                        run {
-//                            var i = 0
-//                            while (i <= positionn) {
-//                                Log.d("TimesRemoved", " : $i")
-//                                if (i == positionn) {
-//                                    desciptioncompanian=holder.desciption.text.toString()
-//                                }
-//                                i++
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        })
-        holder.date.setOnClickListener {
-
-            val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
-
-                myCalendar.set(Calendar.YEAR, year)
-                myCalendar.set(Calendar.MONTH, month)
-                myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                updateLabel(holder.date)
-            }
-            DatePickerDialog(
-                context, date, myCalendar.get(Calendar.YEAR),
-                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
-        holder.name.addTextChangedListener(object : TextWatcher {
+        holder.desciption.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence, i: Int, i1: Int, i2: Int
             ) {
@@ -379,10 +354,80 @@ class CreatePackAdapter(
             }
 
             override fun afterTextChanged(editable: Editable) {
+                if (isOnTextChanged) {
+                    isOnTextChanged = false
+                    try {
+desciptioncompanian=holder.desciption.text.toString()
+
+
+
+
+                    } catch (e: NumberFormatException) {
+                        AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
+                        run {
+                            var i = 0
+                            while (i <= positionn) {
+                                Log.d("TimesRemoved", " : $i")
+                                if (i == positionn) {
+                                    desciptioncompanian=holder.desciption.text.toString()
+                                }
+                                i++
+                            }
+                        }
+                    }
+                }
+            }
+        })
+        holder.date.setOnClickListener {
+
+            val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
+
+                myCalendar.set(Calendar.YEAR, year)
+                myCalendar.set(Calendar.MONTH, month)
+                myCalendar.set(Calendar.DAY_OF_MONTH, day)
+                updateLabel(holder.date)
+            }
+            DatePickerDialog(
+                context, date, myCalendar.get(Calendar.YEAR),
+                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+
+
+        holder.name.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence, i: Int, i1: Int, i2: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+                isOnTextChanged = true
+                AppUtils.logDebug(TAG,"POsition"+positionn)
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+
 
                 if (isOnTextChanged) {
                     isOnTextChanged = false
                     try {
+
+                        for (obj in list) {
+
+                            ExpAmtArray.add("0")
+                            ExpName.add("0")
+                            ExpAmtArray[positionn] = editable.toString()
+                            ExpName[positionn] = field_id
+                            AppUtils.logDebug(TAG, "posittionnn" + positionn.toString())
+                            ExpAmtArrayKey[positionn] = "f_id"
+                            ExpNameKey[positionn] = "f_value"
+                        }
 
                         for (i in 0..positionn) {
                             if (i != positionn) {

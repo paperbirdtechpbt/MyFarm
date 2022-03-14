@@ -11,6 +11,8 @@ import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultLis
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
 import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.ResponseEventList
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.Field
@@ -256,6 +258,16 @@ interface ApiInterFace {
         ):Call<ResponseEventList>
 
 //    @FormUrlEncoded
+
+    @Multipart
+    @POST("api/taskExecuteFunction")
+     fun uploadFile(@Part file: MultipartBody.Part?,
+                    @Part("task_id") task_id: RequestBody,
+                    @Part("task_func") task_func: RequestBody,
+                    @Part("user_id") user_id: RequestBody,
+                    @Part("container") container: RequestBody,)
+     : Call<ResponseTaskExecution>
+
     @FormUrlEncoded
     @POST("api/taskExecuteFunction")
     fun taskExecuteFunction(

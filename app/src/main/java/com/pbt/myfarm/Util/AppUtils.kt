@@ -11,8 +11,10 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.loader.content.CursorLoader
 import com.pbt.myfarm.BuildConfig
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -45,6 +47,12 @@ class AppUtils {
             if (DEBUG == true)
                 Log.w("##" + tag, message)
         }
+        fun paramRequestBody(param: String): RequestBody {
+            val parameter: RequestBody =
+                param.toRequestBody("multipart/form-data".toMediaTypeOrNull());
+            return parameter
+        }
+
 
 
 

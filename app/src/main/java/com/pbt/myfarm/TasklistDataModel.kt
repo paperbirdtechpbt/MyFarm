@@ -13,6 +13,7 @@ data class TasklistDataModel(
     @SerializedName("description")  val description: String,
     @SerializedName("name_prefix")  val name_prefix: String,
     @SerializedName("task_config_name")  val task_config_name: String,
+    @SerializedName("task_config_id")  val task_config_id: String,
     var deleteicon:Int,
     var editicon:Int,
     var padzero:String="",

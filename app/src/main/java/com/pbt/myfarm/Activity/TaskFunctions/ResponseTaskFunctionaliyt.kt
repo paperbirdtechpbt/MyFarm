@@ -24,6 +24,7 @@ data class FieldListTaskFunctions (
 data class ListFunctionFieldlist (
     @SerializedName("id") var id:String,
     @SerializedName("name") var name:String,
+    @SerializedName("link") var link:String,
         )
 
 data class ListMediaFile (

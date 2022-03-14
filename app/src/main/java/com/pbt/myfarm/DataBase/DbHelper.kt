@@ -147,6 +147,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
     override fun onCreate(db: SQLiteDatabase?) {
+
         val query = ("CREATE TABLE " + CONST_USERS_TABLE + " ("
                 + CONST_ID + " INTEGER PRIMARY KEY, " +
                 CONST_USERNAME + " TEXT," +
@@ -493,7 +494,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             values.put(TABLENEW_Created_at, task.created_at)
             values.put(TABLENEW_Updated_at, task.last_changed_date)
             values.put(TABLENEW_startdate, task.startDate)
-            values.put(TABLENEW_enddate, task.startDate)
+            values.put(TABLENEW_enddate, task.EndDate)
             values.put(TABLENEW_deleted_at, task.deleted_at)
             values.put(TABLENEW_lastchangedby, task.lastchanged_by)
             values.put(TABLENEW_lastchangeddate, task.last_changed_date)
@@ -505,8 +506,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
-
-
             } else {
                 Toast.makeText(context, "Failed to add task", Toast.LENGTH_SHORT).show()
 

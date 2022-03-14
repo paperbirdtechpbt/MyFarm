@@ -24,6 +24,7 @@ class SelectConfigTypeActivity : AppCompatActivity() {
     companion object {
         val TAG = "SelectConfigTypeActivity"
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_select_config_type)
@@ -31,10 +32,11 @@ class SelectConfigTypeActivity : AppCompatActivity() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         parentlayout = findViewById(R.id.parentLayout)
 
-        recylcerview_selectConfigType.layoutManager=LinearLayoutManager(this)
+        recylcerview_selectConfigType.layoutManager = LinearLayoutManager(this)
         initViewModel()
 
     }
+
     private fun initViewModel() {
         viewModell = ViewModelProvider(
             this,
@@ -42,17 +44,17 @@ class SelectConfigTypeActivity : AppCompatActivity() {
         ).get(SelectConfigViewModel::class.java)
 
 
-viewModell?.progressbar=configprogress
+        viewModell?.progressbar = configprogress
         viewModell?.onConfigTypeRequest(this)
         viewModell?.configlist?.observe(this, Observer { configtype ->
 
             recylcerview_selectConfigType?.layoutManager = LinearLayoutManager(this)
 
-            adapter = AdapterSelectconfigType(this, configtype!!) { position, taskname ,list->
+            adapter = AdapterSelectconfigType(this, configtype!!) { position, taskname, list ->
 
                 val intent = Intent(this, CreateTaskActivity::class.java)
-                    intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
-                    startActivity(intent)
+                intent.putExtra(CONST_VIEWMODELCLASS_LIST, list)
+                startActivity(intent)
                 finish()
 
             }

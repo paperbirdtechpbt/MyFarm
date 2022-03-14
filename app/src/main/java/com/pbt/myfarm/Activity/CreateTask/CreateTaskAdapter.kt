@@ -431,18 +431,17 @@ class CreateTaskAdapter(
                                 ExpAmtArrayKey.add("0")
                                 ExpNameKey.add("0")
                             } else {
+
                                 ExpAmtArray.add("0")
                                 ExpName.add("0")
                                 ExpAmtArray[positionn] = editable.toString()
-
                                 ExpName[positionn] = field_id
-
                                 ExpAmtArrayKey[positionn] = "f_id"
                                 ExpNameKey[positionn] = "f_value"
+
                                 break
                             }
                         }
-
 
                     } catch (e: NumberFormatException) {
                         AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
@@ -493,25 +492,16 @@ class CreateTaskAdapter(
                 myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
-
-
-
-
-
     }
-
 
     private fun updateLabel(date: EditText,time:String) {
         val myFormat = "yyyy-MM-dd"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
         date.setText(dateFormat.format(myCalendar.time)+"  T- "+time)
     }
-
     fun callBack() {
-
         callbacks.invoke(ExpAmtArray, ExpName)
     }
-
 
     override fun getItemCount(): In {
         return list.size

@@ -82,7 +82,6 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
         handler.removeCallbacksAndMessages(null)
     }
 
-
     companion object {
         var objectmultipleData: ListMultipleCollcetdata? = null
         var sensorlist = ArrayList<SensorsList>()
@@ -144,67 +143,78 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
         val BtnUpdate: Button = view.findViewById(R.id.btn_UpdateNewData)
         val BtnAddmore: Button = view.findViewById(R.id.btn_addmoreData)
 
+
+
+
         initViewModel()
+
         if (collectid != null) {
-            handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
+            if (positionnn == 2) {
+                positionnn = 0
+                button.visibility = View.GONE
+                BtnAddmore.visibility = View.GONE
+                BtnUpdate.visibility = View.VISIBLE
+                val service = ApiClient.client.create(ApiInterFace::class.java)
+                val apiInterFace = service.editcollectdata(
+                    collectDataId
+                )
+                AppUtils.logDebug(TAG, "collectDataId-" + collectDataId)
 
-            }, 1000)
+                apiInterFace.enqueue(object : Callback<Responseeditcollectdata> {
+                    override fun onResponse(
+                        call: Call<Responseeditcollectdata>,
+                        response: Response<Responseeditcollectdata>
+                    ) {
+                        AppUtils.logDebug(TAG, Gson().toJson(response.body()))
+                        if (response.body()?.error == false) {
+                            val baserespomse: Responseeditcollectdata = Gson().fromJson(
+                                Gson().toJson(response.body()),
+                                Responseeditcollectdata::class.java
+                            )
+                            dataa = Gson().fromJson(
+                                Gson().toJson(baserespomse.data),
+                                EditCollectData::class.java
+                            )
+                            if (dataa != null) {
+                                setSpinner(collectActivity, sensonser, true)
+                            }
+                            myduration?.setText(dataa?.duration.toString())
 
-        } else {
-            handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
-
-            }, 1200)
-        }
-
-
-
-        if (positionnn == 2) {
-            positionnn = 0
-            button.visibility = View.GONE
-            BtnAddmore.visibility = View.GONE
-            BtnUpdate.visibility = View.VISIBLE
-            val service = ApiClient.client.create(ApiInterFace::class.java)
-            val apiInterFace = service.editcollectdata(
-                collectDataId
-            )
-            AppUtils.logDebug(TAG, "collectDataId-" + collectDataId)
-
-            apiInterFace.enqueue(object : Callback<Responseeditcollectdata> {
-                override fun onResponse(
-                    call: Call<Responseeditcollectdata>,
-                    response: Response<Responseeditcollectdata>
-                ) {
-                    AppUtils.logDebug(TAG, Gson().toJson(response.body()))
-                    if (response.body()?.error == false) {
-                        val baserespomse: Responseeditcollectdata = Gson().fromJson(
-                            Gson().toJson(response.body()),
-                            Responseeditcollectdata::class.java
-                        )
-                        dataa = Gson().fromJson(
-                            Gson().toJson(baserespomse.data),
-                            EditCollectData::class.java
-                        )
-                        if (dataa != null) {
-                            setSpinner(collectActivity, sensonser, true)
                         }
-                        myduration?.setText(dataa?.duration.toString())
-
                     }
-                }
 
-                override fun onFailure(call: Call<Responseeditcollectdata>, t: Throwable) {
-                    try {
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        AppUtils.logError(TAG, e.localizedMessage)
+                    override fun onFailure(call: Call<Responseeditcollectdata>, t: Throwable) {
+                        try {
+                            AppUtils.logError(TAG, t.message.toString())
+                        } catch (e: Exception) {
+                            AppUtils.logError(TAG, e.localizedMessage)
 
+                        }
                     }
-                }
 
-            })
+                })
+            }
+            else{
+                setSpinner(collectActivity, sensonser, false)
+            }
+//            handler.postDelayed({
+
+//            }, 500)
+
         }
+//        else {
+//            handler.postDelayed({
+//                setSpinner(collectActivity, sensonser, false)
+//
+//            }, 500)
+//        }
+
+
+
+
+
+
+
         getActivity()?.setTitle("Update Pack")
 
         BtnUpdate.setOnClickListener {
@@ -282,10 +292,10 @@ class CollectNewData : Fragment(), Callback<ResponseCollectAcitivityResultList> 
             })
         }
         button.setOnClickListener {
-                            progressbar_collectnewdata.visibility = View.VISIBLE
+            progressbar_collectnewdata.visibility = View.VISIBLE
 
 //            if (!listmultipleData.isNullOrEmpty()) {
-if (listmultipleData.size>=1){
+            if (listmultipleData.size >= 1) {
                 for (i in 0 until listmultipleData.size) {
                     objectmultipleData = listmultipleData.get(i)
                     callMyApi("Value", objectmultipleData!!)
@@ -294,8 +304,7 @@ if (listmultipleData.size>=1){
                 listmultipleData.clear()
                 objectmultipleData = null
 
-            }
-                  else {
+            } else {
                 if (ed_value != null) {
                     edValue = ed_value.text.toString()
                 } else if (dt_value != null) {
@@ -310,7 +319,6 @@ if (listmultipleData.size>=1){
 //                    dtvalue, spinnervalue, duration, sensorId, collectId, resultid, spinnerUnitId
 //                )
             }
-
 
         }
         BtnAddmore.setOnClickListener {
@@ -368,7 +376,7 @@ if (listmultipleData.size>=1){
     }
 
     private fun
-             callStoreCollectDataAPi(
+            callStoreCollectDataAPi(
         edValue: String,
         dtvalue: String,
         spinnervalue: String,
@@ -466,6 +474,20 @@ if (listmultipleData.size>=1){
     }
 
     private fun setSpinner(collectActivity: Spinner, sensonser: Spinner, boolean: Boolean) {
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, collectname
+        )
+
+        collectActivity.adapter = adapter
+
+        val adapter2 = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item, sensorname
+        )
+        sensonser.adapter = adapter2
+
         if (boolean) {
 
             if (dataa?.sensor_id != null) {
@@ -500,20 +522,21 @@ if (listmultipleData.size>=1){
                 }
 
             }
-        } else {
-            val adapter = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item, collectname
-            )
-
-            collectActivity.adapter = adapter
-
-            val adapter2 = ArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item, sensorname
-            )
-            sensonser.adapter = adapter2
         }
+//        else {
+//            val adapter = ArrayAdapter(
+//                requireContext(),
+//                android.R.layout.simple_spinner_dropdown_item, collectname
+//            )
+//
+//            collectActivity.adapter = adapter
+//
+//            val adapter2 = ArrayAdapter(
+//                requireContext(),
+//                android.R.layout.simple_spinner_dropdown_item, sensorname
+//            )
+//            sensonser.adapter = adapter2
+//        }
 
 
         collectActivity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -561,7 +584,7 @@ if (listmultipleData.size>=1){
             }
 
         }
-        callApi("17")
+//        callApi("17")
 
 
     }
@@ -625,7 +648,6 @@ if (listmultipleData.size>=1){
                 android.R.layout.simple_spinner_dropdown_item, collectactivitylistName
             )
             result?.adapter = adapter
-            progressbar_collectnewdata.visibility = View.GONE
         } catch (e: Exception) {
             AppUtils.logDebug(TAG, e.localizedMessage.toString())
             progressbar_collectnewdata.visibility = View.GONE
@@ -635,6 +657,8 @@ if (listmultipleData.size>=1){
 
 
         if (dataa?.result_id != null) {
+            AppUtils.logDebug(TAG,"resultid---"+dataa?.result_id)
+            AppUtils.logDebug(TAG,"resultlist---"+collectactivitylistid)
             for (i in 0 until collectactivitylistName.size) {
                 if (dataa?.result_id.toString() == collectactivitylistid.get(i)) {
 
@@ -672,6 +696,7 @@ if (listmultipleData.size>=1){
 
                     }
                 }
+                progressbar_collectnewdata.visibility = View.GONE
 
             }
 

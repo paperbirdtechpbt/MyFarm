@@ -62,13 +62,15 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        ExpAmtArray.clear()
-//        ExpName.clear()
-//        ExpNameKey.clear()
-//        ExpAmtArrayKey.clear()
+
 //        setContentView(R.layout.activity_create_pack)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_pack)
         val db= DbHelper(this,null)
+
+        ExpAmtArray.clear()
+        ExpName.clear()
+        ExpNameKey.clear()
+        ExpAmtArrayKey.clear()
 
 
 
