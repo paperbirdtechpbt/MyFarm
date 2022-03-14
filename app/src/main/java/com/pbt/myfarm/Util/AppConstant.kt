@@ -202,8 +202,22 @@ class AppConstant {
         val colctactyrslt_unit_collectactiivtid="collect_activity_result_id"
         val colctactyrslt_unit_unitid="unit_id"
 
+        //pack_config_fields
 
-
+        val COL_SERVER_ID="packconfig_server_id"
+        val COL_PACKCONFIGPRIMARY_ID="packconfig_primary_id"
+        val TABLE_PACK_CONFIG_FIELDS="pack_config_fields"
+        val COL_PACKCONFIG_ID="packconfigid"
+        val COL_FIELD_NAME="field_name"
+        val COL_field_description="field_description"
+        val COL_field_type="field_type"
+        val COL_list="list"
+        val COL_default_value="default_value"
+        val COL_created_by="created_by"
+        val COL_created_date="created_date"
+        val COL_last_changed_by="last_changed_by"
+        val COL_last_changed_date="last_changed_date"
+        val COL_eleted_at="deleted_at"
 
     }
 }
