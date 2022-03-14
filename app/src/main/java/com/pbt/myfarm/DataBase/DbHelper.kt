@@ -13,6 +13,7 @@ import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldList
 import com.pbt.myfarm.ModelClass.PacksNew
+import com.pbt.myfarm.ModelClass.Task
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.TasknewOffline
@@ -100,7 +101,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAMEPREFIX
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Status
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Updated_at
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_CONFIGID
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Created_at
@@ -117,6 +117,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_enddate
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangedby
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangeddate
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_startdate
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_TABLENAME
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
@@ -227,8 +228,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 PACKFIELDS_value + " TEXT" + ")")
         db?.execSQL(pack_fields)
 
-        val task_new = ("CREATE TABLE " + TASKNEW_TABLENAME + " ("
+        val tasks = ("CREATE TABLE " + TASKNEW_TABLENAME + " ("
                 + TABLENEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                TABLENEW_NAMEPREFIX + " TEXT," +
                 TABLENEW_NAMEPREFIX + " TEXT," +
                 TABLENEW_NAME + " TEXT," +
                 TABLENEW_DESC + " TEXT," +
@@ -243,7 +245,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 TABLENEW_Created_at + " TEXT," +
                 TABLENEW_Updated_at + " TEXT," +
                 TABLENEW_deleted_at + " TEXT" + ")")
-        db?.execSQL(task_new)
+        db?.execSQL(tasks)
 
         val task_fields = ("CREATE TABLE " + TASKFIELDS_TABLENAME + " ("
                 + TASKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -438,8 +440,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-
-
             } else {
                 Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
@@ -448,6 +448,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
+
+
 
     fun addpackFieldValue(id: String, packid: String, value: String) {
         try {
@@ -469,22 +471,24 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
-    fun addNewTask(task: TasknewOffline) {
+    //Ravi and new Task for offline mode
+
+    fun addNewTask(task: Task) {
 
         try {
             val values = ContentValues()
 
-            values.put(TABLENEW_DESC, task.desciption)
+            values.put(TABLENEW_DESC, task.description)
             values.put(TABLENEW_NAME, task.name)
             values.put(TABLENEW_GROUP, task.com_group)
             values.put(TABLENEW_CONFIGID, task.task_config_id)
             values.put(TABLENEW_Status, task.status)
-            values.put(TABLENEW_Created_at, task.created_at)
+            values.put(TABLENEW_Created_at, task.created_date)
             values.put(TABLENEW_Updated_at, task.last_changed_date)
-            values.put(TABLENEW_startdate, task.startDate)
-            values.put(TABLENEW_enddate, task.startDate)
+            values.put(TABLENEW_startdate, task.started_late)
+            values.put(TABLENEW_enddate, task.ended_late)
             values.put(TABLENEW_deleted_at, task.deleted_at)
-            values.put(TABLENEW_lastchangedby, task.lastchanged_by)
+            values.put(TABLENEW_lastchangedby, task.last_changed_by)
             values.put(TABLENEW_lastchangeddate, task.last_changed_date)
             values.put(TABLENEW_TASKFUNC, task.task_func)
 
@@ -703,6 +707,22 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //        db.close()
 //        return success
 //    }
+
+    fun selectPack(){
+
+        var nombr = 0
+        val cursor: Cursor =
+            sqlDatabase.rawQuery("SELECT column FROM table WHERE column = Value", null)
+        nombr = cursor.count
+
+        val db = this.readableDatabase
+        val query = "SELECT column FROM $TABLE_CREAT_PACK WHERE column = Value"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+        }
+    }
 
     @SuppressLint("Range")
     fun readData(): ArrayList<ViewTaskModelClass> {

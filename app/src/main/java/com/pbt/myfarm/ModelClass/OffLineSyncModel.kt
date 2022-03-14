@@ -683,7 +683,7 @@ data class Task(
     val com_group: Int,
     val created_by: Int,
     val created_date: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val description: String,
     val ended_late: Int,
     val id: Int,
@@ -693,7 +693,7 @@ data class Task(
     val started_late: Int,
     val status: String,
     val task_config_id: Int,
-    val task_func: Any
+    val task_func: Int
 )
 
 data class Team(

@@ -145,6 +145,7 @@ class AppConstant {
         //TABLE taskfields
 
         val TASKNEW_TABLENAME="TASKNEW_TABLENAME"
+        val TASK_id="id"
         val TABLENEW_PRIMARYKEY="TABLENEW_PRIMARYKEY"
         val TABLENEW_NAMEPREFIX="TABLENEW_NAMEPREFIX"
         val TABLENEW_NAME="TABLENEW_NAME"

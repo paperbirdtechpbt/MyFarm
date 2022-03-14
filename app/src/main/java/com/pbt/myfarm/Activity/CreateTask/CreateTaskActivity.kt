@@ -31,6 +31,7 @@ import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
+import com.pbt.myfarm.ModelClass.Task
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ConfigFieldList
@@ -47,6 +48,7 @@ import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
@@ -215,17 +217,18 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                 val currentDate = sdf.format(Date())
                 val db=DbHelper(this,null)
-                val viewtasklist=ArrayList<TasknewOffline>()
+                val viewtasklist=ArrayList<Task>()
 
                 val d=db.getLastValue_task_new("12")
 
                 if (d.isEmpty()){
                     viewtasklist.add(
-                        TasknewOffline("1","1","12",
-                            "4","3",
-                            "0","",
-                            "Test","2",currentDate,"2",currentDate,
-                            "")
+                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
+                            currentDate,
+                            "",field_desciption.text.toString(),
+                            0, MySharedPreference.getUser(this)?.id!!,
+                             MySharedPreference.getUser(this)?.id!!,"",1,1,
+                            "0", configtype?.id?.toInt()!!,null)
                     )
                     val viewTask=viewtasklist.get(0)
                     db.addNewTask(viewTask)
@@ -238,14 +241,17 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                     val newtaskname:Int=  d.toInt()+1
 
                     viewtasklist.add(
-                        TasknewOffline(newtaskname.toString(),"tst",
-                            "15","",
-                            "2","0",
-                            currentDate,"","2",currentDate,"","",
-                            "")
-                    )
-                    val viewTask=viewtasklist.get(0)
-                    db.addNewTask(viewTask)
+                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
+                            currentDate,
+                            "",field_desciption.text.toString(),
+                            0, MySharedPreference.getUser(this)?.id!!,
+                            MySharedPreference.getUser(this)?.id!!,"",newtaskname,1,
+                            "0", configtype?.id?.toInt()!!,null))
+
+                   val mytask=viewtasklist.get(0)
+
+                    db.addNewTask(mytask)
+
                     while (ExpName.contains("0")){
                         ExpName.remove("0")
                     }
