@@ -57,7 +57,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     var viewtask: TasklistDataModel? = null
     var adapter: CreateTaskAdapter? = null
     val successObject = JSONArray()
-var toolbar:Toolbar?=null
+    var toolbar:Toolbar?=null
     var updateTaskList: TasklistDataModel? = null
 
 
@@ -99,8 +99,6 @@ var toolbar:Toolbar?=null
             startActivity(intent)
 
         }
-
-
     }
 
     private fun initViewModel() {
@@ -116,8 +114,6 @@ var toolbar:Toolbar?=null
                 btn_create_task.setText("Update Task")
 
             }
-
-
 
             if (configtype== null) {
 
@@ -292,8 +288,6 @@ var toolbar:Toolbar?=null
 //                }
 
                 //-------|||do not uncomment  below code-------------------------|||||||
-
-
 
 //            CallApiForNewTask(fieldModel,userId,configtype?.id,selectedCommunityGroup.toInt()
 //                ,prefix,configtype!!.name_prefix)

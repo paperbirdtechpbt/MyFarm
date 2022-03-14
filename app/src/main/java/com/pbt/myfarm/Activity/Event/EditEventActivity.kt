@@ -123,9 +123,6 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
         for (i in 0 until list.size) {
             val item = list.get(i)
 
-
-
-
             for (g in 0 until item.field_com_group_list.size) {
                 val itemi = item.field_com_group_list.get(g)
                 communityGroupid.add(itemi.id.toString())

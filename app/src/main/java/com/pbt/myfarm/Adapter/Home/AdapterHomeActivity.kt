@@ -15,6 +15,8 @@ import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Service.MyFarmService
+import com.pbt.myfarm.Util.AppUtils
 
 class AdapterHomeActivity(var context: Context, var list:List<EventList>):
     RecyclerView.Adapter<AdapterHomeActivity.ViewHolder>() {
@@ -49,7 +51,7 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
             else if(item.evenetName=="Event"){
                 context.startActivity(Intent(context, ViewEventActivity::class.java))
             }
-
+            AppUtils().isServiceRunning(context, MyFarmService::class.java)
         }
 
     }

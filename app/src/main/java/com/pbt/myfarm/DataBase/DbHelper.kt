@@ -7,10 +7,12 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
+import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldList
+import com.pbt.myfarm.ModelClass.PacksNew
 import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.TasknewOffline
@@ -98,7 +100,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAMEPREFIX
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Status
-import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Updated_at
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_CONFIGID
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Created_at
@@ -121,22 +123,10 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_taskid
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_value
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKNEW_TABLENAME
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_Key
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_TABLE
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_collectactiivtid
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_created_by
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_deleted_at
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_deleted_by
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_list_id
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_result_class
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_result_name
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_type_id
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_Key
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_collectactiivtid
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_id
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_unitid
-import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_updated_at
 import com.pbt.myfarm.Util.AppUtils
 
 
@@ -217,7 +207,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 CONST_PACK_CommunityGroupcommunity_group + " TEXT" + ")")
         db?.execSQL(packCommunityGroup)
 
-        val pack_new = ("CREATE TABLE " + PACKNEW_TABLENAME + " ("
+        val pack_new = ("CREATE TABLE " + TABLE_CREAT_PACK + " ("
                 + PACKNEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
                 PACKNEW_NAMEPREFIX + " TEXT," +
                 PACKNEW_NAME + " TEXT," +
@@ -281,19 +271,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COLLECTDATA_updated_at + " TEXT" + ")")
         db?.execSQL(collectdata)
 
-        val collect_activity_results = ("CREATE TABLE " + colctactyrslt_TABLE + " ("
-                + colctactyrslt_Key + " INTEGER PRIMARY KEY, " +
-                colctactyrslt_collectactiivtid + " TEXT," +
-                colctactyrslt_result_name + " TEXT," +
-                colctactyrslt_unit_id + " TEXT," +
-                colctactyrslt_type_id + " TEXT," +
-                colctactyrslt_list_id + " TEXT," +
-                colctactyrslt_result_class + " TEXT," +
-                colctactyrslt_created_by + " TEXT," +
-                colctactyrslt_deleted_by + " TEXT," +
-                colctactyrslt_updated_at + " TEXT," +
-                colctactyrslt_deleted_at + " TEXT" + ")")
-        db?.execSQL(collect_activity_results)
+//        val collect_activity_results = ("CREATE TABLE " + colctactyrslt_TABLE + " ("
+//                + colctactyrslt_Key + " INTEGER PRIMARY KEY, " +
+//                colctactyrslt_collectactiivtid + " TEXT," +
+//                colctactyrslt_result_name + " TEXT," +
+//                colctactyrslt_unit_id + " TEXT," +
+//                colctactyrslt_type_id + " TEXT," +
+//                colctactyrslt_list_id + " TEXT," +
+//                colctactyrslt_result_class + " TEXT," +
+//                colctactyrslt_created_by + " TEXT," +
+//                colctactyrslt_deleted_by + " TEXT," +
+//                colctactyrslt_updated_at + " TEXT," +
+//                colctactyrslt_deleted_at + " TEXT" + ")")
+//        db?.execSQL(collect_activity_results)
 
 
         val collect_activity_results_unit = ("CREATE TABLE " + colctactyrslt_unit_TABLE + " ("
@@ -330,7 +320,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val list: ArrayList<PackCommunityList> = ArrayList()
         val db = this.readableDatabase
 
-        val selectQuery = "SELECT  * FROM $PACKNEW_TABLENAME WHERE $PACKNEW_CONFIGID =$configid "
+        val selectQuery = "SELECT  * FROM $TABLE_CREAT_PACK WHERE $PACKNEW_CONFIGID =$configid "
 
         val cursor: Cursor?
         try {
@@ -426,24 +416,25 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //    }
 
 
-    fun addNewPack(viewtask: ViewPackModelClass, created_at: String, deleted_at: String,
-        updated_at: String
-    ) {
-        AppUtils.logDebug(TAG, "viewTask====" + viewtask.toString())
+//    fun addNewPack(viewtask: ViewPackModelClass, created_at: String, deleted_at: String,
+//        updated_at: String
+//    ) {
+        fun addNewPack(pack : PacksNew) {
+        AppUtils.logDebug(TAG, "viewTask====" +Gson().toJson(pack))
 
         try {
             val values = ContentValues()
-            values.put(PACKNEW_NAME, viewtask.name)
-            values.put(PACKNEW_CONFIGID, viewtask.pack_config_id)
-            values.put(PACKNEW_Created_at, created_at)
-            values.put(PACKNEW_Deleted_at, deleted_at)
-            values.put(PACKNEW_Updated_at, updated_at)
-            values.put(PACKNEW_DESC, viewtask.description)
-            values.put(PACKNEW_GROUP, viewtask.com_group)
+            values.put(PACKNEW_NAME, pack.name)
+            values.put(PACKNEW_CONFIGID, pack.pack_config_id)
+            values.put(PACKNEW_Created_at, pack.created_date)
+            values.put(PACKNEW_Deleted_at, pack.deleted_at)
+            values.put(PACKNEW_Updated_at,pack.last_changed_date)
+            values.put(PACKNEW_DESC, pack.description)
+            values.put(PACKNEW_GROUP, pack.com_group)
             values.put(PACKNEW_Status, "0")
 
             val db = this.writableDatabase
-            val result = db.insert(PACKNEW_TABLENAME, null, values)
+            val result = db.insert(TABLE_CREAT_PACK, null, values)
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -456,8 +447,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
-
-
     }
 
     fun addpackFieldValue(id: String, packid: String, value: String) {
@@ -842,7 +831,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val db = this.writableDatabase
         val success = db.delete(
-            PACKNEW_TABLENAME,
+            TABLE_CREAT_PACK,
             PACKNEW_CONFIGID + "=" + configid + " and " + PACKNEW_NAME + "=" + packid,
             null
         )

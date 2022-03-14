@@ -58,4 +58,17 @@ class AppUtils {
 
 
     }
+
+    fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val services: List<ActivityManager.RunningServiceInfo> = activityManager.getRunningServices(Int.MAX_VALUE)
+        for (runningServiceInfo in services) {
+            Log.d(
+            "Service:%s", runningServiceInfo.service.getClassName())
+            if (runningServiceInfo.service.getClassName().equals(serviceClass.name)) {
+                return true
+            }
+        }
+        return false
+    }
     }

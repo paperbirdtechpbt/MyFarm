@@ -117,7 +117,7 @@ class AppConstant {
         val CONST_CREATEEVENT="createevent"
 
         //TABLE
-        val PACKNEW_TABLENAME="packnewtablename"
+        val TABLE_CREAT_PACK="packs_new"
         val PACKNEW_PRIMARYKEY="packnewprimarykey"
         val PACKNEW_NAMEPREFIX="packnewnameprefix"
         val PACKNEW_DESC="packnewdesc"

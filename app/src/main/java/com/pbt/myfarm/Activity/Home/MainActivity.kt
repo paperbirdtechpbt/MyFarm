@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
 import com.pbt.myfarm.ModelClass.EventList
+import com.pbt.myfarm.MyFarmApp
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Service.MyFarmService
+import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -58,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel?.packConfigList(this)
 //        viewModel?.packCOnfigFielList(this, packconfiglist)
+
+        AppUtils().isServiceRunning(this,MyFarmService::class.java)
+
     }
 
     private fun checkInternetConnection():Boolean {

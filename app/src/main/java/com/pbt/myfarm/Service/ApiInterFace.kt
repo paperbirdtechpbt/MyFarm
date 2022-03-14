@@ -1,6 +1,7 @@
 package com.pbt.myfarm.Service
 
 import com.pbt.myfarm.Activity.Event.EditEventList
+import com.pbt.myfarm.Activity.Event.ResponseOfflineSync
 import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
@@ -10,6 +11,7 @@ import com.pbt.myfarm.CollectdataRespose
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
 import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.ModelClass.OffLineSyncModel
 import com.pbt.myfarm.ResponseEventList
 import retrofit2.Call
 import retrofit2.http.*
@@ -295,5 +297,9 @@ interface ApiInterFace {
         @Field("assigned_team") assigned_team: String,
         @Field("closed") closed: String,
     ):Call<ResposneUpdateEvent>
+
+    @FormUrlEncoded
+    @POST("api/getAllDatalist")
+    fun offLineSync(@Field("user_id") userId: String) :Call<OffLineSyncModel>
 
 }

@@ -208,7 +208,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                         "FEVESKKM","",
                         "Test","1","2","",))
                 val viewTask=viewtasklist.get(0)
-                db.addNewPack(viewTask,currentDate,"","")
+//                db.addNewPack(viewTask,currentDate,"","")
                 for(i in 0 until ExpAmtArray.size){
                     db.addpackFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
                 }
@@ -223,7 +223,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                     "FEVESKKM","",
                     "Test","1","2","",))
                 val viewTask=viewtasklist.get(0)
-                db.addNewPack(viewTask,currentDate,"","")
+//                db.addNewPack(viewTask,currentDate,"","")
                 for(i in 0 until ExpAmtArray.size){
                     db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
                 }
