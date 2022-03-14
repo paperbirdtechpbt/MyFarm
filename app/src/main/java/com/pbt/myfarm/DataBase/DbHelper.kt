@@ -34,6 +34,19 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_unit_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_at
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_by
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_value
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_FIELD_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKCONFIGPRIMARY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKCONFIG_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_SERVER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_created_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_default_value
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_eleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_field_description
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_field_type
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_last_changed_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_last_changed_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_list
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_VERSION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_END_DATE
@@ -118,6 +131,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangedby
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangeddate
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_startdate
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACK_CONFIG_FIELDS
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_TABLENAME
 import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
@@ -227,6 +241,24 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 PACKFIELDS_fieldid + " TEXT," +
                 PACKFIELDS_value + " TEXT" + ")")
         db?.execSQL(pack_fields)
+
+        val pack_config_fields = ("CREATE TABLE " + TABLE_PACK_CONFIG_FIELDS + " ("
+                + COL_PACKCONFIGPRIMARY_ID + " INTEGER PRIMARY KEY, " +
+                COL_SERVER_ID + " TEXT," +
+                COL_PACKCONFIG_ID + " TEXT," +
+                COL_FIELD_NAME + " TEXT," +
+                COL_field_description + " TEXT," +
+                COL_field_type + " TEXT," +
+                COL_list + " TEXT," +
+                COL_default_value + " TEXT," +
+                COL_created_date + " TEXT," +
+                COL_created_by + " TEXT," +
+                COL_field_type + " TEXT," +
+                COL_created_date + " TEXT," +
+                COL_last_changed_by + " TEXT," +
+                COL_last_changed_date + " TEXT," +
+                COL_eleted_at + " TEXT" + ")")
+        db?.execSQL(pack_config_fields)
 
         val tasks = ("CREATE TABLE " + TASKNEW_TABLENAME + " ("
                 + TABLENEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -708,21 +740,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //        return success
 //    }
 
-    fun selectPack(){
-
-        var nombr = 0
-        val cursor: Cursor =
-            sqlDatabase.rawQuery("SELECT column FROM table WHERE column = Value", null)
-        nombr = cursor.count
-
-        val db = this.readableDatabase
-        val query = "SELECT column FROM $TABLE_CREAT_PACK WHERE column = Value"
-        val cursor: Cursor?
-        try {
-            cursor = db.rawQuery(query, null)
-        } catch (e: Exception) {
-        }
-    }
+//    fun selectPack(){
+//
+//        var nombr = 0
+//        val cursor: Cursor =
+//            sqlDatabase.rawQuery("SELECT column FROM table WHERE column = Value", null)
+//        nombr = cursor.count
+//
+//        val db = this.readableDatabase
+//        val query = "SELECT column FROM $TABLE_CREAT_PACK WHERE column = Value"
+//        val cursor: Cursor?
+//        try {
+//            cursor = db.rawQuery(query, null)
+//        } catch (e: Exception) {
+//        }
+//    }
 
     @SuppressLint("Range")
     fun readData(): ArrayList<ViewTaskModelClass> {
