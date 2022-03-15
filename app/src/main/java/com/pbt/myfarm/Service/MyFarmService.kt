@@ -35,6 +35,7 @@ class MyFarmService() : Service() {
 
     val db= DbHelper(this,null)
 
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG," Service run ${System.currentTimeMillis()}")
 
@@ -107,10 +108,10 @@ class MyFarmService() : Service() {
                         }
                         if(it.Data.tasks.isNotEmpty()){
                             for(pack in it.Data.tasks) {
-                                db.tasks_create(pack)
+                                db.tasksCreate(pack)
+
                             }
                         }
-
                         if(it.Data.task_fields.isNotEmpty()){
                             for(pack in it.Data.task_fields) {
                                 db.task_fields_create(pack)
@@ -129,6 +130,36 @@ class MyFarmService() : Service() {
                         if(it.Data.task_config_functions.isNotEmpty()){
                             for(pack in it.Data.task_config_functions) {
                                 db.task_config_functions_create(pack)
+                            }
+                        }
+                        if(it.Data.collect_data.isNotEmpty()){
+                            for(pack in it.Data.collect_data) {
+                                db.collectDataCreate(pack)
+                            }
+                        }
+                        if(it.Data.community_groups.isNotEmpty()){
+                            for(pack in it.Data.community_groups) {
+                                db.communityGroupsCreate(pack)
+                            }
+                        }
+                        if(it.Data.collect_activities.isNotEmpty()){
+                            for(pack in it.Data.collect_activities) {
+                                db.collectActivitiesCreate(pack)
+                            }
+                        }
+                        if(it.Data.collect_activity_results.isNotEmpty()){
+                            for(pack in it.Data.collect_activity_results) {
+                                db.collectActivitiesResultsCreate(pack)
+                            }
+                        }
+                        if(it.Data.collect_activity_result_unit.isNotEmpty()){
+                            for(pack in it.Data.collect_activity_result_unit) {
+                                db.collectActivitiesResultsUnitCreate(pack)
+                            }
+                        }
+                        if(it.Data.people.isNotEmpty()){
+                            for(pack in it.Data.people) {
+                                db.peopleCreate(pack)
                             }
                         }
                     }

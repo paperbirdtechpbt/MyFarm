@@ -330,6 +330,121 @@ class AppConstant {
         val COL_task_config_functions_deleted_at="task_config_functions_deleted_at"
 
 
+        //ravi offline----table---collect_data
+
+
+        val TABLE_collect_data="collect_data"
+        val COL_collect_data_PRIMARYKEY="collectDataPrimary"
+        val COL_collect_data_SERVERID="collectData_serverid"
+        val COL_collect_data_pack_id="collectDataPackid"
+        val COL_collect_data_ResulId="collectDataResultIid"
+        val COL_collect_data_ResultClass="collectData_resultclass"
+        val COL_collect_data_CollectActivityId="collectDataCollectActivityId"
+        val COL_collect_data_NEWVALUE="collectData_new_value"
+        val COL_collect_data_UNITID="collectData_unit_id"
+        val COL_collect_data_SENSORID="collectData_sensor_id"
+        val COL_collect_data_DURATION="collectData_duration"
+        val COL_collect_data_CREATEDBY="collectData_created_by"
+        val COL_collect_data_UPDATED_BY="collectData_updated_by"
+        val COL_collect_data_DELETED_BY="collectData_deleted_by"
+        val COL_collect_data_CREATED_AT="collectData_created_at"
+        val COL_collect_data_UPDATED_AT="collectData_updated_at"
+        val COL_collect_data_DELETED_AT="collectData_deleted_at"
+ //ravi offline----table---community_groups
+
+        val TABLE_community_groups="community_groups"
+        val COL_community_groups_PRIMARYKEY="community_groups_Primary"
+        val COL_community_groups_SERVERID="community_groups_serverid"
+        val COL_community_groups_NAME="community_groups_name"
+        val COL_community_groups_DESCIPRTION="community_groups_description"
+        val COL_community_groups_COMM_GROUP="community_groups_community_group"
+        val COL_community_groups_CREATED_BY="community_groups_created_by"
+        val COL_community_groups_UPDATED_BY="community_groups_updated_by"
+        val COL_community_groups_DELTED_BY="community_groups_deleted_by"
+        val COL_community_groups_CREATED_AT="community_groups_created_at"
+        val COL_community_groups_UPDATED_AT="community_groups_updated_at"
+        val COL_community_groups_DELETED_AT="community_groups_deleted_at"
+
+        //ravi -offline---------table-----collect_activities
+
+        val TABLE_collect_activities="collect_activities"
+        val COL_collect_activities_PRIMARYKEY="collect_activities_Primary"
+        val COL_collect_activities_SERVERID="collect_activities_serverid"
+        val COL_collect_activities_NAME="collect_activities_name"
+        val COL_collect_activities_COMMUNITYGROUP="collect_activities_communitygroup"
+        val COL_collect_activities_CREATED_BY="collect_activities_created_by"
+        val COL_collect_activities_UPDATED_BY="collect_activities_updated_by"
+        val COL_collect_activities_DELTED_BY="collect_activities_deleted_by"
+        val COL_collect_activities_CREATED_AT="collect_activities_created_at"
+        val COL_collect_activities_UPDATED_AT="collect_activities_updated_at"
+        val COL_collect_activities_DELTED_AT="collect_activities_deleted_at"
+
+
+  //ravi -offline---------table-----collect_activity_results
+
+        val TABLE_collect_activity_results="collect_activity_results"
+        val COL_collect_activity_results_PRIMARYKEY="collect_activity_results_Primary"
+        val COL_collect_activity_results_SERVERID="collect_activity_results_SERVERID"
+        val COL_collect_activity_results_COLLECT_ACTIVITY_ID="collect_activity_results_collect_activity_id"
+        val COL_collect_activity_results_RESULTNAME="collect_activity_results_result_name"
+        val COL_collect_activity_results_UNITID="collect_activity_results_unit_id"
+        val COL_collect_activity_results_TYPEID="collect_activity_results_type_id"
+        val COL_collect_activity_results_LISTID="collect_activity_results_list_id"
+        val COL_collect_activity_results_RESULTCLASS="collect_activity_results_result_class"
+        val COL_collect_activity_results_CREATEDBY="collect_activity_results_created_by"
+        val COL_collect_activity_results_UPDATEDBY="collect_activity_results_updated_by"
+        val COL_collect_activity_results_DELETEDBY="collect_activity_results_deleted_by"
+        val COL_collect_activity_results_CREATEDAT="collect_activity_results_created_at"
+        val COL_collect_activity_results_UPDATEDAT="collect_activity_results_updated_at"
+        val COL_collect_activity_results_DELETEAT="collect_activity_results_deleted_at"
+
+        //ravi -offline---------table-----collect_activity_results_unit
+
+        val TABLE_collect_activity_results_unit="collect_activity_results_unit"
+        val COL_collect_activity_results_unit_PRIMARYKEY="collect_activity_results_unit_Primary"
+        val COL_collect_activity_results_unit_SERVERID="collect_activity_results_unit_SERVERID"
+        val COL_collect_activity_results_unit_COLLECT_ACITIVITY_RESULT_ID="collect_activity_results_unit_collect_activity_result_id"
+        val COL_collect_activity_results_unit_UNITID="collect_activity_results_unit_unit_id"
+
+        //ravi -offline---------table-----people
+
+        val TABLE_people="people"
+        val COL_people_PRIMARYKEY="people_Primary"
+        val COL_people_SERVERID="people_Serverid"
+        val COL_people_FNAME="people_fname"
+        val COL_people_LNAME="people_lname"
+        val COL_people_EMAIl="people_email"
+        val COL_people_CONTACT="people_contact"
+        val COL_people_BIRTHPLACE="people_birth_place"
+        val COL_people_DOB="people_dob"
+        val COL_people_PHOTO="people_photo"
+        val COL_people_ADDRESS="people_address"
+        val COL_people_CITIZENSHIP="people_citizenship"
+        val COL_people_CERTIFICAITON="people_certification"
+        val COL_people_LASTCERFICATION_DATE="people_last_certification_date"
+        val COL_people_IS_IN_COOP="people_is_in_coop"
+        val COL_people_IS_KAKAOMUNDO="people_is_kakaomundo"
+        val COL_people_KAKAOMUNDO_CENTER="people_is_kakaomundo_center"
+        val COL_people_USERID="people_is_user_id"
+        val COL_people_COMMUNITY_GROUP="people_is_communitygroup"
+        val COL_people_PERSON_CLASS="people_person_class"
+        val COL_people_PERSON_TYPE="people_person_type"
+        val COL_people_DEWSCIPTION="people_description"
+        val COL_people_CREATED_BY="people_created_by"
+        val COL_people_UPDATED_BY="people_updated_by"
+        val COL_people_UPDATED_AT="people_updated_at"
+        val COL_people_CREATED_AT="people_created_at"
+        val COL_people_DELETED_BY="people_deleted_by"
+        val COL_people_DELETED_AT="people_deleted_at"
+
+
+
+
+
+
+
+
+
 
     }
 }

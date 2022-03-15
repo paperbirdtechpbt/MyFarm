@@ -210,66 +210,66 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 //        }
             btn_create_task.setOnClickListener {
                 adapter?.callBack()
-                val listdata = ArrayList<String>()
-
-
-                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                val currentDate = sdf.format(Date())
-                val db=DbHelper(this,null)
-                val viewtasklist=ArrayList<Task>()
-
-                val d=db.getLastValue_task_new("12")
-
-                if (d.isEmpty()){
-                    viewtasklist.add(
-                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
-                            currentDate,
-                            "",field_desciption.text.toString(),
-                            0, MySharedPreference.getUser(this)?.id!!,
-                             MySharedPreference.getUser(this)?.id!!,"",1,1,
-                            "0", configtype?.id?.toInt()!!,"")
-                    )
-                    val viewTask=viewtasklist.get(0)
-                    db.tasks_create(viewTask)
-//                    for(i in 0 until ExpAmtArray.size){
-//                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+//                val listdata = ArrayList<String>()
+//
+//
+//                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+//                val currentDate = sdf.format(Date())
+//                val db=DbHelper(this,null)
+//                val viewtasklist=ArrayList<Task>()
+//
+//                val d=db.getLastValue_task_new("12")
+//
+//                if (d.isEmpty()){
+//                    viewtasklist.add(
+//                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
+//                            currentDate,
+//                            "",field_desciption.text.toString(),
+//                            0, MySharedPreference.getUser(this)?.id!!,
+//                             MySharedPreference.getUser(this)?.id!!,"",1,1,
+//                            "0", configtype?.id?.toInt()!!,0)
+//                    )
+//                    val viewTask=viewtasklist.get(0)
+//                    db.tasks_create(viewTask)
+////                    for(i in 0 until ExpAmtArray.size){
+////                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+////                    }
+//
+//                }
+//                else{
+//                    val newtaskname:Int=  d.toInt()+1
+//
+//                    viewtasklist.add(
+//                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
+//                            currentDate,
+//                            "",field_desciption.text.toString(),
+//                            0, MySharedPreference.getUser(this)?.id!!,
+//                            MySharedPreference.getUser(this)?.id!!,"",newtaskname,1,
+//                            "0", configtype?.id?.toInt()!!,0))
+//
+//                   val mytask=viewtasklist.get(0)
+//
+//                    db.tasks_create(mytask)
+//
+//                    while (ExpName.contains("0")){
+//                        ExpName.remove("0")
 //                    }
-
-                }
-                else{
-                    val newtaskname:Int=  d.toInt()+1
-
-                    viewtasklist.add(
-                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
-                            currentDate,
-                            "",field_desciption.text.toString(),
-                            0, MySharedPreference.getUser(this)?.id!!,
-                            MySharedPreference.getUser(this)?.id!!,"",newtaskname,1,
-                            "0", configtype?.id?.toInt()!!,""))
-
-                   val mytask=viewtasklist.get(0)
-
-                    db.tasks_create(mytask)
-
-                    while (ExpName.contains("0")){
-                        ExpName.remove("0")
-                    }
-                    while (ExpAmtArray.contains("0")){
-                        ExpAmtArray.remove("0")
-                    }
-//                    for(i in 0 until ExpAmtArray.size){
-//                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+//                    while (ExpAmtArray.contains("0")){
+//                        ExpAmtArray.remove("0")
 //                    }
-                }
-
-
-
-                if (successObject != null) {
-                    for (i in 0 until successObject.length()) {
-                        listdata.add(successObject.getString(i))
-                    }
-                }
-
+////                    for(i in 0 until ExpAmtArray.size){
+////                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+////                    }
+//                }
+//
+//
+//
+//                if (successObject != null) {
+//                    for (i in 0 until successObject.length()) {
+//                        listdata.add(successObject.getString(i))
+//                    }
+//                }
+//
 //            AppUtils.logDebug(TAG,"-->>"+successObject)
                 val userId = MySharedPreference.getUser(this)?.id
                 val prefix = field_desciption.text.toString()
@@ -278,26 +278,26 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
 
 
-//                if(!updateTaskBoolen){
-//                    ApiClient.client.create(ApiInterFace::class.java)
-//                        .storeTask(
-//                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-//                            successObject.toString(), updateTaskList?.name_prefix.toString()
-//                        ).enqueue(this)}
-//                else{
-//                    ApiClient.client.create(ApiInterFace::class.java)
-//                        .updateTask(
-//                            "10", prefix, selectedCommunityGroup, userId.toString(),
-//                            successObject.toString(), updateTaskList?.name_prefix.toString(),
-//                            updateTaskList?.id.toString() ).enqueue(this)
-//                }
+                if(!updateTaskBoolen){
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .storeTask(
+                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                            successObject.toString(), updateTaskList?.name_prefix.toString()
+                        ).enqueue(this)}
+                else{
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .updateTask(
+                            "10", prefix, selectedCommunityGroup, userId.toString(),
+                            successObject.toString(), updateTaskList?.name_prefix.toString(),
+                            updateTaskList?.id.toString() ).enqueue(this)
+                }
 
-                //-------|||do not uncomment  below code-------------------------|||||||
-
+//                -------|||do not uncomment  below code-------------------------|||||||
+//
 //            CallApiForNewTask(fieldModel,userId,configtype?.id,selectedCommunityGroup.toInt()
 //                ,prefix,configtype!!.name_prefix)
-
-
+//
+//
 //            viewmodel?.login(it)
 //            finish()
 //            AppUtils.logDebug(TAG, ravi)
