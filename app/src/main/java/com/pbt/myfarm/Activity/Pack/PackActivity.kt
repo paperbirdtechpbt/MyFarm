@@ -60,57 +60,58 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         val checkInternet = checkInternetConnection()
         if (checkInternet) {
             initViewModel()
-        } else
-        {
-            db = DbHelper(this, null)
-            tasklist = db!!.readPackData()
-
-            if (!tasklist.isNullOrEmpty()){
-                for(i in 0 until tasklist!!.size){
-                    val it= tasklist!!.get(i)
-                    it.padzero= it.name.padStart(4, '0')
-                    if (it.name_prefix.isNullOrEmpty()){
-                        val dd="."
-                        mypacklist.add(
-                            PackList(
-                                it.id, it.name,dd,
-                                it.pack_config_id!!,
-                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
-                                it.com_group, it.created_by, it.padzero
-                            )
-                        )
-                    }
-                    else{
-                        mypacklist.add(
-                            PackList(
-                                it.id, it.name,it.name_prefix!!,
-                                it.pack_config_id!!,
-                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
-                                it.com_group, it.created_by, it.padzero
-                            )
-                        )
-                    }
-
-
-                }
-                if (!mypacklist.isNullOrEmpty()){
-
-                    adapter = AdapterViewPack(this, mypacklist){e,p,ee,w ->
-
-                    }
-                    recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
-                    recyclerview_viewtask.adapter = adapter
-                    progressViewPack?.visibility= View.GONE
-                }
-
-
-
-
-            }
-
-            
-     
         }
+//        else
+//        {
+//            db = DbHelper(this, null)
+//            tasklist = db!!.readPackData()
+//
+//            if (!tasklist.isNullOrEmpty()){
+//                for(i in 0 until tasklist!!.size){
+//                    val it= tasklist!!.get(i)
+//                    it.padzero= it.name.padStart(4, '0')
+//                    if (it.name_prefix.isNullOrEmpty()){
+//                        val dd="."
+//                        mypacklist.add(
+//                            PackList(
+//                                it.id, it.name,dd,
+//                                it.pack_config_id!!,
+//                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
+//                                it.com_group, it.created_by, it.padzero
+//                            )
+//                        )
+//                    }
+//                    else{
+//                        mypacklist.add(
+//                            PackList(
+//                                it.id, it.name,it.name_prefix!!,
+//                                it.pack_config_id!!,
+//                                it.pack_config_name, " Type: ", " Desciption: ", it.description,
+//                                it.com_group, it.created_by, it.padzero
+//                            )
+//                        )
+//                    }
+//
+//
+//                }
+//                if (!mypacklist.isNullOrEmpty()){
+//
+//                    adapter = AdapterViewPack(this, mypacklist){e,p,ee,w ->
+//
+//                    }
+//                    recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
+//                    recyclerview_viewtask.adapter = adapter
+//                    progressViewPack?.visibility= View.GONE
+//                }
+//
+//
+//
+//
+//            }
+//
+//
+//
+//        }
 
 
         btn_create_task.setOnClickListener {
@@ -174,8 +175,8 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 DialogInterface.OnClickListener { dialog, which ->
 //                    ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id)
 //                        .enqueue(this)
-                    val db=DbHelper(this,null)
-                    db.deletenewPack("11114","4")
+//                    val db=DbHelper(this,null)
+//                    db.deletenewPack("11114","4")
 
 
 //                    db?.deletePack(taskname)

@@ -80,29 +80,29 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
 //    }
 
-    fun update() {
-        val db= DbHelper(context,null)
-        val newTask=ViewTaskModelClass(ENTRYNAME = namePrefix?.get().toString(),
-            ENTRYTYPE = confiType?.get().toString(),ENTRYDETAIL =  desciption?.get().toString(),
-            ExpectedStartDate = expectedStartDate?.get().toString(),
-            ExpectedEndDate =expectedEndDate?.get().toString(),
-            StartDate = startDate?.get().toString(), EndDate = EndDate?.get().toString() )
-      val result=  db.updateTask(newTask,newTask.ENTRYNAME)
-        if (result >= 0) {
-            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
-            val intent = Intent(context, ViewTaskActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-
-            Activity().finish()
-
-
-        } else {
-            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
-
-        }
-
-    }
+//    fun update() {
+//        val db= DbHelper(context,null)
+//        val newTask=ViewTaskModelClass(ENTRYNAME = namePrefix?.get().toString(),
+//            ENTRYTYPE = confiType?.get().toString(),ENTRYDETAIL =  desciption?.get().toString(),
+//            ExpectedStartDate = expectedStartDate?.get().toString(),
+//            ExpectedEndDate =expectedEndDate?.get().toString(),
+//            StartDate = startDate?.get().toString(), EndDate = EndDate?.get().toString() )
+//      val result=  db.updateTask(newTask,newTask.ENTRYNAME)
+//        if (result >= 0) {
+//            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(context, ViewTaskActivity::class.java)
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//            context.startActivity(intent)
+//
+//            Activity().finish()
+//
+//
+//        } else {
+//            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
+//
+//        }
+//
+//    }
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
         if (updateTaskIdBoolean){

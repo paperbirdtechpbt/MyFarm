@@ -37,8 +37,8 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
         response: Response<PackConfigResponse>
     ) {
         if (response.body()?.error==false){
-            val db = DbHelper(activity, null)
-            db.dropPackConfigTable()
+//            val db = DbHelper(activity, null)
+//            db.dropPackConfigTable()
             val packconfiglist = ArrayList<PackConfigList>()
 
             val baseList : PackConfigResponse =  Gson().fromJson(
@@ -60,12 +60,12 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
 
     }
 
-    private fun addPackToDatabase(packconfiglist: ArrayList<PackConfigList>) {
-        for (i in 0 until packconfiglist.size){
-            val db = DbHelper(activity, null)
-            db.addPackConfigList(packconfiglist.get(i))
-        }
-    }
+//    private fun addPackToDatabase(packconfiglist: ArrayList<PackConfigList>) {
+//        for (i in 0 until packconfiglist.size){
+//            val db = DbHelper(activity, null)
+//            db.addPackConfigList(packconfiglist.get(i))
+//        }
+//    }
 
     override fun onFailure(call: Call<PackConfigResponse>, t: Throwable) {
         Toast.makeText(activity, "Configlist failure response", Toast.LENGTH_SHORT).show()
@@ -88,9 +88,9 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
                         AppUtils.logDebug(TAG, Gson().toJson(response.body()))
                         if (response.body()?.error == false) {
                             val db=DbHelper(context,null)
-                            db.dropPackCommunityGroupTable()
-                            db.dropPackConfigffIELDList()
-                            db.dropPackConfigffIELDFieldList()
+//                            db.dropPackCommunityGroupTable()
+//                            db.dropPackConfigffIELDList()
+//                            db.dropPackConfigffIELDFieldList()
                             val packconfigList = ArrayList<PackConfigFieldList>()
 
                             val baseList : PackFieldResponse =  Gson().fromJson(

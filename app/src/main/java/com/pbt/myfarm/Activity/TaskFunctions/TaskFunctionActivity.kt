@@ -306,6 +306,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         val absolutePath = file.absolutePath
                         val fileExtention: String = file.extension
                         val filename: String = file.name
+                        taskfunction_media.setText(filename)
                         val fileinBytes = file.length()
                         val fileSizeInKB: Float = (fileinBytes / 1024).toFloat()
                         Toast.makeText(
@@ -330,24 +331,22 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         AppUtils.logDebug(TAG, "UpdateTaskId" + updateTaskID)
 
 
-                        if (fileTotalsize.length < 2) {
-
-
+                        if (fileSizeInMB < 2) {
 //                            AppUtils.logDebug(TAG,"Gallery File size----- ${df.format(fileSizeInMB)}--  $fileinBytes")
 //                            chatViewModel!!.imageUri?.set(absolutePath)
 //                            val view= View(this)
 //                            chatViewModel!!.sendImageToChat(view)
-                        } else {
+                        }  else {
                             Toast.makeText(
                                 this,
-                                "Please Select Less Than 10MB Files",
+                                "Please Select Less Than 2 Files",
                                 Toast.LENGTH_LONG
                             ).show()
 
                         }
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Please Select Less Than 10MB Files", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "Error", Toast.LENGTH_LONG)
                         .show()
 
                     AppUtils.logError(TAG, "Catch Exception----" + "$e")

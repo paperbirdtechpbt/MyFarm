@@ -78,7 +78,57 @@ class MyFarmService() : Service() {
                     p1.body()?.let {
                         if(it.Data.packs_new.isNotEmpty()){
                             for(pack in it.Data.packs_new) {
+
                                 db.addNewPack(pack)
+                            }
+                        }
+                        if(it.Data.pack_configs.isNotEmpty()){
+                            for(pack in it.Data.pack_configs) {
+
+                                db.pack_configscreate(pack)
+                            }
+                        }
+                        if(it.Data.pack_collect_activity.isNotEmpty()){
+                            for(pack in it.Data.pack_collect_activity) {
+
+                                db.pack_collect_activity_create(pack)
+                            }
+                        }
+                        if(it.Data.pack_config_fields.isNotEmpty()){
+                            for(pack in it.Data.pack_config_fields) {
+
+                                db.pack_config_fields_create(pack)
+                            }
+                        }
+                        if(it.Data.pack_fields.isNotEmpty()){
+                            for(pack in it.Data.pack_fields) {
+                                db.pack_fields_create(pack)
+                            }
+                        }
+                        if(it.Data.tasks.isNotEmpty()){
+                            for(pack in it.Data.tasks) {
+                                db.tasks_create(pack)
+                            }
+                        }
+
+                        if(it.Data.task_fields.isNotEmpty()){
+                            for(pack in it.Data.task_fields) {
+                                db.task_fields_create(pack)
+                            }
+                        }
+                        if(it.Data.task_configs.isNotEmpty()){
+                            for(pack in it.Data.task_configs) {
+                                db.task_configs_create(pack)
+                            }
+                        }
+                        if(it.Data.task_config_fields.isNotEmpty()){
+                            for(pack in it.Data.task_config_fields) {
+                                db.task_config_fields_create(pack)
+                            }
+                        }
+                        if(it.Data.task_config_functions.isNotEmpty()){
+                            for(pack in it.Data.task_config_functions) {
+                                db.task_config_functions_create(pack)
                             }
                         }
                     }

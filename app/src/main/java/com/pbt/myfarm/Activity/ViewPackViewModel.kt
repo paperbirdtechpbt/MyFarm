@@ -67,7 +67,7 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 
             val upCommingPackList = ArrayList<PackList>()
             val db = DbHelper(activity, null)
-          db.dropPackTable()
+//          db.dropPackTable()
 
 
             packListModel.data.forEach { routes ->
@@ -87,7 +87,7 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 
             packlist.value = upCommingPackList
             progressBAr?.visibility= View.GONE
-            addPackToDatabase(viewPackModeClass)
+//            addPackToDatabase(viewPackModeClass)
         }
         else{
 
@@ -96,15 +96,15 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
       
     }
 
-    private fun addPackToDatabase(viewPackModeClass: ArrayList<ViewPackModelClass>) {
-        for (i in 0 until viewPackModeClass.size){
-            val db = DbHelper(activity, null)
-            db.addPack(viewPackModeClass.get(i))
-        }
+//    private fun addPackToDatabase(viewPackModeClass: ArrayList<ViewPackModelClass>) {
+//        for (i in 0 until viewPackModeClass.size){
+//            val db = DbHelper(activity, null)
+//            db.addPack(viewPackModeClass.get(i))
+//        }
 
 
-
-    }
+//
+//    }
 
     override fun onFailure(call: Call<PackListModel>, t: Throwable) {
         AppUtils.logDebug(TAG, " Failure : " + t.localizedMessage)

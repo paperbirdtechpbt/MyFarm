@@ -165,8 +165,8 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 DialogInterface.OnClickListener { dialog, which ->
 //                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id)
 //                        .enqueue(this)
-                    val db=DbHelper(this,null)
-                    db.deletenewTask("2","5")
+//                    val db=DbHelper(this,null)
+//                    db.deletenewTask("2","5")
 
                     Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
                 })

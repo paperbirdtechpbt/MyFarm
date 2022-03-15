@@ -39,23 +39,23 @@ class PackConfigListActivity : AppCompatActivity() {
             initViewModel()
 
         }
-        else {
-            progressbar_packconfiglist.visibility=View.GONE
-            db = DbHelper(this, null)
-          val configlist = db!!.readPackConfiglistData()
-            select_packconfiglist.layoutManager= LinearLayoutManager(this)
-
-            adapter = AdapterPackSelectconfigType(this, configlist) { position, taskname ,list->
-
-                val intent = Intent(this, CreatePackActivity::class.java)
-                intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
-                startActivity(intent)
-                finish()
-
-            }
-            select_packconfiglist.adapter = adapter
-
-        }
+//        else {
+//            progressbar_packconfiglist.visibility=View.GONE
+//            db = DbHelper(this, null)
+//          val configlist = db!!.readPackConfiglistData()
+//            select_packconfiglist.layoutManager= LinearLayoutManager(this)
+//
+//            adapter = AdapterPackSelectconfigType(this, configlist) { position, taskname ,list->
+//
+//                val intent = Intent(this, CreatePackActivity::class.java)
+//                intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
+//                startActivity(intent)
+//                finish()
+//
+//            }
+//            select_packconfiglist.adapter = adapter
+//
+//        }
     }
 
     private fun checkInternetConnection(): Boolean {

@@ -1,5 +1,6 @@
 package com.pbt.myfarm.ModelClass
 
+import com.google.gson.annotations.SerializedName
 
 data class OffLineSyncModel(
     val Data: Data,
@@ -431,32 +432,32 @@ data class PackConfigField(
     val created_by: Int,
     val created_date: String,
     val default_value: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val editable: Int,
-    val field_description: Any,
+    val field_description: String,
     val field_name: String,
     val field_type: String,
     val id: Int,
-    val last_changed_by: Any,
-    val last_changed_date: Any,
+    val last_changed_by: String,
+    val last_changed_date: String,
     val list: String,
     val pack_config_id: Int
 )
 
 data class PackConfig(
     val `class`: Int,
-    val collect_activity_id: Any,
+    val collect_activity_id: String,
     val com_group: Int,
     val created_by: Int,
     val created_date: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val description: String,
-    val graph_chart_id: Any,
+    val graph_chart_id: String,
     val id: Int,
-    val last_changed_by: Any,
-    val last_changed_date: Any,
+    val last_changed_by: String,
+    val last_changed_date: String,
     val name: String,
-    val name_prefix: Any,
+    val name_prefix: String,
     val type: Int
 )
 
@@ -605,9 +606,9 @@ data class Sensor(
 data class TaskConfigField(
     val created_by: Int,
     val created_date: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val editable: Int,
-    val field_description: Any,
+    val field_description: String,
     val field_name: String,
     val field_type: String,
     val id: Int,
@@ -620,7 +621,7 @@ data class TaskConfigField(
 data class TaskConfigFunction(
     val created_by: Int,
     val created_date: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val description: String,
     val id: Int,
     val last_changed_by: Int,
@@ -631,11 +632,11 @@ data class TaskConfigFunction(
 )
 
 data class TaskConfig(
-    val `class`: Int,
+    @SerializedName("class") var nclass: String,
     val com_group: Int,
     val created_by: Int,
     val created_date: String,
-    val deleted_at: Any,
+    val deleted_at: String,
     val description: String,
     val id: Int,
     val last_changed_by: Int,
@@ -693,7 +694,7 @@ data class Task(
     val started_late: Int,
     val status: String,
     val task_config_id: Int,
-    val task_func: Int
+    val task_func: String
 )
 
 data class Team(

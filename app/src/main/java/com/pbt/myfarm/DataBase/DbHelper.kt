@@ -12,11 +12,8 @@ import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldList
-import com.pbt.myfarm.ModelClass.PacksNew
-import com.pbt.myfarm.ModelClass.Task
-import com.pbt.myfarm.ModelClass.ViewTaskModelClass
+import com.pbt.myfarm.ModelClass.*
 import com.pbt.myfarm.PackConfigList
-import com.pbt.myfarm.TasknewOffline
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_TABLENAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_collect_activity_id
@@ -34,19 +31,91 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_unit_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_at
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_updated_by
 import com.pbt.myfarm.Util.AppConstant.Companion.COLLECTDATA_value
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_FIELD_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKCONFIGPRIMARY_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKCONFIG_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_SERVER_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_created_by
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_created_date
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_default_value
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_eleted_at
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_field_description
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_field_type
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_last_changed_by
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_last_changed_date
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_PRIMARY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_SERVER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_collect_activity_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_pack_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_PRIMARY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_SERVER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_created_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_default_value
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_editable
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_field_description
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_field_name
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_field_type
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_last_changed_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_last_changed_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_list
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_pack_config_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_COLLECTACTIVITY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_COMGROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CREATEDBY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_DESCIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_GRAPHCHCHART_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_LAST_CHANGED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_LAST_CHNAGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_NAMEPREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_PRIMARY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_SERVER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_PRIMARY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_field_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_pack_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_value
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_created_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_editable
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_field_description
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_field_name
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_field_type
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_last_changed_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_last_changed_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_list
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_fields_task_config_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_SERVERKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_created_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_created_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_deleted_at
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_description
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_last_changed_by
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_last_changed_date
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_privilege
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_task_config_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_config_functions_task_name
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_DESCIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_LAST_CHANGED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_LAST_CHANGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_NAME_PREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_RECORD_EVENT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_REPORTABLE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs__LAST_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_FIELDID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_PRIMARY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_TASKID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_VALUE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DELTED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_DATABASE_VERSION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EXPECTED_END_DATE
@@ -100,7 +169,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERPASS
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_TABLENAME
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_fieldid
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKFIELDS_packid
@@ -115,29 +183,29 @@ import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_NAMEPREFIX
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Status
 import com.pbt.myfarm.Util.AppConstant.Companion.PACKNEW_Updated_at
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_CONFIGID
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Created_at
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_DESC
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_NAMEPREFIX
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Status
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_TASKFUNC
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_Updated_at
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_deleted_at
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_enddate
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangedby
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_lastchangeddate
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLENEW_startdate
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_ENDED_LATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_LASTCHANGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_LAST_CHANGED_BY
+
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_SERVERid
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STARTED_LATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASKFUNC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASK_CONFIGID
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACK_CONFIG_FIELDS
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_TABLENAME
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_fieldid
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_taskid
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKFIELDS_value
-import com.pbt.myfarm.Util.AppConstant.Companion.TASKNEW_TABLENAME
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_collect_activity
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_config_fields
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_configs
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_fields
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_fields
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_functions
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_configs
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_fields
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_tasks
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_Key
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.colctactyrslt_unit_collectactiivtid
@@ -196,6 +264,71 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         db?.execSQL(packConfigListTable)
 
+
+//ravi- offline table -------pack_configs------------------------------------->
+
+        val pack_configs = ("CREATE TABLE " + TABLE_pack_configs + " ("
+                + COL_pack_configs_PRIMARY_ID + " INTEGER PRIMARY KEY, " +
+                COL_pack_configs_SERVER_ID + " TEXT," +
+                COL_pack_configs_NAME + " TEXT," +
+                COL_pack_configs_DESCIPTION + " TEXT," +
+                COL_pack_configs_TYPE + " TEXT," +
+                COL_pack_configs_CLASS + " TEXT," +
+                COL_pack_configs_COMGROUP + " TEXT," +
+                COL_pack_configs_NAMEPREFIX + " TEXT," +
+                COL_pack_configs_COLLECTACTIVITY_ID + " TEXT," +
+                COL_pack_configs_GRAPHCHCHART_ID + " TEXT," +
+                COL_pack_configs_CREATEDBY + " TEXT," +
+                COL_pack_configs_CREATED_DATE + " TEXT," +
+                COL_pack_configs_LAST_CHANGED_BY + " TEXT," +
+                COL_pack_configs_LAST_CHNAGED_DATE + " TEXT," +
+                COL_pack_configs_DELETED_AT + " TEXT " + ")")
+
+        db?.execSQL(pack_configs)
+     //   <----------------------------------------------------------->
+
+            //ravi -offline table ---pack_collect_activity
+
+        val pack_collect_activity = ("CREATE TABLE " + TABLE_pack_collect_activity + " ("
+                + COL_pack_collect_activity_PRIMARY_ID + " INTEGER PRIMARY KEY, " +
+                COL_pack_collect_activity_SERVER_ID + " TEXT," +
+                COL_pack_collect_activity_collect_activity_id + " TEXT," +
+                COL_pack_collect_activity_pack_id + " TEXT " + ")")
+
+        db?.execSQL(pack_collect_activity)
+        //--------------//
+
+        // ravi -offline table ---pack_config_fields
+        val pack_config_fields = ("CREATE TABLE " + TABLE_pack_config_fields + " ("
+                + COL_pack_config_fields_PRIMARY_ID + " INTEGER PRIMARY KEY, " +
+                COL_pack_config_fields_SERVER_ID + " TEXT," +
+                COL_pack_config_fields_pack_config_id + " TEXT," +
+                COL_pack_config_fields_field_name + " TEXT," +
+                COL_pack_config_fields_field_description + " TEXT," +
+                COL_pack_config_fields_editable + " TEXT," +
+                COL_pack_config_fields_field_type + " TEXT," +
+                COL_pack_config_fields_list + " TEXT," +
+                COL_pack_config_fields_default_value + " TEXT," +
+                COL_pack_config_fields_created_by + " TEXT," +
+                COL_pack_config_fields_last_changed_by + " TEXT," +
+                COL_pack_config_fields_last_changed_date + " TEXT," +
+                COL_pack_config_fields_deleted_at + " TEXT," +
+                COL_pack_config_fields_created_date + " TEXT " + ")")
+
+        db?.execSQL(pack_config_fields)
+        //--------------//
+
+        // ravi -offline table ---pack_fields
+
+        val pack_fields = ("CREATE TABLE " + TABLE_pack_fields + " ("
+                + COL_pack_fields_PRIMARY_ID + " INTEGER PRIMARY KEY, " +
+                COL_pack_fields_pack_id + " TEXT," +
+                COL_pack_fields_value + " TEXT," +
+                COL_pack_fields_SERVERID + " TEXT," +
+                COL_pack_fields_field_id + " TEXT " + ")")
+        db?.execSQL(pack_fields)
+        //--------------//
+
         val packConfigFieldListTable = ("CREATE TABLE " + CONST_PACKCONFIG_FIELDLIST_TABLE + " ("
                 + CONST_PACK_CONFIG_FIELDLIST_ITEM + " INTEGER PRIMARY KEY, " +
                 CONST_PACK_CONFIG_FIELDLIST_field_id + " TEXT," +
@@ -235,56 +368,112 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 PACKNEW_Deleted_at + " TEXT" + ")")
         db?.execSQL(pack_new)
 
-        val pack_fields = ("CREATE TABLE " + PACKFIELDS_TABLENAME + " ("
-                + PACKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                PACKFIELDS_packid + " TEXT," +
-                PACKFIELDS_fieldid + " TEXT," +
-                PACKFIELDS_value + " TEXT" + ")")
-        db?.execSQL(pack_fields)
+//        val pack_fields = ("CREATE TABLE " + PACKFIELDS_TABLENAME + " ("
+//                + PACKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+//                PACKFIELDS_packid + " TEXT," +
+//                PACKFIELDS_fieldid + " TEXT," +
+//                PACKFIELDS_value + " TEXT" + ")")
+//        db?.execSQL(pack_fields)
 
-        val pack_config_fields = ("CREATE TABLE " + TABLE_PACK_CONFIG_FIELDS + " ("
-                + COL_PACKCONFIGPRIMARY_ID + " INTEGER PRIMARY KEY, " +
-                COL_SERVER_ID + " TEXT," +
-                COL_PACKCONFIG_ID + " TEXT," +
-                COL_FIELD_NAME + " TEXT," +
-                COL_field_description + " TEXT," +
-                COL_field_type + " TEXT," +
-                COL_list + " TEXT," +
-                COL_default_value + " TEXT," +
-                COL_created_date + " TEXT," +
-                COL_created_by + " TEXT," +
-                COL_field_type + " TEXT," +
-                COL_created_date + " TEXT," +
-                COL_last_changed_by + " TEXT," +
-                COL_last_changed_date + " TEXT," +
-                COL_eleted_at + " TEXT" + ")")
-        db?.execSQL(pack_config_fields)
+//        val pack_config_fields = ("CREATE TABLE " + TABLE_PACK_CONFIG_FIELDS + " ("
+//                + COL_PACKCONFIGPRIMARY_ID + " INTEGER PRIMARY KEY, " +
+//                COL_SERVER_ID + " TEXT," +
+//                COL_PACKCONFIG_ID + " TEXT," +
+//                COL_FIELD_NAME + " TEXT," +
+//                COL_field_description + " TEXT," +
+//                COL_field_type + " TEXT," +
+//                COL_list + " TEXT," +
+//                COL_default_value + " TEXT," +
+//                COL_created_date + " TEXT," +
+//                COL_created_by + " TEXT," +
+//                COL_last_changed_by + " TEXT," +
+//                COL_last_changed_date + " TEXT," +
+//                COL_eleted_at + " TEXT" + ")")
+//        db?.execSQL(pack_config_fields)
 
-        val tasks = ("CREATE TABLE " + TASKNEW_TABLENAME + " ("
-                + TABLENEW_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                TABLENEW_NAMEPREFIX + " TEXT," +
-                TABLENEW_NAMEPREFIX + " TEXT," +
-                TABLENEW_NAME + " TEXT," +
-                TABLENEW_DESC + " TEXT," +
-                TABLENEW_CONFIGID + " TEXT," +
-                TABLENEW_GROUP + " TEXT," +
-                TABLENEW_startdate + " TEXT," +
-                TABLENEW_enddate + " TEXT," +
-                TABLENEW_lastchangedby + " TEXT," +
-                TABLENEW_TASKFUNC + " TEXT," +
-                TABLENEW_lastchangeddate + " TEXT," +
-                TABLENEW_Status + " TEXT," +
-                TABLENEW_Created_at + " TEXT," +
-                TABLENEW_Updated_at + " TEXT," +
-                TABLENEW_deleted_at + " TEXT" + ")")
+//ravi- offline ---------table------task-------//
+
+        val tasks = ("CREATE TABLE " + TABLE_tasks + " ("
+                + COL_tasks_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_tasks_SERVERid + " TEXT," +
+                COL_tasks_NAME + " TEXT," +
+                COL_tasks_DESC + " TEXT," +
+                COL_tasks_GROUP + " TEXT," +
+                COL_tasks_TASK_CONFIGID + " TEXT," +
+                COL_tasks_TASKFUNC + " TEXT," +
+                COL_tasks_STATUS + " TEXT," +
+                COL_tasks_STARTED_LATE + " TEXT," +
+                COL_tasks_ENDED_LATE + " TEXT," +
+                COL_tasks_CREATED_BY + " TEXT," +
+                COL_tasks_CREATED_DATE + " TEXT," +
+                COL_tasks_LAST_CHANGED_BY + " TEXT," +
+                COL_tasks_LASTCHANGED_DATE + " TEXT," +
+                COL_tasks_DELTED_AT + " TEXT" + ")")
         db?.execSQL(tasks)
 
-        val task_fields = ("CREATE TABLE " + TASKFIELDS_TABLENAME + " ("
-                + TASKFIELDS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                TASKFIELDS_taskid + " TEXT," +
-                TASKFIELDS_fieldid + " TEXT," +
-                TASKFIELDS_value + " TEXT" + ")")
+
+        //ravi -offline---------table-----task_fields
+
+        val task_fields = ("CREATE TABLE " + TABLE_task_fields + " ("
+                + COL_task_fields_PRIMARY + " INTEGER PRIMARY KEY, " +
+                COL_task_fields_SERVERID + " TEXT," +
+                COL_task_fields_TASKID + " TEXT," +
+                COL_task_fields_FIELDID + " TEXT," +
+                COL_task_fields_VALUE + " TEXT" + ")")
         db?.execSQL(task_fields)
+
+        //ravi -offline---------table-----task_configs
+
+        val task_configs = ("CREATE TABLE " + TABLE_task_configs + " ("
+                + COL_task_configs_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_task_configs_SERVERID + " TEXT," +
+                COL_task_configs_NAME + " TEXT," +
+                COL_task_configs_DESCIPTION + " TEXT," +
+                COL_task_configs_TYPE + " TEXT," +
+                COL_task_configs_CLASS + " TEXT," +
+                COL_task_configs_COM_GROUP + " TEXT," +
+                COL_task_configs_NAME_PREFIX + " TEXT," +
+                COL_task_configs_RECORD_EVENT + " TEXT," +
+                COL_task_configs_REPORTABLE + " TEXT," +
+                COL_task_configs_CREATED_BY + " TEXT," +
+                COL_task_configs_CREATED_DATE + " TEXT," +
+                COL_task_configs_LAST_CHANGED_BY + " TEXT," +
+                COL_task_configs_LAST_CHANGED_DATE + " TEXT," +
+                COL_task_configs__LAST_DELETED_AT + " TEXT" + ")")
+        db?.execSQL(task_configs)
+
+        //ravi -offline---------table-----task_config_fields
+        val task_config_fields = ("CREATE TABLE " + TABLE_task_config_fields + " ("
+                + COL_task_config_fields_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_task_config_fields_SERVERID + " TEXT," +
+                COL_task_config_fields_task_config_id + " TEXT," +
+                COL_task_config_fields_field_name + " TEXT," +
+                COL_task_config_fields_field_description + " TEXT," +
+                COL_task_config_fields_editable + " TEXT," +
+                COL_task_config_fields_field_type + " TEXT," +
+                COL_task_config_fields_list + " TEXT," +
+                COL_task_config_fields_created_by + " TEXT," +
+                COL_task_config_fields_created_date + " TEXT," +
+                COL_task_config_fields_last_changed_by + " TEXT," +
+                COL_task_config_fields_last_changed_date + " TEXT," +
+                COL_task_config_fields_deleted_at + " TEXT" + ")")
+        db?.execSQL(task_config_fields)
+
+        //ravi -offline---------table-----task_config_functions
+
+        val task_config_functions = ("CREATE TABLE " + TABLE_task_config_functions + " ("
+                + COL_task_config_functions_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_task_config_functions_SERVERKEY + " TEXT," +
+                COL_task_config_functions_task_config_id + " TEXT," +
+                COL_task_config_functions_task_name + " TEXT," +
+                COL_task_config_functions_description + " TEXT," +
+                COL_task_config_functions_privilege + " TEXT," +
+                COL_task_config_functions_created_by + " TEXT," +
+                COL_task_config_functions_created_date + " TEXT," +
+                COL_task_config_functions_last_changed_by + " TEXT," +
+                COL_task_config_functions_deleted_at + " TEXT," +
+                COL_task_config_functions_last_changed_date + " TEXT" + ")")
+        db?.execSQL(task_config_functions)
 
         val collectdata = ("CREATE TABLE " + COLLECTDATA_TABLENAME + " ("
                 + COLLECTDATA_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -382,7 +571,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var myid = ""
         val db = this.readableDatabase
 
-        val selectQuery = "SELECT  * FROM $TASKNEW_TABLENAME WHERE $TABLENEW_CONFIGID =$configid "
+        val selectQuery = "SELECT  * FROM $TABLE_tasks WHERE $COL_tasks_TASK_CONFIGID =$configid "
 
         val cursor: Cursor?
         try {
@@ -397,7 +586,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             do {
                 val result = cursor.getInt(0)
                 AppUtils.logDebug(TAG, "resultt" + result)
-                myid = cursor.getString(cursor.getColumnIndex(TABLENEW_NAME))
+                myid = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
             } while (cursor.moveToNext())
         }
         return myid
@@ -480,6 +669,236 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
+    //ravi - offline ----------insert
+    fun pack_configscreate(pack : PackConfig) {
+        AppUtils.logDebug(TAG, "viewTask====" +Gson().toJson(pack))
+
+        try {
+
+            val values = ContentValues()
+            values.put(COL_pack_configs_SERVER_ID, pack.id)
+            values.put(COL_pack_configs_NAME, pack.name)
+            values.put(COL_pack_configs_DESCIPTION, pack.description)
+            values.put(COL_pack_configs_TYPE, pack.type)
+            values.put(COL_pack_configs_CLASS,pack.`class`)
+            values.put(COL_pack_configs_COMGROUP, pack.com_group)
+            values.put(COL_pack_configs_NAMEPREFIX, pack.name_prefix)
+            values.put(COL_pack_configs_COLLECTACTIVITY_ID, pack.collect_activity_id)
+            values.put(COL_pack_configs_GRAPHCHCHART_ID, pack.graph_chart_id)
+            values.put(COL_pack_configs_CREATEDBY, pack.created_by)
+            values.put(COL_pack_configs_CREATED_DATE, pack.created_date)
+            values.put(COL_pack_configs_LAST_CHANGED_BY, pack.last_changed_by)
+            values.put(COL_pack_configs_LAST_CHNAGED_DATE, pack.last_changed_date)
+            values.put(COL_pack_configs_DELETED_AT, pack.deleted_at)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_pack_configs, null, values)
+            db.close()
+            if (result >= 0) {
+                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+
+
+  //ravi - offline ----------insert--table---pack_collect_activity
+
+    fun pack_collect_activity_create(pack : PackCollectActivity) {
+
+        try {
+            val values = ContentValues()
+            values.put(COL_pack_collect_activity_SERVER_ID, pack.id)
+            values.put(COL_pack_collect_activity_collect_activity_id, pack.collect_activity_id)
+            values.put(COL_pack_collect_activity_pack_id,pack.pack_id)
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_pack_collect_activity, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+
+    //ravi - offline ----------insert--table---pack_fields
+
+    fun pack_fields_create(pack : PackField) {
+
+        try {
+            val values = ContentValues()
+            values.put(COL_pack_fields_pack_id,pack.pack_id)
+            values.put(COL_pack_fields_value,pack.value)
+            values.put(COL_pack_fields_SERVERID,pack.id)
+            values.put(COL_pack_fields_field_id,pack.field_id)
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_pack_fields, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+  //ravi - offline ----------insert--table---pack_config_fields
+
+    fun pack_config_fields_create(pack : PackConfigField) {
+
+        try {
+
+            val values = ContentValues()
+            values.put(COL_pack_config_fields_SERVER_ID, pack.id)
+            values.put(COL_pack_config_fields_pack_config_id, pack.pack_config_id)
+            values.put(COL_pack_config_fields_field_name, pack.field_name)
+            values.put(COL_pack_config_fields_field_description, pack.field_description)
+            values.put(COL_pack_config_fields_field_type, pack.field_type)
+            values.put(COL_pack_config_fields_default_value, pack.default_value)
+            values.put(COL_pack_config_fields_created_by, pack.created_by)
+            values.put(COL_pack_config_fields_last_changed_by,pack.last_changed_by)
+            values.put(COL_pack_config_fields_last_changed_date,pack.last_changed_date)
+            values.put(COL_pack_config_fields_created_date,pack.created_by)
+            values.put(COL_pack_config_fields_editable,pack.editable)
+            values.put(COL_pack_config_fields_list,pack.list)
+            values.put(COL_pack_config_fields_deleted_at,pack.deleted_at)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_pack_config_fields, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+
+    //ravi - offline ----------insert--table---task_configs
+
+
+    fun task_configs_create(pack : TaskConfig) {
+
+        try {
+
+            val values = ContentValues()
+            values.put(COL_task_configs_SERVERID, pack.id)
+            values.put(COL_task_configs_NAME, pack.name)
+            values.put(COL_task_configs_DESCIPTION, pack.description)
+            values.put(COL_task_configs_TYPE, pack.type)
+            values.put(COL_task_configs_CLASS, pack.nclass)
+            values.put(COL_task_configs_COM_GROUP, pack.com_group)
+            values.put(COL_task_configs_NAME_PREFIX, pack.name_prefix)
+            values.put(COL_task_configs_RECORD_EVENT,pack.record_event)
+            values.put(COL_task_configs_REPORTABLE,pack.reportable)
+            values.put(COL_task_configs_CREATED_BY,pack.created_by)
+            values.put(COL_task_configs_CREATED_DATE,pack.created_date)
+            values.put(COL_task_configs_LAST_CHANGED_BY,pack.last_changed_by)
+            values.put(COL_task_configs_LAST_CHANGED_DATE,pack.last_changed_date)
+            values.put(COL_task_configs__LAST_DELETED_AT,pack.deleted_at)
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_task_configs, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+
+    //ravi - offline ----------insert--table---task_config_fields
+
+
+    fun task_config_fields_create(pack : TaskConfigField) {
+
+        try {
+
+            val values = ContentValues()
+            values.put(COL_task_config_fields_SERVERID, pack.id)
+            values.put(COL_task_config_fields_task_config_id, pack.task_config_id)
+            values.put(COL_task_config_fields_field_name, pack.field_name)
+            values.put(COL_task_config_fields_field_description, pack.field_description)
+            values.put(COL_task_config_fields_editable, pack.editable)
+            values.put(COL_task_config_fields_field_type, pack.field_type)
+            values.put(COL_task_config_fields_list, pack.list)
+            values.put(COL_task_config_fields_created_by,pack.created_by)
+            values.put(COL_task_config_fields_created_date,pack.created_date)
+            values.put(COL_task_config_fields_last_changed_by,pack.last_changed_by)
+            values.put(COL_task_config_fields_last_changed_date,pack.last_changed_date)
+            values.put(COL_task_config_fields_deleted_at,pack.deleted_at)
+
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_task_config_fields, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+   //ravi - offline ----------insert--table---task_config_functions
+
+
+    fun task_config_functions_create(pack : TaskConfigFunction) {
+
+        try {
+
+            val values = ContentValues()
+            values.put(COL_task_config_functions_SERVERKEY, pack.id)
+            values.put(COL_task_config_functions_task_config_id, pack.task_config_id)
+            values.put(COL_task_config_functions_task_name, pack.name)
+            values.put(COL_task_config_functions_description, pack.description)
+            values.put(COL_task_config_functions_privilege, pack.privilege)
+            values.put(COL_task_config_functions_created_by, pack.created_by)
+            values.put(COL_task_config_functions_created_date, pack.created_date)
+            values.put(COL_task_config_functions_last_changed_by,pack.last_changed_by)
+            values.put(COL_task_config_functions_deleted_at,pack.deleted_at)
+            values.put(COL_task_config_functions_last_changed_date,pack.last_changed_date)
+
+
+
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_task_config_functions, null, values)
+            db.close()
+            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
 
 
 
@@ -503,30 +922,31 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
-    //Ravi and new Task for offline mode
+    //ravi offline -----insert---table-----tasks//
 
-    fun addNewTask(task: Task) {
+    fun tasks_create(task: Task) {
 
         try {
             val values = ContentValues()
 
-            values.put(TABLENEW_DESC, task.description)
-            values.put(TABLENEW_NAME, task.name)
-            values.put(TABLENEW_GROUP, task.com_group)
-            values.put(TABLENEW_CONFIGID, task.task_config_id)
-            values.put(TABLENEW_Status, task.status)
-            values.put(TABLENEW_Created_at, task.created_date)
-            values.put(TABLENEW_Updated_at, task.last_changed_date)
-            values.put(TABLENEW_startdate, task.started_late)
-            values.put(TABLENEW_enddate, task.ended_late)
-            values.put(TABLENEW_deleted_at, task.deleted_at)
-            values.put(TABLENEW_lastchangedby, task.last_changed_by)
-            values.put(TABLENEW_lastchangeddate, task.last_changed_date)
-            values.put(TABLENEW_TASKFUNC, task.task_func)
+            values.put(COL_tasks_SERVERid, task.id)
+            values.put(COL_tasks_NAME, task.name)
+            values.put(COL_tasks_DESC, task.description)
+            values.put(COL_tasks_GROUP, task.com_group)
+            values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
+            values.put(COL_tasks_TASKFUNC, task.task_func)
+            values.put(COL_tasks_STATUS, task.status)
+            values.put(COL_tasks_STARTED_LATE, task.started_late)
+            values.put(COL_tasks_ENDED_LATE, task.ended_late)
+            values.put(COL_tasks_CREATED_BY, task.created_by)
+            values.put(COL_tasks_CREATED_DATE, task.created_date)
+            values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
+            values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
+            values.put(COL_tasks_DELTED_AT, task.deleted_at)
 
 
             val db = this.writableDatabase
-            val result = db.insert(TASKNEW_TABLENAME, null, values)
+            val result = db.insert(TABLE_tasks, null, values)
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
@@ -542,19 +962,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
     }
-
-    fun addtaskFieldValue(task_id: String, field_id: String, value: String) {
+//offline--ravi -------insert---table------task_field
+    fun task_fields_create(task:TaskField) {
 
         try {
             val values = ContentValues()
 
-            values.put(TASKFIELDS_taskid, task_id)
-            values.put(TASKFIELDS_fieldid, field_id)
-            values.put(TASKFIELDS_value, value)
+
+            values.put(COL_task_fields_SERVERID, task.id)
+            values.put(COL_task_fields_TASKID, task.task_id)
+            values.put(COL_task_fields_FIELDID, task.field_id)
+            values.put(COL_task_fields_VALUE, task.value)
 
 
             val db = this.writableDatabase
-            val result = db.insert(TASKFIELDS_TABLENAME, null, values)
+            val result = db.insert(TABLE_task_fields, null, values)
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
@@ -894,20 +1316,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
-    fun deletenewTask(taskid: String, taskconfigid: String) {
-
-        val db = this.writableDatabase
-        val success = db.delete(
-            TASKNEW_TABLENAME,
-            TABLENEW_CONFIGID + "=" + taskconfigid + " and " + TABLENEW_NAME + "=" + taskid,
-            null
-        )
-        if (success > 0) {
-            Toast.makeText(context, "Delete SuccessFull", Toast.LENGTH_SHORT).show()
-        }
-        db.close()
-
-    }
 
     fun deletePack(taskname: String) {
         val db = this.writableDatabase
@@ -980,13 +1388,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return list
 
     }
-
-    fun dropPackConfigTable() {
-        val selectQuery = "DELETE FROM $CONST_PACKCONFIG_LIST_TABLE"
+//offline -ravi   drop----------table----packs_new------->
+    fun droptable_packnew() {
+        val selectQuery = "DELETE FROM $TABLE_CREAT_PACK"
         val db = this.writableDatabase
 
         db.execSQL(selectQuery)
     }
+    //--------------------------------//
+
+    //offline-ravi   drop----table-packconfig-----//
+    fun droptable_pack_configs() {
+        val selectQuery = "DELETE FROM $TABLE_pack_configs"
+        val db = this.writableDatabase
+
+        db.execSQL(selectQuery)
+    }
+    //---------//
 
     fun addPackConfigffIELDList(packconfiglist: PackConfigFieldList) {
         try {

@@ -135,32 +135,9 @@ class AppConstant {
         val PACKFIELDS_packid="packfieldpackid"
         val PACKFIELDS_fieldid="packfieldfieldid"
         val PACKFIELDS_value="packfieldvalue"
-        //TABLE_taskfields
-        val TASKFIELDS_TABLENAME="taskfieldtablename"
-        val TASKFIELDS_PRIMARYKEY="taskfieldsprimarykey"
-        val TASKFIELDS_taskid="taskfieldtaskid"
-        val TASKFIELDS_fieldid="taskfieldfieldid"
-        val TASKFIELDS_value="taskfieldvalue"
 
-        //TABLE taskfields
 
-        val TASKNEW_TABLENAME="TASKNEW_TABLENAME"
-        val TASK_id="id"
-        val TABLENEW_PRIMARYKEY="TABLENEW_PRIMARYKEY"
-        val TABLENEW_NAMEPREFIX="TABLENEW_NAMEPREFIX"
-        val TABLENEW_NAME="TABLENEW_NAME"
-        val TABLENEW_DESC="TABLENEW_DESC"
-        val TABLENEW_GROUP="TABLENEW_GROUP"
-        val TABLENEW_CONFIGID="TABLENEW_CONFIGID"
-        val TABLENEW_Status="TABLENEW_Status"
-        val TABLENEW_Created_at="TABLENEW_Created_at"
-        val TABLENEW_Updated_at="TABLENEW_Updated_at"
-        val TABLENEW_deleted_at="TABLENEW_delted_at"
-        val TABLENEW_startdate="TABLENEW_startdate"
-        val TABLENEW_enddate="TABLENEW_enddate"
-        val TABLENEW_lastchangedby="TABLENEW_lastchangedby"
-        val TABLENEW_lastchangeddate="TABLENEW_lastchangeddate"
-        val TABLENEW_TASKFUNC="TABLENEW_taskfunc"
+
 
         //collect_data TABLE
         val COLLECTDATA_TABLENAME="COLLECTDATA_TABLENAME"
@@ -218,6 +195,141 @@ class AppConstant {
         val COL_last_changed_by="last_changed_by"
         val COL_last_changed_date="last_changed_date"
         val COL_eleted_at="deleted_at"
+
+        //ravi offline- table --pack_configs
+        val TABLE_pack_configs="pack_configs"
+        val COL_pack_configs_SERVER_ID="pack_configs_server_id"
+        val COL_pack_configs_PRIMARY_ID="pack_configs_primary_id"
+        val COL_pack_configs_NAME="pack_configs_name"
+        val COL_pack_configs_DESCIPTION="pack_configs_desciption"
+        val COL_pack_configs_TYPE="pack_configs_type"
+        val COL_pack_configs_CLASS="field_type"
+        val COL_pack_configs_COMGROUP="pack_configs_com_group"
+        val COL_pack_configs_NAMEPREFIX="pack_configs_nameprefix"
+        val COL_pack_configs_COLLECTACTIVITY_ID="pack_configs_collectivityid"
+        val COL_pack_configs_GRAPHCHCHART_ID="pack_configs_graph_chart_id"
+        val COL_pack_configs_CREATEDBY="pack_configs_created_by"
+        val COL_pack_configs_CREATED_DATE="pack_configs_created_date"
+        val COL_pack_configs_LAST_CHANGED_BY="pack_configs_last_changed_by"
+        val COL_pack_configs_LAST_CHNAGED_DATE="pack_configs_last_changed_date"
+        val COL_pack_configs_DELETED_AT="pack_configs_deleted_at"
+
+        //ravi offline --table--pack_collect_activity----
+
+        val TABLE_pack_collect_activity="pack_collect_activity"
+        val COL_pack_collect_activity_SERVER_ID="pack_collect_activity_server_id"
+        val COL_pack_collect_activity_PRIMARY_ID="pack_collect_activity_primary_id"
+        val COL_pack_collect_activity_collect_activity_id="pack_collect_activity_collect_activity_id"
+        val COL_pack_collect_activity_pack_id="pack_collect_activity_pack_id"
+
+        //ravi offline----table---pack_config_fields
+
+        val TABLE_pack_config_fields="pack_config_fields"
+        val COL_pack_config_fields_PRIMARY_ID="pack_config_fields_primary_id"
+        val COL_pack_config_fields_SERVER_ID="pack_config_fields_server_id"
+        val COL_pack_config_fields_pack_config_id="pack_config_fields_pack_config_id"
+        val COL_pack_config_fields_field_name="pack_config_fields_field_name"
+        val COL_pack_config_fields_field_description="pack_config_fields_field_description"
+        val COL_pack_config_fields_editable="pack_config_fields_editable"
+        val COL_pack_config_fields_field_type="pack_config_fields_field_type"
+        val COL_pack_config_fields_list="pack_config_fields_config_list"
+        val COL_pack_config_fields_default_value="pack_config_fields_default_value"
+        val COL_pack_config_fields_created_by="pack_config_fields_created_by"
+        val COL_pack_config_fields_last_changed_by="pack_config_fields_last_changed_by"
+        val COL_pack_config_fields_last_changed_date="pack_config_fields_last_changed_date"
+        val COL_pack_config_fields_deleted_at="pack_config_fields_deleted_at"
+        val COL_pack_config_fields_created_date="pack_config_fields_created_date"
+
+        //ravi offline----table---pack_fields
+
+        val TABLE_pack_fields="pack_fields"
+        val COL_pack_fields_PRIMARY_ID="pack_fields_primaryid"
+        val COL_pack_fields_SERVERID="pack_fields_serverid"
+        val COL_pack_fields_pack_id="pack_fields_pack_id"
+        val COL_pack_fields_value="pack_fields_value"
+        val COL_pack_fields_field_id="pack_fields_field_id"
+
+        //ravi offline----table---tasks
+
+        val TABLE_tasks="tasks"
+        val COL_tasks_PRIMARYKEY="tasks_primarykey"
+        val COL_tasks_SERVERid="tasks_serverid"
+        val COL_tasks_NAME="tasks_name"
+        val COL_tasks_DESC="tasks_descp"
+        val COL_tasks_GROUP="tasks_comgroup"
+        val COL_tasks_TASK_CONFIGID="tasks_task_configid"
+        val COL_tasks_TASKFUNC="tasks_taskfun"
+        val COL_tasks_STATUS="tasks_status"
+        val COL_tasks_STARTED_LATE="tasks_started_late"
+        val COL_tasks_ENDED_LATE="tasks_ended_late"
+        val COL_tasks_CREATED_BY="tasks_created_By"
+        val COL_tasks_CREATED_DATE="tasks_created_date"
+        val COL_tasks_LAST_CHANGED_BY="tasks_lastchangedby"
+        val COL_tasks_LASTCHANGED_DATE="tasks_last_change_date"
+        val COL_tasks_DELTED_AT="tasks_deleted_At"
+
+        //ravi offline----table---task_fields
+        val TABLE_task_fields="task_fields"
+        val COL_task_fields_PRIMARY="task_fields_primary"
+        val COL_task_fields_SERVERID="task_fields_id"
+        val COL_task_fields_TASKID="task_fields_task_id"
+        val COL_task_fields_FIELDID="task_fields_fieldid"
+        val COL_task_fields_VALUE="task_fields_value"
+
+
+        //ravi offline----table---task_configs
+
+        val TABLE_task_configs="task_configs"
+        val COL_task_configs_PRIMARYKEY="task_configs_primary"
+        val COL_task_configs_SERVERID="task_configs_serverid"
+        val COL_task_configs_NAME="task_configs_name"
+        val COL_task_configs_DESCIPTION="task_configs_description"
+        val COL_task_configs_TYPE="task_configs_type"
+        val COL_task_configs_CLASS="task_configs_class"
+        val COL_task_configs_COM_GROUP="task_configs_com_group"
+        val COL_task_configs_NAME_PREFIX="task_configs_name_prefix"
+        val COL_task_configs_RECORD_EVENT="task_configs_record_event"
+        val COL_task_configs_REPORTABLE="task_configs_reportable"
+        val COL_task_configs_CREATED_BY="task_configs_created_by"
+        val COL_task_configs_CREATED_DATE="task_configs_created_date"
+        val COL_task_configs_LAST_CHANGED_BY="task_configs_last_changed_by"
+        val COL_task_configs_LAST_CHANGED_DATE="task_configs_last_changed_date"
+        val COL_task_configs__LAST_DELETED_AT="task_configs_last_deleted_at"
+
+        //ravi offline----table---task_config_fields
+
+        val TABLE_task_config_fields="task_config_fields"
+        val COL_task_config_fields_PRIMARYKEY="task_config_fields_primary"
+        val COL_task_config_fields_SERVERID="task_config_fields_serverid"
+        val COL_task_config_fields_task_config_id="task_config_fields_task_config_id"
+        val COL_task_config_fields_field_name="task_config_fields_field_name"
+        val COL_task_config_fields_field_description="task_config_fields_field_description"
+        val COL_task_config_fields_editable="task_config_fields_editable"
+        val COL_task_config_fields_field_type="task_config_fields_field_type"
+        val COL_task_config_fields_list="task_config_fields_list"
+        val COL_task_config_fields_created_by="task_config_fields_created_by"
+        val COL_task_config_fields_created_date="task_config_fields_created_date"
+        val COL_task_config_fields_last_changed_by="task_config_fields_last_changed_by"
+        val COL_task_config_fields_last_changed_date="task_config_fields_last_changed_date"
+        val COL_task_config_fields_deleted_at="task_config_fields_deleted_at"
+
+
+        //ravi offline----table---task_config_functions
+
+        val TABLE_task_config_functions="task_config_functions"
+        val COL_task_config_functions_PRIMARYKEY="task_config_functions_primary"
+        val COL_task_config_functions_SERVERKEY="task_config_functions_serverid"
+        val COL_task_config_functions_task_config_id="task_config_functions_task_config_id"
+        val COL_task_config_functions_task_name="task_config_functions_task_name"
+        val COL_task_config_functions_description="task_config_functions_description"
+        val COL_task_config_functions_privilege="task_config_functions_privilege"
+        val COL_task_config_functions_created_by="task_config_functions_created_by"
+        val COL_task_config_functions_created_date="task_config_functions_created_date"
+        val COL_task_config_functions_last_changed_by="task_config_functions_last_changed_by"
+        val COL_task_config_functions_last_changed_date="task_config_functions_last_changed_date"
+        val COL_task_config_functions_deleted_at="task_config_functions_deleted_at"
+
+
 
     }
 }

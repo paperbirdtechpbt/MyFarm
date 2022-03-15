@@ -23,7 +23,6 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
-import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
@@ -228,13 +227,13 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                             "",field_desciption.text.toString(),
                             0, MySharedPreference.getUser(this)?.id!!,
                              MySharedPreference.getUser(this)?.id!!,"",1,1,
-                            "0", configtype?.id?.toInt()!!,null)
+                            "0", configtype?.id?.toInt()!!,"")
                     )
                     val viewTask=viewtasklist.get(0)
-                    db.addNewTask(viewTask)
-                    for(i in 0 until ExpAmtArray.size){
-                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
-                    }
+                    db.tasks_create(viewTask)
+//                    for(i in 0 until ExpAmtArray.size){
+//                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+//                    }
 
                 }
                 else{
@@ -246,11 +245,11 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                             "",field_desciption.text.toString(),
                             0, MySharedPreference.getUser(this)?.id!!,
                             MySharedPreference.getUser(this)?.id!!,"",newtaskname,1,
-                            "0", configtype?.id?.toInt()!!,null))
+                            "0", configtype?.id?.toInt()!!,""))
 
                    val mytask=viewtasklist.get(0)
 
-                    db.addNewTask(mytask)
+                    db.tasks_create(mytask)
 
                     while (ExpName.contains("0")){
                         ExpName.remove("0")
@@ -258,9 +257,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                     while (ExpAmtArray.contains("0")){
                         ExpAmtArray.remove("0")
                     }
-                    for(i in 0 until ExpAmtArray.size){
-                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
-                    }
+//                    for(i in 0 until ExpAmtArray.size){
+//                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+//                    }
                 }
 
 
