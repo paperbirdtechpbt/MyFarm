@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.PackConfig
 import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -39,7 +40,7 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
         if (response.body()?.error==false){
 //            val db = DbHelper(activity, null)
 //            db.dropPackConfigTable()
-            val packconfiglist = ArrayList<PackConfigList>()
+            val packconfiglist = ArrayList<PackConfig>()
 
             val baseList : PackConfigResponse =  Gson().fromJson(
                 Gson().toJson(response.body()),
@@ -71,14 +72,14 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
         Toast.makeText(activity, "Configlist failure response", Toast.LENGTH_SHORT).show()
     }
 
-    fun packCOnfigFielList(context: Context, packconfiglist: ArrayList<PackConfigList>,) {
+    fun packCOnfigFielList(context: Context, packconfiglist: ArrayList<PackConfig>,) {
         if (packconfiglist !=null){
             for(i in 0 until packconfiglist.size){
 
                 val service = ApiClient.client.create(ApiInterFace::class.java)
                 val apiInterFace = service.packConfigFieldList(
                  MySharedPreference.getUser(context)?.id.toString(),
-                    packconfiglist.get(i).id,"")
+                    packconfiglist.get(i).id.toString(),"")
 
                 apiInterFace.enqueue(object : retrofit2.Callback<PackFieldResponse> {
                     override fun onResponse(
@@ -101,8 +102,8 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
 
                             baseList.data.forEach { routes ->
                                 packconfigList.add(routes)
-                                for (i in 0 until routes.field_list.size){
-                                    val item=routes.field_list.get(i)
+                                for (i in 0 until routes.field_list!!.size){
+                                    val item= routes.field_list!!.get(i)
 //                                    db.addPackConfigffIELD_field_list(item,routes.field_id,
 //                                        packconfiglist.get(i))
 

@@ -7,9 +7,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.pbt.myfarm.Fragement.CollectNewData.CollectNewData
-import com.pbt.myfarm.Fragement.CreatePack.CreatePackFrament
-import com.pbt.myfarm.Fragement.PackCollect.CollectPackFragement
+import com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment
+import com.pbt.myfarm.Fragement.CreatePack.UpdatePackFragement
+import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement
+import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.R
 import com.pbt.myfarm.TasklistDataModel
 import com.pbt.myfarm.Util.AppUtils
@@ -19,6 +20,7 @@ class UpdatePackActivity : AppCompatActivity() {
     var viewtask: TasklistDataModel?=null
     companion object{
         var positionnn = 0
+        var packlist:PacksNew?=null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,13 +30,14 @@ class UpdatePackActivity : AppCompatActivity() {
 
         val extras = intent.extras
 
+
         if (extras != null) {
             positionnn = extras.getString("fragment")!!.toInt()
             AppUtils.logDebug("##TAG","extras"+ positionnn.toString())
         }
 
 
-        CollectNewData.newInstance("Hi Test Data pass")
+        CreateNewCollectDataFragment.newInstance("Hi Test Data pass")
 
 
 
@@ -55,15 +58,15 @@ class UpdatePackActivity : AppCompatActivity() {
 
      if (positionnn==0){
 
-         adapter.addFragment(CreatePackFrament(), "UpdatePack")
-         adapter.addFragment(CollectPackFragement(), "Collect Data")
-         adapter.addFragment(CollectNewData(), "Collect New ")
+         adapter.addFragment(UpdatePackFragement(), "UpdatePack")
+         adapter.addFragment(CollectDataFragement(), "Collect Data")
+         adapter.addFragment(CreateNewCollectDataFragment(), "Collect New ")
      }
         else{
 
-         adapter.addFragment(CreatePackFrament(), "UpdatePack")
-         adapter.addFragment(CollectPackFragement(), "Collect Data")
-         adapter.addFragment(CollectNewData(), "Edit Data ")
+         adapter.addFragment(UpdatePackFragement(), "UpdatePack")
+         adapter.addFragment(CollectDataFragement(), "Collect Data")
+         adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
         }
 
 

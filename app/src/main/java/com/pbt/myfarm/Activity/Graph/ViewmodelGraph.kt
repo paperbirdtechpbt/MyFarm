@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.Graph
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -51,14 +52,25 @@ class ViewmodelGraph(var activity: Application):AndroidViewModel(activity) ,retr
         call: Call<ResponseTaskFunctionaliyt>,
         response: Response<ResponseTaskFunctionaliyt>
     ) {
-        if(response.body()?.error==false){
+        try{
+            if(response.body()?.error==false){
 
-            var baseresponse:ResponseTaskFunctionaliyt= Gson().fromJson(Gson().toJson(response.body()),ResponseTaskFunctionaliyt::class.java)
-        baseresponse.data.forEach{
-            graphlist.add(it)
+                var baseresponse:ResponseTaskFunctionaliyt= Gson().fromJson(Gson().toJson(response.body()),ResponseTaskFunctionaliyt::class.java)
+                baseresponse.data.forEach{
+                    graphlist.add(it)
+                }
+                configlist.value=graphlist
+            }
+            else{
+                AppUtils.logDebug("ss","Ss")
+
+            }
         }
-            configlist.value=graphlist
+        catch (e:Exception){
+            AppUtils.logDebug("##TAG",e.message.toString())
+
         }
+
 
     }
 

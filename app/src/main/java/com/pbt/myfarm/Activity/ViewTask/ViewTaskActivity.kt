@@ -24,6 +24,7 @@ import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Task
 import com.pbt.myfarm.TasklistDataModel
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_BOOLEAN
@@ -34,7 +35,7 @@ import com.pbt.myfarm.databinding.ActivityViewTaskBinding
 import kotlinx.android.synthetic.main.activity_pack.*
 import kotlinx.android.synthetic.main.activity_view_task.*
 import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
-import kotlinx.android.synthetic.main.activity_view_task.ed_search
+
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
@@ -53,7 +54,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     companion object {
         val TAG = "ViewTaskActivity"
-        var mytasklist: TasklistDataModel? = null
+        var mytasklist: Task? = null
         var updateTaskBoolen=false
     }
 
@@ -101,7 +102,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             tasklistSize.setText("Total Tasks-" + eventlistt.size)
             adapter = AdapterViewTask(this, eventlistt!!) { position, taskname, checkAction, list ->
 
-
+//
                 mytasklist = list
                 if (checkAction) {
 
@@ -110,6 +111,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 else {
                     updateTaskBoolen=true
                     val intent=Intent(this,CreateTaskActivity::class.java)
+
                     intent.putExtra(CONST_TASK_UPDATE,mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN,"1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
@@ -156,15 +158,15 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 //
 //    }
 
-    private fun showAlertDailog(taskname: String, position: Int, mytasklist: TasklistDataModel) {
+    private fun showAlertDailog(taskname: String, position: Int, mytasklist: Task) {
         AlertDialog.Builder(this)
             .setTitle("Delete")
             .setMessage("Are you sure you want to Delete $taskname") // Specifying a listener allows you to take an action before dismissing the dialog.
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-//                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id)
-//                        .enqueue(this)
+                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id!!.toString())
+                        .enqueue(this)
 //                    val db=DbHelper(this,null)
 //                    db.deletenewTask("2","5")
 
@@ -184,17 +186,35 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     }
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        if (response.body()?.error == false) {
-            Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, ViewTaskActivity::class.java)
-            startActivity(intent)
-            finish()
+        try{
+            if (response.body()?.error == false) {
+                Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ViewTaskActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            else{
+                Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
+            }
         }
+        catch (e:Exception){
+            AppUtils.logError(TAG,e.localizedMessage)
+
+        }
+
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
-        AppUtils.logError(TAG, t.localizedMessage)
         Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
+
+        try{
+            AppUtils.logError(TAG, t.localizedMessage)
+        }
+        catch (e:Exception){
+            AppUtils.logError(TAG, e.localizedMessage)
+
+        }
+
     }
 
 

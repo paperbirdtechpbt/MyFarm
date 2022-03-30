@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.pbt.myfarm.Event
 import com.pbt.myfarm.EventList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.ResponseEventList
@@ -16,7 +17,8 @@ import retrofit2.Call
 import retrofit2.Response
 import java.lang.Exception
 
-class AdapterEventList(var context: Context, var list: List<EventList>,var callbacks:(String,Int,Boolean)->Unit)
+class AdapterEventList(var context: Context, var list: List<Event>,
+                       var callbacks:(String,Int,Boolean)->Unit)
     :RecyclerView.Adapter<AdapterEventList.ViewHolder>(),retrofit2.Callback <ResponseEventList>{
     val TAG="AdapterEventList"
 
@@ -38,11 +40,11 @@ class AdapterEventList(var context: Context, var list: List<EventList>,var callb
 
                 holder.itemView.icon_delete_event.setOnClickListener {
 
-                   callbacks.invoke(item.id,position,true)
+                   callbacks.invoke(item.id!!.toString(),position,true)
                 }
                 holder.itemView.icon_edit_event.setOnClickListener {
 
-                    callbacks.invoke(item.id,position,false)
+                    callbacks.invoke(item.id!!.toString(),position,false)
 
 
                 }}

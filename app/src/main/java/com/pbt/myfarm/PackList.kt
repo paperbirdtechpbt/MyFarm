@@ -19,7 +19,7 @@ data class PackList(
 
     val id: String,
     val name: String,
-    val name_prefix: String,
+    var name_prefix: String,
     val pack_config_id: String,
     val pack_config_name: String,
     var type:String,

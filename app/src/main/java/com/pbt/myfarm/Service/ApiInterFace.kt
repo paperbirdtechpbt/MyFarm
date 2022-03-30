@@ -1,7 +1,6 @@
 package com.pbt.myfarm.Service
 
 import com.pbt.myfarm.Activity.Event.EditEventList
-import com.pbt.myfarm.Activity.Event.ResponseOfflineSync
 import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
@@ -11,8 +10,12 @@ import com.pbt.myfarm.CollectdataRespose
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
 import com.pbt.myfarm.HttpResponse.*
-import com.pbt.myfarm.ModelClass.OffLineSyncModel
+import com.pbt.myfarm.ModelClass.SendDataMasterList
+import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.ResponseEventList
+import com.pbt.myfarm.ResponseEventListDashboard
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.Field
@@ -76,13 +79,13 @@ interface ApiInterFace {
     @POST("api/updatePack")
    fun updatePack(
 
-        @Field("config_type") config_type: String,
-        @Field("description") description: String,
-        @Field("community_group") community_group: String,
-        @Field("user_id") user_id: String,
-        @Field("field_array") field_array:String,
-        @Field("name_prefix") name_prefix: String,
-        @Field("pack_id") task_id: String,
+        @Field("config_type") config_type: String?=null,
+        @Field("description") description: String?=null,
+        @Field("community_group") community_group: String?=null,
+        @Field("user_id") user_id: String?=null,
+        @Field("field_array") field_array:String?=null,
+        @Field("name_prefix") name_prefix: String?=null,
+        @Field("pack_id") task_id: String?=null,
     ):Call<testresponse>
 
    @FormUrlEncoded
@@ -249,7 +252,7 @@ interface ApiInterFace {
     fun myeventList(
 
         @Field("user_id") user_id: String,
-        ):Call<ResponseEventList>
+        ):Call<ResponseEventListDashboard>
 
     @FormUrlEncoded
     @POST("api/deleteEvent")
@@ -258,6 +261,16 @@ interface ApiInterFace {
         ):Call<ResponseEventList>
 
 //    @FormUrlEncoded
+@Multipart
+@POST("api/taskExecuteFunction")
+fun uploadFile(
+    @Part file: MultipartBody.Part?,
+    @Part("task_id") task_id: RequestBody,
+    @Part("task_func") task_func: RequestBody,
+    @Part("user_id") user_id: RequestBody,
+    @Part("container") container: RequestBody,
+)
+        : Call<ResponseTaskExecution>
     @FormUrlEncoded
     @POST("api/taskExecuteFunction")
     fun taskExecuteFunction(
@@ -297,6 +310,10 @@ interface ApiInterFace {
         @Field("assigned_team") assigned_team: String,
         @Field("closed") closed: String,
     ):Call<ResposneUpdateEvent>
+
+        @POST("api/storeAllDatalist")
+        fun postJson(@Body body: SendDataMasterList?): Call<testresponse>
+
 
     @FormUrlEncoded
     @POST("api/getAllDatalist")

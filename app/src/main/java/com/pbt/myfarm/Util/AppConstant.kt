@@ -38,10 +38,11 @@ class AppConstant {
         val CONST_VIEWMODELCLASS_LIST = "ViewModelClassList"
         val CONST_VIEWMODELCLASS_CONFIG_LIST = "ViewModelClassList"
         val CONST_TASK_UPDATE = "taskupdate"
-        val CONST_TASK_UPDATE_BOOLEAN = "taskupdate"
-        val CONST_TASK_UPDATE_LIST = "taskupdate"
-        val CONST_PACK_UPDATE_LIST = "taskupdate"
-        val CONST_TASKFUNCTION_TASKID = "taskupdate"
+        val CONST_TASK_UPDATE_BOOLEAN = "taskupdateboolean"
+        val CONST_TASK_UPDATE_LIST = "taskupdatelist"
+        val CONST_PACK_UPDATE_LIST = "packupdatelist"
+        val CONST_TASKFUNCTION_TASKID = "taskfunction"
+        val CONT_PACK = "packlist"
 
         //TABLE newpack
         val CONST_TABLE_PACK = "tablepack"
@@ -118,16 +119,30 @@ class AppConstant {
 
         //TABLE
         val TABLE_CREAT_PACK="packs_new"
-        val PACKNEW_PRIMARYKEY="packnewprimarykey"
-        val PACKNEW_NAMEPREFIX="packnewnameprefix"
-        val PACKNEW_DESC="packnewdesc"
-        val PACKNEW_CONFIGID="packnewid"
-        val PACKNEW_GROUP="packnewGroup"
-        val PACKNEW_Status="Status"
-        val PACKNEW_NAME="PACKNEW_NAME"
-        val PACKNEW_Created_at="Created_at"
-        val PACKNEW_Updated_at="Updated_at"
-        val PACKNEW_Deleted_at="Deleted_at"
+        val COL_LOCAL_ID="packnewprimarykey"
+        val COL_ID="packnew_serverid"
+        val COL_PACK_DESC="packnewdesc"
+        val COL_PACK_CONFIG_ID="packnewid"
+        val COL_PACK_GROUP="packnewGroup"
+        val COL_PACKNEW_Status="Status"
+        val COL_PACK_NAME="PACKNEW_NAME"
+        val COL_PACK_CREATED_BY="Created_at"
+        val COL_PACK_LAST_CHANGED_BY="Updated_at"
+        val COL_PACK_NEW_DLETED_AT="Deleted_at"
+
+
+        val COL_PACK_IS_ACTIVE="pack_new_is_Active"
+        val COL_PACK_CREATED_DATE="pack_new_isActive"
+        val COL_PACK_LAST_CHANGED_DATE="pack_new_last_changed_Date"
+
+
+
+
+
+
+
+
+
 
         //TABLE_packFields
         val PACKFIELDS_TABLENAME="packfieldtablename"
@@ -197,13 +212,13 @@ class AppConstant {
         val COL_eleted_at="deleted_at"
 
         //ravi offline- table --pack_configs
-        val TABLE_pack_configs="pack_configs"
+        val TABLE_PACKCONFIG= "packconfigs"
         val COL_pack_configs_SERVER_ID="pack_configs_server_id"
         val COL_pack_configs_PRIMARY_ID="pack_configs_primary_id"
         val COL_pack_configs_NAME="pack_configs_name"
         val COL_pack_configs_DESCIPTION="pack_configs_desciption"
         val COL_pack_configs_TYPE="pack_configs_type"
-        val COL_pack_configs_CLASS="field_type"
+        val COL_pack_configs_CLASS="pack_configs_class"
         val COL_pack_configs_COMGROUP="pack_configs_com_group"
         val COL_pack_configs_NAMEPREFIX="pack_configs_nameprefix"
         val COL_pack_configs_COLLECTACTIVITY_ID="pack_configs_collectivityid"
@@ -437,13 +452,230 @@ class AppConstant {
         val COL_people_DELETED_BY="people_deleted_by"
         val COL_people_DELETED_AT="people_deleted_at"
 
+        //ravi -offline---------table-----container
 
 
+        val TABLE_container="container"
+        val COL_container_PRIMARYKEY="container_Primary"
+        val COL_container_SERVERID="container_servid"
+        val COL_container_NAME="container_name"
+        val COL_container_DESCIPTION="container_description"
+        val COL_container_COM_GROUP="container_com_group"
+        val COL_container_TYPE="container_type"
+        val COL_container_STATUS="container_status"
+        val COL_container_MAX_CAPACITY="container_max_capacity"
+        val COL_container_CAPACITY_UNITS="container_capacity_units"
+        val COL_container_ZONE="container_zone"
+        val COL_container_CLASS="container_class"
+        val COL_container_NOTIFICATION_LEVEL="container_notification_level"
+        val COL_container_PARENT_CONTAINER="container_parent_container"
+        val COL_container_DELETED_AT="container_deleted_at"
+        val COL_container_CREATED_DATE="container_created_date"
+        val COL_container_CREATED_BY="container_created_by"
+        val COL_container_CREATED_DATE_UTC="container_created_date_utc"
+        val COL_container_LAST_CHANGED_DATE="container_last_changed_date"
+        val COL_container_LAST_CHANGED_BY="container_last_changed_by"
+        val COL_container_LAST_CHANGED_UTC="container_last_changed_utc"
 
 
+        //ravi -offline---------table-----container_object
+
+        val TABLE_container_object="container_object"
+        val COL_container_object_PRIMARYKEY="container_object_Primary"
+        val COL_container_object_SERVERID="container_object_serverid"
+        val COL_container_object_OBJECTNAME="container_object_object_name"
+        val COL_container_object_CONTAINERNO="container_object_container_no"
+        val COL_container_object_OBJECT_NO="container_object_object_no"
+        val COL_container_object_TYPE="container_object_type"
+        val COL_container_object_CLASS="container_object_class"
+        val COL_container_object_SESSIN_ID="container_object_session_id"
+        val COL_container_object_ADDED_DATE="container_object_added_date"
+        val COL_container_object_ADDED_BY="container_object_added_by"
+        val COL_container_object_ADDED_UTC="container_object_added_utc"
+        val COL_container_object_DELETED_AT="container_object_deleted_at"
 
 
+        //ravi -offline---------table-----events
 
+        val TABLE_events="events"
+        val COL_events_PRIMARYKEY="events_Primary"
+        val COL_events_SERVERID="events_server_id"
+        val COL_events_NAME="events_name"
+        val COL_events_DESCIPTION="events_description"
+        val COL_events_TYPE="events_type"
+        val COL_events_EXP_STR_DATE="events_exp_start_date"
+        val COL_events_EXP_END_DATE="events_exp_end_date"
+        val COL_events_EXP_DURATION="events_exp_duration"
+        val COL_events_ACTUAL_STR_DATE="events_actual_start_date"
+        val COL_events_ACTUAL_END_DATE="events_actual_end_date"
+        val COL_events_ACTUAL_DURATION="events_actual_duration"
+        val COL_events_CLOSED="events_closed"
+        val COL_events_CLOSED_DATE="events_closed_date"
+        val COL_events_CLOSED_BY="events_closed_by"
+        val COL_events_COM_GROUP="events_com_group"
+        val COL_events_STATUS="events_status"
+        val COL_events_RESPONSIBLE="events_responsible"
+        val COL_events_ASSIGN_TEAM="events_assigned_team"
+        val COL_events_TASK_ID="events_task_id"
+        val COL_events_CREATED_BY="events_created_by"
+        val COL_events_CREATED_DATE="events_created_date"
+        val COL_events_LAST_CHANGED_BY="events_last_changed_by"
+        val COL_events_LAST_CHANGED_DATE="events_last_changed_date"
+        val COL_events_DELETED_AT="events_deleted_at"
+
+        //ravi -offline---------table-----fields
+
+        val TABLE_fields="fields"
+        val COL_fields_PRIMARYKEY="fields_Primary"
+        val COL_fields_SERVERID="fields_serverid"
+        val COL_fields_NAME="fields_name"
+        val COL_fields_DESCIPTION="fields_description"
+        val COL_fields_COUNTRY="fields_country"
+        val COL_fields_REGION="fields_region"
+        val COL_fields_LOCALITY="fields_locality"
+        val COL_fields_SURFACE_AREA="fields_surface_area"
+        val COL_fields_AREA_UNIT="fields_area_unit"
+        val COL_fields_NUMBER_OF_PLANT="fields_number_of_plant"
+        val COL_fields_MAIN_CULTURE="fields_main_culture"
+        val COL_fields_OTHER_CULTURE="fields_other_culture"
+        val COL_fields_COMMUNITY_GROUP="fields_communitygroup"
+        val COL_fields_PLANT_TYPE="fields_plant_type"
+        val COL_fields_SOIL_TYPE="fields_soil_type"
+        val COL_fields_VEGETATION="fields_vegetation"
+        val COL_fields_CLIMATE="fields_climate"
+        val COL_fields_ALTITUDE="fields_altitude"
+        val COL_fields_ALTITUDE_UNIT="fields_altitude_unit"
+        val COL_fields_TEMPERATURE="fields_temperature"
+        val COL_fields_TEMP_UNIT="fields_temp_unit"
+        val COL_fields_HUMIDITY="fields_humidity"
+        val COL_fields_HUMIDITY_UNIT="fields_humidity_unit"
+        val COL_fields_PLUVIOMETRY="fields_pluviometry"
+        val COL_fields_PLUVIOMETRY_UNIT="fields_pluviometry_unit"
+        val COL_fields_HARVEST_PERIOD="fields_harvest_period"
+        val COL_fields_FIELD_CLASS="fields_field_class"
+        val COL_fields_FIELD_TYPE="fields_field_type"
+        val COL_fields_FIELD_BOUNDARY="fields_field_boundary"
+        val COL_fields_LATITUDE="fields_latitude"
+        val COL_fields_LONGITUDE="fields_longitude"
+        val COL_fields_FIELD_CONTACT="fields_field_contact"
+        val COL_fields_LAST_VISITED_BY="fields_last_visited_by"
+        val COL_fields_UNIT_ID="fields_unit_id"
+        val COL_fields_LIST_ID="fields_lists_id"
+        val COL_fields_TEAM_ID="fields_team_id"
+        val COL_fields_LAST_VISITED_DATE="fields_last_visited_date"
+        val COL_fields_LAST_VISITED_UTC="fields_last_visited_date_utc"
+        val COL_fields_CREATED_BY="fields_created_by"
+        val COL_fields_CREATED_AT="fields_created_at"
+        val COL_fields_UPDATED_AT="fields_updated_at"
+        val COL_fields_UPDATED_BY="fields_updated_by"
+        val COL_fields_DELETED_BY="fields_deleted_by"
+        val COL_fields_DELETED_AT="fields_deleted_at"
+
+        //ravi -offline---------table-----graph_charts
+
+        val TABLE_graph_charts="graph_charts"
+        val COL_graph_charts_PRIMARYKEY="graph_charts_Primary"
+        val COL_graph_charts_SERVERID="graph_charts_serverid"
+        val COL_graph_charts_NAME="graph_charts_name"
+        val COL_graph_charts_DESCIPTION="graph_charts_description"
+        val COL_graph_charts_OBJECTCLASS="graph_charts_object_class"
+        val COL_graph_charts_COM_GROUP="graph_charts_com_group"
+        val COL_graph_charts_TITLE="graph_charts_title"
+        val COL_graph_charts_ABCISSA_TITLE="graph_charts_abcissa_title"
+        val COL_graph_charts_ORDINATE_TITLE="graph_chartsordinate_title"
+        val COL_graph_charts_CREATED_DATE="graph_charts_created_date"
+        val COL_graph_charts_CREATED_BY="graph_charts_created_by"
+        val COL_graph_charts_LASTCHANGED_BY="graph_charts_last_changed_by"
+        val COL_graph_charts_LASTCHANGED_DATE="graph_charts_last_changed_date"
+        val COL_graph_charts_DELETED_AT="graph_charts_deleted_at"
+
+ //ravi -offline---------table-----graph_chart_objects
+
+        val TABLE_graph_chart_objects="graph_chart_objects"
+        val COL_graph_chart_objects_PRIMARYKEY="graph_charts_Primary"
+        val COL_graph_chart_objects_SERVERID="graph_chart_objects_serverid"
+        val COL_graph_chart_objects_CHARTID="graph_chart_objects_graphs_charts_id"
+        val COL_graph_chart_objects_NAME="graph_chart_objects_name"
+        val COL_graph_chart_objects_LINETYPE="graph_chart_objects_line_type"
+        val COL_graph_chart_objects_RESULT_CLASS="graph_chart_objects_result_class"
+        val COL_graph_chart_objects_REF_CLTL_POINT="graph_chart_objects_ref_ctrl_points"
+        val COL_graph_chart_objects_CREATED_BY="graph_chart_objects_created_by"
+        val COL_graph_chart_objects_CREATED_DATE="graph_chart_objects_created_date"
+        val COL_graph_chart_objects_LAST_CHANGED_BY="graph_chart_objects_last_changed_by"
+        val COL_graph_chart_objects_LAST_CHANGED_DATE="graph_chart_objects_last_changed_date"
+        val COL_graph_chart_objects_DELETED_AT="graph_chart_objects_deleted_at"
+
+
+        //ravi -offline---------table-----lists
+
+        val TABLE_lists="lists"
+        val COL_lists_PRIMARYKEY="lists_Primary"
+        val COL_lists_SERVERID="lists_serverid"
+        val COL_lists_NAME="lists_name"
+        val COL_lists_COM_GROUP_ID="lists_community_group_id"
+        val COL_lists_DESC="lists_description"
+        val COL_lists_COM_GROUP="lists_communitygroup"
+        val COL_lists_CREATED_BY="lists_created_by"
+        val COL_lists_UPDATED_BY="lists_updated_by"
+        val COL_lists_DELETED_BY="lists_deleted_by"
+        val COL_lists_CREATED_AT="lists_created_at"
+        val COL_lists_UPDATED_AT="lists_updated_at"
+        val COL_lists_DELETED_AT="lists_deleted_at"
+
+      //ravi -offline---------table-----list_choices
+
+        val TABLE_list_choices="list_choices"
+        val COL_list_choices_PRIMARYKEY="list_choices_Primary"
+        val COL_list_choices_SERVERID="list_choices_serverid"
+        val COL_list_choices_LISTID="list_choices_lists_id"
+        val COL_list_choices_CHOICE="list_choices_choice"
+        val COL_list_choices_NAME="list_choices_name"
+        val COL_list_choices_CHOICE_COM_GROUP="list_choices_choice_communitygroup"
+        val COL_list_choices_COM_GROUP_ID="list_choices_community_group_id"
+        val COL_list_choices_CREATED_AT="list_choices_created_at"
+        val COL_list_choices_UPDATED_AT="list_choices_updated_at"
+        val COL_list_choices_DELETED_AT="list_choices_deleted_at"
+
+        //ravi -offline---------table-----sensors
+
+        val TABLE_sensors="sensors"
+        val COL_sensors_PRIMARYKEY="sensors_primarykey"
+        val COL_sensors_SERVERID="sensors_serverid"
+        val COL_sensors_TYPEID="sensors_sensor_type_id"
+        val COL_sensors_NAME="sensors_name"
+        val COL_sensors_SENSORID="sensors_sensorId"
+        val COL_sensors_MODEL="sensors_model"
+        val COL_sensors_BRAND="sensors_brand"
+        val COL_sensors_SENSORIP="sensors_sensorIp"
+        val COL_sensors_OWNER="sensors_owner"
+        val COL_sensors_USERID="sensors_user_id"
+        val COL_sensors_UNITID="sensors_unit_id"
+        val COL_sensors_MINIMUM="sensors_minimum"
+        val COL_sensors_MAXIMUM="sensors_maximum"
+        val COL_sensors_COM_GROUP="sensors_community_group"
+        val COL_sensors_CONNECTEDBOARD="sensors_connected_board"
+        val COL_sensors_CONTAINERID="sensors_container_id"
+        val COL_sensors_CREATEDBY="sensors_created_by"
+        val COL_sensors_UPDATEDBY="sensors_updated_by"
+        val COL_sensors_DELETEDBY="sensors_deleted_by"
+        val COL_sensors_CREATEDAT="sensors_created_at"
+        val COL_sensors_UPDATEDAT="sensors_updated_at"
+        val COL_sensors_DELETEDAT="sensors_deleted_at"
+
+        //ravi -offline---------table-----units
+
+        val TABLE_units="units"
+        val COL_units_PRIMARYID="units_primarykey"
+        val COL_units_SERVERID="units_serverid"
+        val COL_units_NAME="units_name"
+        val COL_units_DESCRIPTION="units_description"
+        val COL_units_COM_GROUP="units_communitygroup"
+        val COL_units_CREATED_BY="units_created_by"
+        val COL_units_UPDATED_BY="units_updated_by"
+        val COL_units_DELETED_BY="units_deleted_by"
+        val COL_units_CREATED_AT="units_created_at"
+        val COL_units_UPDATED_AT="units_updated_at"
+        val COL_units_DELETED_AT="units_deleted_at"
 
 
     }

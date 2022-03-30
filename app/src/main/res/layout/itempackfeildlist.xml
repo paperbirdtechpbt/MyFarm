@@ -100,6 +100,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="35dp"
+        android:editable="false"
+        android:focusable="false"
         android:background="@drawable/design_edittext"
         android:drawableRight="@drawable/ic_calender"
         android:drawableTint="@color/green"

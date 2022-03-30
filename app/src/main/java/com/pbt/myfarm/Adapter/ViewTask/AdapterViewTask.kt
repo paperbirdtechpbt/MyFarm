@@ -9,13 +9,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.TasklistDataModel
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Task
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.databinding.ItemlistViewtaskBinding
 import kotlinx.android.synthetic.main.itemlist_viewtask.view.*
 
 class AdapterViewTask(
-    var context: Context, var list: List<TasklistDataModel>,
-    var callbacks: (Int, String, Boolean, TasklistDataModel) -> Unit,
+    var context: Context, var list: List<Task>,
+    var callbacks: (Int, String, Boolean, Task) -> Unit,
 ) : RecyclerView.Adapter<AdapterViewTask.ViewHolder>() {
     inner class ViewHolder(val binding: ItemlistViewtaskBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -33,22 +34,15 @@ class AdapterViewTask(
                 binding.viewtask = list[position]
 
                 val item = list[position]
-                binding.exapanedview.visibility = if (this.expand) View.VISIBLE else View.GONE
 
 
-                binding.layoutItemlist.setOnClickListener {
-                    this.expand = !this.expand
-
-                    notifyItemChanged(position)
-
-                }
                 itemView.icon_delete.setOnClickListener {
-                    callbacks.invoke(position, item.name, true, item)
+                    callbacks.invoke(position, name.toString(), true, item)
 
                 }
                 itemView.icon_edit.setOnClickListener {
 
-                    callbacks.invoke(position, item.name, false, item)
+                    callbacks.invoke(position, item.name!!, false, item)
 
                     Toast.makeText(context, "Edit---${item.name}", Toast.LENGTH_SHORT).show()
 

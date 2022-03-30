@@ -5,7 +5,7 @@
     <data>
 <variable
     name="viewevent"
-    type="com.pbt.myfarm.EventList" />
+    type="com.pbt.myfarm.Event" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:text="@{viewevent.name}"
+                    android:text="@{viewevent.description}"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -99,7 +99,7 @@
                     android:background="#613AB36D"
                     android:gravity="center"
                     android:lines="1"
-                    android:text="Events"
+                    android:text="@{viewevent.exp_start_date}"
                     android:padding="4dp"
                     android:textColor="@color/black"
                     android:textSize="17sp"

@@ -3,6 +3,7 @@ package com.pbt.myfarm.Fragement.PackCollect
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,18 +12,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.pbt.myfarm.*
+import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
-import com.pbt.myfarm.CollectDataFieldListItem
-import com.pbt.myfarm.CollectDataModel
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.PackViewModel
-import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
@@ -37,13 +40,12 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class CollectPackFragement : Fragment() ,retrofit2.Callback<ResponseCollectAcitivityResultList> {
+class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAcitivityResultList> {
     private var param1: String? = null
     private var param2: String? = null
     var recylerview:RecyclerView?=null
     var viewmodel: CollectDataViewModel? = null
     var adapter:CollectDataAdapter?=null
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,25 +71,77 @@ class CollectPackFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
 
         val view:View= inflater.inflate(R.layout.fragment_collect_pack_fragement, container, false)
 
-        initViewModel()
+        val checkInternet = checkInternetConnection()
+
+        if (checkInternet) {
+            initViewModel()
+        }
+//        else {
+//
+//            val db = DbHelper(requireContext(), null)
+//            val packconfiglist=db.getAllPackConfig()
+//            val list = db.getAllCollectData(packList?.id.toString())
+//            AppUtils.logDebug(TAG,list.size.toString())
+//            recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
+////            val listt=ArrayList<CollectData>()
+////            for (i in 0 until list.size ){
+////                listt.add(list.get(i))
+////
+////            }
+//
+//
+//            adapter = CollectDataAdapter(list!!, requireContext()) { id, boolean ->
+//                collectDataId=id
+//                if (boolean){
+//                    showAlertDialog(id)
+//                }
+//                else{
+//                    val intent=Intent(activity,UpdatePackActivity::class.java)
+//                    intent.putExtra("fragment","2")
+//                    startActivity(intent)
+//                }
+//
+//
+//            }
+//
+//            recyclerview_collectdata?.adapter = adapter
+////            if (list.isNullOrEmpty()){
+////                layout_nodata.visibility=View.VISIBLE
+////                progressbar_collectpack.visibility=View.GONE
+////            }
+////            else{
+////                layout_nodata.visibility=View.GONE
+////            }
+//        }
 
 
         return view
     }
 
+    private fun checkInternetConnection(): Boolean {
+
+        val ConnectionManager =
+            requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected == true) {
+            return true
+        } else {
+            return false
+        }
+
+    }
+
     private fun initViewModel() {
         viewmodel =
             ViewModelProvider(this).get(CollectDataViewModel::class.java)
-//        viewmodel?.progressBar=progressbar_collectpack
+        viewmodel?.progressBar=progressbar_collectpack
         viewmodel?.onCollectDataList(requireContext())
 
 
         viewmodel?.collectdatalist?.observe(viewLifecycleOwner,androidx.lifecycle.Observer{list ->
 
-
-
             val mylist =
-                Gson().fromJson(Gson().toJson(list), ArrayList<CollectDataFieldListItem>()::class.java)
+                Gson().fromJson(Gson().toJson(list), ArrayList<CollectData>()::class.java)
 
             recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
 
@@ -102,8 +156,6 @@ class CollectPackFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
                     startActivity(intent)
                 }
 
-
-
             }
 
             recyclerview_collectdata?.adapter=adapter
@@ -112,6 +164,7 @@ class CollectPackFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
                 progressbar_collectpack.visibility=View.GONE
             }
             else{
+                progressbar_collectpack.visibility=View.GONE
                 layout_nodata.visibility=View.GONE
             }
 
@@ -153,7 +206,18 @@ class CollectPackFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
     }
 
     override fun onFailure(call: Call<ResponseCollectAcitivityResultList>, t: Throwable) {
-        Toast.makeText(requireContext(),"Failed to Delete",Toast.LENGTH_LONG).show()
+        try {
+            Toast.makeText(requireContext(),"Failed to Delete",Toast.LENGTH_LONG).show()
+            progressbar_collectpack.visibility=View.GONE
+
+        }
+        catch (e:Exception){
+            Toast.makeText(requireContext(),"Failed to Delete",Toast.LENGTH_LONG).show()
+
+            progressbar_collectpack.visibility=View.GONE
+        }
+
+
 
     }
 }

@@ -9,4 +9,6 @@ data class PackFieldResponse(
     @SerializedName("data")   val data: List<PackConfigFieldList>,
     @SerializedName("error")  val error: Boolean,
     @SerializedName("packconfig")  val packconfig: Packconfig,
+    @SerializedName("msg")  val msg: String,
+
 )

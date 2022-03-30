@@ -11,6 +11,7 @@ import android.widget.Spinner
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.pbt.myfarm.EventList
@@ -18,6 +19,7 @@ import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ResponseList
 import com.pbt.myfarm.Service.TeamList
 import com.pbt.myfarm.Util.AppUtils
+import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_dash_board_event.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,17 +64,17 @@ class DashBoardEventActivity : AppCompatActivity() {
 //            calendarView.setEvents(events)
 //
 //        }
-        btn_select_month.setOnClickListener {}
 
 
     }
 
-    private fun getFormattedDate(time: Date) {
+    private fun getFormattedDate(time: Date) :String{
 //        val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
         val dd = simpleDateFormat.format(time)
         AppUtils.logDebug(TAG, "ddddatae----" + dd.toString())
+        return  dd
     }
 
     private fun initViewModel() {
@@ -94,241 +96,251 @@ class DashBoardEventActivity : AppCompatActivity() {
 
             if (!eventlist.isNullOrEmpty()) {
                 eventList = eventlist as ArrayList<EventList>
-
                 setCalender(eventList)
-
             }
 
         })
-
     }
 
     private fun setCalender(eventList: ArrayList<EventList>) {
         val events: MutableList<EventDay> = ArrayList()
 
-
-        for (i in 0 until 4) {
+        for (i in 0 until eventList.size) {
 
             val item = eventList[i]
-
-            AppUtils.logError(TAG, item.toString() + "============")
 
             val sdf = SimpleDateFormat("yyyy-MM-dd")
             val calendar: Calendar = Calendar.getInstance()
             val todaysdate = sdf.format(calendar.time)
 
-            val expstartdate = item.exp_start_date
-            val actualstartdate = item.actual_start_date
-            val actualenddate = item.actual_end_date
-            val expenddate = item.exp_end_date
+            AppUtils.logError(TAG, "============"+item.exp_start_date.toString() )
 
-
-            if (!item.actual_start_date.isEmpty()) {
+            if (item.exp_start_date!=null) {
+                val expstartdate = item.exp_start_date
+                val actualstartdate = item.actual_start_date
+                val actualenddate = item.actual_end_date
+                val expenddate = item.exp_end_date
                 if (todaysdate == expstartdate && actualstartdate == null) {
 
                     val startdate = sdf.parse(expstartdate)
                     val enddate = sdf.parse(expenddate)
 
 
-                    if (expenddate != null && expstartdate != null) {
+//                    if (expenddate != null && expstartdate != null) {
 //                      for (i in 0 days)
-                        val diff: Long = enddate.getTime() - startdate.getTime()
-                        val seconds = diff / 1000
-                        val minutes = seconds / 60
-                        val hours = minutes / 60
-                        val days = hours / 24
-                        val totaldays: Int = days.toInt() + 1
-
-                        for (h in 0 until totaldays) {
-
-
-                            val c = Calendar.getInstance()
-                            c.time = sdf.parse(item.exp_start_date)
-                            c.add(Calendar.DATE, totaldays)
-                            val dt = sdf.format(c.time)
-                            AppUtils.logDebug(TAG, "ddddt===$dt")
-
-
-                            calendar.setTime(sdf.parse(item.exp_start_date))
-
-//                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
-                            events.add(
-                                EventDay(
-                                    calendar,
-                                    R.drawable.ic_baseline_event_red,
-                                    Color.parseColor("#228B22")
-                                )
-                            )
-                        }
-                    }
-
-
-                } else if (sdf.parse(todaysdate) > sdf.parse(item.exp_start_date) && actualstartdate == null) {
-
-                    val startdate = sdf.parse(expstartdate)
-                    val enddate = sdf.parse(expenddate)
-
-
-                    if (expenddate != null && expstartdate != null) {
-//                      for (i in 0 days)
-                        val diff: Long = enddate.getTime() - startdate.getTime()
-                        val seconds = diff / 1000
-                        val minutes = seconds / 60
-                        val hours = minutes / 60
-                        val days = hours / 24
-                        val totaldays: Int = days.toInt() + 1
-                        for (i in 0 until totaldays) {
-                            val c = Calendar.getInstance()
-                            c.setTime(sdf.parse(item.exp_start_date))
-                            c.time = sdf.parse(item.exp_start_date)
-                            c.add(Calendar.DATE, totaldays)
-                            val dt = sdf.format(c.time)
-                            AppUtils.logDebug(TAG, "ddddt===$dt")
-
-
-//                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
-                            events.add(
-                                EventDay(
-                                    c,
-                                    R.drawable.ic_baseline_event_red,
-                                    Color.parseColor("#228B22")
-                                )
-                            )
-                        }
-                    }
-//                  calendar.setTime(sdf.parse(item.exp_start_date))
+//                        val diff: Long = enddate.getTime() - startdate.getTime()
+//                        val seconds = diff / 1000
+//                        val minutes = seconds / 60
+//                        val hours = minutes / 60
+//                        val days = hours / 24
+//                        val totaldays: Int = days.toInt() + 1
 //
-//                  events.add(
-//                  EventDay(
-//                      calendar,
-//                      R.drawable.ic_baseline_event_red,
-//                      Color.parseColor("#228B22")
-//                  )
-//              )
-                } else if (sdf.parse(todaysdate) < sdf.parse(item.exp_start_date) && actualstartdate == null) {
-                    val startdate = sdf.parse(expstartdate)
-                    val enddate = sdf.parse(expenddate)
-
-
-                    if (expenddate != null && expstartdate != null) {
-//                      for (i in 0 days)
-                        val diff: Long = enddate.getTime() - startdate.getTime()
-                        val seconds = diff / 1000
-                        val minutes = seconds / 60
-                        val hours = minutes / 60
-                        val days = hours / 24
-                        val totaldays: Int = days.toInt() + 1
-                        for (i in 0 until totaldays) {
-                            val c = Calendar.getInstance()
-                            c.setTime(sdf.parse(item.exp_start_date))
-                            c.time = sdf.parse(item.exp_start_date)
-                            c.add(Calendar.DATE, totaldays)
-                            val dt = sdf.format(c.time)
-                            AppUtils.logDebug(TAG, "ddddt===$dt")
-
-
-//                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
-                            events.add(
-                                EventDay(
-                                    c,
-                                    R.drawable.ic_baseline_event_blue,
-                                    Color.parseColor("#228B22")
-                                )
-                            )
-                        }
-                    }
-//                  calendar.setTime(sdf.parse(item.exp_start_date))
+//                        for (h in 0 until totaldays) {
 //
-//                  events.add(
-//                  EventDay(
-//                      calendar,
-//                      R.drawable.ic_baseline_event_blue,
-//                      Color.parseColor("#228B22")
-//                  )
-//              )
+//
+//                            val c = Calendar.getInstance()
+//                            c.time = sdf.parse(item.exp_start_date)
+//                            c.add(Calendar.DATE, totaldays)
+//                            val dt = sdf.format(c.time)
+//                            AppUtils.logDebug(TAG, "ddddt===$dt")
+//
+//
+//                            calendar.setTime(sdf.parse(item.exp_start_date))
+//
+////                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
+//                            events.add(
+//                                EventDay(
+//                                    calendar,
+//                                    R.drawable.ic_baseline_event_red,
+//                                    Color.parseColor("#228B22")
+//                                )
+//                            )
+//                        }
+//                    }
+                    calendar.setTime(sdf.parse(item.exp_start_date))
+
+                    events.add(
+                        EventDay(
+                            calendar,
+                            R.drawable.ic_baseline_event_grey,
+                            Color.parseColor("#228B22")
+                        )
+                    )
+
+                }
+                else if (sdf.parse(todaysdate) > sdf.parse(expstartdate) && actualstartdate == null) {
+
+
+
+//                    if (expenddate != null && expstartdate != null) {
+//
+//                        val startdate = sdf.parse(expstartdate)
+//                        val enddate = sdf.parse(expenddate)
+//
+////                      for (i in 0 days)
+//                        val diff: Long = enddate.getTime() - startdate.getTime()
+//                        val seconds = diff / 1000
+//                        val minutes = seconds / 60
+//                        val hours = minutes / 60
+//                        val days = hours / 24
+//                        val totaldays: Int = days.toInt() + 1
+//                        for (i in 0 until totaldays) {
+//                            val c = Calendar.getInstance()
+//                            c.setTime(sdf.parse(expstartdate))
+//                            c.time = sdf.parse(expstartdate)
+//                            c.add(Calendar.DATE, totaldays)
+//                            val dt = sdf.format(c.time)
+//                            AppUtils.logDebug(TAG, "ddddt===$dt")
+//
+//
+////                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
+//                            events.add(
+//                                EventDay(
+//                                    c,
+//                                    R.drawable.ic_baseline_event_red,
+//                                    Color.parseColor("#228B22")
+//                                )
+//                            )
+//                        }
+//                    }
+                    calendar.setTime(sdf.parse(item.exp_start_date))
+
+                    events.add(
+                        EventDay(
+                            calendar,
+                            R.drawable.ic_baseline_event_red,
+                            Color.parseColor("#228B22")
+                        )
+                    )
+                }
+                else if (sdf.parse(todaysdate) < sdf.parse(expstartdate) && actualstartdate == null) {
+
+
+//
+//                    if (expenddate != null && expstartdate != null) {
+//                        val startdate = sdf.parse(expstartdate)
+//                        val enddate = sdf.parse(expenddate)
+////                      for (i in 0 days)
+//                        val diff: Long = enddate.getTime() - startdate.getTime()
+//                        val seconds = diff / 1000
+//                        val minutes = seconds / 60
+//                        val hours = minutes / 60
+//                        val days = hours / 24
+//                        val totaldays: Int = days.toInt() + 1
+//                        for (i in 0 until totaldays) {
+//                            val c = Calendar.getInstance()
+//                            c.setTime(sdf.parse(expstartdate))
+//                            c.time = sdf.parse(expstartdate)
+//                            c.add(Calendar.DATE, totaldays)
+//                            val dt = sdf.format(c.time)
+//                            AppUtils.logDebug(TAG, "ddddt===$dt")
+//
+//
+////                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
+//                            events.add(
+//                                EventDay(
+//                                    c,
+//                                    R.drawable.ic_baseline_event_blue,
+//                                    Color.parseColor("#228B22")
+//                                )
+//                            )
+//                        }
+//                    }
+                    calendar.setTime(sdf.parse(item.exp_start_date))
+
+                    events.add(
+                        EventDay(
+                            calendar,
+                            R.drawable.ic_baseline_event_blue,
+                            Color.parseColor("#228B22")
+                        )
+                    )
                 } else if (actualstartdate != null) {
-                    val startdate = sdf.parse(expstartdate)
-                    val enddate = sdf.parse(expenddate)
 
 
-                    if (expenddate != null && expstartdate != null) {
-//                      for (i in 0 days)
-                        val diff: Long = enddate.getTime() - startdate.getTime()
-                        val seconds = diff / 1000
-                        val minutes = seconds / 60
-                        val hours = minutes / 60
-                        val days = hours / 24
-                        val totaldays: Int = days.toInt() + 1
-                        for (i in 0 until totaldays) {
-                            val c = Calendar.getInstance()
-                            c.setTime(sdf.parse(item.exp_start_date))
-                            c.time = sdf.parse(item.exp_start_date)
-                            c.add(Calendar.DATE, totaldays)
-                            val dt = sdf.format(c.time)
-                            AppUtils.logDebug(TAG, "ddddt===$dt")
-
-
-//                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
-                            events.add(
-                                EventDay(
-                                    c,
-                                    R.drawable.ic_baseline_event_green,
-                                    Color.parseColor("#228B22")
-                                )
-                            )
-                        }
-                    }
-//                  calendar.setTime(sdf.parse(item.exp_start_date))
 //
-//                  events.add(
-//                  EventDay(
-//                      calendar,
-//                      R.drawable.ic_baseline_event_green,
-//                      Color.parseColor("#228B22")
-//                  )
-//              )
-                } else if (actualenddate != null) {
-                    val startdate = sdf.parse(expstartdate)
-                    val enddate = sdf.parse(expenddate)
-
-
-                    if (expenddate != null && expstartdate != null) {
-//                      for (i in 0 days)
-                        val diff: Long = enddate.getTime() - startdate.getTime()
-                        val seconds = diff / 1000
-                        val minutes = seconds / 60
-                        val hours = minutes / 60
-                        val days = hours / 24
-                        val totaldays: Int = days.toInt() + 1
-
-                        for (i in 0 until totaldays) {
-                            val c = Calendar.getInstance()
-                            c.setTime(sdf.parse(item.exp_start_date))
-
-                            c.time = sdf.parse(item.exp_start_date)
-                            c.add(Calendar.DATE, totaldays)
-                            val dt = sdf.format(c.time)
-                            AppUtils.logDebug(TAG, "ddddt===$dt")
-
-
-                            events.add(
-                                EventDay(
-                                    c,
-                                    R.drawable.ic_baseline_event_grey,
-                                    Color.parseColor("#228B22")
-                                )
-                            )
-                        }
-                    }
-//                  calendar.setTime(sdf.parse(item.exp_start_date))
+//                    if (expenddate != null && expstartdate != null) {
+//                        val startdate = sdf.parse(expstartdate)
+//                        val enddate = sdf.parse(expenddate)
+////                      for (i in 0 days)
+//                        val diff: Long = enddate.getTime() - startdate.getTime()
+//                        val seconds = diff / 1000
+//                        val minutes = seconds / 60
+//                        val hours = minutes / 60
+//                        val days = hours / 24
+//                        val totaldays: Int = days.toInt() + 1
+//                        for (i in 0 until totaldays) {
+//                            val c = Calendar.getInstance()
+//                            c.setTime(sdf.parse(expstartdate))
+//                            c.time = sdf.parse(expstartdate)
+//                            c.add(Calendar.DATE, totaldays)
+//                            val dt = sdf.format(c.time)
+//                            AppUtils.logDebug(TAG, "ddddt===$dt")
 //
-//                  events.add(
-//                  EventDay(
-//                      calendar,
-//                      R.drawable.ic_baseline_event_grey,
-//                      Color.parseColor("#228B22")
-//                  )
-//              )
+//
+////                       events.add(EventDay(calendar, R.drawable.ic_baseline_event_red, Color.parseColor("#228B22"))
+//                            events.add(
+//                                EventDay(
+//                                    c,
+//                                    R.drawable.ic_baseline_event_green,
+//                                    Color.parseColor("#228B22")
+//                                )
+//                            )
+//                        }
+//                    }
+                    calendar.setTime(sdf.parse(item.exp_start_date))
+
+                    events.add(
+                        EventDay(
+                            calendar,
+                            R.drawable.ic_baseline_event_green,
+                            Color.parseColor("#228B22")
+                        )
+                    )
+                }
+                else if (actualenddate != null) {
+
+
+
+//                    if (expenddate != null && expstartdate != null) {
+//                        val startdate = sdf.parse(expstartdate)
+//                        val enddate = sdf.parse(expenddate)
+////                      for (i in 0 days)
+//                        val diff: Long = enddate.getTime() - startdate.getTime()
+//                        val seconds = diff / 1000
+//                        val minutes = seconds / 60
+//                        val hours = minutes / 60
+//                        val days = hours / 24
+//                        val totaldays: Int = days.toInt() + 1
+//
+//                        for (i in 0 until totaldays) {
+//                            val c = Calendar.getInstance()
+//                            c.setTime(sdf.parse(expstartdate))
+//
+//                            c.time = sdf.parse(expstartdate)
+//                            c.add(Calendar.DATE, totaldays)
+//                            val dt = sdf.format(c.time)
+//                            AppUtils.logDebug(TAG, "ddddt===$dt")
+//
+//
+//                            events.add(
+//                                EventDay(
+//                                    c,
+//                                    R.drawable.ic_baseline_event_grey,
+//                                    Color.parseColor("#228B22")
+//                                )
+//                            )
+//                        }
+//                    }
+                    calendar.setTime(sdf.parse(item.exp_start_date))
+
+                    events.add(
+                        EventDay(
+                            calendar,
+                            R.drawable.ic_baseline_event_grey,
+                            Color.parseColor("#228B22")
+                        )
+                    )
                 }
 
 
@@ -347,15 +359,20 @@ class DashBoardEventActivity : AppCompatActivity() {
 
                 events.clear()
                 events.add(EventDay(clickedDayCalendar))
+                val clickdata=  getFormattedDate(eventDay.calendar.time)
+                val evnts=ArrayList<EventList>()
 
+                for(i in 0 until eventList.size){
+                    if("$clickdata"==eventList.get(i).exp_start_date || "$clickdata"==eventList.get(i).actual_start_date){
+                        evnts.add(eventList.get(i))
+                    }
+                }
+                val adapter=DashboardEventAdapter(this@DashBoardEventActivity,evnts)
+                recyclerview_events?.layoutManager = LinearLayoutManager(this@DashBoardEventActivity)
+                recyclerview_events.adapter = adapter
 
-
-                getFormattedDate(eventDay.calendar.time)
-
-
-
-                AppUtils.logDebug(TAG, "onDayClick ${events}")
-
+                AppUtils.logDebug(TAG, "onDayClick evnts ${evnts}")
+                AppUtils.logDebug(TAG, "onDayClick ${clickdata}")
             }
         })
     }

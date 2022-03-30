@@ -2,18 +2,18 @@ package com.pbt.myfarm.Activity.Pack
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.PackList
+
+import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.R
-import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.databinding.ItemlistPackBinding
 import kotlinx.android.synthetic.main.itemlist_pack.view.*
 
-class AdapterViewPack(var context: Context, var list:List<PackList>,
-                      var callbacks: (Int, String, Boolean, PackList) -> Unit,)
+class AdapterViewPack(var context: Context, var list:List<PacksNew>,
+                      var callbacks: (Int, String, Boolean, PacksNew) -> Unit,)
     : RecyclerView.Adapter<AdapterViewPack.ViewHolder>() {
     inner class ViewHolder(val binding: ItemlistPackBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -39,11 +39,11 @@ class AdapterViewPack(var context: Context, var list:List<PackList>,
 
         holder.itemView.icon_delete.setOnClickListener {
 
-            callbacks.invoke(position, item.name_prefix, true, item)
+            callbacks.invoke(position, item.name.toString(), true, item)
         }
                 holder.itemView.icon_edit.setOnClickListener {
 
-                    callbacks.invoke(position, item.name_prefix,false,item)
+                    callbacks.invoke(position, item.name.toString(),false,item)
 
 
                 }}

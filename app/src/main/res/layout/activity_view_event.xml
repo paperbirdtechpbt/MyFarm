@@ -59,17 +59,6 @@ android:layout_marginTop="5dp"
       android:layout_height="wrap_content">
 
 
-  <SearchView
-      android:layout_width="match_parent"
-      android:id="@+id/ed_searchevent"
-      app:iconifiedByDefault="false"
-      app:queryHint="Search Task"
-      android:layout_marginTop="3dp"
-
-      app:layout_constraintLeft_toLeftOf="parent"
-      android:layout_height="wrap_content"
-
-      />
   </androidx.cardview.widget.CardView>
 
   <androidx.recyclerview.widget.RecyclerView
@@ -80,6 +69,5 @@ android:layout_marginTop="5dp"
       android:visibility="visible"
       app:layout_constraintTop_toBottomOf="@id/cardview_searchevent"
       app:layout_constraintBottom_toBottomOf="parent"
-
-      android:layout_marginTop="10dp" />
+ />
   </androidx.constraintlayout.widget.ConstraintLayout>

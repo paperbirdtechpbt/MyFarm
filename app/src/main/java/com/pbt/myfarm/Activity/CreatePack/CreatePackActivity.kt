@@ -1,16 +1,17 @@
 package com.pbt.myfarm.Activity.CreatePack
 
-
 import android.content.Intent
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter.Companion.desciptioncompanian
 
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
@@ -21,21 +22,20 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.PackViewModel
+import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldResponse
-import com.pbt.myfarm.PackConfigList
+import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityList
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityListname
-import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
-import com.pbt.myfarm.ViewTaskViewModel
 import com.pbt.myfarm.databinding.ActivityCreatePackBinding
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_create_task.*
@@ -45,6 +45,7 @@ import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResponse> {
     var viewmodel: PackViewModel? = null
@@ -52,27 +53,38 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     var adapter: CreatePackAdapter? = null
     val successObject = JSONArray()
     val fieldModel = ArrayList<FieldModel>()
+    var db: DbHelper? = null
+
 
     companion object {
         val TAG = "CreatePackActivity"
         var packName: String = ""
         var packprefixName: String = ""
-        var packconfiglist: PackConfigList? = null
+        var packconfiglist: PackConfig? = null
+        var arrayID: ArrayList<String>? = null
+        var arrayName: ArrayList<String>? = null
+        var arrayIDKey: ArrayList<String>? = null
+        var arrayNameKey: ArrayList<String>? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        ExpAmtArray.clear()
-//        ExpName.clear()
-//        ExpNameKey.clear()
-//        ExpAmtArrayKey.clear()
-//        setContentView(R.layout.activity_create_pack)
+        desciptioncompanian = ""
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_pack)
-        val db= DbHelper(this,null)
+        db = DbHelper(this, null)
+        arrayID = ArrayList()
+        arrayName = ArrayList()
+        arrayIDKey = ArrayList()
+        arrayNameKey = ArrayList()
+        arrayID!!.clear()
+        arrayName!!.clear()
+        arrayIDKey!!.clear()
+        arrayNameKey!!.clear()
 
 
 
-        if(checkInternetConnection()){
+
+        if (checkInternetConnection()) {
             initViewModel()
         }
 //        else
@@ -136,45 +148,56 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         viewmodel?.progressbar = progressbar_createPackActivity
 
         packconfiglist = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+        AppUtils.logError(TAG, "packConfiglist" + packconfiglist?.id.toString())
 
-
-
-        viewmodel?.onConfigFieldList(this, true, "25")
+        viewmodel?.onConfigFieldList(this, true, packconfiglist?.id.toString())
         viewmodel?.configlist?.observe(this, Observer { list ->
+
+
 //            setCommunityGroup()
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
             recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
+//            adapter = CreatePackAdapter(
+//                this, config, true, packCommunityList,
+//                packCommunityListname
+//            )
+
+
             adapter = CreatePackAdapter(
                 this, config, true, packCommunityList,
                 packCommunityListname
-            ) { list, name ->
+            )
+            { list, name ->
+
                 while (list.contains("0")) {
                     list.remove("0")
                 }
                 while (name.contains("0")) {
                     name.remove("0")
                 }
-                while (ExpNameKey.contains("0")) {
-                    ExpNameKey.remove("0")
-                }
-                while (ExpAmtArrayKey.contains("0")) {
-                    ExpAmtArrayKey.remove("0")
-                }
+                AppUtils.logDebug(TAG, "listname" + list.size + name.size)
+
 
 
 
 
                 for (i in 0 until name.size) {
+
+
                     val jsonObject = JSONObject()
-                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
-                    jsonObject.put(ExpNameKey.get(i), list.get(i))
+
+                    jsonObject.put(arrayIDKey!!.get(i), list.get(i))
+                    jsonObject.put(arrayNameKey!!.get(i), name.get(i))
 
                     successObject.put(jsonObject)
+                    
+                   val lastValueOfPacknew=db?.getLastofPackNew()
+                    db?.addPackValues(list.get(i),name.get(i),lastValueOfPacknew)
                     fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                 }
-
+                AppUtils.logDebug(TAG, "successobject in createPack" + successObject.toString())
 
             }
             recyclerview_createPack.adapter = adapter
@@ -190,73 +213,86 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
         btn_create_pack.setOnClickListener {
+            btn_create_pack.visibility = View.GONE
             adapter?.callBackss()
 
 //
 //            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
 //            val currentDate = sdf.format(Date())
-//            val db=DbHelper(this,null)
-//            val viewtasklist=ArrayList<ViewPackModelClass>()
-//
-//            val d=db.getLastValue_pack_new("4")
-//
-//            if (d.isEmpty()){
-//                viewtasklist.add(
-//                    ViewPackModelClass("4","1","",
-//                        "4","FEVESKKM",
-//                        "FEVESKKM","",
-//                        "Test","1","2","",))
-//                val viewTask=viewtasklist.get(0)
+            val db = DbHelper(this, null)
+            var packsnew: PacksNew? = null
+
+            val d = db.getLastValue_pack_new(packconfiglist?.id.toString())
+            val userid = MySharedPreference.getUser(this)?.id
+            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+            val currentDate = sdf.format(Date())
+
+            if (d.isEmpty()) {
+                packsnew= PacksNew(null, selectedCommunityGroup?.toInt(),
+                userid,currentDate,null, desciptioncompanian,null,
+                null,null,null,null,
+                null,packconfiglist?.id.toString(),labelPackConfigPrefix,
+                null,null,null,"1")
+
+                db.addNewPack(packsnew,"1")
+
+            }
+
+
+
+        else{
+            val newPackname: Int = d.toInt() + 1
+                packsnew= PacksNew(null, selectedCommunityGroup?.toInt(),
+                    userid,currentDate,null, desciptioncompanian,null,
+                    null,null,null,null,
+                    newPackname.toString(),packconfiglist?.id.toString(),labelPackConfigPrefix,
+                    null,null,null,"1")
+
+
+                db.addNewPack(packsnew,"1")
+
+//            val viewTask = viewtasklist.get(0)
 ////                db.addNewPack(viewTask,currentDate,"","")
-//                for(i in 0 until ExpAmtArray.size){
-//                    db.addpackFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
+//            for (i in 0 until ExpAmtArray.size) {
+//                db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
+//            }
+        }}
+
+//-------------------|||Below Code is For sacving Pack Online||||--------------//
+
+
+//            adapter?.callBackss()
+////            viewmodel?.addPack()
+//            val listdata = ArrayList<String>()
+//
+//            if (successObject != null) {
+//                for (i in 0 until successObject.length()) {
+//                    listdata.add(successObject.getString(i))
 //                }
+//            }
+//            val userId = MySharedPreference.getUser(this)?.id
+//
+//            if (desciptioncompanian.isEmpty()) {
+//                Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
+//                btn_create_pack.visibility= View.VISIBLE
 //
 //            }
 //            else{
-//                val newPackname:Int=  d.toInt()+1
+//                val db=DbHelper(this,null)
 //
-//                viewtasklist.add(
-//                    ViewPackModelClass("12",newPackname.toString(),
-//                    "5","4",
-//                    "FEVESKKM","",
-//                    "Test","1","2","",))
-//                val viewTask=viewtasklist.get(0)
-////                db.addNewPack(viewTask,currentDate,"","")
-//                for(i in 0 until ExpAmtArray.size){
-//                    db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
-//                }
+//                ApiClient.client.create(ApiInterFace::class.java)
+//                    .storePack(
+//                        packconfiglist?.id.toString(),
+//                        desciptioncompanian!!,
+//                        selectedCommunityGroup,
+//                        userId.toString(),
+//                        successObject.toString(),
+//                        packconfiglist?.name!!
+//                    ).enqueue(this)
 //            }
-
-
-            adapter?.callBackss()
-//            viewmodel?.addPack()
-            val listdata = ArrayList<String>()
-
-            if (successObject != null) {
-                for (i in 0 until successObject.length()) {
-                    listdata.add(successObject.getString(i))
-                }
-            }
-
-            val userId = MySharedPreference.getUser(this)?.id
-
-            if (desciptioncompanian == null) {
-                desciptioncompanian = "desciption"
-            }
-
-
-            ApiClient.client.create(ApiInterFace::class.java)
-                .storePack(
-                    packconfiglist?.id!!,
-                    desciptioncompanian,
-                    selectedCommunityGroup,
-                    userId.toString(),
-                    successObject.toString(),
-                    packconfiglist?.name!!
-                ).enqueue(this)
-
-        }
+//
+//        }
+        //--------------Above code is For savging pack online ------------//
 
 //        if (viewtask!=null){
 //            AppUtils.logDebug(TAG,viewtask.toString())
@@ -286,16 +322,31 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     }
 
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
+        if (response.body()?.error == false) {
+            btn_create_pack.visibility = View.VISIBLE
 
-        Toast.makeText(this, "Task Created Successfully", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, PackActivity::class.java)
-        startActivity(intent)
-        finish()
+            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, PackActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            btn_create_pack.visibility = View.VISIBLE
+
+            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onFailure(call: Call<PackFieldResponse>, t: Throwable) {
-        AppUtils.logDebug(TAG, "failure" + t.message)
-        Toast.makeText(this, t.localizedMessage, Toast.LENGTH_SHORT).show()
+        btn_create_pack.visibility = View.VISIBLE
+        try {
+            AppUtils.logDebug(TAG, "Failed to Add new pack" + t.message)
+            Toast.makeText(this, t.localizedMessage, Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+
+        }
+
+
     }
 
 //     fun setCommunityGroup() {

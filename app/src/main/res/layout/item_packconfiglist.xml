@@ -5,10 +5,8 @@
     <data>
         <variable
             name="configtype"
-            type="com.pbt.myfarm.PackConfigList" />
+            type="com.pbt.myfarm.PackConfig" />
     </data>
-
-
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"

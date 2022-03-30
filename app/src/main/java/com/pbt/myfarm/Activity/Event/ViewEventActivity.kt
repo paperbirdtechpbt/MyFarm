@@ -34,6 +34,10 @@ class ViewEventActivity : AppCompatActivity(),retrofit2.Callback<ResponseEventLi
     var adapter:AdapterEventList?=null
 
     val TAG="ViewEventActivity"
+    override fun onResume() {
+        super.onResume()
+        initViewModel()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_event)

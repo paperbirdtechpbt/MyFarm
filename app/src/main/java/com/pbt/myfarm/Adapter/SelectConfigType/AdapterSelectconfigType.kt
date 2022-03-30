@@ -9,12 +9,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.ConfigTaskList
 import com.pbt.myfarm.R
+import com.pbt.myfarm.TaskConfig
 import com.pbt.myfarm.databinding.ItemConfigTypeListBindingImpl
 import com.pbt.myfarm.databinding.ItemlistViewtaskBinding
 
 class AdapterSelectconfigType(var context: Context,
-                              var list: List<ConfigTaskList>,
-                              var callbacks: (Int, String, ConfigTaskList) -> Unit) :
+                              var list: List<TaskConfig>,
+                              var callbacks: (Int, String, TaskConfig) -> Unit) :
     RecyclerView.Adapter<AdapterSelectconfigType.ViewHolder>() {
     inner class ViewHolder(val binding: ItemConfigTypeListBindingImpl): RecyclerView.ViewHolder(binding.root)
 
@@ -30,7 +31,7 @@ class AdapterSelectconfigType(var context: Context,
         holder.binding.configtype = list[position]
         var item = list[position]
 holder.itemView.setOnClickListener{
-    callbacks.invoke(position,item.name,item)
+    callbacks.invoke(position, item.name!!,item)
 }
 
     }

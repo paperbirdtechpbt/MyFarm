@@ -10,7 +10,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigViewModel
 import com.pbt.myfarm.ConfigTaskList
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.ConfigResponse
+import com.pbt.myfarm.PackConfig
 import com.pbt.myfarm.PackConfigList
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -25,22 +27,24 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
     companion object {
         const val TAG: String = "SelectPackConfigViewModel"
     }
-    var configlist = MutableLiveData<List<PackConfigList>>()
-    var progressbar: ProgressBar?=null
+    var configlist = MutableLiveData<List<PackConfig>>()
 
     @SuppressLint("StaticFieldLeak")
     val context: Context? = null
 
     init {
 
-        configlist = MutableLiveData<List<PackConfigList>>()
+        configlist = MutableLiveData<List<PackConfig>>()
 
     }
 
     fun onConfigTypeRequest(context: Context) {
+        val db=DbHelper(context,null)
+        val list=db.getAllPackConfig()
+        configlist.value=list
 
-        ApiClient.client.create(ApiInterFace::class.java)
-            .packConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+//        ApiClient.client.create(ApiInterFace::class.java)
+//            .packConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
 
     }
 
@@ -58,14 +62,13 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
                 val baseList : PackConfigResponse =  Gson().fromJson(
                     Gson().toJson(response.body()),
                     PackConfigResponse::class.java)
-                val upCommingTripList = ArrayList<PackConfigList>()
+                val upCommingTripList = ArrayList<PackConfig>()
                 baseList.data.forEach { routes ->
                     upCommingTripList.add(routes)
 
                 }
                 configlist.value = upCommingTripList
 
-                progressbar?.visibility= View.GONE
             }
             catch (e:Exception){
                 AppUtils.logDebug(TAG,e.message.toString())

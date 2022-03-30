@@ -2,36 +2,23 @@ package com.pbt.myfarm.Service
 
 import android.app.Service
 import android.content.Intent
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.util.Log
-import com.google.gson.Gson
-import com.pbt.myfarm.Activity.Event.ResponseOfflineSync
-import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
-import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.Fragement.CollectNewData.Data
-import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
-import com.pbt.myfarm.Fragement.CollectNewData.UnitList
-import com.pbt.myfarm.ModelClass.OffLineSyncModel
+import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
-import java.util.concurrent.ScheduledExecutorService
-import java.util.concurrent.TimeUnit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-
 class MyFarmService() : Service() {
 
     val TAG = "MyFarmService"
-    var userID = ""
+    var userID:String? = null
 
     val db= DbHelper(this,null)
 
@@ -42,21 +29,16 @@ class MyFarmService() : Service() {
         userID =  MySharedPreference.getUser(this)?.id.toString()
 
         GlobalScope.launch(Dispatchers.IO){
-            syncOfflineData(userID)
+            syncOfflineData(userID!!)
         }
-
-
         return START_STICKY
     }
-
     override fun onBind(intent: Intent): IBinder? {
         throw UnsupportedOperationException("Not yet implemented")
     }
-
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
     }
-
     private fun syncOfflineData(userID : String){
 
         val service = ApiClient.getClient()!!.create(ApiInterFace::class.java)
@@ -80,7 +62,7 @@ class MyFarmService() : Service() {
                         if(it.Data.packs_new.isNotEmpty()){
                             for(pack in it.Data.packs_new) {
 
-                                db.addNewPack(pack)
+                                db.addNewPack(pack,"0")
                             }
                         }
                         if(it.Data.pack_configs.isNotEmpty()){
@@ -160,6 +142,56 @@ class MyFarmService() : Service() {
                         if(it.Data.people.isNotEmpty()){
                             for(pack in it.Data.people) {
                                 db.peopleCreate(pack)
+                            }
+                        }
+                        if(it.Data.container.isNotEmpty()){
+                            for(pack in it.Data.container) {
+                                db.containerCreate(pack)
+                            }
+                        }
+                        if(it.Data.container_object.isNotEmpty()){
+                            for(pack in it.Data.container_object) {
+                                db.containerObjectCreate(pack)
+                            }
+                        }
+                        if(it.Data.events.isNotEmpty()){
+                            for(pack in it.Data.events) {
+                                db.eventsCreate(pack)
+                            }
+                        }
+                        if(it.Data.fields.isNotEmpty()){
+                            for(pack in it.Data.fields) {
+                                db.fieldsCreate(pack)
+                            }
+                        }
+                        if(it.Data.graph_charts.isNotEmpty()){
+                            for(pack in it.Data.graph_charts) {
+                                db.graphChartsCreate(pack)
+                            }
+                        }
+                        if(it.Data.graph_chart_objects.isNotEmpty()){
+                            for(pack in it.Data.graph_chart_objects) {
+                                db.graphChartObjectsCreate(pack)
+                            }
+                        }
+                        if(it.Data.lists.isNotEmpty()){
+                            for(pack in it.Data.lists) {
+                                db.listsCreate(pack)
+                            }
+                        }
+                        if(it.Data.list_choices.isNotEmpty()){
+                            for(pack in it.Data.list_choices) {
+                                db.listChoicesCreate(pack)
+                            }
+                        }
+                        if(it.Data.sensors.isNotEmpty()){
+                            for(pack in it.Data.sensors) {
+                                db.sensorCreate(pack)
+                            }
+                        }
+                        if(it.Data.units.isNotEmpty()){
+                            for(pack in it.Data.units) {
+                                db.unitsCreate(pack)
                             }
                         }
                     }

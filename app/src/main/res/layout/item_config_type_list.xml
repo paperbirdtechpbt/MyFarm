@@ -5,7 +5,7 @@
     <data>
 <variable
     name="configtype"
-    type="com.pbt.myfarm.ConfigTaskList" />
+    type="com.pbt.myfarm.TaskConfig" />
     </data>
 
 

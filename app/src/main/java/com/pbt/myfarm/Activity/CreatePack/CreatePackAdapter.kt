@@ -2,7 +2,6 @@ package com.pbt.myfarm.Activity.CreatePack
 
 import android.app.DatePickerDialog
 import android.content.Context
-import android.os.Looper
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -11,20 +10,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayID
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
+
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
+
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
+import com.pbt.myfarm.DataBase.DbHelper
+
 import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.PackViewModel
+import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigName
+import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
 import com.pbt.myfarm.PackViewModel.Companion.packconfigobject
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.logging.Handler
 import kotlin.collections.ArrayList
 
 
@@ -46,11 +55,13 @@ class CreatePackAdapter(
     var boolean = true
 
     companion object {
-        var desciptioncompanian: String = ""
+        var desciptioncompanian: String=""
     }
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+
+
         var name: EditText = itemView.findViewById(R.id.pack_field_name)
         var date: EditText = itemView.findViewById(R.id.pack_field_expectedDate)
         var mysppinner: Spinner = itemView.findViewById(R.id.pack_field_spinner)
@@ -84,7 +95,7 @@ class CreatePackAdapter(
 
     fun callBack() {
 
-        callbacks.invoke(ExpAmtArray, ExpName)
+        callbacks.invoke(arrayID!!, arrayName!!)
     }
 
 
@@ -115,6 +126,14 @@ class CreatePackAdapter(
 
         val d: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
+        AppUtils.logDebug(TAG,"values"+valued)
+        if (!valued.isNullOrEmpty()){
+            if (arrayID!!.isNotEmpty()){
+                arrayID!![positionn]=field_id
+                arrayName!![positionn]=valued
+            }
+
+        }
 
 
         val l = list.size
@@ -126,6 +145,8 @@ class CreatePackAdapter(
 
 
         if (fieldtype == "Table" || fieldtype == "List") {
+            fieldList?.add("Select")
+            fieldListid?.add("0")
 
             for (i in 0 until field.size) {
                 val row: Any = field.get(i)
@@ -145,19 +166,15 @@ class CreatePackAdapter(
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             holder.mysppinner.setAdapter(aa)
 
-            for (i in 0 until fieldList.size) {
-                if (valued == fieldListid.toString()) {
-                    val spinnerPosition: Int = aa.getPosition(valued)
-                    holder.mysppinner.setSelection(spinnerPosition)
-                }
-            }
+
+
 
         }
         if (fieldtype == "Numeric" || fieldtype == "Text") {
 
 
             setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-            holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
 
             holder.date.visibility = View.GONE
             holder.labeldate.visibility = View.GONE
@@ -176,14 +193,19 @@ class CreatePackAdapter(
 //            Handler(Looper.getMainLooper()).postDelayed ({
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
+                    holder.desciption.setText(packList?.description)
+
                     holder.name.setText("")
                 } else {
+                    holder.desciption.setText(packList?.description)
                     holder.name.setText(valued)
                 }
             }
 //            }, 3500)
 
         } else if (fieldtype == "List" || fieldtype == "Table") {
+            holder.desciption.setText(packList?.description)
+
             val d = fieldtype
             holder.date.visibility = View.GONE
             holder.name.visibility = View.GONE
@@ -195,12 +217,21 @@ class CreatePackAdapter(
             holder.mysppinner.visibility = View.VISIBLE
 
             holder.labelSpinner.setText(namee)
+            if (!valued.isEmpty()){
+                for (i in 0 until fieldList!!.size) {
+                    if (valued == fieldListid?.get(i)) {
+                        AppUtils.logDebug(TAG,"fieldlist"+fieldListid.get(i)+valued)
+                        holder.mysppinner.setSelection(i)
+                    }
+                }
+            }
             setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
                 holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
 
 
         } else if (fieldtype == "Date") {
-            val d = fieldtype
+            holder.desciption.setText(packList?.description)
+
 
             holder.name.visibility = View.GONE
             holder.labelname.visibility = View.GONE
@@ -227,20 +258,43 @@ class CreatePackAdapter(
                 position: Int,
                 id: Long
             ) {
-
-                val selectedText: String
-                val selectedId: String
-                ExpAmtArray.add("0")
-                ExpName.add("0")
-                ExpAmtArrayKey.add("0")
-                ExpNameKey.add("0")
-                selectedText = fieldListid!![position]
+                if (position!=0){
+                    var spinnername: String?=null
+                    var spinnerId: String?=null
+                    spinnerId = fieldId[positionn].toString()
 //                        selectedText = fieldId!![position]
-                selectedId = fieldId[positionn]
-                ExpAmtArray[position] = selectedText
-                ExpName[position] = selectedId
-                ExpAmtArrayKey[position] = "f_id"
-                ExpNameKey[position] = "f_value"
+                    spinnername = fieldListid!![position]
+                    AppUtils.logError(TAG,"spinnername"+spinnername+"\nid"+
+                            spinnerId+"\n"+positionn+"size"+list.size)
+                    try {
+                        arrayID!![positionn] = spinnerId
+                        arrayName!![positionn] = spinnername
+                    }
+                    catch (e:Exception){
+                        AppUtils.logDebug(TAG,"Exception in itemselect"+e.message.toString())
+                    }
+
+                }
+
+
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
+
+        holder.communityGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+
+                selectedCommunityGroup = communityGroupList.get(position).id
 
             }
 
@@ -271,20 +325,20 @@ class CreatePackAdapter(
                     isOnTextChanged = false
                     try {
 
-
-                        for (i in 0..positionn) {
+                        for (i in 0..list.size) {
                             if (i != positionn) {
-                                ExpAmtArray.add("0")
-                                ExpName.add("0")
+                                arrayID!!.add("0")
+                                arrayName!!.add("0")
                                 ExpAmtArrayKey.add("0")
                                 ExpNameKey.add("0")
                             } else {
-                                ExpAmtArray.add("0")
-                                ExpName.add("0")
-                                ExpAmtArray[positionn] = editable.toString()
-                                ExpName[positionn] = field_id
-                                ExpAmtArrayKey[positionn] = "f_id"
-                                ExpNameKey[positionn] = "f_value"
+                                arrayID!!.add("0")
+                                arrayName!!.add("0")
+                                arrayName!![positionn] = editable.toString()
+                                arrayID!![positionn] = field_id
+
+//                                ExpAmtArrayKey[i] = "f_id"
+//                                ExpNameKey[i] = "f_value"
                                 break
                             }
                         }
@@ -297,10 +351,10 @@ class CreatePackAdapter(
                             while (i <= positionn) {
                                 Log.d("TimesRemoved", " : $i")
                                 if (i == positionn) {
-                                    ExpAmtArray[positionn] = "0"
-                                    ExpName[positionn] = "0"
-                                    ExpAmtArrayKey[positionn] = "0"
-                                    ExpNameKey[positionn] = "0"
+                                    arrayID!![positionn] = "0"
+                                    arrayName!![positionn] = "0"
+//                                    ExpAmtArrayKey[positionn] = "0"
+//                                    ExpNameKey[positionn] = "0"
                                 }
                                 i++
                             }
@@ -309,46 +363,43 @@ class CreatePackAdapter(
                 }
             }
         })
-//        holder.desciption.addTextChangedListener(object : TextWatcher {
-//            override fun beforeTextChanged(
-//                charSequence: CharSequence, i: Int, i1: Int, i2: Int
-//            ) {
-//            }
-//
-//            override fun onTextChanged(
-//                charSequence: CharSequence,
-//                i: Int,
-//                i1: Int,
-//                i2: Int
-//            ) {
-//                isOnTextChanged = true
-//            }
-//
-//            override fun afterTextChanged(editable: Editable) {
-//                if (isOnTextChanged) {
-//                    isOnTextChanged = false
-//                    try {
-//desciptioncompanian=holder.desciption.text.toString()
-//
-//
-//
-//
-//                    } catch (e: NumberFormatException) {
-//                        AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
-//                        run {
-//                            var i = 0
-//                            while (i <= positionn) {
-//                                Log.d("TimesRemoved", " : $i")
-//                                if (i == positionn) {
-//                                    desciptioncompanian=holder.desciption.text.toString()
-//                                }
-//                                i++
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        })
+        holder.desciption.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence, i: Int, i1: Int, i2: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) {
+                isOnTextChanged = true
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                if (isOnTextChanged) {
+                    isOnTextChanged = false
+                    try {
+                        desciptioncompanian=holder.desciption.text.toString()
+
+                    } catch (e: NumberFormatException) {
+                        AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
+                        run {
+                            var i = 0
+                            while (i <= positionn) {
+                                Log.d("TimesRemoved", " : $i")
+                                if (i == positionn) {
+                                    desciptioncompanian=holder.desciption.text.toString()
+                                }
+                                i++
+                            }
+                        }
+                    }
+                }
+            }
+        })
         holder.date.setOnClickListener {
 
             val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
@@ -384,21 +435,22 @@ class CreatePackAdapter(
                     isOnTextChanged = false
                     try {
 
-                        for (i in 0..positionn) {
+                        for (i in 0..list.size) {
+
                             if (i != positionn) {
-                                ExpAmtArray.add("0")
-                                ExpName.add("0")
-                                ExpAmtArrayKey.add("0")
-                                ExpNameKey.add("0")
+                                arrayID!!.add("0")
+                                arrayName!!.add("0")
+//                                ExpAmtArrayKey.add("0")
+//                                ExpNameKey.add("0")
                             } else {
 //                                 store user entered value to Array list (ExpAmtArray) at particular position
-                                ExpAmtArray.add("0")
-                                ExpName.add("0")
-                                ExpAmtArray[positionn] = editable.toString()
-                                ExpName[positionn] = field_id
+
+                                arrayName!![positionn] = editable.toString()
+                                arrayID!![positionn] = field_id
+
                                 AppUtils.logDebug(TAG, "posittionnn" + positionn.toString())
-                                ExpAmtArrayKey[positionn] = "f_id"
-                                ExpNameKey[positionn] = "f_value"
+//                                ExpAmtArrayKey[i] = "f_id"
+//                                ExpNameKey[i] = "f_value"
                                 break
                             }
                         }
@@ -411,10 +463,10 @@ class CreatePackAdapter(
                             while (i <= positionn) {
                                 Log.d("TimesRemoved", " : $i")
                                 if (i == positionn) {
-                                    ExpAmtArray[positionn] = "0"
-                                    ExpName[positionn] = "0"
-                                    ExpAmtArrayKey[positionn] = "0"
-                                    ExpNameKey[positionn] = "0"
+                                    arrayID!![i] = "0"
+                                    arrayName!![i] = "0"
+//                                    ExpAmtArrayKey[i] = "0"
+//                                    ExpNameKey[i] = "0"
                                 }
                                 i++
                             }
@@ -443,10 +495,17 @@ class CreatePackAdapter(
 
 
 //            Handler(Looper.getMainLooper()).postDelayed({
-            nameprefix.setText(packconfigobject!!.name_prefix)
-            packname.setText(packconfigobject!!.name)
-            val aa =
-                ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
+//            nameprefix.setText(packconfigobject!!.name_prefix)
+
+            nameprefix.setText(labelPackConfigPrefix)
+            packname.setText(labelPackConfigName)
+            val group=ArrayList<String>()
+            for (i in 0..3){
+                group.add("Test"+i)
+
+            }
+            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
+//            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, group)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communityGroup.setAdapter(aa)
             boolean = false
@@ -466,7 +525,8 @@ class CreatePackAdapter(
     }
 
     fun callBackss() {
-        callbacks.invoke(ExpAmtArray, ExpName)
+        AppUtils.logDebug(TAG, arrayName.toString()+"dsd"+ arrayID)
+        callbacks.invoke(arrayID!!, arrayName!!)
     }
 
 }

@@ -72,6 +72,9 @@ var packid=""
         barChart = findViewById(R.id.barChart)
         pieChart = findViewById(R.id.chartPeiChart)
 
+        lineChart!!.getDescription().setEnabled(false)
+        barChart!!.getDescription().setEnabled(false)
+        pieChart!!.getDescription().setEnabled(false)
 
         setMylineChart()
     }

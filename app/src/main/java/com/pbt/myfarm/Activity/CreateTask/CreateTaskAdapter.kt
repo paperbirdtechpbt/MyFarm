@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
@@ -24,6 +25,7 @@ import com.pbt.myfarm.HttpResponse.Field
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -87,7 +89,15 @@ class CreateTaskAdapter(
 
         val d: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
-
+//        if (valued!=null){
+//
+//
+//                ExpAmtArray[positionn]=field_id
+//                ExpName[positionn]=valued
+//                AppUtils.logError(TAG, "myarray"+ExpName+ ExpAmtArray)
+//
+//
+//        }
 
 
         val l = list.size
@@ -136,9 +146,10 @@ class CreateTaskAdapter(
                     }
 
                 }
-            }, 3500)
+            }, 1500)
             holder.labeldate.setText(namee)
-        } else if (fieldtype == "Numeric") {
+        }
+        else if (fieldtype == "Numeric") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -160,7 +171,7 @@ class CreateTaskAdapter(
 
             holder.labelname.setText(namee)
 
-        } else if (fieldtype == "List") {
+        } else if (fieldtype == "List" || fieldtype=="Multilist") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -183,7 +194,7 @@ class CreateTaskAdapter(
                         }
                     }
                 }
-            }, 3500)
+            }, 500)
 
 
         } else if (fieldtype == "Table") {
@@ -208,8 +219,54 @@ class CreateTaskAdapter(
                         }
                     }
                 }
-            }, 3500)
+            }, 500)
         }
+        else if (fieldtype=="DateTime"){
+            holder.name.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labelname.visibility = View.GONE
+            holder.mysppinner.visibility = View.GONE
+            holder.labelSpinner.visibility = View.GONE
+
+
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+                        holder.date.setText("")
+                    } else {
+                        holder.date.setText(valued)
+                    }
+
+                }
+            }, 1000)
+            holder.labeldate.setText(namee)
+        }
+        else if (fieldtype == "Text") {
+
+            holder.date.visibility = View.GONE
+            holder.spinner.visibility = View.GONE
+            holder.labelFieldSpiiner.visibility = View.GONE
+            holder.labeldate.visibility = View.GONE
+            holder.mysppinner.visibility = View.GONE
+            holder.labelSpinner.visibility = View.GONE
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (updateTaskIdBoolean) {
+                    if (valued == "null") {
+                        holder.name.setText("")
+                    } else {
+                        holder.name.setText(valued)
+                    }
+                }
+            }, 1500)
+
+
+            holder.labelname.setText(namee)
+
+        }
+
 
 
 
@@ -220,28 +277,7 @@ class CreateTaskAdapter(
                 position: In,
                 id: Long
             ) {
-//                for (i in 0 until fieldListid!!.size) {
-//                    if (position == fieldListid.get(i).toInt()) {
 
-
-//                        var selectedText = ""
-//                        var selectedId = ""
-//                        ExpAmtArray.add("0")
-//                        ExpName.add("0")
-//                        ExpAmtArrayKey.add("0")
-//                        ExpNameKey.add("0")
-//                        //selectedText contains spinner values ID
-//                        selectedText = fieldListid!![position]
-////                        selectedText = fieldId!![position]
-//                        //selectedId contains values of the edittext postition
-//                        selectedId = fieldId[positionn]
-//
-//                        ExpAmtArray[positionn] = selectedText
-//                        ExpName[positionn] = selectedId
-//                        ExpAmtArrayKey[positionn] = "f_id"
-//                        ExpNameKey[positionn] = "f_value"
-//                    }
-//                }
 
                 var selectedText = ""
                 var selectedId = ""
@@ -254,10 +290,15 @@ class CreateTaskAdapter(
 //                        selectedText = fieldId!![position]
                 //selectedId contains values of the edittext postition
                 selectedId = fieldId!![positionn]
-                ExpAmtArray[position] = selectedText
-                ExpName[position] = selectedId
-                ExpAmtArrayKey[position] = "f_id"
-                ExpNameKey[position] = "f_value"
+//                ExpAmtArray[position] = selectedText
+//                ExpName[position] = selectedId
+                try {
+                    ExpName[positionn] = selectedId
+                    ExpAmtArray[positionn] = selectedText
+                }
+                catch (e: Exception){
+                    AppUtils.logDebug(TAG,"Exception in itemselect"+e.message.toString())
+                }
 
             }
 
@@ -265,14 +306,16 @@ class CreateTaskAdapter(
 
             }
         }
-                    Handler(Looper.getMainLooper()).postDelayed({
-                for (i in 0 until field.size) {
-                    if (valued == fieldListid.toString()) {
-                        val pos = field.get(i).name
-                        holder.mysppinner.setSelection(i)
+                if (!valued.isEmpty()){
+                    for (i in 0 until fieldList!!.size) {
+                        if (valued == fieldListid?.get(i)) {
+                            AppUtils.logDebug(TAG,"fieldlist"+fieldListid.get(i)+valued)
+                            holder.mysppinner.setSelection(i)
+                        }
                     }
                 }
-            }, 1500)
+
+
 
 
         holder.name.addTextChangedListener(object : TextWatcher {
@@ -310,8 +353,7 @@ class CreateTaskAdapter(
                                 ExpName.add("0")
                                 ExpAmtArray[positionn] = editable.toString()
                                 ExpName[positionn] = field_id
-                                ExpAmtArrayKey[positionn] = "f_id"
-                                ExpNameKey[positionn] = "f_value"
+
                                 break
                             }
                         }
@@ -375,8 +417,7 @@ class CreateTaskAdapter(
                                 ExpName.add("0")
                                 ExpAmtArray[positionn] = editable.toString()
                                 ExpName[positionn] = field_id
-                                ExpAmtArrayKey[positionn] = "f_id"
-                                ExpNameKey[positionn] = "f_value"
+
                                 break
                             }
                         }
@@ -437,8 +478,6 @@ class CreateTaskAdapter(
 
                                 ExpName[positionn] = field_id
 
-                                ExpAmtArrayKey[positionn] = "f_id"
-                                ExpNameKey[positionn] = "f_value"
                                 break
                             }
                         }
@@ -470,41 +509,59 @@ class CreateTaskAdapter(
                val  mHour = c[Calendar.HOUR_OF_DAY]
                val  mMinute = c[Calendar.MINUTE]
                val  mSecond = c[Calendar.SECOND]
+            if (fieldtype=="Date"){
+                val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
 
+                    myCalendar.set(Calendar.YEAR, year)
+                    myCalendar.set(Calendar.MONTH, month)
+                    myCalendar.set(Calendar.DAY_OF_MONTH, day)
+                    updateLabel(holder.date,settime)
+                }
+                DatePickerDialog(
+                    context, date, myCalendar.get(Calendar.YEAR),
+                    myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
+                ).show()
+            }
+            else{
                 val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute ->
-                   settime="$hourOfDay:$minute"
+                    settime="$hourOfDay:$minute"
                     AppUtils.logDebug(TAG,"settime"+settime)
 //                    txtTime.setText("$hourOfDay:$minute")
                     updateLabel(holder.date,settime)
 
                 }, mHour, mMinute, false)
 
-            timePickerDialog.show()
+                timePickerDialog.show()
 
-            val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
+                val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
 
-                myCalendar.set(Calendar.YEAR, year)
-                myCalendar.set(Calendar.MONTH, month)
-                myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                updateLabel(holder.date,settime)
+                    myCalendar.set(Calendar.YEAR, year)
+                    myCalendar.set(Calendar.MONTH, month)
+                    myCalendar.set(Calendar.DAY_OF_MONTH, day)
+                    updateLabel(holder.date,settime)
+                }
+                DatePickerDialog(
+                    context, date, myCalendar.get(Calendar.YEAR),
+                    myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
+                ).show()
             }
-            DatePickerDialog(
-                context, date, myCalendar.get(Calendar.YEAR),
-                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+
         }
-
-
-
 
 
     }
 
 
     private fun updateLabel(date: EditText,time:String) {
-        val myFormat = "yyyy-MM-dd"
+        val myFormat = "MM-dd-yyyy"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        date.setText(dateFormat.format(myCalendar.time)+"  T- "+time)
+        if (time.isEmpty()){
+            date.setText(dateFormat.format(myCalendar.time))
+        }
+        else{
+            date.setText(dateFormat.format(myCalendar.time)+" "+time)
+
+        }
     }
 
     fun callBack() {

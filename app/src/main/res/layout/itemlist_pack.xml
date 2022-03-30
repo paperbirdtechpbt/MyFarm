@@ -97,7 +97,7 @@
                     android:gravity="center"
                     android:lines="1"
                     android:padding="4dp"
-                    android:text="@{viewpack.name_prefix+viewpack.padzero}"
+                    android:text="@{viewpack.padzero}"
                     android:textColor="@color/black"
                     android:textSize="17sp"
                     android:textStyle="bold"
@@ -222,6 +222,6 @@
 
         <variable
             name="viewpack"
-            type="com.pbt.myfarm.PackList" />
+            type="com.pbt.myfarm.PacksNew" />
     </data>
 </layout>

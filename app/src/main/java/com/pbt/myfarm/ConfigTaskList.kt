@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ConfigTaskList (
-    @SerializedName("id")var id: String,
-    @SerializedName("name")var name: String,
-    @SerializedName("name_prefix")var name_prefix: String,
-    @SerializedName("description")  val description: String,
+    @SerializedName("id")var id: String?=null,
+    @SerializedName("name")var name: String?=null,
+    @SerializedName("name_prefix")var name_prefix: String?=null,
+    @SerializedName("description")  val description: String?=null,
         ):Parcelable

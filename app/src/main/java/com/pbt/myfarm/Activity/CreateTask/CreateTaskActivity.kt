@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -28,14 +25,12 @@ import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
-import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.ModelClass.Task
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ConfigFieldList
-import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_LIST
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -45,7 +40,6 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -78,39 +72,52 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     override fun onCreate(savedInstanceState: Bundle?) {
 //        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
 
 
 //        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 //        getSupportActionBar()?.setDisplayShowHomeEnabled(true)
+        ExpAmtArray= ArrayList()
+        ExpName=ArrayList()
+        ExpNameKey=ArrayList()
+        ExpAmtArrayKey=ArrayList()
+
 
         ExpAmtArray.clear()
         ExpName.clear()
         ExpNameKey.clear()
         ExpAmtArrayKey.clear()
 
-        updateTaskList = intent.getParcelableExtra(AppConstant.CONST_TASK_UPDATE_LIST)
+        if (updateTaskBoolen){
+            updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
+
+        }
+        else{
+            configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+
+        }
+        if (updateTaskList==null){
+            val buttonTask:Button=findViewById(R.id.btn_taskfuntion)
+            buttonTask.visibility=View.GONE
+        }
 
         if (checkInternetConnection()) {
             initViewModel()
-
         }
         btn_taskfuntion.setOnClickListener{
           val intent=  Intent(this,TaskFunctionActivity::class.java)
-            intent.putExtra(CONST_TASKFUNCTION_TASKID,"12")
+            intent.putExtra(CONST_TASKFUNCTION_TASKID,updateTaskList?.id)
             startActivity(intent)
-
         }
     }
 
     private fun initViewModel() {
 
-            binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
             viewmodel = ViewModelProvider(
                 this,
                 ViewModelProvider.AndroidViewModelFactory.getInstance(application)
             ).get(CreatetaskViewModel::class.java)
 
-            configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
             if (updateTaskList!=null){
                 btn_create_task.setText("Update Task")
 
@@ -134,7 +141,15 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             binding?.viewModel = viewmodel
             viewmodel?.progressbar = createtaskProgressbar
-            viewmodel?.onConfigFieldList(this, updateTaskBoolen, updateTaskList?.id.toString())
+        if (updateTaskBoolen){
+            viewmodel?.onConfigFieldList(this,
+                updateTaskBoolen,updateTaskList)
+
+        }
+        else{
+            viewmodel?.onConfigFieldListFalse(this, configtype)
+        }
+
 
             viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
 
@@ -149,18 +164,19 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                     while (name.contains("0")) {
                         name.remove("0")
                     }
-                    while (ExpNameKey.contains("0")) {
-                        ExpNameKey.remove("0")
-                    }
-                    while (ExpAmtArrayKey.contains("0")) {
-                        ExpAmtArrayKey.remove("0")
-                    }
+//                    while (ExpNameKey.contains("0")) {
+//                        ExpNameKey.remove("0")
+//                    }
+//                    while (ExpAmtArrayKey.contains("0")) {
+//                        ExpAmtArrayKey.remove("0")
+//                    }
 
 
                     for (i in 0 until name.size) {
+
                         val jsonObject = JSONObject()
-                        jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
-                        jsonObject.put(ExpNameKey.get(i), list.get(i))
+                        jsonObject.put(ExpAmtArrayKey.get(i), list.get(i))
+                        jsonObject.put(ExpNameKey.get(i), name.get(i))
 
                         successObject.put(jsonObject)
                         fieldModel.add(FieldModel(name.get(i), list.get(i)))
@@ -276,19 +292,42 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 selectedCommunityGroup
 
 
-
+                layout_ProgressBar.visibility=View.VISIBLE
 
                 if(!updateTaskBoolen){
-                    ApiClient.client.create(ApiInterFace::class.java)
-                        .storeTask(
-                            updateTaskList?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.name_prefix.toString()
-                        ).enqueue(this)}
+                    if (configtype?.name_prefix.isNullOrEmpty()){
+                        ApiClient.client.create(ApiInterFace::class.java)
+                            .storeTask(
+                                configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                successObject.toString(), ""
+                            ).enqueue(this)
+                    }
+                    else{
+                        ApiClient.client.create(ApiInterFace::class.java)
+                            .storeTask(
+                                configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                successObject.toString(), configtype?.name_prefix.toString()
+                            ).enqueue(this)
+                    }
+                    btn_create_task.visibility=View.GONE
+                    AppUtils.logDebug(TAG,  "upfateTaskboolean False"+  configtype?.id.toString()+"\n" +prefix+
+                            "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
+
+                            successObject.toString()+"\n"+ configtype?.name_prefix.toString())
+                   }
                 else{
+                    btn_create_task.visibility=View.GONE
+                    AppUtils.logDebug(TAG,"updateTaskboolean true"+    updateTaskList?.id.toString()+"\n" +prefix+
+                            "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
+
+
+                            successObject.toString()+"\n"+ updateTaskList?.name_prefix.toString()+"\n"+
+                            updateTaskList?.id.toString())
+
                     ApiClient.client.create(ApiInterFace::class.java)
                         .updateTask(
-                            "10", prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.name_prefix.toString(),
+                            updateTaskList?.task_config_id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                            successObject.toString(), updateTaskList?.name_prefix.toString()+updateTaskList?.padzero.toString(),
                             updateTaskList?.id.toString() ).enqueue(this)
                 }
 
@@ -441,20 +480,48 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, groupArray!!)
             dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communitGroup.setAdapter(dd)
-        },2500)
+        },1500)
 
     }
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        Toast.makeText(this, "Task Updated Successfully", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, ViewTaskActivity::class.java)
-        startActivity(intent)
-        finish()
+        try {
+            if (response.body()?.error==false){
+                Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ViewTaskActivity::class.java)
+                startActivity(intent)
+                finish()
+                btn_create_task.visibility=View.VISIBLE
+                layout_ProgressBar.visibility=View.GONE
+
+            }
+            else{
+                Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                btn_create_task.visibility=View.VISIBLE
+                layout_ProgressBar.visibility=View.GONE
+            }
+
+        }
+        catch (e:Exception){
+            AppUtils.logDebug(TAG, "failure" + e.message)
+
+        }
+
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
-        AppUtils.logDebug(TAG, "failure" + t.message)
-        Toast.makeText(this, t.localizedMessage, Toast.LENGTH_SHORT).show()
+        try {
+            AppUtils.logDebug(TAG, "failure" + t.message)
+
+        }
+        catch (e:Exception){
+            AppUtils.logDebug(TAG, "failure" + e.message)
+
+        }
+
+        btn_create_task.visibility=View.VISIBLE
+        layout_ProgressBar.visibility=View.GONE
     }
 
 }

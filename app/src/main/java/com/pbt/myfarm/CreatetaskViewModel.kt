@@ -1,25 +1,26 @@
 package com.pbt.myfarm
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
-import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
-import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.HttpResponse.ComunityGroup
 import com.pbt.myfarm.HttpResponse.Field
 import com.pbt.myfarm.HttpResponse.TaskFieldResponse
-import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.Service.*
 import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
 import kotlin.collections.ArrayList
@@ -104,15 +105,31 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 //
 //    }
 
-    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
-        if (updateTaskIdBoolean){
-            ApiClient.client.create(ApiInterFace::class.java)
-                .configFieldList("2","10", updateTaskId).enqueue(this) }
-        else{
-            ApiClient.client.create(ApiInterFace::class.java)
-                .configFieldList("2","10","").enqueue(this)
-        }
+    fun onConfigFieldList(
+        context: Context,
+        updateTaskIdBoolean: Boolean,
 
+        updateTaskList: TasklistDataModel?
+    ) {
+
+            ApiClient.client.create(ApiInterFace::class.java)
+                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),updateTaskList?.task_config_id.toString(),
+                updateTaskList?.id.toString()).enqueue(this)
+
+
+    }
+
+    fun onConfigFieldListFalse(
+        context: Context,
+
+        configId: ConfigTaskList?,
+
+    ) {
+
+            AppUtils.logError(TAG,"false configidd"+configId?.id.toString())
+            ApiClient.client.create(ApiInterFace::class.java)
+                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),
+                    configId?.id.toString(),"").enqueue(this)
 
 
     }
@@ -121,31 +138,53 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         call: Call<TaskFieldResponse>,
         response: Response<TaskFieldResponse>
     ) {
-        progressbar?.visibility= View.GONE
-      val  configlistt= Gson().fromJson(Gson().toJson(response.body()?.data), ArrayList<ConfigFieldList>()::class.java)
+        try{
+            if (response.body()?.error==false){
+                progressbar?.visibility= View.GONE
+                val  configlistt= Gson().fromJson(Gson().toJson(response.body()?.data), ArrayList<ConfigFieldList>()::class.java)
+                if (!configlistt.isNullOrEmpty()){
+                    for (i in 0 until configlistt.size){
+                        ExpAmtArray.add("0")
+                        ExpName.add("0")
+                        ExpNameKey.add("f_id")
+                        ExpAmtArrayKey.add("f_value")
 
-        comConfigFieldList= Gson().fromJson(Gson().toJson(response.body()?.CommunityGroup),ArrayList<ComunityGroup>()::class.java)
-         configlist.value= configlistt
- groupArray?.clear()
-        groupArrayId?.clear()
+                    }
+                    AppUtils.logDebug(TAG,"arrayid"+ CreatePackActivity.arrayID +"\n"+ CreatePackActivity.arrayName)
+
+                }
+                comConfigFieldList= Gson().fromJson(Gson().toJson(response.body()?.CommunityGroup),ArrayList<ComunityGroup>()::class.java)
+                configlist.value= configlistt
+                groupArray?.clear()
+                groupArrayId?.clear()
 
 
-        for (i in 0 until comConfigFieldList!!.size){
-            val row: Any = comConfigFieldList!!.get(i)
-            val rowmap: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
-            val name = rowmap["name"].toString()
-            val communitygroupid = rowmap["id"].toString()
+                for (i in 0 until comConfigFieldList!!.size){
+                    val row: Any = comConfigFieldList!!.get(i)
+                    val rowmap: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
+                    val name = rowmap["name"].toString()
+                    val communitygroupid = rowmap["id"].toString()
 
-            groupArray?.add( name)
-            groupArrayId?.add(communitygroupid)
+                    groupArray?.add( name)
+                    groupArrayId?.add(communitygroupid)
+                }
+            }
+            else{
+                println("error true")
+            }
         }
-
-
-
+        catch (e:Exception){
+        AppUtils.logError(TAG,e.toString())
+        }
      }
 
     override fun onFailure(call: Call<TaskFieldResponse>, t: Throwable) {
-        AppUtils.logError(TAG,"Failure -->"+t.message)
+        try {
+            AppUtils.logError(TAG,"Failure -->"+t.message)
+        }
+        catch (e:Exception){
+            AppUtils.logError(TAG,"Failure -->"+e.message)
+        }
 
     }
 

@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
 import com.pbt.myfarm.ModelClass.EventList
-import com.pbt.myfarm.MyFarmApp
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.MyFarmService
 import com.pbt.myfarm.Util.AppUtils
@@ -40,10 +39,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
+
+        startService(Intent(this,MyFarmService::class.java))
+
         if (checkInternetConnection()){
             initViewModel()
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
 
-        viewModel?.packConfigList(this)
+//        viewModel?.packConfigList(this)
 //        viewModel?.packCOnfigFielList(this, packconfiglist)
 
         AppUtils().isServiceRunning(this,MyFarmService::class.java)
@@ -87,10 +87,6 @@ class MainActivity : AppCompatActivity() {
         data.add(EventList("Task",R.drawable.ic__task))
         data.add(EventList("DashBoard Event",R.drawable.ic__dashboardevent))
         data.add(EventList("Event",R.drawable.ic_icon_list))
-        data.add(EventList("DashBoard",R.drawable.ic_dashboaradicon))
-        data.add(EventList("DashBoard",R.drawable.ic_dashboaradicon))
-        data.add(EventList("DashBoard",R.drawable.ic_dashboaradicon))
-
 
     }
 

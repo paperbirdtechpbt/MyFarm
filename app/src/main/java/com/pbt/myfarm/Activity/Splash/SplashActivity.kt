@@ -22,8 +22,10 @@ class SplashActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         val checkuser=MySharedPreference.getStringValue(this,CONST_SHARED_PREF_USERNAME,null)
+//        if (checkuser!=null){
+//            startService(Intent(this,MyFarmService::class.java))
+//        }
 
-        startService(Intent(this,MyFarmService::class.java))
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (checkuser==null){
@@ -35,6 +37,6 @@ class SplashActivity : AppCompatActivity() {
                 finish()
             }
 
-        }, 3000)
+        }, 2000)
     }
 }

@@ -3,11 +3,14 @@ package com.pbt.myfarm.Activity.DashBoardEvent
 import android.app.Application
 import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.pbt.myfarm.Event
 import com.pbt.myfarm.EventList
 import com.pbt.myfarm.ResponseEventList
+import com.pbt.myfarm.ResponseEventListDashboard
 import com.pbt.myfarm.Service.*
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -16,7 +19,7 @@ import retrofit2.Response
 
 
 class ViewModelDashBoardEvent(var activity: Application) : AndroidViewModel(activity),
-retrofit2.Callback<ResponseDashBoardEvent>{
+    retrofit2.Callback<ResponseDashBoardEvent>{
 
     var eventResponsiblelist = MutableLiveData<List<ResponseList>>()
     var eventTeamlist = MutableLiveData<List<TeamList>>()
@@ -37,14 +40,15 @@ retrofit2.Callback<ResponseDashBoardEvent>{
 
         val service=ApiClient.client.create(ApiInterFace::class.java)
         val apiInterFace=service.myeventList(MySharedPreference.getUser(context)?.id.toString())
-        apiInterFace.enqueue(object: retrofit2.Callback<ResponseEventList>{
+        apiInterFace.enqueue(object: retrofit2.Callback<ResponseEventListDashboard>{
             override fun onResponse(
-                call: Call<ResponseEventList>,
-                response: Response<ResponseEventList>
+                call: Call<ResponseEventListDashboard>,
+                response: Response<ResponseEventListDashboard>
             ) {
+                AppUtils.logError(TAG,"on response fun eventlist"+response.body().toString())
                 if ( !response.body()?.events.isNullOrEmpty()){
 
-                    val basereponse:ResponseEventList= Gson().fromJson(Gson().toJson(response.body()),ResponseEventList::class.java)
+                    val basereponse:ResponseEventListDashboard= Gson().fromJson(Gson().toJson(response.body()),ResponseEventListDashboard::class.java)
                     if (!basereponse.events.isNullOrEmpty()){
                         eventlivelist.value= emptyList()
                         val myeventlist=ArrayList<EventList>()
@@ -56,12 +60,18 @@ retrofit2.Callback<ResponseDashBoardEvent>{
                     }
 
                 }
+                else{
+                    AppUtils.logError(TAG,"on response fun eventlist but events is empty")
+
+                }
 
 
 
             }
 
-            override fun onFailure(call: Call<ResponseEventList>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseEventListDashboard>, t: Throwable) {
+                AppUtils.logError(TAG,"on failure fun eventlist")
+
             }
 
         })
@@ -72,11 +82,12 @@ retrofit2.Callback<ResponseDashBoardEvent>{
         call: Call<ResponseDashBoardEvent>,
         response: Response<ResponseDashBoardEvent>
     ) {
-        if (response.body()?.error == false) {
-            var baseresponse: ResponseDashBoardEvent = Gson().fromJson(
-                Gson().toJson(response.body()), ResponseDashBoardEvent::class.java
-            )
-            AppUtils.logDebug(TAG, Gson().toJson((response.body())))
+        try{
+            if (response.body()?.error == false) {
+                var baseresponse: ResponseDashBoardEvent = Gson().fromJson(
+                    Gson().toJson(response.body()), ResponseDashBoardEvent::class.java
+                )
+                AppUtils.logDebug(TAG, Gson().toJson((response.body())))
 
 //            if (!baseresponse.Responsible.isNullOrEmpty()) {
 
@@ -104,8 +115,15 @@ retrofit2.Callback<ResponseDashBoardEvent>{
                 eventResponsiblelist.value = responsible
 
 //            }
-        }
+            }
+            else{
+                AppUtils.logError(TAG, "error true")
+            }
 
+        }
+        catch (e:Exception){
+            AppUtils.logError(TAG, e.localizedMessage)
+        }
     }
 
     override fun onFailure(call: Call<ResponseDashBoardEvent>, t: Throwable) {
@@ -113,10 +131,9 @@ retrofit2.Callback<ResponseDashBoardEvent>{
             AppUtils.logError(TAG, t.message.toString())
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.localizedMessage)
-
         }
     }
-    }
+}
 
 
 
