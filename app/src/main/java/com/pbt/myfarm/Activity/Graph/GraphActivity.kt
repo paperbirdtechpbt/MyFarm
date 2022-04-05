@@ -21,6 +21,9 @@ import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
+import com.pbt.myfarm.Choices
+import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -39,7 +42,9 @@ class GraphActivity : AppCompatActivity() {
     var lineChart: LineChart? = null
     var barChart: BarChart? = null
     var pieChart: PieChart? = null
-var packid=""
+var packid:PacksNew?=null
+    var db:DbHelper?=null
+
     var lineData: LineData? = null
     var lineDataSet: LineDataSet? = null
     var lineDataSet2: LineDataSet? = null
@@ -63,11 +68,12 @@ var packid=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
+        db= DbHelper(this,null)
         if (intent.extras!=null){
-            packid= intent.extras!!.get(PACK_LIST_PACKID).toString()
+            packid= intent.extras!!.getParcelable(PACK_LIST_PACKID)
         }
 
-        initviewmodel(packid)
+        initviewmodel(packid?.id.toString(),packid)
         lineChart = findViewById(R.id.chartLine)
         barChart = findViewById(R.id.barChart)
         pieChart = findViewById(R.id.chartPeiChart)
@@ -103,19 +109,19 @@ var packid=""
         lineDataSet!!.valueTextSize = 18f
     }
 
-    private fun initviewmodel(packid: String) {
+    private fun initviewmodel(packid: String, packList: PacksNew?) {
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewmodelGraph::class.java)
-        viewModel?.onConfigFieldList(this,packid)
+        viewModel?.onConfigFieldList(this,packid,packList)
         viewModel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
 
             var graphnam = ArrayList<String>()
 
             val spinner: Spinner = findViewById(R.id.spinner_graphlist)
             for (i in 0 until list.size) {
-                graphnam.add(list.get(i).name)
+                graphnam.add(list.get(i).name!!)
             }
             setspinner(graphnam, spinner, list)
 
@@ -140,7 +146,7 @@ var packid=""
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
                 val id = list.get(position).id
-                callGraphDetailApi(id)
+                callGraphDetailApi(id!!,list.get(position))
 
             }
 
@@ -151,99 +157,189 @@ var packid=""
 
     }
 
-    private fun callGraphDetailApi(id: String) {
-        val service = ApiClient.client.create(ApiInterFace::class.java)
-        val apiInterFace = service.getgraphdetail(
-            packid, id
-        )
+    private fun callGraphDetailApi(id: String, list: ListTaskFunctions) {
 
-        apiInterFace.enqueue(object : Callback<ResponseGraphDetail> {
-            override fun onResponse(
-                call: Call<ResponseGraphDetail>,
-                response: Response<ResponseGraphDetail>
-            ) {
-                AppUtils.logDebug(TAG, Gson().toJson(response.body()))
-                if (response.body()?.error == "success") {
-                    val baserespomse: ResponseGraphDetail = Gson().fromJson(
-                        Gson().toJson(response.body()),
-                        ResponseGraphDetail::class.java
-                    )
-                    val listCharts = ArrayList<ListCharts>()
-                    var chartype: String = ""
-                    var ordinateTitle: String = ""
-                    var lines = ArrayList<ListLines>()
-                    var listPoints = ArrayList<ListPoints>()
-                    val listMYPoints = ArrayList<ListPoints>()
-                    val listMYPointsXaxis = ArrayList<String>()
-                    val listMYPointsYAxis= ArrayList<String>()
-                    baserespomse.charts.forEach {
-                        listCharts.add(it)
-                        chartype = it.graph_type
-                        ordinateTitle = it.graph_ordinate_title
-                    }
-                    for (i in 0 until listCharts.size) {
-                        lines = listCharts.get(i).lines as ArrayList<ListLines>
-                    }
-                    for (i in 0 until lines.size) {
-                        listPoints = lines.get(i).points as ArrayList<ListPoints>
-                        listMYPoints.clear()
-                        listMYPointsXaxis.clear()
-                        listMYPointsYAxis.clear()
+        val chartTypeName =db?.getListChoiceSingleValue(list.object_class.toString())
+        showChart(chartTypeName.toString(),list)
 
-                        for (i in 0 until listPoints.size) {
+//
+//        val service = ApiClient.client.create(ApiInterFace::class.java)
+//        val apiInterFace = service.getgraphdetail(
+//            packid?.id.toString(), id
+//        )
+//
+//        apiInterFace.enqueue(object : Callback<ResponseGraphDetail> {
+//            override fun onResponse(
+//                call: Call<ResponseGraphDetail>,
+//                response: Response<ResponseGraphDetail>
+//            ) {
+//                AppUtils.logDebug(TAG, Gson().toJson(response.body()))
+//                if (response.body()?.error == "success") {
+//                    val baserespomse: ResponseGraphDetail = Gson().fromJson(
+//                        Gson().toJson(response.body()),
+//                        ResponseGraphDetail::class.java
+//                    )
+//                    val listCharts = ArrayList<ListCharts>()
+//                    var chartype: String = ""
+//                    var ordinateTitle: String = ""
+//                    var lines = ArrayList<ListLines>()
+//                    var listPoints = ArrayList<ListPoints>()
+//                    val listMYPoints = ArrayList<ListPoints>()
+//                    val listMYPointsXaxis = ArrayList<String>()
+//                    val listMYPointsYAxis= ArrayList<String>()
+//                    baserespomse.charts.forEach {
+//                        listCharts.add(it)
+//                        chartype = it.graph_type
+//                        ordinateTitle = it.graph_ordinate_title
+//                    }
+//                    for (i in 0 until listCharts.size) {
+//                        lines = listCharts.get(i).lines as ArrayList<ListLines>
+//                    }
+//                    for (i in 0 until lines.size) {
+//                        listPoints = lines.get(i).points as ArrayList<ListPoints>
+//                        listMYPoints.clear()
+//                        listMYPointsXaxis.clear()
+//                        listMYPointsYAxis.clear()
+//
+//                        for (i in 0 until listPoints.size) {
+//
+//                            listMYPoints.add(listPoints.get(i))
+//                            listMYPointsXaxis.add(listPoints.get(i).duration)
+//                            listMYPointsYAxis.add(listPoints.get(i).value)
+//                        }
+//
+//
+//                    }
+//
+//                    AppUtils.logDebug(TAG, "listPoints" + lines.size.toString())
+//                    AppUtils.logDebug(TAG, "listMYPoints" + listPoints.size.toString())
+//                    if (chartype == "Bar chart") {
+//
+//                        lineChart?.visibility = View.GONE
+//                        radarChart?.visibility = View.GONE
+//                        pieChart?.visibility = View.GONE
+//                        barChart?.visibility = View.VISIBLE
+//                        setupBarChart(listCharts, lines, listMYPoints,ordinateTitle)
+//                    } else if (chartype == "Pie chart") {
+//                        lineChart?.visibility = View.GONE
+//                        radarChart?.visibility = View.GONE
+//                        barChart?.visibility = View.GONE
+//                        pieChart?.visibility = View.VISIBLE
+//                        setupLineChart(listCharts, lines, listMYPoints)
+//                    }else if (chartype == "Radar chart") {
+//                        lineChart?.visibility = View.GONE
+//                        radarChart?.visibility = View.VISIBLE
+//                        barChart?.visibility = View.GONE
+//                        pieChart?.visibility = View.GONE
+//                        setupRadarChart(listCharts, lines, listMYPoints)
+//                    } else {
+//                        lineChart?.visibility = View.VISIBLE
+//                        barChart?.visibility = View.GONE
+//                        radarChart?.visibility = View.GONE
+//                        pieChart?.visibility = View.GONE
+//                        setupPeiChart(lines,listMYPointsXaxis,listMYPointsYAxis, listMYPoints,
+//                            ordinateTitle)
+//                    }
+//
+//
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<ResponseGraphDetail>, t: Throwable) {
+//                try {
+//                    AppUtils.logError(TAG, t.message.toString())
+//                } catch (e: Exception) {
+//                    AppUtils.logError(TAG, e.localizedMessage)
+//
+//                }
+//            }
+//
+//        })
+    }
 
-                            listMYPoints.add(listPoints.get(i))
-                            listMYPointsXaxis.add(listPoints.get(i).duration)
-                            listMYPointsYAxis.add(listPoints.get(i).value)
-                        }
+    private fun showChart(chartTypeName: String, list: ListTaskFunctions) {
 
-
-                    }
-
-                    AppUtils.logDebug(TAG, "listPoints" + lines.size.toString())
-                    AppUtils.logDebug(TAG, "listMYPoints" + listPoints.size.toString())
-                    if (chartype == "Bar chart") {
-
-                        lineChart?.visibility = View.GONE
-                        radarChart?.visibility = View.GONE
-                        pieChart?.visibility = View.GONE
-                        barChart?.visibility = View.VISIBLE
-                        setupBarChart(listCharts, lines, listMYPoints,ordinateTitle)
-                    } else if (chartype == "Pie chart") {
-                        lineChart?.visibility = View.GONE
-                        radarChart?.visibility = View.GONE
-                        barChart?.visibility = View.GONE
-                        pieChart?.visibility = View.VISIBLE
-                        setupLineChart(listCharts, lines, listMYPoints)
-                    }else if (chartype == "Radar chart") {
-                        lineChart?.visibility = View.GONE
-                        radarChart?.visibility = View.VISIBLE
-                        barChart?.visibility = View.GONE
-                        pieChart?.visibility = View.GONE
-                        setupRadarChart(listCharts, lines, listMYPoints)
-                    } else {
-                        lineChart?.visibility = View.VISIBLE
-                        barChart?.visibility = View.GONE
-                        radarChart?.visibility = View.GONE
-                        pieChart?.visibility = View.GONE
-                        setupPeiChart(lines,listMYPointsXaxis,listMYPointsYAxis, listMYPoints,
-                            ordinateTitle)
-                    }
-
+        val db=DbHelper(this,null)
+        val pointslist =db.getGraphChartObjects(list.id.toString())
+        for (i in 0 until pointslist.size){
+            val item=pointslist.get(i)
+            if (item.ref_ctrl_points!="N/A"){
+                if (item.points.isNotEmpty()){
 
                 }
             }
+        }
 
-            override fun onFailure(call: Call<ResponseGraphDetail>, t: Throwable) {
-                try {
-                    AppUtils.logError(TAG, t.message.toString())
-                } catch (e: Exception) {
-                    AppUtils.logError(TAG, e.localizedMessage)
 
-                }
-            }
+        AppUtils.logDebug(TAG,"==================pointslist"+pointslist.toString())
 
-        })
+            val listCharts = ArrayList<ListCharts>()
+            var chartype: String = chartTypeName
+            var ordinateTitle: String = list.ordinateTitle.toString()
+            var lines = ArrayList<ListLines>()
+            var listPoints = ArrayList<ListPoints>()
+            val listMYPoints = ArrayList<ListPoints>()
+            val listMYPointsXaxis = ArrayList<String>()
+            val listMYPointsYAxis= ArrayList<String>()
+//
+//            baserespomse.charts.forEach {
+//                listCharts.add(it)
+//                chartype = it.graph_type
+//                ordinateTitle = it.graph_ordinate_title
+//            }
+//
+//            for (i in 0 until listCharts.size) {
+//                lines = listCharts.get(i).lines as ArrayList<ListLines>
+//            }
+//
+//            for (i in 0 until lines.size) {
+//                listPoints = lines.get(i).points as ArrayList<ListPoints>
+//                listMYPoints.clear()
+//                listMYPointsXaxis.clear()
+//                listMYPointsYAxis.clear()
+//
+//                for (i in 0 until listPoints.size) {
+//
+//                    listMYPoints.add(listPoints.get(i))
+//                    listMYPointsXaxis.add(listPoints.get(i).duration)
+//                    listMYPointsYAxis.add(listPoints.get(i).value)
+//                }
+//
+//
+//            }
+//
+//            AppUtils.logDebug(TAG, "listPoints" + lines.size.toString())
+//            AppUtils.logDebug(TAG, "listMYPoints" + listPoints.size.toString())
+//            if (chartype == "Bar chart") {
+//
+//                lineChart?.visibility = View.GONE
+//                radarChart?.visibility = View.GONE
+//                pieChart?.visibility = View.GONE
+//                barChart?.visibility = View.VISIBLE
+//                setupBarChart(listCharts, lines, listMYPoints,ordinateTitle)
+//            } else if (chartype == "Pie chart") {
+//                lineChart?.visibility = View.GONE
+//                radarChart?.visibility = View.GONE
+//                barChart?.visibility = View.GONE
+//                pieChart?.visibility = View.VISIBLE
+//                setupLineChart(listCharts, lines, listMYPoints)
+//            }else if (chartype == "Radar chart") {
+//                lineChart?.visibility = View.GONE
+//                radarChart?.visibility = View.VISIBLE
+//                barChart?.visibility = View.GONE
+//                pieChart?.visibility = View.GONE
+//                setupRadarChart(listCharts, lines, listMYPoints)
+//            } else {
+//                lineChart?.visibility = View.VISIBLE
+//                barChart?.visibility = View.GONE
+//                radarChart?.visibility = View.GONE
+//                pieChart?.visibility = View.GONE
+//                setupPeiChart(lines,listMYPointsXaxis,listMYPointsYAxis, listMYPoints,
+//                    ordinateTitle)
+//            }
+
+
+
     }
 
     private fun setupRadarChart(listCharts: ArrayList<ListCharts>, lines: ArrayList<ListLines>, listMYPoints: ArrayList<ListPoints>) {

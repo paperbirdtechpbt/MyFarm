@@ -5,6 +5,10 @@
       <map>
         <entry key="..\:/MyFarm/app/src/main/res/layout/activity_create_pack.xml" value="0.209375" />
         <entry key="..\:/MyFarm/app/src/main/res/layout/activity_task_function.xml" value="0.209375" />
+        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.1" />
+        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_edit_event.xml" value="0.1" />
+        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.1" />
+        <entry key="..\:/PBT/Farm/app/src/main/res/layout/itempackfeildlist.xml" value="0.15" />
       </map>
     </option>
   </component>

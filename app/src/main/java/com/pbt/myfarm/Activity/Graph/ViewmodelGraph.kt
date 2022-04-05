@@ -8,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
+import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
@@ -23,28 +25,49 @@ class ViewmodelGraph(var activity: Application):AndroidViewModel(activity) ,retr
 
 
 
-    fun onConfigFieldList(context: Context, packid: String) {
+    fun onConfigFieldList(context: Context, packid: String, packList: PacksNew?) {
 
-        if (packid!=null){
-            try{
-            ApiClient.client.create(ApiInterFace::class.java)
-                .getGraphList(
-                    MySharedPreference.getUser(context)?.id.toString(),
-                    packid.toString()).enqueue(this)}
-            catch (e:Exception){
-                AppUtils.logDebug("##TAG",e.message.toString())
+        val db=DbHelper(context,null)
+       val packConfigList= db.getAllPackConfig()
+        var graphIDs:String?=null
 
+        for (i in 0 until packConfigList.size){
+            val item=packConfigList.get(i)
+
+            if (packList?.pack_config_id==item.id.toString()){
+                graphIDs=item.graph_chart_id
+                break
             }
-        }else{
-            ApiClient.client.create(ApiInterFace::class.java)
-                .getGraphList(
-                    MySharedPreference.getUser(context)?.id.toString(),
-                    "5").enqueue(this)
+
         }
+        val graphlist=db.getGraphChartNames(graphIDs.toString())
+        val list=ArrayList<ListTaskFunctions>()
 
+        for (i in 0 until graphlist.size){
+            val item=graphlist.get(i)
+            list.add(ListTaskFunctions(item.id.toString(),item.name, item.object_class.toString(),
+            item.ordinate_title))
 
+        }
+        configlist.value=list
 
-
+//        if (packid!=null){
+//            try{
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .getGraphList(
+//                    MySharedPreference.getUser(context)?.id.toString(),
+//                    packid).enqueue(this)}
+//            catch (e:Exception){
+//                AppUtils.logDebug("##TAG",e.message.toString())
+//
+//            }
+//        }else{
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .getGraphList(
+//                    MySharedPreference.getUser(context)?.id.toString(),
+//                    "5").enqueue(this)
+//        }
+//
 
     }
 

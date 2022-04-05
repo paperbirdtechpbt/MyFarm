@@ -19,11 +19,11 @@ import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayIDKe
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayNameKey
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
-import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
 import com.pbt.myfarm.Activity.Graph.GraphActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
@@ -103,10 +103,10 @@ class UpdatePackFragement : Fragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_pack_frament, container, false)
 //        quantity=view?.findViewById(R.id.fed_pack_quantity)
-        AppUtils.logError(
-            TAG,
-            "onconfigfieldlist" + packList1?.pack_config_id.toString() + "\n" + packList1?.id!!.toString()
-        )
+//        AppUtils.logError(
+//            TAG,
+//            "onconfigfieldlist" + packList1?.pack_config_id.toString() + "\n" + packList1?.id!!.toString()
+//        )
         arrayID= ArrayList()
         arrayName= ArrayList()
         arrayIDKey= ArrayList()
@@ -128,7 +128,7 @@ class UpdatePackFragement : Fragment(),
         }
         btnViewTask.setOnClickListener {
             val intent = Intent(requireContext(), GraphActivity::class.java)
-            intent.putExtra(PACK_LIST_PACKID, packList1?.pack_config_id.toString())
+            intent.putExtra(PACK_LIST_PACKID, packList1)
             startActivity(intent)
         }
 
@@ -140,7 +140,9 @@ class UpdatePackFragement : Fragment(),
         viewmodel =
             ViewModelProvider(this).get(PackViewModel::class.java)
 
-        viewmodel?.onConfigFieldList(requireContext(), updateTaskBoolen, "0")
+        viewmodel?.onConfigFieldList(requireContext(), true,
+            packList1?.pack_config_id.toString()
+        )
         viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
 //            setCommunityGroup()
             if (!list.isNullOrEmpty()) {
@@ -241,7 +243,7 @@ class UpdatePackFragement : Fragment(),
                     successObject.toString() +
                     packList1?.id.toString()
         )
-        if (desciptioncompanian.isEmpty()) {
+        if (desciptioncompanian!!.isEmpty()) {
             Toast.makeText(requireContext(), "Desciption is Required", Toast.LENGTH_SHORT).show()
             btn_create_pack.visibility= View.VISIBLE
 

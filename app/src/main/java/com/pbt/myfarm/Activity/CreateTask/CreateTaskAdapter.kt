@@ -1,5 +1,6 @@
 package com.pbt.myfarm.Activity.CreateTask
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
@@ -15,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
-import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
@@ -67,7 +67,7 @@ class CreateTaskAdapter(
     }
 
 
-    override fun onBindViewHolder(holder: ViewHolder, positionn: In) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") positionn: In) {
 
         val fieldList: ArrayList<String>? = ArrayList()
         val fieldListid: ArrayList<String>? = ArrayList()
@@ -109,6 +109,8 @@ class CreateTaskAdapter(
 
 
         if (fieldtype == "Table" || fieldtype == "List") {
+            fieldList?.add("Select")
+                fieldListid?.add("1")
 
             for (i in 0 until field.size) {
                 val row: Any = field.get(i)

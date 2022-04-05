@@ -194,6 +194,17 @@ class MyFarmService() : Service() {
                                 db.unitsCreate(pack)
                             }
                         }
+                        if(it.Data.teams.isNotEmpty()){
+                            for(pack in it.Data.teams) {
+                                db.teamCreate(pack)
+                            }
+                        }
+                        if(it.Data.task_media_files.isNotEmpty()){
+                            for(pack in it.Data.task_media_files) {
+                                db.taskMediaFilescCreate(pack)
+
+                            }
+                        }
                     }
                 }
 

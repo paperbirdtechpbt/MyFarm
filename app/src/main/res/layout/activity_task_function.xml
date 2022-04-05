@@ -64,9 +64,9 @@
             style="@style/Edittext"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:visibility="gone"
             android:layout_marginTop="40dp"
             android:background="@drawable/design_edittext"
-
             app:layout_constraintTop_toBottomOf="@id/taskfunction" />
 
         <TextView
@@ -124,6 +124,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/taskfunction_field"
             tools:listitem="@layout/item_viewmedia"/>
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskfunction_field"/>
+
+
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -133,6 +142,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/progressbar_taskexecute"/>
+<!--<ImageView-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:src=""-->
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

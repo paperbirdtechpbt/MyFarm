@@ -20,6 +20,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.DataBase.DbHelper
 
@@ -54,9 +55,6 @@ class CreatePackAdapter(
     val myCalendar: Calendar = Calendar.getInstance()
     var boolean = true
 
-    companion object {
-        var desciptioncompanian: String=""
-    }
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
@@ -104,6 +102,7 @@ class CreatePackAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, positionn: Int) {
+
 
         val fieldList: ArrayList<String>? = ArrayList()
         val fieldListid: ArrayList<String>? = ArrayList()
@@ -201,12 +200,16 @@ class CreatePackAdapter(
                     holder.name.setText(valued)
                 }
             }
+            else{
+                holder.desciption.setText("")
+
+            }
 //            }, 3500)
 
         } else if (fieldtype == "List" || fieldtype == "Table") {
             holder.desciption.setText(packList?.description)
 
-            val d = fieldtype
+
             holder.date.visibility = View.GONE
             holder.name.visibility = View.GONE
             holder.labeldate.visibility = View.GONE
@@ -247,6 +250,8 @@ class CreatePackAdapter(
                     holder.date.setText(valued)
                 }
             }
+
+
 
         }
 

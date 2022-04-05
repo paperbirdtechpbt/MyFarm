@@ -7,6 +7,7 @@ import android.app.DownloadManager
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.*
 import android.view.View
@@ -22,10 +23,13 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ResponseTaskExecution
+import com.pbt.myfarm.Task
+import com.pbt.myfarm.TaskMediaFile
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestBody
@@ -33,11 +37,8 @@ import com.pbt.myfarm.Util.FilePath
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_create_task.*
 import kotlinx.android.synthetic.main.activity_task_function.*
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,7 +48,7 @@ import java.text.DecimalFormat
 
 class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTaskFunctionaliyt> {
 
-    var updateTaskID = ""
+    var updateTaskID:Task?=null
     var viewmodel: ViewModelTaskFunctionality? = null
     var spinner: Spinner? = null
     var selectedFunctionId = 0
@@ -71,14 +72,23 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
         edAttachMedia = findViewById(R.id.taskfunction_media)
 
         if (intent.extras != null) {
-            updateTaskID = intent.getStringExtra(CONST_TASKFUNCTION_TASKID)!!
+            updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
-            initViewModel(updateTaskID)
+            initViewModel(updateTaskID?.task_config_id.toString())
             checkAndRequestPermissions()
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
         recycler_viewMedia?.visibility = View.GONE
+
+
+//        val imgFile = File("/storage/emulated/0/MyFarm/1647246628_WWW.YIFY-TORRENTS.COM.jpg")
+//
+//        if (imgFile.exists()) {
+//            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+//            val myImage = findViewById<View>(R.id.testImageView) as ImageView
+//            myImage.setImageBitmap(myBitmap)
+//        }
 
         btn_choosefile.setOnClickListener {
 
@@ -127,7 +137,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
 
     val apiInterFace = service.uploadFile(
         filePart,
-        paramRequestBody(updateTaskID),
+        paramRequestBody(updateTaskID?.id.toString()),
         paramRequestBody(selectedFunctionId.toString()),
         paramRequestBody(MySharedPreference.getUser(this)?.id.toString()),
         paramRequestBody(selectedFunctionFieldId.toString()),
@@ -211,89 +221,222 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
 
 
         for (i in 0 until list.size) {
-            listname.add(list.get(i).name)
-            listid.add(list.get(i).id)
+            listname.add(list.get(i).name!!)
+            listid.add(list.get(i).id!!)
 
         }
 
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listname)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction.setAdapter(dd)
-        setListner(taskfunction, listid)
+        setListner(taskfunction, listid,listname)
     }
 
-    private fun setListner(taskfunction: Spinner, listid: ArrayList<String>) {
+    private fun setListner(
+        taskfunction: Spinner,
+        listid: ArrayList<String>,
+        listname: ArrayList<String>
+    ) {
         taskfunction.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-
-
                 selectedFunctionId = listid.get(position).toInt()
-                callApi(selectedFunctionId.toString())
+ if (selectedFunctionId==0){
+     label_filename.visibility = View.GONE
+     taskfunction_field.visibility = View.GONE
+     label_fieldname.visibility = View.GONE
+     recycler_viewMedia.visibility = View.GONE
+     taskfunction_media.visibility = View.GONE
+     btn_choosefile.visibility = View.GONE
+     label_attachmedia.visibility = View.GONE
+ }
+                else{
+     val item = listid.get(position)
+     if (selectedFunctionId == 171 || selectedFunctionId == 176) {
 
-                val item = listid.get(position)
-                if (item == "171" || item == "176") {
-                    taskfunction_media.visibility = View.GONE
-                    btn_choosefile.visibility = View.GONE
-                    label_attachmedia.visibility = View.GONE
-                    label_filename.visibility = View.GONE
-                    recycler_viewMedia.visibility = View.GONE
-                    taskfunction_field.visibility = View.VISIBLE
-                    label_fieldname.visibility = View.VISIBLE
-                } else if (item == "173") {
-                    taskfunction_field.visibility = View.GONE
-                    label_fieldname.visibility = View.GONE
-                    label_filename.visibility = View.VISIBLE
-                    taskfunction_media.visibility = View.VISIBLE
-                    btn_choosefile.visibility = View.VISIBLE
-                    label_attachmedia.visibility = View.VISIBLE
-                    recycler_viewMedia.visibility = View.VISIBLE
-                } else if (item == "168" || item == "169" || item == "170") {
-                    taskfunction_field.visibility = View.GONE
-                    label_fieldname.visibility = View.GONE
-                    label_filename.visibility = View.GONE
-                    taskfunction_media.visibility = View.GONE
-                    btn_choosefile.visibility = View.GONE
-                    label_attachmedia.visibility = View.GONE
-                    recycler_viewMedia.visibility = View.GONE
-                } else if (item == "174" || item == "175") {
-                    val intent =
-                        Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
-                    startActivity(intent)
+         taskfunction_media.visibility = View.GONE
+         btn_choosefile.visibility = View.GONE
+         label_attachmedia.visibility = View.GONE
+         label_filename.visibility = View.GONE
+         recycler_viewMedia.visibility = View.GONE
+         taskfunction_field.visibility = View.VISIBLE
+         label_fieldname.visibility = View.VISIBLE
 
-                    label_filename.visibility = View.GONE
-                    taskfunction_field.visibility = View.GONE
-                    label_fieldname.visibility = View.GONE
-                    recycler_viewMedia.visibility = View.GONE
-                    taskfunction_media.visibility = View.GONE
-                    btn_choosefile.visibility = View.GONE
-                    label_attachmedia.visibility = View.GONE
+
+         if (selectedFunctionId == 171){
+             label_fieldname.setText("Add Person")
+
+             callApi("171")
+         }
+         else{
+             label_fieldname.setText("Add Container")
+             callApi("176")
+         }
+     }
+     else if (selectedFunctionId == 173) {
+
+         taskfunction_field.visibility = View.GONE
+         label_fieldname.visibility = View.GONE
+         label_filename.visibility = View.VISIBLE
+         taskfunction_media.visibility = View.VISIBLE
+         btn_choosefile.visibility = View.VISIBLE
+         label_attachmedia.visibility = View.VISIBLE
+         recycler_viewMedia.visibility = View.VISIBLE
+         label_attachmedia.setText("Attach Media")
+         callApi("173")
+
+     }
+     else if (selectedFunctionId == 168 || selectedFunctionId == 169 || selectedFunctionId == 170) {
+         taskfunction_field.visibility = View.GONE
+         label_fieldname.visibility = View.GONE
+         label_filename.visibility = View.GONE
+         taskfunction_media.visibility = View.GONE
+         btn_choosefile.visibility = View.GONE
+         label_attachmedia.visibility = View.GONE
+         recycler_viewMedia.visibility = View.GONE
+     }
+     else if (item == "174" || item == "175") {
+         val intent =
+             Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
+         startActivity(intent)
+
+         label_filename.visibility = View.GONE
+         taskfunction_field.visibility = View.GONE
+         label_fieldname.visibility = View.GONE
+         recycler_viewMedia.visibility = View.GONE
+         taskfunction_media.visibility = View.GONE
+         btn_choosefile.visibility = View.GONE
+         label_attachmedia.visibility = View.GONE
+     }
+ }}
+                override fun onNothingSelected(parent: AdapterView<*>) {
 
                 }
 
-            }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
 
-            }
+//                callApi(selectedFunctionId.toString())
+
+
         }
-
-
     }
 
     private fun callApi(selectedFunctionId: String) {
+        AppUtils.logDebug(TAG,"callapi===="+selectedFunctionId)
+        val db=DbHelper(this,null)
+
+        if (selectedFunctionId=="171"){
+            //add person
+            val personlist=  db.getPersonList()
+            val personListId=ArrayList<String>()
+            val personListName=ArrayList<String>()
+            personListId.add("0")
+            personListName.add("Select")
+            personlist.forEach{
+                personListId.add(it.id.toString())
+                personListName.add(it.lname+it.fname)
+
+            }
+
+
+            val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, personListName)
+            dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            taskfunction_field.setAdapter(dd)
+        }
+        else if (selectedFunctionId=="176"){
+          val containerlist=  db.getContainerList()
+            val containerlistId=ArrayList<String>()
+            val containerlistName=ArrayList<String>()
+            containerlistId.add("0")
+            containerlistName.add("Select")
+            containerlist.forEach{
+                containerlistId.add(it.id.toString())
+                containerlistName.add(it.name!!)
+
+            }
+
+            val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, containerlistName)
+            dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            taskfunction_field.setAdapter(dd)
+
+            //add container
+
+        }
+        else if (selectedFunctionId=="173"){
+            AppUtils.logDebug(TAG,"updataskid"+updateTaskID.toString())
+
+            val imageList=db.getImageList(updateTaskID?.id.toString())
+            AppUtils.logDebug(TAG,"imagelist"+imageList.toString())
+
+            setImageList(imageList)
+            //attach media
+
+        }
+
+
 
 //        ApiClient.client.create(ApiInterFace::class.java)
 //            .taskFunctionFieldList(
 //                MySharedPreference.getUser(this)?.id.toString(),
 //                updateTaskID, selectedFunctionId
 //            ).enqueue(this)
-        ApiClient.client.create(ApiInterFace::class.java)
-            .taskFunctionFieldList(
-                MySharedPreference.getUser(this)?.id.toString(),
-                updateTaskID, selectedFunctionId
-            ).enqueue(this)
+
+//        ApiClient.client.create(ApiInterFace::class.java)
+//            .taskFunctionFieldList(
+//                MySharedPreference.getUser(this)?.id.toString(),
+//                updateTaskID!!, selectedFunctionId
+//            ).enqueue(this)
+
+    }
+
+    private fun setImageList(imageList: ArrayList<TaskMediaFile>) {
+        val arrayAdapter: ArrayAdapter<*>
+        val imagenameList=ArrayList<String>()
+        val function=ArrayList<ListFunctionFieldlist>()
+
+        for (i in 0 until imageList.size){
+            val item=imageList.get(i)
+            imagenameList.add(item.name!!)
+            function.add(ListFunctionFieldlist(item.id.toString(),item.name,item.link,
+                item.filePathLocal))
+        }
+        
+
+        val adapter = AdapterTaskFunction(this, function){ name ,link ->
+            if (checkInternetConncetion()){
+                            downloadFile(link,name)
+            }
+            else{
+                try{
+//                        val imgFile = File("storage/emulated/0/MyFarm/"+name)
+                    val pdffile = File("file:///android_assets/$name")
+
+                    val path = Uri.fromFile(pdffile)
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.setDataAndType(path, "Image/*")
+                startActivity(intent)}
+                catch (e:Exception){
+                    AppUtils.logDebug(TAG,"failed to load image or other file's"+e.message.toString())
+                }
+
+//        if (imgFile.exists()) {
+//            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+//            val myImage = findViewById<View>(R.id.testImageView) as ImageView
+//            myImage.setImageBitmap(myBitmap)
+//        }
+//                val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+//                startActivityForResult(gallery, pickImage)
+
+                Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
+        recycler_viewMedia.adapter = adapter
+
+
 
     }
 
@@ -447,7 +590,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
     private fun setAdapterField(function: ArrayList<ListFunctionFieldlist>) {
         val functionname = ArrayList<String>()
         for (i in 0 until function.size) {
-            functionname.add(function.get(i).name)
+            functionname.add(function.get(i).name.toString())
         }
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, functionname)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -466,7 +609,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
             ) {
 
 
-                selectedFunctionFieldId = function.get(position).id.toInt()
+                selectedFunctionFieldId = function.get(position).id!!.toInt()
 //                callApi(selectedFunctionId.toString())
 
 
@@ -482,12 +625,30 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
         recycler_viewMedia.visibility = View.VISIBLE
         AppUtils.logDebug(TAG, "In Set Adapter")
         val adapter = AdapterTaskFunction(this, function){ name ,link ->
-            downloadFile(link,name)
+            if (checkInternetConncetion()){
+                downloadFile(link,name)
+
+            }
+            else{
+                Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
+            }
 
         }
         recycler_viewMedia.adapter = adapter
 
 
+    }
+
+    private fun checkInternetConncetion(): Boolean {
+     
+            val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkInfo = ConnectionManager.activeNetworkInfo
+            if (networkInfo != null && networkInfo.isConnected == true) {
+                return true
+            } else {
+                return false
+            }
+       
     }
 
 

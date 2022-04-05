@@ -10,12 +10,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.Activity.Event.EditEventActivity
 import com.pbt.myfarm.Activity.TaskFunctions.AdapterTaskFunction
+import com.pbt.myfarm.Event
 import com.pbt.myfarm.R
 import com.pbt.myfarm.EventList
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EDITEVENT_ID
 
 
-class DashboardEventAdapter(var context: Context,var list: ArrayList<EventList>) : RecyclerView.Adapter<DashboardEventAdapter.ViewHolder>() {
+class DashboardEventAdapter(var context: Context,var list: ArrayList<Event>) : RecyclerView.Adapter<DashboardEventAdapter.ViewHolder>() {
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
  val eventname:TextView=itemView.findViewById(R.id.eventname)

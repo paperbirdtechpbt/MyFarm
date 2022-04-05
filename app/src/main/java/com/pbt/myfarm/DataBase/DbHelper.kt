@@ -1,11 +1,16 @@
 package com.pbt.myfarm.DataBase
 
+import android.R.attr.path
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.AsyncTask
+import android.os.Build
+import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import com.google.gson.Gson
 import com.pbt.myfarm.*
@@ -184,6 +189,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_CHARTID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_CREATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_CREATED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_GRAPH_CHARTID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LAST_CHANGED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LAST_CHANGED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LINETYPE
@@ -192,6 +198,13 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_PRIMARY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_REF_CLTL_POINT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_RESULT_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_CHARTID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_CreateAt
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_DURATION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_PACKID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_VALUE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_ABCISSA_TITLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_COM_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_CREATED_BY
@@ -359,6 +372,12 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_PRIMARY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_VALUE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_LINK
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_LOCAL_FILE_PATH
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_PRIMARYID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DELTED_AT
@@ -374,6 +393,24 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STARTED_LATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASKFUNC
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASK_CONFIGID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_ADDRESS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_COMGROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_CONTACT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_CREATEDBY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_DELETED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_EMAIL
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_LOGO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_PRIMARYID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_RESPONSIBLE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_TEAMCLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_TEAMTYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_UPDATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_units_COM_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_units_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_units_CREATED_BY
@@ -446,6 +483,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_container_object
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_events
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_objects
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_points
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_charts
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_list_choices
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_lists
@@ -458,15 +496,27 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_functions
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_configs
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_fields
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_media_files
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_tasks
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_team
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_units
 import com.pbt.myfarm.Util.AppUtils
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.URL
+import java.security.AccessController.getContext
 
 
+@Suppress("DEPRECATION")
 class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, CONST_DATABASE_NAME, factory, CONST_DATABASE_VERSION) {
 
     private val TAG = "DbHelper"
+companion object {
+    var localFilePath: String ?=null
+}
 
 
 
@@ -536,7 +586,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_pack_configs_DELETED_AT + " TEXT " + ")")
 
         db?.execSQL(pack_configs)
-     //   <----------------------------------------------------------->
+        //   <----------------------------------------------------------->
         // ravi -offline table ---pack_collect_activity
 
         val pack_collect_activity = ("CREATE TABLE " + TABLE_pack_collect_activity + " ("
@@ -546,6 +596,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_pack_collect_activity_pack_id + " TEXT " + ")")
 
         db?.execSQL(pack_collect_activity)
+
+        // ravi -offline table ---task_media_files
+
+
+        val task_media_files = ("CREATE TABLE " + TABLE_task_media_files + " ("
+                + COL_task_media_files_PRIMARYID + " INTEGER PRIMARY KEY, " +
+                COL_task_media_files_SERVERID + " TEXT," +
+                COL_task_media_files_TASKID + " TEXT," +
+                COL_task_media_files_NAME + " TEXT," +
+                COL_task_media_files_LOCAL_FILE_PATH + " TEXT," +
+                COL_task_media_files_LINK + " TEXT " + ")")
+
+        db?.execSQL(task_media_files)
         //--------------//
 
         // ravi -offline table ---pack_config_fields
@@ -624,7 +687,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
         // ravi -offline table ---collect_data
-
 
 
         val collect_data = ("CREATE TABLE " + TABLE_collect_data + " ("
@@ -842,14 +904,15 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         //ravi -offline---------table-----collect_activities_result_unit
 
-        val collect_activities_result_unit = ("CREATE TABLE " + TABLE_collect_activity_results_unit + " ("
-                + COL_collect_activity_results_unit_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_collect_activity_results_unit_SERVERID + " TEXT," +
-                COL_collect_activity_results_unit_COLLECT_ACITIVITY_RESULT_ID + " TEXT," +
-                COL_collect_activity_results_unit_UNITID + " TEXT" + ")")
+        val collect_activities_result_unit =
+            ("CREATE TABLE " + TABLE_collect_activity_results_unit + " ("
+                    + COL_collect_activity_results_unit_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                    COL_collect_activity_results_unit_SERVERID + " TEXT," +
+                    COL_collect_activity_results_unit_COLLECT_ACITIVITY_RESULT_ID + " TEXT," +
+                    COL_collect_activity_results_unit_UNITID + " TEXT" + ")")
         db?.execSQL(collect_activities_result_unit)
 
-      //ravi -offline---------table-----container
+        //ravi -offline---------table-----container
 
         val container = ("CREATE TABLE " + TABLE_container + " ("
                 + COL_container_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -915,7 +978,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_units_DELETED_AT + " TEXT" + ")")
         db?.execSQL(units)
 
-      //ravi -offline---------table-----container_object
+        //ravi -offline---------table-----container_object
 
         val container_object = ("CREATE TABLE " + TABLE_container_object + " ("
                 + COL_container_object_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -1028,7 +1091,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_graph_charts_LASTCHANGED_DATE + " TEXT," +
                 COL_graph_charts_DELETED_AT + " TEXT" + ")")
         db?.execSQL(graph_charts)
- //ravi -offline---------table-----graph_chart_objects
+        //ravi -offline---------table-----graph_chart_objects
 
         val graph_chart_objects = ("CREATE TABLE " + TABLE_graph_chart_objects + " ("
                 + COL_graph_chart_objects_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
@@ -1036,6 +1099,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_graph_chart_objects_CHARTID + " TEXT," +
                 COL_graph_chart_objects_NAME + " TEXT," +
                 COL_graph_chart_objects_LINETYPE + " TEXT," +
+                COL_graph_chart_objects_GRAPH_CHARTID + " TEXT," +
                 COL_graph_chart_objects_RESULT_CLASS + " TEXT," +
                 COL_graph_chart_objects_REF_CLTL_POINT + " TEXT," +
                 COL_graph_chart_objects_CREATED_BY + " TEXT," +
@@ -1044,6 +1108,18 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_graph_chart_objects_LAST_CHANGED_DATE + " TEXT," +
                 COL_graph_chart_objects_DELETED_AT + " TEXT" + ")")
         db?.execSQL(graph_chart_objects)
+
+        //ravi -offline---------table-----graph_chart_points
+
+        val graph_chart_points = ("CREATE TABLE " + TABLE_graph_chart_points + " ("
+                + COL_graph_chart_points_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_graph_chart_points_SERVERID + " TEXT," +
+                COL_graph_chart_points_PACKID + " TEXT," +
+                COL_graph_chart_points_VALUE + " TEXT," +
+                COL_graph_chart_points_CreateAt + " TEXT," +
+                COL_graph_chart_points_CHARTID + " TEXT," +
+                COL_graph_chart_points_DURATION + " TEXT" + ")")
+        db?.execSQL(graph_chart_points)
 
         //ravi -offline---------table-----lists
 
@@ -1077,7 +1153,28 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_list_choices_DELETED_AT + " TEXT" + ")")
         db?.execSQL(list_choices)
 
+        //ravi -offline---------table-----team
 
+        val team = ("CREATE TABLE " + TABLE_team + " ("
+                + COL_team_PRIMARYID + " INTEGER PRIMARY KEY, " +
+                COL_team_SERVERID + " TEXT," +
+                COL_team_NAME + " TEXT," +
+                COL_team_DESC + " TEXT," +
+                COL_team_EMAIL + " TEXT," +
+                COL_team_CONTACT + " TEXT," +
+                COL_team_ADDRESS + " TEXT," +
+                COL_team_TEAMCLASS + " TEXT," +
+                COL_team_TEAMTYPE + " TEXT," +
+                COL_team_RESPONSIBLE + " TEXT," +
+                COL_team_COMGROUP + " TEXT," +
+                COL_team_LOGO + " TEXT," +
+                COL_team_CREATEDBY + " TEXT," +
+                COL_team_CREATED_AT + " TEXT," +
+                COL_team_UPDATED_BY + " TEXT," +
+                COL_team_UPDATED_AT + " TEXT," +
+                COL_team_DELETED_BY + " TEXT," +
+                COL_team_DELETED_AT + " TEXT" + ")")
+        db?.execSQL(team)
 
 
 //        val collectdata = ("CREATE TABLE " + COLLECTDATA_TABLENAME + " ("
@@ -1112,10 +1209,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //                colctactyrslt_updated_at + " TEXT," +
 //                colctactyrslt_deleted_at + " TEXT" + ")")
 //        db?.execSQL(collect_activity_results)
-
-
-
-
 
 
 //        val userCollectdata = ("CREATE TABLE " + CONST_TABLE_COLLECT + " ("
@@ -1267,40 +1360,40 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //    }
 
 
-//    fun addNewPack(viewtask: ViewPackModelClass, created_at: String, deleted_at: String,
+    //    fun addNewPack(viewtask: ViewPackModelClass, created_at: String, deleted_at: String,
 //        updated_at: String
 //    ) {
-        fun addNewPack(pack : PacksNew,status:String) {
-        AppUtils.logDebug(TAG, "viewTask====" +Gson().toJson(pack))
+    fun addNewPack(pack: PacksNew, status: String) {
+        AppUtils.logDebug(TAG, "viewTask====" + Gson().toJson(pack))
 
         try {
 
-            val i=checkEntry(pack.id,TABLE_CREAT_PACK,COL_ID)
-            if (i<1){
-            val values = ContentValues()
-            values.put(COL_ID, pack.id)
-            values.put(COL_PACK_NAME, pack.name)
-            values.put(COL_PACK_CONFIG_ID, pack.pack_config_id)
-            values.put(COL_PACK_CREATED_BY, pack.created_by)
-            values.put(COL_PACK_NEW_DLETED_AT, pack.deleted_at)
-            values.put(COL_PACK_LAST_CHANGED_BY,pack.last_changed_by)
-            values.put(COL_PACK_DESC, pack.description)
-            values.put(COL_PACK_GROUP, pack.com_group)
-            values.put(COL_PACKNEW_Status, status)
-            values.put(COL_PACK_IS_ACTIVE, pack.is_active)
-            values.put(COL_PACK_CREATED_DATE, pack.created_date)
-            values.put(COL_PACK_LAST_CHANGED_DATE, pack.last_changed_date)
+            val i = checkEntry(pack.id, TABLE_CREAT_PACK, COL_ID)
+            if (i < 1) {
+                val values = ContentValues()
+                values.put(COL_ID, pack.id)
+                values.put(COL_PACK_NAME, pack.name)
+                values.put(COL_PACK_CONFIG_ID, pack.pack_config_id)
+                values.put(COL_PACK_CREATED_BY, pack.created_by)
+                values.put(COL_PACK_NEW_DLETED_AT, pack.deleted_at)
+                values.put(COL_PACK_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_PACK_DESC, pack.description)
+                values.put(COL_PACK_GROUP, pack.com_group)
+                values.put(COL_PACKNEW_Status, status)
+                values.put(COL_PACK_IS_ACTIVE, pack.is_active)
+                values.put(COL_PACK_CREATED_DATE, pack.created_date)
+                values.put(COL_PACK_LAST_CHANGED_DATE, pack.last_changed_date)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_CREAT_PACK, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                val result = db.insert(TABLE_CREAT_PACK, null, values)
+                db.close()
+                //    if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+                //  } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
-
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1308,7 +1401,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun addPackValues(fieldid: String, fieldname: String, lastValueOfPacknew: String?): Boolean {
 
-        var checkDataSaved=false
+        var checkDataSaved = false
         try {
 
 //            val i=checkEntry(pack.id,TABLE_CREAT_PACK,COL_ID)
@@ -1325,81 +1418,170 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                checkDataSaved=  true
+                checkDataSaved = true
             } else {
                 Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-checkDataSaved= false
+                checkDataSaved = false
             }
 
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
-       return checkDataSaved
+        return checkDataSaved
     }
 
     //ravi - offline ----------insert
-    fun pack_configscreate(pack : PackConfig) {
-        AppUtils.logDebug(TAG, "viewTask====" +Gson().toJson(pack))
+    fun pack_configscreate(pack: PackConfig) {
+        AppUtils.logDebug(TAG, "viewTask====" + Gson().toJson(pack))
 
         try {
-            val i=checkEntry(pack.id,TABLE_PACKCONFIG,COL_pack_configs_SERVER_ID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_PACKCONFIG, COL_pack_configs_SERVER_ID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_pack_configs_SERVER_ID, pack.id)
-            values.put(COL_pack_configs_NAME, pack.name)
-            values.put(COL_pack_configs_DESCIPTION, pack.description)
-            values.put(COL_pack_configs_TYPE, pack.type)
-            values.put(COL_pack_configs_CLASS,pack.mclass)
-            values.put(COL_pack_configs_COMGROUP, pack.com_group)
-            values.put(COL_pack_configs_NAMEPREFIX, pack.name_prefix)
-            values.put(COL_pack_configs_COLLECTACTIVITY_ID, pack.collect_activity_id)
-            values.put(COL_pack_configs_GRAPHCHCHART_ID, pack.graph_chart_id)
-            values.put(COL_pack_configs_CREATEDBY, pack.created_by)
-            values.put(COL_pack_configs_CREATED_DATE, pack.created_date)
-            values.put(COL_pack_configs_LAST_CHANGED_BY, pack.last_changed_by)
-            values.put(COL_pack_configs_LAST_CHNAGED_DATE, pack.last_changed_date)
-            values.put(COL_pack_configs_DELETED_AT, pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_pack_configs_SERVER_ID, pack.id)
+                values.put(COL_pack_configs_NAME, pack.name)
+                values.put(COL_pack_configs_DESCIPTION, pack.description)
+                values.put(COL_pack_configs_TYPE, pack.type)
+                values.put(COL_pack_configs_CLASS, pack.mclass)
+                values.put(COL_pack_configs_COMGROUP, pack.com_group)
+                values.put(COL_pack_configs_NAMEPREFIX, pack.name_prefix)
+                values.put(COL_pack_configs_COLLECTACTIVITY_ID, pack.collect_activity_id)
+                values.put(COL_pack_configs_GRAPHCHCHART_ID, pack.graph_chart_id)
+                values.put(COL_pack_configs_CREATEDBY, pack.created_by)
+                values.put(COL_pack_configs_CREATED_DATE, pack.created_date)
+                values.put(COL_pack_configs_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_pack_configs_LAST_CHNAGED_DATE, pack.last_changed_date)
+                values.put(COL_pack_configs_DELETED_AT, pack.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_PACKCONFIG, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_PACKCONFIG, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+
+    //ravi - offline -----insert-----task_media_files
+
+
+    fun taskMediaFilescCreate(pack: TaskMediaFile) {
+        AppUtils.logDebug(TAG, "viewTask====" + Gson().toJson(pack))
+
+        try {
+            val i = checkEntry(pack.id, TABLE_task_media_files, COL_task_media_files_SERVERID)
+            if (i < 1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    donwloadMediaFiles(pack)
+                }
+
+
+                val values = ContentValues()
+               AppUtils.logDebug(TAG,"Local Path of imahe"+localFilePath.toString())
+
+                values.put(COL_task_media_files_SERVERID, pack.id)
+                values.put(COL_task_media_files_TASKID, pack.task_id)
+                values.put(COL_task_media_files_NAME, pack.name)
+                values.put(COL_task_media_files_LOCAL_FILE_PATH,"/storage/emulated/0/MyFarm/"+pack.name)
+                values.put(COL_task_media_files_LINK, pack.link)
+                localFilePath=""
+
+
+                val db = this.writableDatabase
+                db.insert(TABLE_task_media_files, null, values)
+                db.close()
+
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
 
 
-  //ravi - offline ----------insert--table---pack_collect_activity
+    @SuppressLint("SdCardPath")
+    private fun donwloadMediaFiles(pack: TaskMediaFile) {
 
-    fun pack_collect_activity_create(pack : PackCollectActivity) {
+        val url = pack.link
+        val filename = pack.name
+
+        //                    progressBar.setTag(position);
+        DownloadFileFromURL(filename).execute(url)
+
+
+//        var manager: DownloadManager? = null
+//            manager = context.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
+//            val uri = Uri.parse(url)
+//            val request = DownloadManager.Request(uri)
+//
+//            request.setTitle(filename)
+//            request.setDescription("Downloading ")
+//            request.setAllowedOverRoaming(false)
+////            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+////            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+//
+//
+////                File storage = new File(Environment.getExternalStorageDirectory() + File.separator + "/Download/");
+//        val storage =
+//            File(Environment.getExternalStorageDirectory().toString() + File.separator + "/MyFarm/")
+//
+//        if (!storage.exists()) {
+//            storage.mkdirs()
+//        }
+//
+//        Log.e("check_path", "" + storage.absolutePath)
+//        try{
+//            request.setDestinationInExternalPublicDir(storage.toString(),filename)
+//
+//        }
+//        catch (e:Exception){
+//            AppUtils.logError(TAG, e.message.toString())
+//        }
+//
+////
+////            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+////    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+//            val reference: Long = manager.enqueue(request)
+
+
+    }
+
+
+    //ravi - offline ----------insert--table---pack_collect_activity
+
+    fun pack_collect_activity_create(pack: PackCollectActivity) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_pack_collect_activity,COL_pack_collect_activity_SERVER_ID)
-            if (i<1){
+            val i = checkEntry(
+                pack.id,
+                TABLE_pack_collect_activity,
+                COL_pack_collect_activity_SERVER_ID
+            )
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_pack_collect_activity_SERVER_ID, pack.id)
-            values.put(COL_pack_collect_activity_collect_activity_id, pack.collect_activity_id)
-            values.put(COL_pack_collect_activity_pack_id,pack.pack_id)
+                values.put(COL_pack_collect_activity_SERVER_ID, pack.id)
+                values.put(COL_pack_collect_activity_collect_activity_id, pack.collect_activity_id)
+                values.put(COL_pack_collect_activity_pack_id, pack.pack_id)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_pack_collect_activity, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_pack_collect_activity, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1407,105 +1589,109 @@ checkDataSaved= false
 
     //ravi - offline ----------insert--table---pack_fields
 
-    fun pack_fields_create(pack : PackField) {
+    fun pack_fields_create(pack: PackField) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_pack_fields,COL_pack_fields_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_pack_fields, COL_pack_fields_SERVERID)
+            if (i < 1) {
 
 
                 val values = ContentValues()
-            values.put(COL_pack_fields_pack_id,pack.pack_id)
-            values.put(COL_pack_fields_value,pack.value)
-            values.put(COL_pack_fields_SERVERID,pack.id)
-            values.put(COL_pack_fields_field_id,pack.field_id)
+                values.put(COL_pack_fields_pack_id, pack.pack_id)
+                values.put(COL_pack_fields_value, pack.value)
+                values.put(COL_pack_fields_SERVERID, pack.id)
+                values.put(COL_pack_fields_field_id, pack.field_id)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_pack_fields, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_pack_fields, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
-  //ravi - offline ----------insert--table---pack_config_fields
+    //ravi - offline ----------insert--table---pack_config_fields
 
-    fun pack_config_fields_create(pack : PackConfigField) {
+    fun pack_config_fields_create(pack: PackConfigField) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_pack_config_fields,COL_pack_config_fields_SERVER_ID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_pack_config_fields, COL_pack_config_fields_SERVER_ID)
+            if (i < 1) {
 
 
                 val values = ContentValues()
-            values.put(COL_pack_config_fields_SERVER_ID, pack.id)
-            values.put(COL_pack_config_fields_pack_config_id, pack.pack_config_id)
-            values.put(COL_pack_config_fields_field_name, pack.field_name)
-            values.put(COL_pack_config_fields_field_description, pack.field_description)
-            values.put(COL_pack_config_fields_field_type, pack.field_type)
-            values.put(COL_pack_config_fields_default_value, pack.default_value)
-            values.put(COL_pack_config_fields_created_by, pack.created_by)
-            values.put(COL_pack_config_fields_last_changed_by,pack.last_changed_by)
-            values.put(COL_pack_config_fields_last_changed_date,pack.last_changed_date)
-            values.put(COL_pack_config_fields_created_date,pack.created_by)
-            values.put(COL_pack_config_fields_editable,pack.editable)
-            values.put(COL_pack_config_fields_list,pack.list)
-            values.put(COL_pack_config_fields_deleted_at,pack.deleted_at)
+                values.put(COL_pack_config_fields_SERVER_ID, pack.id)
+                values.put(COL_pack_config_fields_pack_config_id, pack.pack_config_id)
+                values.put(COL_pack_config_fields_field_name, pack.field_name)
+                values.put(COL_pack_config_fields_field_description, pack.field_description)
+                values.put(COL_pack_config_fields_field_type, pack.field_type)
+                values.put(COL_pack_config_fields_default_value, pack.default_value)
+                values.put(COL_pack_config_fields_created_by, pack.created_by)
+                values.put(COL_pack_config_fields_last_changed_by, pack.last_changed_by)
+                values.put(COL_pack_config_fields_last_changed_date, pack.last_changed_date)
+                values.put(COL_pack_config_fields_created_date, pack.created_by)
+                values.put(COL_pack_config_fields_editable, pack.editable)
+                values.put(COL_pack_config_fields_list, pack.list)
+                values.put(COL_pack_config_fields_deleted_at, pack.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_pack_config_fields, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_pack_config_fields, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
-        }}
+        }
+    }
 
-       //ravi - offline ----------insert--table---collectdata
+    //ravi - offline ----------insert--table---collectdata
 
 
-    fun collectDataCreate(pack : CollectData) {
+    fun collectDataCreate(pack: CollectData) {
 
         try {
-            val i=checkEntry(pack.id?.toInt(),TABLE_collect_data,COL_collect_data_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_collect_data_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_collect_data_SERVERID, pack.id)
-            values.put(COL_collect_data_pack_id, pack.pack_id)
-            values.put(COL_collect_data_ResulId, pack.result_id)
-            values.put(COL_collect_data_ResultClass, pack.result_class)
-            values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
-            values.put(COL_collect_data_NEWVALUE, pack.new_value)
-            values.put(COL_collect_data_UNITID, pack.unit_id)
-            values.put(COL_collect_data_SENSORID,pack.sensor_id)
-            values.put(COL_collect_data_DURATION,pack.duration)
-            values.put(COL_collect_data_UPDATED_BY,pack.created_by)
-            values.put(COL_collect_data_DELETED_BY,pack.deleted_by)
-            values.put(COL_collect_data_CREATED_AT,pack.created_at)
-            values.put(COL_collect_data_UPDATED_AT,pack.updated_at)
-            values.put(COL_collect_data_DELETED_AT,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_collect_data_SERVERID, pack.id)
+                values.put(COL_collect_data_pack_id, pack.pack_id)
+                values.put(COL_collect_data_ResulId, pack.result_id)
+                values.put(COL_collect_data_ResultClass, pack.result_class)
+                values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
+                values.put(COL_collect_data_NEWVALUE, pack.new_value)
+                values.put(COL_collect_data_UNITID, pack.unit_id)
+                values.put(COL_collect_data_SENSORID, pack.sensor_id)
+                values.put(COL_collect_data_DURATION, pack.duration)
+                values.put(COL_collect_data_UPDATED_BY, pack.created_by)
+                values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
+                values.put(COL_collect_data_CREATED_AT, pack.created_at)
+                values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
+                values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_collect_data, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_collect_data, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1513,68 +1699,77 @@ checkDataSaved= false
 
     //ravi - offline ----------insert--table---collect_activities
 
-    fun collectActivitiesCreate(pack : CollectActivity) {
+    fun collectActivitiesCreate(pack: CollectActivity) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_collect_activities,COL_collect_activities_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_collect_activities, COL_collect_activities_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_collect_activities_SERVERID, pack.id)
-            values.put(COL_collect_activities_NAME, pack.name)
-            values.put(COL_collect_activities_COMMUNITYGROUP, pack.communitygroup)
-            values.put(COL_collect_activities_CREATED_BY, pack.created_by)
-            values.put(COL_collect_activities_UPDATED_BY, pack.updated_by)
-            values.put(COL_collect_activities_DELTED_BY, pack.deleted_by)
-            values.put(COL_collect_activities_CREATED_AT, pack.created_at)
-            values.put(COL_collect_activities_UPDATED_AT,pack.updated_at)
-            values.put(COL_collect_activities_DELTED_AT,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_collect_activities_SERVERID, pack.id)
+                values.put(COL_collect_activities_NAME, pack.name)
+                values.put(COL_collect_activities_COMMUNITYGROUP, pack.communitygroup)
+                values.put(COL_collect_activities_CREATED_BY, pack.created_by)
+                values.put(COL_collect_activities_UPDATED_BY, pack.updated_by)
+                values.put(COL_collect_activities_DELTED_BY, pack.deleted_by)
+                values.put(COL_collect_activities_CREATED_AT, pack.created_at)
+                values.put(COL_collect_activities_UPDATED_AT, pack.updated_at)
+                values.put(COL_collect_activities_DELTED_AT, pack.deleted_at)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_collect_activities, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_collect_activities, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
     //ravi - offline ----------insert--table---collect_activity_results
 
-    fun collectActivitiesResultsCreate(pack : CollectActivityResult) {
+    fun collectActivitiesResultsCreate(pack: CollectActivityResult) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_collect_activity_results,COL_collect_activity_results_SERVERID)
-            if (i<1){
+            val i = checkEntry(
+                pack.id,
+                TABLE_collect_activity_results,
+                COL_collect_activity_results_SERVERID
+            )
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_collect_activity_results_SERVERID, pack.id)
-            values.put(COL_collect_activity_results_COLLECT_ACTIVITY_ID, pack.collect_activity_id)
-            values.put(COL_collect_activity_results_RESULTNAME, pack.result_name)
-            values.put(COL_collect_activity_results_UNITID, pack.unit_id)
-            values.put(COL_collect_activity_results_TYPEID, pack.type_id)
-            values.put(COL_collect_activity_results_LISTID, pack.list_id)
-            values.put(COL_collect_activity_results_RESULTCLASS, pack.result_class)
-            values.put(COL_collect_activity_results_CREATEDBY,pack.created_by)
-            values.put(COL_collect_activity_results_UPDATEDBY,pack.updated_by)
-            values.put(COL_collect_activity_results_DELETEDBY,pack.deleted_by)
-            values.put(COL_collect_activity_results_CREATEDAT,pack.created_at)
-            values.put(COL_collect_activity_results_UPDATEDAT,pack.updated_at)
-            values.put(COL_collect_activity_results_DELETEAT,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_collect_activity_results_SERVERID, pack.id)
+                values.put(
+                    COL_collect_activity_results_COLLECT_ACTIVITY_ID,
+                    pack.collect_activity_id
+                )
+                values.put(COL_collect_activity_results_RESULTNAME, pack.result_name)
+                values.put(COL_collect_activity_results_UNITID, pack.unit_id)
+                values.put(COL_collect_activity_results_TYPEID, pack.type_id)
+                values.put(COL_collect_activity_results_LISTID, pack.list_id)
+                values.put(COL_collect_activity_results_RESULTCLASS, pack.result_class)
+                values.put(COL_collect_activity_results_CREATEDBY, pack.created_by)
+                values.put(COL_collect_activity_results_UPDATEDBY, pack.updated_by)
+                values.put(COL_collect_activity_results_DELETEDBY, pack.deleted_by)
+                values.put(COL_collect_activity_results_CREATEDAT, pack.created_at)
+                values.put(COL_collect_activity_results_UPDATEDAT, pack.updated_at)
+                values.put(COL_collect_activity_results_DELETEAT, pack.deleted_at)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_collect_activity_results, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_collect_activity_results, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1582,76 +1777,85 @@ checkDataSaved= false
 
     //ravi - offline ----------insert--table---collect_activities_result_unit
 
-    fun collectActivitiesResultsUnitCreate(pack : CollectActivityResultUnit) {
+    fun collectActivitiesResultsUnitCreate(pack: CollectActivityResultUnit) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_collect_activity_results_unit,COL_collect_activity_results_unit_SERVERID)
-            if (i<1){
+            val i = checkEntry(
+                pack.id,
+                TABLE_collect_activity_results_unit,
+                COL_collect_activity_results_unit_SERVERID
+            )
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_collect_activity_results_unit_SERVERID, pack.id)
-            values.put(COL_collect_activity_results_unit_COLLECT_ACITIVITY_RESULT_ID, pack.collect_activity_result_id)
-            values.put(COL_collect_activity_results_unit_UNITID, pack.unit_id)
+                val values = ContentValues()
+                values.put(COL_collect_activity_results_unit_SERVERID, pack.id)
+                values.put(
+                    COL_collect_activity_results_unit_COLLECT_ACITIVITY_RESULT_ID,
+                    pack.collect_activity_result_id
+                )
+                values.put(COL_collect_activity_results_unit_UNITID, pack.unit_id)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_collect_activity_results_unit, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_collect_activity_results_unit, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
     //ravi - offline ----------insert--table---people
 
-    fun peopleCreate(pack : People) {
+    fun peopleCreate(pack: People) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_people,COL_people_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_people, COL_people_SERVERID)
+            if (i < 1) {
 
 
                 val values = ContentValues()
-            values.put(COL_people_SERVERID, pack.id)
-            values.put(COL_people_FNAME, pack.fname)
-            values.put(COL_people_LNAME, pack.lname)
-            values.put(COL_people_EMAIl, pack.email)
-            values.put(COL_people_CONTACT, pack.contact)
-            values.put(COL_people_BIRTHPLACE, pack.birth_place)
-            values.put(COL_people_DOB, pack.dob)
-            values.put(COL_people_PHOTO, pack.photo)
-            values.put(COL_people_ADDRESS, pack.address)
-            values.put(COL_people_CITIZENSHIP, pack.citizenship)
-            values.put(COL_people_CERTIFICAITON, pack.certification)
-            values.put(COL_people_IS_IN_COOP, pack.is_in_coop)
-            values.put(COL_people_LASTCERFICATION_DATE, pack.last_certification_date)
-            values.put(COL_people_IS_KAKAOMUNDO, pack.is_kakaomundo)
-            values.put(COL_people_KAKAOMUNDO_CENTER, pack.kakaomundo_center)
-            values.put(COL_people_USERID, pack.user_id)
-            values.put(COL_people_COMMUNITY_GROUP, pack.communitygroup)
-            values.put(COL_people_PERSON_CLASS, pack.person_class)
-            values.put(COL_people_PERSON_TYPE, pack.person_type)
-            values.put(COL_people_DEWSCIPTION, pack.description)
-            values.put(COL_people_CREATED_BY, pack.created_by)
-            values.put(COL_people_UPDATED_BY, pack.updated_by)
-            values.put(COL_people_UPDATED_AT, pack.updated_at)
-            values.put(COL_people_CREATED_AT, pack.created_at)
-            values.put(COL_people_DELETED_BY, pack.deleted_by)
-            values.put(COL_people_DELETED_AT, pack.deleted_at)
+                values.put(COL_people_SERVERID, pack.id)
+                values.put(COL_people_FNAME, pack.fname)
+                values.put(COL_people_LNAME, pack.lname)
+                values.put(COL_people_EMAIl, pack.email)
+                values.put(COL_people_CONTACT, pack.contact)
+                values.put(COL_people_BIRTHPLACE, pack.birth_place)
+                values.put(COL_people_DOB, pack.dob)
+                values.put(COL_people_PHOTO, pack.photo)
+                values.put(COL_people_ADDRESS, pack.address)
+                values.put(COL_people_CITIZENSHIP, pack.citizenship)
+                values.put(COL_people_CERTIFICAITON, pack.certification)
+                values.put(COL_people_IS_IN_COOP, pack.is_in_coop)
+                values.put(COL_people_LASTCERFICATION_DATE, pack.last_certification_date)
+                values.put(COL_people_IS_KAKAOMUNDO, pack.is_kakaomundo)
+                values.put(COL_people_KAKAOMUNDO_CENTER, pack.kakaomundo_center)
+                values.put(COL_people_USERID, pack.user_id)
+                values.put(COL_people_COMMUNITY_GROUP, pack.communitygroup)
+                values.put(COL_people_PERSON_CLASS, pack.person_class)
+                values.put(COL_people_PERSON_TYPE, pack.person_type)
+                values.put(COL_people_DEWSCIPTION, pack.description)
+                values.put(COL_people_CREATED_BY, pack.created_by)
+                values.put(COL_people_UPDATED_BY, pack.updated_by)
+                values.put(COL_people_UPDATED_AT, pack.updated_at)
+                values.put(COL_people_CREATED_AT, pack.created_at)
+                values.put(COL_people_DELETED_BY, pack.deleted_by)
+                values.put(COL_people_DELETED_AT, pack.deleted_at)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_people, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_people, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1659,41 +1863,42 @@ checkDataSaved= false
 
     //ravi - offline ----------insert--table---container
 
-    fun containerCreate(pack : Container) {
+    fun containerCreate(pack: Container) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_container,COL_container_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_container, COL_container_SERVERID)
+            if (i < 1) {
                 val values = ContentValues()
-            values.put(COL_container_SERVERID, pack.id)
-            values.put(COL_container_NAME, pack.name)
-            values.put(COL_container_DESCIPTION, pack.description)
-            values.put(COL_container_COM_GROUP, pack.com_group)
-            values.put(COL_container_TYPE, pack.type)
-            values.put(COL_container_STATUS, pack.status)
-            values.put(COL_container_MAX_CAPACITY, pack.max_capacity)
-            values.put(COL_container_CAPACITY_UNITS, pack.capacity_units)
-            values.put(COL_container_ZONE, pack.zone)
-            values.put(COL_container_CLASS, pack.`class`)
-            values.put(COL_container_NOTIFICATION_LEVEL, pack.notification_level)
-            values.put(COL_container_PARENT_CONTAINER, pack.parent_container)
-            values.put(COL_container_DELETED_AT, pack.deleted_at)
-            values.put(COL_container_CREATED_DATE, pack.created_date)
-            values.put(COL_container_CREATED_BY, pack.created_by)
-            values.put(COL_container_CREATED_DATE_UTC, pack.created_date_utc)
-            values.put(COL_container_LAST_CHANGED_DATE, pack.last_changed_date)
-            values.put(COL_container_LAST_CHANGED_BY, pack.last_changed_by)
-            values.put(COL_container_LAST_CHANGED_UTC, pack.last_changed_utc)
+                values.put(COL_container_SERVERID, pack.id)
+                values.put(COL_container_NAME, pack.name)
+                values.put(COL_container_DESCIPTION, pack.description)
+                values.put(COL_container_COM_GROUP, pack.com_group)
+                values.put(COL_container_TYPE, pack.type)
+                values.put(COL_container_STATUS, pack.status)
+                values.put(COL_container_MAX_CAPACITY, pack.max_capacity)
+                values.put(COL_container_CAPACITY_UNITS, pack.capacity_units)
+                values.put(COL_container_ZONE, pack.zone)
+                values.put(COL_container_CLASS, pack.`class`)
+                values.put(COL_container_NOTIFICATION_LEVEL, pack.notification_level)
+                values.put(COL_container_PARENT_CONTAINER, pack.parent_container)
+                values.put(COL_container_DELETED_AT, pack.deleted_at)
+                values.put(COL_container_CREATED_DATE, pack.created_date)
+                values.put(COL_container_CREATED_BY, pack.created_by)
+                values.put(COL_container_CREATED_DATE_UTC, pack.created_date_utc)
+                values.put(COL_container_LAST_CHANGED_DATE, pack.last_changed_date)
+                values.put(COL_container_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_container_LAST_CHANGED_UTC, pack.last_changed_utc)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_container, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_container, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1701,33 +1906,34 @@ checkDataSaved= false
 
     //ravi - offline ----------insert--table---container_object
 
-    fun containerObjectCreate(pack : ContainerObject) {
+    fun containerObjectCreate(pack: ContainerObject) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_container_object,COL_container_object_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_container_object, COL_container_object_SERVERID)
+            if (i < 1) {
                 val values = ContentValues()
-            values.put(COL_container_object_SERVERID, pack.id)
-            values.put(COL_container_object_OBJECTNAME, pack.object_name)
-            values.put(COL_container_object_CONTAINERNO, pack.container_no)
-            values.put(COL_container_object_OBJECT_NO, pack.object_no)
-            values.put(COL_container_object_TYPE, pack.type)
-            values.put(COL_container_object_CLASS, pack.`class`)
-            values.put(COL_container_object_SESSIN_ID, pack.session_id)
-            values.put(COL_container_object_ADDED_DATE, pack.added_date)
-            values.put(COL_container_object_ADDED_BY, pack.added_by)
-            values.put(COL_container_object_ADDED_UTC, pack.added_utc)
-            values.put(COL_container_object_DELETED_AT, pack.deleted_at)
+                values.put(COL_container_object_SERVERID, pack.id)
+                values.put(COL_container_object_OBJECTNAME, pack.object_name)
+                values.put(COL_container_object_CONTAINERNO, pack.container_no)
+                values.put(COL_container_object_OBJECT_NO, pack.object_no)
+                values.put(COL_container_object_TYPE, pack.type)
+                values.put(COL_container_object_CLASS, pack.`class`)
+                values.put(COL_container_object_SESSIN_ID, pack.session_id)
+                values.put(COL_container_object_ADDED_DATE, pack.added_date)
+                values.put(COL_container_object_ADDED_BY, pack.added_by)
+                values.put(COL_container_object_ADDED_UTC, pack.added_utc)
+                values.put(COL_container_object_DELETED_AT, pack.deleted_at)
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_container_object, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_container_object, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1736,36 +1942,35 @@ checkDataSaved= false
     //ravi-offline-----table----insert--community_groups
 
 
-
-    fun communityGroupsCreate(pack : CommunityGroup) {
+    fun communityGroupsCreate(pack: CommunityGroup) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_community_groups,COL_community_groups_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_community_groups, COL_community_groups_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_community_groups_SERVERID, pack.id)
-            values.put(COL_community_groups_NAME, pack.name)
-            values.put(COL_community_groups_DESCIPRTION, pack.description)
-            values.put(COL_community_groups_COMM_GROUP, pack.community_group)
-            values.put(COL_community_groups_CREATED_BY, pack.created_by)
-            values.put(COL_community_groups_DELTED_BY, pack.deleted_by)
-            values.put(COL_community_groups_UPDATED_BY, pack.updated_by)
-            values.put(COL_community_groups_UPDATED_AT,pack.updated_at)
-            values.put(COL_community_groups_CREATED_AT,pack.created_at)
-            values.put(COL_community_groups_DELETED_AT,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_community_groups_SERVERID, pack.id)
+                values.put(COL_community_groups_NAME, pack.name)
+                values.put(COL_community_groups_DESCIPRTION, pack.description)
+                values.put(COL_community_groups_COMM_GROUP, pack.community_group)
+                values.put(COL_community_groups_CREATED_BY, pack.created_by)
+                values.put(COL_community_groups_DELTED_BY, pack.deleted_by)
+                values.put(COL_community_groups_UPDATED_BY, pack.updated_by)
+                values.put(COL_community_groups_UPDATED_AT, pack.updated_at)
+                values.put(COL_community_groups_CREATED_AT, pack.created_at)
+                values.put(COL_community_groups_DELETED_AT, pack.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_community_groups, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_community_groups, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1774,37 +1979,38 @@ checkDataSaved= false
     //ravi - offline ----------insert--table---task_configs
 
 
-    fun task_configs_create(pack : TaskConfig) {
+    fun task_configs_create(pack: TaskConfig) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_task_configs,COL_task_configs_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_task_configs, COL_task_configs_SERVERID)
+            if (i < 1) {
                 val values = ContentValues()
-            values.put(COL_task_configs_SERVERID, pack.id)
-            values.put(COL_task_configs_NAME, pack.name)
-            values.put(COL_task_configs_DESCIPTION, pack.description)
-            values.put(COL_task_configs_TYPE, pack.type)
-            values.put(COL_task_configs_CLASS, pack.nclass)
-            values.put(COL_task_configs_COM_GROUP, pack.com_group)
-            values.put(COL_task_configs_NAME_PREFIX, pack.name_prefix)
-            values.put(COL_task_configs_RECORD_EVENT,pack.record_event)
-            values.put(COL_task_configs_REPORTABLE,pack.reportable)
-            values.put(COL_task_configs_CREATED_BY,pack.created_by)
-            values.put(COL_task_configs_CREATED_DATE,pack.created_date)
-            values.put(COL_task_configs_LAST_CHANGED_BY,pack.last_changed_by)
-            values.put(COL_task_configs_LAST_CHANGED_DATE,pack.last_changed_date)
-            values.put(COL_task_configs__LAST_DELETED_AT,pack.deleted_at)
+                values.put(COL_task_configs_SERVERID, pack.id)
+                values.put(COL_task_configs_NAME, pack.name)
+                values.put(COL_task_configs_DESCIPTION, pack.description)
+                values.put(COL_task_configs_TYPE, pack.type)
+                values.put(COL_task_configs_CLASS, pack.nclass)
+                values.put(COL_task_configs_COM_GROUP, pack.com_group)
+                values.put(COL_task_configs_NAME_PREFIX, pack.name_prefix)
+                values.put(COL_task_configs_RECORD_EVENT, pack.record_event)
+                values.put(COL_task_configs_REPORTABLE, pack.reportable)
+                values.put(COL_task_configs_CREATED_BY, pack.created_by)
+                values.put(COL_task_configs_CREATED_DATE, pack.created_date)
+                values.put(COL_task_configs_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_task_configs_LAST_CHANGED_DATE, pack.last_changed_date)
+                values.put(COL_task_configs__LAST_DELETED_AT, pack.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_task_configs, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_task_configs, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1813,37 +2019,37 @@ checkDataSaved= false
     //ravi - offline ----------insert--table---task_config_fields
 
 
-    fun task_config_fields_create(pack : TaskConfigField) {
+    fun task_config_fields_create(pack: TaskConfigField) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_task_config_fields,COL_task_config_fields_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_task_config_fields, COL_task_config_fields_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_task_config_fields_SERVERID, pack.id)
-            values.put(COL_task_config_fields_task_config_id, pack.task_config_id)
-            values.put(COL_task_config_fields_field_name, pack.field_name)
-            values.put(COL_task_config_fields_field_description, pack.field_description)
-            values.put(COL_task_config_fields_editable, pack.editable)
-            values.put(COL_task_config_fields_field_type, pack.field_type)
-            values.put(COL_task_config_fields_list, pack.list)
-            values.put(COL_task_config_fields_created_by,pack.created_by)
-            values.put(COL_task_config_fields_created_date,pack.created_date)
-            values.put(COL_task_config_fields_last_changed_by,pack.last_changed_by)
-            values.put(COL_task_config_fields_last_changed_date,pack.last_changed_date)
-            values.put(COL_task_config_fields_deleted_at,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_task_config_fields_SERVERID, pack.id)
+                values.put(COL_task_config_fields_task_config_id, pack.task_config_id)
+                values.put(COL_task_config_fields_field_name, pack.field_name)
+                values.put(COL_task_config_fields_field_description, pack.field_description)
+                values.put(COL_task_config_fields_editable, pack.editable)
+                values.put(COL_task_config_fields_field_type, pack.field_type)
+                values.put(COL_task_config_fields_list, pack.list)
+                values.put(COL_task_config_fields_created_by, pack.created_by)
+                values.put(COL_task_config_fields_created_date, pack.created_date)
+                values.put(COL_task_config_fields_last_changed_by, pack.last_changed_by)
+                values.put(COL_task_config_fields_last_changed_date, pack.last_changed_date)
+                values.put(COL_task_config_fields_deleted_at, pack.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_task_config_fields, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_task_config_fields, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -1852,165 +2058,205 @@ checkDataSaved= false
     //ravi - offline ----------insert--table---lists
 
 
-    fun listsCreate(pack : Lists) {
+    fun listsCreate(pack: Lists) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_lists,COL_lists_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_lists, COL_lists_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_lists_SERVERID, pack.id)
-            values.put(COL_lists_NAME, pack.name)
-            values.put(COL_lists_COM_GROUP_ID, pack.community_group_id)
-            values.put(COL_lists_DESC, pack.description)
-            values.put(COL_lists_COM_GROUP, pack.communitygroup)
-            values.put(COL_lists_CREATED_BY, pack.created_by)
-            values.put(COL_lists_UPDATED_BY, pack.updated_by)
-            values.put(COL_lists_DELETED_BY,pack.deleted_by)
-            values.put(COL_lists_CREATED_AT,pack.created_at)
-            values.put(COL_lists_UPDATED_AT,pack.updated_at)
-            values.put(COL_lists_DELETED_AT,pack.deleted_at)
-
-
+                val values = ContentValues()
+                values.put(COL_lists_SERVERID, pack.id)
+                values.put(COL_lists_NAME, pack.name)
+                values.put(COL_lists_COM_GROUP_ID, pack.community_group_id)
+                values.put(COL_lists_DESC, pack.description)
+                values.put(COL_lists_COM_GROUP, pack.communitygroup)
+                values.put(COL_lists_CREATED_BY, pack.created_by)
+                values.put(COL_lists_UPDATED_BY, pack.updated_by)
+                values.put(COL_lists_DELETED_BY, pack.deleted_by)
+                values.put(COL_lists_CREATED_AT, pack.created_at)
+                values.put(COL_lists_UPDATED_AT, pack.updated_at)
+                values.put(COL_lists_DELETED_AT, pack.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_lists, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_lists, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
     //ravi - offline ----------insert--table---list_choices
 
-    fun listChoicesCreate(pack : Choices) {
+    fun listChoicesCreate(pack: Choices) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_list_choices,COL_list_choices_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_list_choices, COL_list_choices_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_list_choices_SERVERID, pack.id)
-            values.put(COL_list_choices_LISTID, pack.lists_id)
-            values.put(COL_list_choices_CHOICE, pack.choice)
-            values.put(COL_list_choices_NAME, pack.name)
-            values.put(COL_list_choices_CHOICE_COM_GROUP, pack.choice_communitygroup)
-            values.put(COL_list_choices_COM_GROUP_ID, pack.community_group_id)
-            values.put(COL_list_choices_CREATED_AT, pack.created_at)
-            values.put(COL_list_choices_UPDATED_AT,pack.updated_at)
-            values.put(COL_list_choices_DELETED_AT,pack.deleted_at)
-
-
+                val values = ContentValues()
+                values.put(COL_list_choices_SERVERID, pack.id)
+                values.put(COL_list_choices_LISTID, pack.lists_id)
+                values.put(COL_list_choices_CHOICE, pack.choice)
+                values.put(COL_list_choices_NAME, pack.name)
+                values.put(COL_list_choices_CHOICE_COM_GROUP, pack.choice_communitygroup)
+                values.put(COL_list_choices_COM_GROUP_ID, pack.community_group_id)
+                values.put(COL_list_choices_CREATED_AT, pack.created_at)
+                values.put(COL_list_choices_UPDATED_AT, pack.updated_at)
+                values.put(COL_list_choices_DELETED_AT, pack.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_list_choices, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_list_choices, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-        }
-    }
-   //ravi - offline ----------insert--table---task_config_functions
-
-
-    fun task_config_functions_create(pack : TaskConfigFunction) {
-
-        try {
-            val i=checkEntry(pack.id,TABLE_task_config_functions,COL_task_config_functions_SERVERKEY)
-            if (i<1){
-
-            val values = ContentValues()
-            values.put(COL_task_config_functions_SERVERKEY, pack.id)
-            values.put(COL_task_config_functions_task_config_id, pack.task_config_id)
-            values.put(COL_task_config_functions_task_name, pack.name)
-            values.put(COL_task_config_functions_description, pack.description)
-            values.put(COL_task_config_functions_privilege, pack.privilege)
-            values.put(COL_task_config_functions_created_by, pack.created_by)
-            values.put(COL_task_config_functions_created_date, pack.created_date)
-            values.put(COL_task_config_functions_last_changed_by,pack.last_changed_by)
-            values.put(COL_task_config_functions_deleted_at,pack.deleted_at)
-            values.put(COL_task_config_functions_last_changed_date,pack.last_changed_date)
-
-
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_task_config_functions, null, values)
-            db.close()
-            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
 
-   //ravi - offline ----------insert--table---events
+    //ravi - offline ----------insert--table---team
 
-    fun eventsCreate(pack : Event) {
+    fun teamCreate(pack: Team) {
 
         try {
-            val i=checkEntry(pack.id,TABLE_events,COL_events_SERVERID)
-            if (i<1){
+            val i = checkEntry(pack.id, TABLE_team, COL_team_SERVERID)
+            if (i < 1) {
 
-            val values = ContentValues()
-            values.put(COL_events_SERVERID, pack.id)
-            values.put(COL_events_NAME, pack.name)
-            values.put(COL_events_DESCIPTION, pack.description)
-            values.put(COL_events_TYPE, pack.type)
-            values.put(COL_events_EXP_STR_DATE, pack.exp_start_date)
-            values.put(COL_events_EXP_END_DATE, pack.exp_end_date)
-            values.put(COL_events_EXP_DURATION, pack.exp_duration)
-            values.put(COL_events_ACTUAL_STR_DATE,pack.actual_start_date)
-            values.put(COL_events_ACTUAL_END_DATE,pack.actual_end_date)
-            values.put(COL_events_ACTUAL_DURATION,pack.actual_duration)
-            values.put(COL_events_CLOSED,pack.closed)
-            values.put(COL_events_CLOSED_DATE,pack.closed_date)
-            values.put(COL_events_CLOSED_BY,pack.closed_by)
-            values.put(COL_events_COM_GROUP,pack.com_group)
-            values.put(COL_events_RESPONSIBLE,pack.responsible)
-            values.put(COL_events_STATUS,pack.status)
-            values.put(COL_events_ASSIGN_TEAM,pack.assigned_team)
-            values.put(COL_events_TASK_ID,pack.task_id)
-            values.put(COL_events_CREATED_BY,pack.created_by)
-            values.put(COL_events_CREATED_DATE,pack.created_date)
-            values.put(COL_events_LAST_CHANGED_BY,pack.last_changed_by)
-            values.put(COL_events_LAST_CHANGED_DATE,pack.last_changed_date)
-            values.put(COL_events_DELETED_AT,pack.deleted_at)
+                val values = ContentValues()
+                values.put(COL_team_SERVERID, pack.id)
+                values.put(COL_team_NAME, pack.name)
+                values.put(COL_team_DESC, pack.description)
+                values.put(COL_team_EMAIL, pack.email)
+                values.put(COL_team_CONTACT, pack.contact)
+                values.put(COL_team_ADDRESS, pack.address)
+                values.put(COL_team_TEAMCLASS, pack.team_class)
+                values.put(COL_team_TEAMTYPE, pack.team_type)
+                values.put(COL_team_RESPONSIBLE, pack.responsible)
+                values.put(COL_team_COMGROUP, pack.communitygroup)
+                values.put(COL_team_LOGO, pack.logo)
+                values.put(COL_team_CREATEDBY, pack.created_by)
+                values.put(COL_team_CREATED_AT, pack.created_at)
+                values.put(COL_team_UPDATED_BY, pack.updated_by)
+                values.put(COL_team_UPDATED_AT, pack.updated_at)
+                values.put(COL_team_DELETED_BY, pack.deleted_by)
+                values.put(COL_team_DELETED_AT, pack.deleted_at)
 
-
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_events, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_team, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
+    //ravi - offline ----------insert--table---task_config_functions
+
+
+    fun task_config_functions_create(pack: TaskConfigFunction) {
+
+        try {
+            val i = checkEntry(
+                pack.id,
+                TABLE_task_config_functions,
+                COL_task_config_functions_SERVERKEY
+            )
+            if (i < 1) {
+
+                val values = ContentValues()
+                values.put(COL_task_config_functions_SERVERKEY, pack.id)
+                values.put(COL_task_config_functions_task_config_id, pack.task_config_id)
+                values.put(COL_task_config_functions_task_name, pack.name)
+                values.put(COL_task_config_functions_description, pack.description)
+                values.put(COL_task_config_functions_privilege, pack.privilege)
+                values.put(COL_task_config_functions_created_by, pack.created_by)
+                values.put(COL_task_config_functions_created_date, pack.created_date)
+                values.put(COL_task_config_functions_last_changed_by, pack.last_changed_by)
+                values.put(COL_task_config_functions_deleted_at, pack.deleted_at)
+                values.put(COL_task_config_functions_last_changed_date, pack.last_changed_date)
+
+
+                val db = this.writableDatabase
+                val result = db.insert(TABLE_task_config_functions, null, values)
+                db.close()
+                if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+                } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+                }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
 
+    //ravi - offline ----------insert--table---events
+
+    fun eventsCreate(pack: Event) {
+
+        try {
+            val i = checkEntry(pack.id, TABLE_events, COL_events_SERVERID)
+            if (i < 1) {
+
+                val values = ContentValues()
+                values.put(COL_events_SERVERID, pack.id)
+                values.put(COL_events_NAME, pack.name)
+                values.put(COL_events_DESCIPTION, pack.description)
+                values.put(COL_events_TYPE, pack.type)
+                values.put(COL_events_EXP_STR_DATE, pack.exp_start_date)
+                values.put(COL_events_EXP_END_DATE, pack.exp_end_date)
+                values.put(COL_events_EXP_DURATION, pack.exp_duration)
+                values.put(COL_events_ACTUAL_STR_DATE, pack.actual_start_date)
+                values.put(COL_events_ACTUAL_END_DATE, pack.actual_end_date)
+                values.put(COL_events_ACTUAL_DURATION, pack.actual_duration)
+                values.put(COL_events_CLOSED, pack.closed)
+                values.put(COL_events_CLOSED_DATE, pack.closed_date)
+                values.put(COL_events_CLOSED_BY, pack.closed_by)
+                values.put(COL_events_COM_GROUP, pack.com_group)
+                values.put(COL_events_RESPONSIBLE, pack.responsible)
+                values.put(COL_events_STATUS, pack.status)
+                values.put(COL_events_ASSIGN_TEAM, pack.assigned_team)
+                values.put(COL_events_TASK_ID, pack.task_id)
+                values.put(COL_events_CREATED_BY, pack.created_by)
+                values.put(COL_events_CREATED_DATE, pack.created_date)
+                values.put(COL_events_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_events_LAST_CHANGED_DATE, pack.last_changed_date)
+                values.put(COL_events_DELETED_AT, pack.deleted_at)
 
 
+                val db = this.writableDatabase
+                db.insert(TABLE_events, null, values)
+                db.close()
+//            if (result >= 0) {
+//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+
+//            }
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+        }
+    }
 
 
 //    fun addpackFieldValue(id: String, packid: String, value: String) {
@@ -2035,74 +2281,77 @@ checkDataSaved= false
 //        }
 //    }
 
-            //ravi offline -----insert---table-----tasks//
+    //ravi offline -----insert---table-----tasks//
 
     fun tasksCreate(task: Task) {
 
         try {
-            val i=checkEntry(task.id,TABLE_tasks,COL_tasks_SERVERid)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_tasks, COL_tasks_SERVERid)
+            if (i < 1) {
 
                 val values = ContentValues()
 
-            values.put(COL_tasks_SERVERid, task.id)
-            values.put(COL_tasks_NAME, task.name)
-            values.put(COL_tasks_DESC, task.description)
-            values.put(COL_tasks_GROUP, task.com_group)
-            values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
-            values.put(COL_tasks_TASKFUNC, task.task_func)
-            values.put(COL_tasks_STATUS, task.status)
-            values.put(COL_tasks_STARTED_LATE, task.started_late)
-            values.put(COL_tasks_ENDED_LATE, task.ended_late)
-            values.put(COL_tasks_CREATED_BY, task.created_by)
-            values.put(COL_tasks_CREATED_DATE, task.created_date)
-            values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
-            values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
-            values.put(COL_tasks_DELTED_AT, task.deleted_at)
+                values.put(COL_tasks_SERVERid, task.id)
+                values.put(COL_tasks_NAME, task.name)
+                values.put(COL_tasks_DESC, task.description)
+                values.put(COL_tasks_GROUP, task.com_group)
+                values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
+                values.put(COL_tasks_TASKFUNC, task.task_func)
+                values.put(COL_tasks_STATUS, task.status)
+                values.put(COL_tasks_STARTED_LATE, task.started_late)
+                values.put(COL_tasks_ENDED_LATE, task.ended_late)
+                values.put(COL_tasks_CREATED_BY, task.created_by)
+                values.put(COL_tasks_CREATED_DATE, task.created_date)
+                values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
+                values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
+                values.put(COL_tasks_DELTED_AT, task.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_tasks, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_tasks, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed to add task", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
 
 
     }
-//offline--ravi -------insert---table------task_field
-    fun task_fields_create(task:TaskField) {
+
+    //offline--ravi -------insert---table------task_field
+    fun task_fields_create(task: TaskField) {
 
         try {
-            val i=checkEntry(task.id,TABLE_task_fields,COL_task_fields_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_task_fields, COL_task_fields_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_task_fields_SERVERID, task.id)
-            values.put(COL_task_fields_TASKID, task.task_id)
-            values.put(COL_task_fields_FIELDID, task.field_id)
-            values.put(COL_task_fields_VALUE, task.value)
+                values.put(COL_task_fields_SERVERID, task.id)
+                values.put(COL_task_fields_TASKID, task.task_id)
+                values.put(COL_task_fields_FIELDID, task.field_id)
+                values.put(COL_task_fields_VALUE, task.value)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_task_fields, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_task_fields, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -2111,135 +2360,157 @@ checkDataSaved= false
     }
 
     //offline--ravi -------insert---table------graph_charts
-    fun graphChartsCreate(task:GraphChart) {
+    fun graphChartsCreate(task: GraphChart) {
 
         try {
-            val i=checkEntry(task.id,TABLE_graph_charts,COL_graph_charts_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_graph_charts, COL_graph_charts_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_graph_charts_SERVERID, task.id)
-            values.put(COL_graph_charts_NAME, task.name)
-            values.put(COL_graph_charts_DESCIPTION, task.description)
-            values.put(COL_graph_charts_OBJECTCLASS, task.object_class)
-            values.put(COL_graph_charts_COM_GROUP, task.com_group)
-            values.put(COL_graph_charts_TITLE, task.title)
-            values.put(COL_graph_charts_ABCISSA_TITLE, task.abcissa_title)
-            values.put(COL_graph_charts_ORDINATE_TITLE, task.ordinate_title)
-            values.put(COL_graph_charts_CREATED_DATE, task.created_date)
-            values.put(COL_graph_charts_CREATED_BY, task.created_by)
-            values.put(COL_graph_charts_LASTCHANGED_BY, task.last_changed_by)
-            values.put(COL_graph_charts_LASTCHANGED_DATE, task.last_changed_date)
-            values.put(COL_graph_charts_DELETED_AT, task.deleted_at)
+                values.put(COL_graph_charts_SERVERID, task.id)
+                values.put(COL_graph_charts_NAME, task.name)
+                values.put(COL_graph_charts_DESCIPTION, task.description)
+                values.put(COL_graph_charts_OBJECTCLASS, task.object_class)
+                values.put(COL_graph_charts_COM_GROUP, task.com_group)
+                values.put(COL_graph_charts_TITLE, task.title)
+                values.put(COL_graph_charts_ABCISSA_TITLE, task.abcissa_title)
+                values.put(COL_graph_charts_ORDINATE_TITLE, task.ordinate_title)
+                values.put(COL_graph_charts_CREATED_DATE, task.created_date)
+                values.put(COL_graph_charts_CREATED_BY, task.created_by)
+                values.put(COL_graph_charts_LASTCHANGED_BY, task.last_changed_by)
+                values.put(COL_graph_charts_LASTCHANGED_DATE, task.last_changed_date)
+                values.put(COL_graph_charts_DELETED_AT, task.deleted_at)
 
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_graph_charts, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_graph_charts, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
 
 
     }
-
-
 
     //offline--ravi -------insert---table------graph_chart_objects
 
-
-
-    fun graphChartObjectsCreate(task:GraphChartObject) {
+    fun graphChartObjectsCreate(task: GraphChartObject) {
 
         try {
-            val i=checkEntry(task.id,TABLE_graph_chart_objects,COL_graph_chart_objects_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_graph_chart_objects, COL_graph_chart_objects_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_graph_chart_objects_SERVERID, task.id)
-            values.put(COL_graph_chart_objects_CHARTID, task.graphs_charts_id)
-            values.put(COL_graph_chart_objects_NAME, task.name)
-            values.put(COL_graph_chart_objects_LINETYPE, task.line_type)
-            values.put(COL_graph_chart_objects_RESULT_CLASS, task.result_class)
-            values.put(COL_graph_chart_objects_REF_CLTL_POINT, task.ref_ctrl_points)
-            values.put(COL_graph_chart_objects_CREATED_BY, task.created_by)
-            values.put(COL_graph_chart_objects_CREATED_DATE, task.created_date)
-            values.put(COL_graph_chart_objects_LAST_CHANGED_BY, task.last_changed_by)
-            values.put(COL_graph_chart_objects_LAST_CHANGED_DATE, task.last_changed_date)
-            values.put(COL_graph_chart_objects_DELETED_AT, task.deleted_at)
+                values.put(COL_graph_chart_objects_SERVERID, task.id)
+//            values.put(COL_graph_chart_objects_CHARTID, task.graphs_charts_id)
+                values.put(COL_graph_chart_objects_NAME, task.name)
+                values.put(COL_graph_chart_objects_LINETYPE, task.line_type)
+                values.put(COL_graph_chart_objects_RESULT_CLASS, task.result_class)
+                values.put(COL_graph_chart_objects_REF_CLTL_POINT, task.ref_ctrl_points)
+                values.put(COL_graph_chart_objects_GRAPH_CHARTID, task.graphs_charts_id)
+//            values.put(COL_graph_chart_objects_CREATED_BY, task.created_by)
+//            values.put(COL_graph_chart_objects_CREATED_DATE, task.created_date)
+//            values.put(COL_graph_chart_objects_LAST_CHANGED_BY, task.last_changed_by)
+//            values.put(COL_graph_chart_objects_LAST_CHANGED_DATE, task.last_changed_date)
+//            values.put(COL_graph_chart_objects_DELETED_AT, task.deleted_at)
 
 
+                val db = this.writableDatabase
+                db.insert(TABLE_graph_chart_objects, null, values)
+                db.close()
 
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_graph_chart_objects, null, values)
-            db.close()
-            if (result >= 0) {
-//                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
-
-
-            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
-            }}
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
+        }
+        if (task.points.isNotEmpty()) {
+            for (z in 0 until task.points.size) {
+                val item = task.points.get(z)
+
+                try {
+                    val d = checkEntry(
+                        task.id,
+                        TABLE_graph_chart_points,
+                        COL_graph_chart_points_SERVERID
+                    )
+                    if (d < 1) {
+
+                        val myvalues = ContentValues()
+                        myvalues.put(COL_graph_chart_points_SERVERID, item.id)
+                        myvalues.put(COL_graph_chart_points_PACKID, item.packId)
+                        myvalues.put(COL_graph_chart_points_VALUE, item.value)
+                        myvalues.put(COL_graph_chart_points_CHARTID, task.id)
+                        myvalues.put(COL_graph_chart_points_CreateAt, item.createAt)
+                        myvalues.put(COL_graph_chart_points_DURATION, item.duration)
+
+                        val db = this.writableDatabase
+                        db.insert(TABLE_graph_chart_points, null, myvalues)
+                        db.close()
+                    }
+                } catch (e: Exception) {
+                    AppUtils.logError(TAG, e.message!!)
+                }
+            }
         }
 
 
     }
 
+
+
     //offline--ravi -------insert---table------sensors
 
-    fun sensorCreate(task:Sensor) {
+    fun sensorCreate(task: Sensor) {
 
         try {
-            val i=checkEntry(task.id,TABLE_sensors,COL_sensors_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_sensors, COL_sensors_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_sensors_SERVERID, task.id)
-            values.put(COL_sensors_TYPEID, task.sensor_type_id)
-            values.put(COL_sensors_NAME, task.name)
-            values.put(COL_sensors_SENSORID, task.sensorId)
-            values.put(COL_sensors_MODEL, task.model)
-            values.put(COL_sensors_BRAND, task.brand)
-            values.put(COL_sensors_SENSORIP, task.created_by)
-            values.put(COL_sensors_OWNER, task.owner)
-            values.put(COL_sensors_USERID, task.user_id)
-            values.put(COL_sensors_UNITID, task.unit_id)
-            values.put(COL_sensors_MINIMUM, task.minimum)
-            values.put(COL_sensors_MAXIMUM, task.maximum)
-            values.put(COL_sensors_COM_GROUP, task.community_group)
-            values.put(COL_sensors_CONNECTEDBOARD, task.connected_board)
-            values.put(COL_sensors_CONTAINERID, task.container_id)
-            values.put(COL_sensors_CREATEDBY, task.created_by)
-            values.put(COL_sensors_UPDATEDBY, task.updated_by)
-            values.put(COL_sensors_DELETEDBY, task.deleted_by)
-            values.put(COL_sensors_CREATEDAT, task.created_at)
-            values.put(COL_sensors_UPDATEDAT, task.updated_at)
-            values.put(COL_sensors_DELETEDAT, task.deleted_at)
+                values.put(COL_sensors_SERVERID, task.id)
+                values.put(COL_sensors_TYPEID, task.sensor_type_id)
+                values.put(COL_sensors_NAME, task.name)
+                values.put(COL_sensors_SENSORID, task.sensorId)
+                values.put(COL_sensors_MODEL, task.model)
+                values.put(COL_sensors_BRAND, task.brand)
+                values.put(COL_sensors_SENSORIP, task.created_by)
+                values.put(COL_sensors_OWNER, task.owner)
+                values.put(COL_sensors_USERID, task.user_id)
+                values.put(COL_sensors_UNITID, task.unit_id)
+                values.put(COL_sensors_MINIMUM, task.minimum)
+                values.put(COL_sensors_MAXIMUM, task.maximum)
+                values.put(COL_sensors_COM_GROUP, task.community_group)
+                values.put(COL_sensors_CONNECTEDBOARD, task.connected_board)
+                values.put(COL_sensors_CONTAINERID, task.container_id)
+                values.put(COL_sensors_CREATEDBY, task.created_by)
+                values.put(COL_sensors_UPDATEDBY, task.updated_by)
+                values.put(COL_sensors_DELETEDBY, task.deleted_by)
+                values.put(COL_sensors_CREATEDAT, task.created_at)
+                values.put(COL_sensors_UPDATEDAT, task.updated_at)
+                values.put(COL_sensors_DELETEDAT, task.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_sensors, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_sensors, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -2250,37 +2521,37 @@ checkDataSaved= false
     //offline--ravi -------insert---table------units
 
 
-    fun unitsCreate(task:Unit) {
+    fun unitsCreate(task: Unit) {
 
         try {
-            val i=checkEntry(task.id,TABLE_units,COL_units_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_units, COL_units_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_units_SERVERID, task.id)
-            values.put(COL_units_NAME, task.name)
-            values.put(COL_units_DESCRIPTION, task.description)
-            values.put(COL_units_COM_GROUP, task.communitygroup)
-            values.put(COL_units_CREATED_BY, task.created_by)
-            values.put(COL_units_UPDATED_BY, task.updated_by)
-            values.put(COL_units_DELETED_BY, task.deleted_by)
-            values.put(COL_units_CREATED_AT, task.created_at)
-            values.put(COL_units_UPDATED_AT, task.updated_at)
-            values.put(COL_units_DELETED_AT, task.deleted_at)
+                values.put(COL_units_SERVERID, task.id)
+                values.put(COL_units_NAME, task.name)
+                values.put(COL_units_DESCRIPTION, task.description)
+                values.put(COL_units_COM_GROUP, task.communitygroup)
+                values.put(COL_units_CREATED_BY, task.created_by)
+                values.put(COL_units_UPDATED_BY, task.updated_by)
+                values.put(COL_units_DELETED_BY, task.deleted_by)
+                values.put(COL_units_CREATED_AT, task.created_at)
+                values.put(COL_units_UPDATED_AT, task.updated_at)
+                values.put(COL_units_DELETED_AT, task.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_units, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_units, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -2290,70 +2561,70 @@ checkDataSaved= false
 
     //offline--ravi -------insert---table------fields
 
-    fun fieldsCreate(task:Field) {
+    fun fieldsCreate(task: Field) {
 
         try {
-            val i=checkEntry(task.id,TABLE_fields,COL_fields_SERVERID)
-            if (i<1){
+            val i = checkEntry(task.id, TABLE_fields, COL_fields_SERVERID)
+            if (i < 1) {
 
                 val values = ContentValues()
-            values.put(COL_fields_SERVERID, task.id)
-            values.put(COL_fields_NAME, task.name)
-            values.put(COL_fields_DESCIPTION, task.description)
-            values.put(COL_fields_COUNTRY, task.country)
-            values.put(COL_fields_REGION, task.region)
-            values.put(COL_fields_LOCALITY, task.locality)
-            values.put(COL_fields_SURFACE_AREA, task.surface_area)
-            values.put(COL_fields_AREA_UNIT, task.area_unit)
-            values.put(COL_fields_NUMBER_OF_PLANT, task.number_of_plant)
-            values.put(COL_fields_MAIN_CULTURE, task.main_culture)
-            values.put(COL_fields_OTHER_CULTURE, task.other_culture)
-            values.put(COL_fields_COMMUNITY_GROUP, task.communitygroup)
-            values.put(COL_fields_PLANT_TYPE, task.plant_type)
-            values.put(COL_fields_SOIL_TYPE, task.soil_type)
-            values.put(COL_fields_VEGETATION, task.vegetation)
-            values.put(COL_fields_CLIMATE, task.climate)
-            values.put(COL_fields_ALTITUDE, task.altitude)
-            values.put(COL_fields_ALTITUDE_UNIT, task.altitude_unit)
-            values.put(COL_fields_TEMPERATURE, task.temperature)
-            values.put(COL_fields_TEMP_UNIT, task.temp_unit)
-            values.put(COL_fields_HUMIDITY, task.humidity)
-            values.put(COL_fields_HUMIDITY_UNIT, task.humidity_unit)
-            values.put(COL_fields_PLUVIOMETRY, task.pluviometry)
-            values.put(COL_fields_PLUVIOMETRY_UNIT, task.pluviometry_unit)
-            values.put(COL_fields_HARVEST_PERIOD, task.harvest_period)
-            values.put(COL_fields_FIELD_CLASS, task.field_class)
-            values.put(COL_fields_FIELD_TYPE, task.field_type)
-            values.put(COL_fields_FIELD_BOUNDARY, task.field_boundary)
-            values.put(COL_fields_LATITUDE, task.latitude)
-            values.put(COL_fields_LONGITUDE, task.longitude)
-            values.put(COL_fields_FIELD_CONTACT, task.field_contact)
-            values.put(COL_fields_UNIT_ID, task.unit_id)
-            values.put(COL_fields_LAST_VISITED_BY, task.last_visited_by)
-            values.put(COL_fields_LIST_ID, task.lists_id)
-            values.put(COL_fields_TEAM_ID, task.team_id)
-            values.put(COL_fields_LAST_VISITED_DATE, task.last_visited_date)
-            values.put(COL_fields_LAST_VISITED_UTC, task.last_visited_date_utc)
-            values.put(COL_fields_CREATED_BY, task.created_by)
-            values.put(COL_fields_CREATED_AT, task.created_at)
-            values.put(COL_fields_UPDATED_AT, task.updated_at)
-            values.put(COL_fields_UPDATED_BY, task.updated_by)
-            values.put(COL_fields_DELETED_BY, task.deleted_by)
-            values.put(COL_fields_DELETED_AT, task.deleted_at)
+                values.put(COL_fields_SERVERID, task.id)
+                values.put(COL_fields_NAME, task.name)
+                values.put(COL_fields_DESCIPTION, task.description)
+                values.put(COL_fields_COUNTRY, task.country)
+                values.put(COL_fields_REGION, task.region)
+                values.put(COL_fields_LOCALITY, task.locality)
+                values.put(COL_fields_SURFACE_AREA, task.surface_area)
+                values.put(COL_fields_AREA_UNIT, task.area_unit)
+                values.put(COL_fields_NUMBER_OF_PLANT, task.number_of_plant)
+                values.put(COL_fields_MAIN_CULTURE, task.main_culture)
+                values.put(COL_fields_OTHER_CULTURE, task.other_culture)
+                values.put(COL_fields_COMMUNITY_GROUP, task.communitygroup)
+                values.put(COL_fields_PLANT_TYPE, task.plant_type)
+                values.put(COL_fields_SOIL_TYPE, task.soil_type)
+                values.put(COL_fields_VEGETATION, task.vegetation)
+                values.put(COL_fields_CLIMATE, task.climate)
+                values.put(COL_fields_ALTITUDE, task.altitude)
+                values.put(COL_fields_ALTITUDE_UNIT, task.altitude_unit)
+                values.put(COL_fields_TEMPERATURE, task.temperature)
+                values.put(COL_fields_TEMP_UNIT, task.temp_unit)
+                values.put(COL_fields_HUMIDITY, task.humidity)
+                values.put(COL_fields_HUMIDITY_UNIT, task.humidity_unit)
+                values.put(COL_fields_PLUVIOMETRY, task.pluviometry)
+                values.put(COL_fields_PLUVIOMETRY_UNIT, task.pluviometry_unit)
+                values.put(COL_fields_HARVEST_PERIOD, task.harvest_period)
+                values.put(COL_fields_FIELD_CLASS, task.field_class)
+                values.put(COL_fields_FIELD_TYPE, task.field_type)
+                values.put(COL_fields_FIELD_BOUNDARY, task.field_boundary)
+                values.put(COL_fields_LATITUDE, task.latitude)
+                values.put(COL_fields_LONGITUDE, task.longitude)
+                values.put(COL_fields_FIELD_CONTACT, task.field_contact)
+                values.put(COL_fields_UNIT_ID, task.unit_id)
+                values.put(COL_fields_LAST_VISITED_BY, task.last_visited_by)
+                values.put(COL_fields_LIST_ID, task.lists_id)
+                values.put(COL_fields_TEAM_ID, task.team_id)
+                values.put(COL_fields_LAST_VISITED_DATE, task.last_visited_date)
+                values.put(COL_fields_LAST_VISITED_UTC, task.last_visited_date_utc)
+                values.put(COL_fields_CREATED_BY, task.created_by)
+                values.put(COL_fields_CREATED_AT, task.created_at)
+                values.put(COL_fields_UPDATED_AT, task.updated_at)
+                values.put(COL_fields_UPDATED_BY, task.updated_by)
+                values.put(COL_fields_DELETED_BY, task.deleted_by)
+                values.put(COL_fields_DELETED_AT, task.deleted_at)
 
 
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_fields, null, values)
-            db.close()
-            if (result >= 0) {
+                val db = this.writableDatabase
+                db.insert(TABLE_fields, null, values)
+                db.close()
+//            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
 
-            } else {
+//            } else {
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-            }}
+//            }
+            }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -2472,7 +2743,7 @@ checkDataSaved= false
 
     }
 
-//    fun updateTask(task: ViewTaskModelClass, entryname: String): Int {
+    //    fun updateTask(task: ViewTaskModelClass, entryname: String): Int {
 //        val db = this.writableDatabase
 //
 //        val contentValues = ContentValues()
@@ -2494,36 +2765,42 @@ checkDataSaved= false
     fun getAllPack(): ArrayList<PacksNew> {
 
 
-
         val upCommingPackList = ArrayList<PacksNew>()
         val db = this.readableDatabase
-    val query = "Select * from $TABLE_CREAT_PACK"
-    val cursor: Cursor?
-    try {
-        cursor = db.rawQuery(query, null)
-    }
-    catch (e:Exception){
-        AppUtils.logError(TAG, e.message!!)
-        db.execSQL(query)
-        return ArrayList()
-    }
+        val query = "Select * from $TABLE_CREAT_PACK"
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
 
         if (cursor.moveToFirst()) {
             do {
-                val collect_activity_id:Int? = 0//cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK)) ?: 0
-                val com_group:String? = cursor.getString(cursor.getColumnIndex(COL_PACK_GROUP))
-                val created_by :String?= cursor.getString(cursor.getColumnIndex(COL_PACK_CREATED_BY))
-                val created_date:String? = cursor.getString(cursor.getColumnIndex(COL_PACK_CREATED_DATE))
-                val deleted_at:String? = "" //cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK_D))
-                val description :String? = cursor.getString(cursor.getColumnIndex(COL_PACK_DESC))
-                val id :String? = cursor.getString(cursor.getColumnIndex(COL_ID))
-                val initial_task_no :String?= ""//cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK_GROUP))
-                val is_active:String? = cursor.getString(cursor.getColumnIndex(COL_PACK_IS_ACTIVE))
-                val last_changed_by :String?= cursor.getString(cursor.getColumnIndex(COL_PACK_LAST_CHANGED_BY))
-                val last_changed_date:String? = cursor.getString(cursor.getColumnIndex(COL_PACK_LAST_CHANGED_DATE)) ?: ""
-                val name :String? = cursor.getString(cursor.getColumnIndex(COL_PACK_NAME))
-                val pack_config_id :String? = cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIG_ID))
-                val primaryKey :String? = cursor.getString(cursor.getColumnIndex(COL_LOCAL_ID))
+                val collect_activity_id: Int? =
+                    0//cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK)) ?: 0
+                val com_group: String? = cursor.getString(cursor.getColumnIndex(COL_PACK_GROUP))
+                val created_by: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_PACK_CREATED_BY))
+                val created_date: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_PACK_CREATED_DATE))
+                val deleted_at: String? =
+                    "" //cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK_D))
+                val description: String? = cursor.getString(cursor.getColumnIndex(COL_PACK_DESC))
+                val id: String? = cursor.getString(cursor.getColumnIndex(COL_ID))
+                val initial_task_no: String? =
+                    ""//cursor.getString(cursor.getColumnIndex(DatabaseConstant.COL_PACK_GROUP))
+                val is_active: String? = cursor.getString(cursor.getColumnIndex(COL_PACK_IS_ACTIVE))
+                val last_changed_by: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_PACK_LAST_CHANGED_BY))
+                val last_changed_date: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_PACK_LAST_CHANGED_DATE)) ?: ""
+                val name: String? = cursor.getString(cursor.getColumnIndex(COL_PACK_NAME))
+                val pack_config_id: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIG_ID))
+                val primaryKey: String? = cursor.getString(cursor.getColumnIndex(COL_LOCAL_ID))
 
                 val packsNew = PacksNew(
                     collect_activity_id.toString(),
@@ -2538,9 +2815,9 @@ checkDataSaved= false
                     last_changed_by?.toInt(),
                     last_changed_date,
                     name,
-                    pack_config_id,"TYPE-  ",
-                    "Desciption-  ","","",
-                    "",primaryKey?.toInt()
+                    pack_config_id, "TYPE-  ",
+                    "Desciption-  ", "", "",
+                    "", primaryKey?.toInt()
 
                 )
                 upCommingPackList.add(packsNew)
@@ -2554,7 +2831,6 @@ checkDataSaved= false
     }
 
 
-
     @SuppressLint("Range")
     fun getAllPackConfig(): ArrayList<PackConfig> {
 //        val list: ArrayList<PackConfigList> = ArrayList()
@@ -2565,43 +2841,46 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
         }
         if (cursor.moveToFirst()) {
             do {
-                var name:String?=null
-                var id:String?=null
-                var desciption :String?=null
-                var packConfigType:String?=null
-                var packConfigClass:String?=null
-                var comgroup :String?=null
-                var nameprefix:String?=null
-                var collectactivityid:String?=null
-                var graphchartid:String?=null
-                var createdBY:String?=null
-                var createdDate :String?=null
-                var lastChangedBy :String?=null
-                var lastChnagedDate :String?=null
-                var deletedAt :String?=null
+                var name: String?
+                var id: String?
+                var desciption: String?
+                var packConfigType: String?
+                var packConfigClass: String?
+                var comgroup: String?
+                var nameprefix: String?
+                var collectactivityid: String?
+                var graphchartid: String?
+                var createdBY: String?
+                var createdDate: String?
+                var lastChangedBy: String?
+                var lastChnagedDate: String?
+                var deletedAt: String?
 
-                    name = cursor.getString(cursor.getColumnIndex(COL_pack_configs_NAME))
+                name = cursor.getString(cursor.getColumnIndex(COL_pack_configs_NAME))
                 id = cursor.getString(cursor.getColumnIndex(COL_pack_configs_SERVER_ID))
-                 desciption = cursor.getString(cursor.getColumnIndex(COL_pack_configs_DESCIPTION))
+                desciption = cursor.getString(cursor.getColumnIndex(COL_pack_configs_DESCIPTION))
                 packConfigType = cursor.getString(cursor.getColumnIndex(COL_pack_configs_TYPE))
-               packConfigClass  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CLASS))
-                 comgroup  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_COMGROUP))
+                packConfigClass = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CLASS))
+                comgroup = cursor.getString(cursor.getColumnIndex(COL_pack_configs_COMGROUP))
                 nameprefix = cursor.getString(cursor.getColumnIndex(COL_pack_configs_NAMEPREFIX))
-                collectactivityid = cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
-                 graphchartid = cursor.getString(cursor.getColumnIndex(COL_pack_configs_GRAPHCHCHART_ID))
-                 createdBY  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATEDBY))
-              createdDate  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATED_DATE))
-                 lastChangedBy  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHANGED_BY))
-                lastChnagedDate  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHNAGED_DATE))
-                 deletedAt  = cursor.getString(cursor.getColumnIndex(COL_pack_configs_DELETED_AT))
+                collectactivityid =
+                    cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
+                graphchartid =
+                    cursor.getString(cursor.getColumnIndex(COL_pack_configs_GRAPHCHCHART_ID))
+                createdBY = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATEDBY))
+                createdDate = cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATED_DATE))
+                lastChangedBy =
+                    cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHANGED_BY))
+                lastChnagedDate =
+                    cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHNAGED_DATE))
+                deletedAt = cursor.getString(cursor.getColumnIndex(COL_pack_configs_DELETED_AT))
 
                 val packconfig = PackConfig(
                     packConfigClass.toInt(), collectactivityid,
@@ -2626,17 +2905,17 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun setCollectActivitySpinner(myid:String): ArrayList<CollectActivity> {
+    fun setCollectActivitySpinner(myid: String): ArrayList<CollectActivity> {
 //        val list: ArrayList<PackConfigList> = ArrayList()
 
         val upCommingPackCONFIGList = ArrayList<CollectActivity>()
         val db = this.readableDatabase
-        val query = "Select * from $TABLE_collect_activities Where $COL_collect_activities_SERVERID In($myid)"
+        val query =
+            "Select * from $TABLE_collect_activities Where $COL_collect_activities_SERVERID In($myid)"
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -2644,11 +2923,13 @@ checkDataSaved= false
         if (cursor.moveToFirst()) {
             do {
 
-             val id:String? = cursor.getString(cursor.getColumnIndex(COL_collect_activities_SERVERID))
-             val    name:String? = cursor.getString(cursor.getColumnIndex(COL_collect_activities_NAME))
+                val id: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_collect_activities_SERVERID))
+                val name: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_collect_activities_NAME))
 
 
-                val packconfig = CollectActivity(id = id?.toInt(),name = name)
+                val packconfig = CollectActivity(id = id?.toInt(), name = name)
 //                val packconfig = PackConfig(
 //                 0,"",
 //                    0,0,"","",
@@ -2666,15 +2947,15 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun getAllCollectData(selectedPackid:String): ArrayList<CollectData> {
+    fun getAllCollectData(selectedPackid: String): ArrayList<CollectData> {
 
         val query =
             "SELECT $TABLE_collect_data.*, " +
-                    " strftime('%Y-%m-%d %H:%M:%S', $TABLE_collect_data.$COL_collect_data_CREATED_AT) as 'DATE',"+
+                    " strftime('%Y-%m-%d %H:%M:%S', $TABLE_collect_data.$COL_collect_data_CREATED_AT) as 'DATE'," +
                     " $TABLE_collect_activities.$COL_collect_activities_NAME, " +
                     " $TABLE_collect_activity_results.$COL_collect_activity_results_RESULTNAME, " +
                     " $TABLE_units.$COL_units_NAME, " +
-                    " $TABLE_sensors.$COL_sensors_NAME "+
+                    " $TABLE_sensors.$COL_sensors_NAME " +
                     " FROM  $TABLE_collect_data " +
                     " INNER JOIN $TABLE_collect_activities  ON " +
                     " $TABLE_collect_data.$COL_collect_data_CollectActivityId = $TABLE_collect_activities.$COL_collect_activities_SERVERID " +
@@ -2685,7 +2966,7 @@ checkDataSaved= false
                     " INNER JOIN $TABLE_sensors ON " +
                     " $TABLE_collect_data.$COL_collect_data_SENSORID = $TABLE_sensors.$COL_sensors_SERVERID " +
                     "  Where $TABLE_collect_data.$COL_collect_data_pack_id = '$selectedPackid'"
-        AppUtils.logError(TAG,"my query "+query)
+        AppUtils.logError(TAG, "my query " + query)
 
 
         val upCommingPackCONFIGList = ArrayList<CollectData>()
@@ -2695,8 +2976,7 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -2704,27 +2984,27 @@ checkDataSaved= false
         try {
             if (cursor.moveToFirst()) {
                 do {
-                    var collect_activity_id: String? = null
-                    var created_at: String? = null
-                    var created_by: String? = null
-                    var deleted_at: String? = null
-                    var deleted_by: String? = null
-                    var duration: String? = null
-                    var id: String? = null
-                    var new_value: String? = null
-                    var pack_id: String? = null
-                    var result_class: String? = null
-                    var sensor_id: String? = null
-                    var result_id: String? = null
-                    var unit_id: String? = null
-                    var updated_at: String? = null
-                    var updated_by: String? = null
-                    var value: String? = null
-                    var activityname: String? = null
-                    var resultname: String? = null
-                    var unitname: String? = null
-                    var date: String? = null
-                    var sensorname: String? = null
+                    var collect_activity_id: String?
+                    var created_at: String?
+                    var created_by: String?
+                    var deleted_at: String?
+                    var deleted_by: String?
+                    var duration: String?
+                    var id: String?
+                    var new_value: String?
+                    var pack_id: String?
+                    var result_class: String?
+                    var sensor_id: String?
+                    var result_id: String?
+                    var unit_id: String?
+                    var updated_at: String?
+                    var updated_by: String?
+                    var value: String?
+                    var activityname: String?
+                    var resultname: String?
+                    var unitname: String?
+                    var date: String?
+                    var sensorname: String?
 
                     collect_activity_id =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_CollectActivityId))
@@ -2753,7 +3033,11 @@ checkDataSaved= false
                     activityname =
                         cursor.getString(cursor.getColumnIndex(COL_collect_activities_NAME))
                     resultname =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_RESULTNAME))
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                COL_collect_activity_results_RESULTNAME
+                            )
+                        )
                     unitname =
                         cursor.getString(cursor.getColumnIndex(COL_units_NAME))
                     sensorname =
@@ -2768,8 +3052,8 @@ checkDataSaved= false
                         deleted_at, deleted_by, duration, id, new_value,
                         pack_id, result_class, result_id, sensor_id,
                         unit_id, updated_at,
-                        updated_by, value,activityname,resultname,
-                        unitname,date,
+                        updated_by, value, activityname, resultname,
+                        unitname, date,
                         sensorname
                     )
 
@@ -2777,10 +3061,9 @@ checkDataSaved= false
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -2789,9 +3072,9 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun getAllEventListData(userId:String): ArrayList<Event> {
+    fun getAllEventListData(userId: String): ArrayList<Event> {
 
-       val query="SELECT * FROM $TABLE_events "
+        val query = "SELECT * FROM $TABLE_events "
 
 
         val upCommingPackCONFIGList = ArrayList<Event>()
@@ -2801,8 +3084,7 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -2812,62 +3094,88 @@ checkDataSaved= false
                 do {
 
 
-                  val  id :String? =
+                    val id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_SERVERID))
-                   val  name:String? =
+                    val name: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_NAME))
-                  val  desc:String? = cursor.getString(cursor.getColumnIndex(COL_events_DESCIPTION))
-                    val type:String? =
+                    val desc: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_DESCIPTION))
+                    val type: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_TYPE))
-                    val expStrDate:String? =
+                    val expStrDate: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_EXP_STR_DATE))
-                    val expEndDate:String? = cursor.getString(cursor.getColumnIndex(COL_events_EXP_END_DATE))
-                    val duration:String? = cursor.getString(cursor.getColumnIndex(COL_events_EXP_DURATION))
-                    val actStrDate:String? = cursor.getString(cursor.getColumnIndex(COL_events_ACTUAL_STR_DATE))
-                    val actEndDate:String? = cursor.getString(cursor.getColumnIndex(COL_events_ACTUAL_END_DATE))
-                    val actDuration:String? =
+                    val expEndDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_EXP_END_DATE))
+                    val duration: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_EXP_DURATION))
+                    val actStrDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_ACTUAL_STR_DATE))
+                    val actEndDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_ACTUAL_END_DATE))
+                    val actDuration: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_ACTUAL_DURATION))
-                    val eventClose:String? = cursor.getString(cursor.getColumnIndex(COL_events_CLOSED))
-                    val closedDate:String? = cursor.getString(cursor.getColumnIndex(COL_events_CLOSED_DATE))
-                    val closedBy:String? = cursor.getString(cursor.getColumnIndex(COL_events_CLOSED_BY))
-                    val comGroup:String? =
+                    val eventClose: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_CLOSED))
+                    val closedDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_CLOSED_DATE))
+                    val closedBy: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_CLOSED_BY))
+                    val comGroup: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_COM_GROUP))
-                    val status:String? =
+                    val status: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_STATUS))
-                    val responsible:String? = cursor.getString(cursor.getColumnIndex(COL_events_RESPONSIBLE))
+                    val responsible: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_events_RESPONSIBLE))
 
-                    val assgnTeam:String? =
+                    val assgnTeam: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_ASSIGN_TEAM))
-                    val taskid:String? =
+                    val taskid: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_TASK_ID))
-                    val createdBy:String? =
+                    val createdBy: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_CREATED_BY))
-                    val createdDate:String? =
+                    val createdDate: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_CREATED_DATE))
-                    val lastChangedBy:String? =
+                    val lastChangedBy: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_LAST_CHANGED_BY))
-                    val lastChangedDate:String? =
+                    val lastChangedDate: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_LAST_CHANGED_DATE))
-                    val deletedAt:String? =
+                    val deletedAt: String? =
                         cursor.getString(cursor.getColumnIndex(COL_events_DELETED_AT))
 
 
-
-                    val packconfig = Event(actDuration,actEndDate,actStrDate,assgnTeam?.toInt(),
+                    val packconfig = Event(
+                        actDuration,
+                        actEndDate,
+                        actStrDate,
+                        assgnTeam?.toInt(),
                         eventClose?.toInt(),
-                        closedBy,closedDate,comGroup?.toInt(),createdBy?.toInt(),createdDate,deletedAt,
-                        desc,duration,expEndDate,expStrDate,id?.toInt(),lastChangedBy?.toInt(),
+                        closedBy,
+                        closedDate,
+                        comGroup?.toInt(),
+                        createdBy?.toInt(),
+                        createdDate,
+                        deletedAt,
+                        desc,
+                        duration,
+                        expEndDate,
+                        expStrDate,
+                        id?.toInt(),
+                        lastChangedBy?.toInt(),
                         lastChangedDate,
-                        name,responsible?.toInt(),status?.toInt(),taskid,type?.toInt())
+                        name,
+                        responsible?.toInt(),
+                        status?.toInt(),
+                        taskid,
+                        type?.toInt()
+                    )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -2876,11 +3184,12 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun getPackConfigFieldList(configId:String): ArrayList<PackConfigField> {
+    fun getPackConfigFieldList(configId: String): ArrayList<PackConfigField> {
 
-        val query="SELECT * FROM $TABLE_pack_config_fields Where $COL_pack_config_fields_pack_config_id ='$configId' "
+        val query =
+            "SELECT * FROM $TABLE_pack_config_fields Where $COL_pack_config_fields_pack_config_id ='$configId' "
 
-        AppUtils.logError(TAG,"getPackConfigFieldList Query"+query)
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<PackConfigField>()
         val db = this.readableDatabase
@@ -2889,8 +3198,7 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -2898,41 +3206,145 @@ checkDataSaved= false
         try {
             if (cursor.moveToFirst()) {
                 do {
-                    val  id :String? =
+                    val id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_SERVER_ID))
-                    val  packConfigID:String? =
+                    val packConfigID: String? =
                         cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_pack_config_id))
-                    val  fieldName:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_field_name))
-                    val fieldDesciption:String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_field_description))
-                    val editable:String? =
+                    val fieldName: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_field_name))
+                    val fieldDesciption: String? =
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                COL_pack_config_fields_field_description
+                            )
+                        )
+                    val editable: String? =
                         cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_editable))
-                    val fieldType:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_field_type))
-                    val fieldList:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_list))
-                    val defaultValue:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_default_value))
-                    val createdBy:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_created_by))
-                    val lastChangedBy:String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_last_changed_by))
-                    val lastChangedDate:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_last_changed_date))
-                    val deletedAt:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_deleted_at))
-                    val createdDate:String? = cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_created_date))
+                    val fieldType: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_field_type))
+                    val fieldList: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_list))
+                    val defaultValue: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_default_value))
+                    val createdBy: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_created_by))
+                    val lastChangedBy: String? =
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                COL_pack_config_fields_last_changed_by
+                            )
+                        )
+                    val lastChangedDate: String? = cursor.getString(
+                        cursor.getColumnIndex(COL_pack_config_fields_last_changed_date)
+                    )
+                    val deletedAt: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_deleted_at))
+                    val createdDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_config_fields_created_date))
 
 
-
-
-                    val packconfig = PackConfigField(createdBy?.toInt(),createdDate,defaultValue,deletedAt,
+                    val packconfig = PackConfigField(
+                        createdBy?.toInt(),
+                        createdDate,
+                        defaultValue,
+                        deletedAt,
                         editable?.toInt(),
-                    fieldDesciption,fieldName,fieldType,id?.toInt(),lastChangedBy,lastChangedDate,fieldList,
-                    packConfigID?.toInt())
+                        fieldDesciption,
+                        fieldName,
+                        fieldType,
+                        id?.toInt(),
+                        lastChangedBy,
+                        lastChangedDate,
+                        fieldList,
+                        packConfigID?.toInt()
+                    )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
+    fun getTaskConfigFieldList(configId: String): ArrayList<TaskConfigField> {
+
+        val query =
+            "SELECT * FROM $TABLE_task_config_fields Where $COL_task_config_fields_task_config_id ='$configId' "
+
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<TaskConfigField>()
+        val db = this.readableDatabase
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_SERVERID))
+                    val taskConfigID: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_task_config_id))
+                    val fieldName: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_field_name))
+                    val fieldDesciption: String? =
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                COL_task_config_fields_field_description
+                            )
+                        )
+                    val editable: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_editable))
+                    val fieldType: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_field_type))
+                    val fieldList: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_list))
+                    val createdBy: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_created_by))
+                    val createdDate: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_created_date))
+                    val lastChangedBy: String? =
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                COL_task_config_fields_last_changed_by
+                            )
+                        )
+                    val lastChangedDate: String? = cursor.getString(
+                        cursor.getColumnIndex(COL_task_config_fields_last_changed_date)
+                    )
+                    val deletedAt: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_fields_deleted_at))
+
+                    val packconfig = TaskConfigField(
+                        createdBy?.toInt(), createdDate, deletedAt,
+                        editable?.toInt(), fieldDesciption, fieldName, fieldType, id?.toInt(),
+                        lastChangedBy?.toInt(),
+                        lastChangedDate, fieldList
+                    )
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -2943,21 +3355,20 @@ checkDataSaved= false
     @SuppressLint("Range")
     fun getFieldList(): ArrayList<Field> {
 
-        val query="SELECT * FROM $TABLE_fields"
+        val query = "SELECT * FROM $TABLE_fields"
 
-        AppUtils.logError(TAG,"getPackConfigFieldList Query"+query)
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<Field>()
         val db = this.readableDatabase
-        AppUtils.logError(TAG,"getListChoice Query"+query)
+        AppUtils.logError(TAG, "getListChoice Query" + query)
 
 //        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -2966,33 +3377,32 @@ checkDataSaved= false
             if (cursor.moveToFirst()) {
                 do {
 
-                    val  id :String? = cursor.getString(cursor.getColumnIndex(COL_fields_SERVERID))
-                    val name:String? = cursor.getString(cursor.getColumnIndex(COL_fields_NAME))
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_fields_SERVERID))
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_fields_NAME))
 
 
-
-                    val packconfig = Field(null,null,null,
-                        null,null,null,null,
-                        null,null,null,
-                        null,null,null,null,
-                        null,null,null,null,
-                        id?.toInt(),null,null,null,
-                        null,null,null,null,null,
-                        name,null,null,
-                        null,null,null,null,
-                        null,null,null,null,
-                        null,null,null,null,
+                    val packconfig = Field(
+                        null, null, null,
+                        null, null, null, null,
+                        null, null, null,
+                        null, null, null, null,
+                        null, null, null, null,
+                        id?.toInt(), null, null, null,
+                        null, null, null, null, null,
+                        name, null, null,
+                        null, null, null, null,
+                        null, null, null, null,
+                        null, null, null, null,
                         null
-                       )
+                    )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3000,25 +3410,23 @@ checkDataSaved= false
         return upCommingPackCONFIGList
     }
 
-
     @SuppressLint("Range")
-    fun getListChoice(listId:String): ArrayList<Choices> {
+    fun getGraphChartNames(graphId: String) :ArrayList<GraphChart>{
 
-        val query="SELECT * FROM $TABLE_list_choices Where $COL_list_choices_LISTID ='$listId' "
+        val query = "SELECT * FROM $TABLE_graph_charts Where ${TABLE_graph_charts}.${COL_graph_charts_SERVERID} In($graphId)"
 
-        AppUtils.logError(TAG,"getPackConfigFieldList Query"+query)
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
 
-        val upCommingPackCONFIGList = ArrayList<Choices>()
+        val upCommingPackCONFIGList = ArrayList<GraphChart>()
         val db = this.readableDatabase
-        AppUtils.logError(TAG,"getListChoice Query"+query)
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
 
 //        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3027,31 +3435,186 @@ checkDataSaved= false
             if (cursor.moveToFirst()) {
                 do {
 
-                    val  id :String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_SERVERID))
-                    val  listID:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_LISTID))
-                    val  choice:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE))
-                    val name:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
-                    val choiceComGroup:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE_COM_GROUP))
-                    val comGroupId:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_COM_GROUP_ID))
-                    val createdAt:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_CREATED_AT))
-                    val updatedAt:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_UPDATED_AT))
-                     val deletedAt:String? = cursor.getString(cursor.getColumnIndex(COL_list_choices_DELETED_AT))
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_graph_charts_SERVERID))
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_graph_charts_NAME))
+                    val objectClass: String? = cursor.getString(cursor.getColumnIndex(COL_graph_charts_OBJECTCLASS))
 
+
+                    val packconfig = GraphChart(id = id?.toInt(), name = name,
+                        object_class = objectClass?.toInt())
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+        }
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
+    fun getGraphChartObjects(chartID: String) :ArrayList<GraphChartObject>{
+
+        var pointlist=getAllPointsList(chartID)
+
+        val query = "SELECT * FROM $TABLE_graph_chart_objects " +
+                "Where $COL_graph_chart_objects_GRAPH_CHARTID='$chartID'"
+
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<GraphChartObject>()
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_NAME))
+                    val lineType: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_LINETYPE))
+                    val resultClass: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_RESULT_CLASS))
+                    val refCltPoint: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_REF_CLTL_POINT))
+                    val graphchartid: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_GRAPH_CHARTID))
+
+
+                    val packconfig = GraphChartObject(name = name, line_type = lineType,
+                    result_class = resultClass, ref_ctrl_points = refCltPoint, graphs_charts_id = graphchartid.toString(),
+                        points = pointlist)
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+        }
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
+    private fun getAllPointsList(chartID: String): ArrayList<Points> {
+
+
+
+        val query = "SELECT * FROM $TABLE_graph_chart_points " +
+                "Where $COL_graph_chart_points_CHARTID='$chartID'"
+
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<Points>()
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "getGraphChartNames Query" + query)
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val value: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_points_VALUE))
+                    val duration: String? = cursor.getString(cursor.getColumnIndex(COL_graph_chart_points_DURATION))
+
+                    val packconfig = Points(value=value, duration = duration)
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+        }
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
+    fun getListChoice(listId: String): ArrayList<Choices> {
+
+        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_LISTID ='$listId' "
+
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<Choices>()
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "getListChoice Query" + query)
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_SERVERID))
+                    val listID: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_LISTID))
+                    val choice: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE))
+                    val name: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+                    val choiceComGroup: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE_COM_GROUP))
+                    val comGroupId: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_COM_GROUP_ID))
+                    val createdAt: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CREATED_AT))
+                    val updatedAt: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_UPDATED_AT))
+                    val deletedAt: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_DELETED_AT))
 
 
                     val packconfig = Choices(
                         choice, choiceComGroup,
-                        comGroupId, createdAt, deletedAt,id?.toInt(),listID?.toInt(),
-                        name, updatedAt)
+                        comGroupId, createdAt, deletedAt, id?.toInt(), listID?.toInt(),
+                        name, updatedAt
+                    )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3060,23 +3623,65 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun getUnitList(unitId:String): ArrayList<Unit> {
+    fun getListChoiceSingleValue(listId: String): String{
+        var  chartname:String?=null
 
-        val query="SELECT * FROM $TABLE_units Where $COL_units_SERVERID In($unitId)"
+        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_SERVERID ='$listId' "
 
-        AppUtils.logError(TAG,"getPackConfigFieldList Query"+query)
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
-        val upCommingPackCONFIGList = ArrayList<Unit>()
+        val upCommingPackCONFIGList = ArrayList<Choices>()
         val db = this.readableDatabase
-        AppUtils.logError(TAG,"getListChoice Query"+query)
+        AppUtils.logError(TAG, "getListChoice Query" + query)
 
 //        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return chartname.toString()
         }
-        catch (e:Exception){
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    chartname =
+                        cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+        }
+        // close db connection
+        db.close()
+        // return notes list
+        return chartname.toString()
+    }
+
+    @SuppressLint("Range")
+    fun getUnitList(unitId: String): ArrayList<Unit> {
+
+        val query = "SELECT * FROM $TABLE_units Where $COL_units_SERVERID In($unitId)"
+
+        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<Unit>()
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "getListChoice Query" + query)
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3085,23 +3690,21 @@ checkDataSaved= false
             if (cursor.moveToFirst()) {
                 do {
 
-                    val  id :String? = cursor.getString(cursor.getColumnIndex(COL_units_SERVERID))
-                    val  unitname:String? = cursor.getString(cursor.getColumnIndex(COL_units_NAME))
-
-
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_units_SERVERID))
+                    val unitname: String? = cursor.getString(cursor.getColumnIndex(COL_units_NAME))
 
 
                     val packconfig = Unit(
-                      id = id?.toInt(),name = unitname)
+                        id = id?.toInt(), name = unitname
+                    )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3110,23 +3713,21 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
-    fun getFieldNameFromListChoice(id:String): String {
+    fun getFieldNameFromListChoice(id: String): String {
 
-        val query="SELECT * FROM $TABLE_list_choices Where $COL_list_choices_SERVERID ='$id' "
+        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_SERVERID ='$id' "
 
-        AppUtils.logError(TAG,"getPackConfigFieldList Query"+query)
+        AppUtils.logError(TAG, "getFieldNameFromListChoice Query " + query)
 
-      var name:String?=null
+        var name: String? = null
         val db = this.readableDatabase
-        AppUtils.logError(TAG,"getListChoice Query"+query)
 
 //        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return name!!
@@ -3136,14 +3737,13 @@ checkDataSaved= false
                 do {
 
 
-                     name = cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+                    name = cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
 
 
                 } while (cursor.moveToNext())
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3154,9 +3754,9 @@ checkDataSaved= false
     @SuppressLint("Range")
     fun getPersonList(): ArrayList<People> {
 
-        val query="SELECT * FROM $TABLE_people"
+        val query = "SELECT * FROM $TABLE_people"
 
-        AppUtils.logError(TAG,"getPersonList Query"+query)
+        AppUtils.logError(TAG, "getPersonList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<People>()
         val db = this.readableDatabase
@@ -3167,8 +3767,7 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3178,9 +3777,9 @@ checkDataSaved= false
                 do {
 
 
-                    val  id :String? = cursor.getString(cursor.getColumnIndex(COL_people_SERVERID))
-                    val  lname:String? = cursor.getString(cursor.getColumnIndex(COL_people_FNAME))
-                    val  fname:String? = cursor.getString(cursor.getColumnIndex(COL_people_LNAME))
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_people_SERVERID))
+                    val lname: String? = cursor.getString(cursor.getColumnIndex(COL_people_FNAME))
+                    val fname: String? = cursor.getString(cursor.getColumnIndex(COL_people_LNAME))
 
 
                     val packconfig = People(
@@ -3198,10 +3797,57 @@ checkDataSaved= false
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+
+    @SuppressLint("Range")
+    fun getContainerList(): ArrayList<Container> {
+
+        val query = "SELECT * FROM $TABLE_container"
+
+        AppUtils.logError(TAG, "getPersonList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<Container>()
+        val db = this.readableDatabase
+
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_container_SERVERID))
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_container_NAME))
+
+
+                    val packconfig = Container(id = id?.toInt(), name = name)
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3210,12 +3856,60 @@ checkDataSaved= false
     }
 
     @SuppressLint("Range")
+    fun getImageList(taskid:String): ArrayList<TaskMediaFile> {
 
+        val query = "SELECT * FROM $TABLE_task_media_files Where $COL_task_media_files_TASKID='$taskid'"
+
+        AppUtils.logError(TAG, "getPersonList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<TaskMediaFile>()
+        val db = this.readableDatabase
+
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val taskid: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_media_files_TASKID))
+                    val filename: String? = cursor.getString(cursor.getColumnIndex(COL_task_media_files_NAME))
+                    val link: String? = cursor.getString(cursor.getColumnIndex(COL_task_media_files_LINK))
+                    val localpath: String? = cursor.getString(cursor.getColumnIndex(COL_task_media_files_LOCAL_FILE_PATH))
+
+
+                    val packconfig = TaskMediaFile(task_id = taskid?.toInt(), filePathLocal = localFilePath,
+                    name = filename , link = link)
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+        }
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
     fun getTeamList(): ArrayList<Team> {
 
-        val query="SELECT * FROM $TABLE_people"
+        val query = "SELECT * FROM $TABLE_team"
 
-        AppUtils.logError(TAG,"getPersonList Query"+query)
+        AppUtils.logError(TAG, "getPersonList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<Team>()
         val db = this.readableDatabase
@@ -3226,8 +3920,7 @@ checkDataSaved= false
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3235,10 +3928,8 @@ checkDataSaved= false
         try {
             if (cursor.moveToFirst()) {
                 do {
-
-
-                    val  id :String? = cursor.getString(cursor.getColumnIndex(COL_people_SERVERID))
-                    val  name:String? = cursor.getString(cursor.getColumnIndex(COL_people_FNAME))
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_team_SERVERID))
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_team_NAME))
 
 
                     val packconfig = Team(
@@ -3254,10 +3945,68 @@ checkDataSaved= false
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG,"upCommingPackCONFIGList"+upCommingPackCONFIGList.toString())
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        // close db connection
+        db.close()
+        // return notes list
+        return upCommingPackCONFIGList
+    }
+
+    @SuppressLint("Range")
+    fun getTaskFunctionList(updateTaskId: String): ArrayList<TaskConfigFunction> {
+
+        val query = "SELECT * FROM $TABLE_task_config_functions " +
+                "Where $COL_task_config_functions_task_config_id='$updateTaskId'"
+
+        AppUtils.logError(TAG, "getPersonList Query" + query)
+
+        val upCommingPackCONFIGList = ArrayList<TaskConfigFunction>()
+        val db = this.readableDatabase
+
+
+//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+
+        val cursor: Cursor?
+        try {
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.message!!)
+            db.execSQL(query)
+            return ArrayList()
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+
+
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_SERVERKEY))
+                    val taskconfigId: String? = cursor.getString(
+                        cursor.getColumnIndex(COL_task_config_functions_task_config_id)
+                    )
+                    val functionId: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name))
+                    val functionnames: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description))
+
+                    val packconfig = TaskConfigFunction(
+                        null, null, null,
+                        functionnames, functionId?.toInt(),
+                        null, null, functionnames, null,
+
+
+                        )
+
+                    upCommingPackCONFIGList.add(packconfig)
+
+                } while (cursor.moveToNext())
+            }
+            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3287,29 +4036,35 @@ checkDataSaved= false
         contentValues.put(COL_PACK_LAST_CHANGED_DATE, packList1?.last_changed_date)
 
 
-        val result=   db.update(TABLE_CREAT_PACK, contentValues, "$COL_ID = ?", arrayOf(packList1?.id.toString()))
+        val result = db.update(
+            TABLE_CREAT_PACK,
+            contentValues,
+            "$COL_ID = ?",
+            arrayOf(packList1?.id.toString())
+        )
         if (result >= 0) {
             AppUtils.logDebug(TAG, "updated Pacl")
         } else {
             AppUtils.logDebug(TAG, "Failed to Update")
         }
     }
-    fun deletePackNew( packid:String) {
+
+    fun deletePackNew(packid: String) {
         val db = this.writableDatabase
 
         val contentValues = ContentValues()
         contentValues.put(COL_LOCAL_ID, packid)
-        try{
+        try {
             val succ = db.delete(TABLE_CREAT_PACK, "$COL_LOCAL_ID=?", arrayOf(packid))
 
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.toString())
         }
-catch (e:Exception){
-    AppUtils.logError(TAG,e.toString())
-}
 
         db.close()
 
     }
+
     @SuppressLint("Range")
     fun getAllTask(): ArrayList<Task> {
 
@@ -3325,12 +4080,11 @@ catch (e:Exception){
                 " INNER JOIN $TABLE_task_configs  ON " +
                 " $TABLE_tasks.$COL_tasks_TASK_CONFIGID = $TABLE_task_configs.$COL_task_configs_SERVERID "
 
-                AppUtils.logError(TAG,"my query "+query)
+        AppUtils.logError(TAG, "my query " + query)
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3340,27 +4094,45 @@ catch (e:Exception){
             do {
 
 
-                val id:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_SERVERid))
-                val name:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
-                val description:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_DESC))
-                val comGroup:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_GROUP))
-                val taskconfigId:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_TASK_CONFIGID))
-                val taskFunc:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_TASKFUNC))
-                val status:String?=cursor.getString(cursor.getColumnIndex(COL_tasks_STATUS))
+                val id: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_SERVERid))
+                val name: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
+                val description: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_DESC))
+                val comGroup: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_GROUP))
+                val taskconfigId: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_tasks_TASK_CONFIGID))
+                val taskFunc: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_TASKFUNC))
+                val status: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_STATUS))
 
-                val taskConfigName:String?=cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME))
-                val taskConfigDescption:String?=cursor.getString(cursor.getColumnIndex(COL_task_configs_DESCIPTION))
-                val taskConfigNamePrefix:String?=cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME_PREFIX))
+                val taskConfigName: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME))
+                val taskConfigDescption: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_task_configs_DESCIPTION))
+                val taskConfigNamePrefix: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME_PREFIX))
 
 
+                val task = Task(
+                    comGroup?.toInt(),
+                    0,
+                    "",
+                    "",
+                    description,
+                    0,
+                    id?.toInt(),
+                    0,
+                    "",
+                    name,
+                    0,
+                    status,
+                    taskconfigId?.toInt(),
+                    taskFunc,
+                    taskConfigName,
+                    taskConfigDescption,
+                    taskConfigNamePrefix,
+                    ""
+                )
 
-
-                val task =Task(comGroup?.toInt(),0,"","",description,
-                0,0,0,"",name,0,status,
-                    taskconfigId?.toInt(),taskFunc,taskConfigName,taskConfigDescption,taskConfigNamePrefix,
-                "")
-
-               upCommingPackList.add(task)
+                upCommingPackList.add(task)
             } while (cursor.moveToNext())
         }
 
@@ -3371,106 +4143,120 @@ catch (e:Exception){
     }
 
     @SuppressLint("Range")
-    fun getTaskConfigList(userId:String):ArrayList<TaskConfig>{
-        val query = "SELECT  * FROM  $TABLE_task_configs "
+    fun getTaskConfigList(userId: String): ArrayList<TaskConfig> {
+        val query = "SELECT  * FROM  $TABLE_task_configs"
         val upCommingPackCONFIGList = ArrayList<TaskConfig>()
-        val db=this.readableDatabase
-        AppUtils.logError(TAG,"my query "+query)
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "my query " + query)
 
-        val cursor:Cursor?
+        val cursor: Cursor?
         try {
-            cursor=db.rawQuery(query,null)
-        }catch (e:Exception){
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
         }
         try {
-            if (cursor.moveToFirst()){
-                do{
+            if (cursor.moveToFirst()) {
+                do {
 
-                    val taskConfigId:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_SERVERID))
-                    val taskConfigName:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME))
-                    val desc:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_DESCIPTION))
-                    val type:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_TYPE))
-                    val mclass:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_CLASS))
-                    val comGroup:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_COM_GROUP))
-                    val namePrefix:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME_PREFIX))
-                    val recordevent:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_RECORD_EVENT))
-                    val reportable:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_REPORTABLE))
-                    val createdby:String?= cursor.getString(cursor.getColumnIndex(COL_task_configs_CREATED_BY))
+                    val taskConfigId: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_SERVERID))
+                    val taskConfigName: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME))
+                    val desc: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_DESCIPTION))
+                    val type: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_TYPE))
+                    val mclass: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_CLASS))
+                    val comGroup: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_COM_GROUP))
+                    val namePrefix: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME_PREFIX))
+                    val recordevent: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_RECORD_EVENT))
+                    val reportable: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_REPORTABLE))
+                    val createdby: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_configs_CREATED_BY))
 
 
                     val taskconfig = TaskConfig(
-                        mclass, comGroup!!.toInt(), createdby!!.toInt(),"",
+                        mclass, comGroup!!.toInt(), createdby!!.toInt(), "",
                         "",
                         desc,
-                        taskConfigId!!.toInt(),"",
-                        "",taskConfigName, namePrefix,
+                        taskConfigId!!.toInt(), "",
+                        "", taskConfigName, namePrefix,
                         recordevent!!, reportable!!, type?.toInt()!!
                     )
 
                     upCommingPackCONFIGList.add(taskconfig)
-                }while (cursor.moveToNext())
+                } while (cursor.moveToNext())
             }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for Taskconfig" + e.toString())
         }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for Taskconfig"+e.toString())
-        }
-
+        cursor.close()
         db.close()
 
-        return upCommingPackCONFIGList}
+        return upCommingPackCONFIGList
+    }
 
 
- @SuppressLint("Range")
-    fun getCommunityGroupList():ArrayList<CommunityGroup>{
+    @SuppressLint("Range")
+    fun getCommunityGroupList(): ArrayList<CommunityGroup> {
         val query = "SELECT  * FROM  $TABLE_community_groups "
         val upCommingPackCONFIGList = ArrayList<CommunityGroup>()
-        val db=this.readableDatabase
-        AppUtils.logError(TAG,"my query "+query)
+        val db = this.readableDatabase
+        AppUtils.logError(TAG, "my query " + query)
 
-        val cursor:Cursor?
+        val cursor: Cursor?
         try {
-            cursor=db.rawQuery(query,null)
-        }catch (e:Exception){
+            cursor = db.rawQuery(query, null)
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
         }
         try {
-            if (cursor.moveToFirst()){
-                do{
-                    val id:String?= cursor.getString(cursor.getColumnIndex(COL_community_groups_SERVERID))
-                    val name:String?= cursor.getString(cursor.getColumnIndex(COL_community_groups_NAME))
-                    val desc:String?= cursor.getString(cursor.getColumnIndex(COL_community_groups_DESCIPRTION))
-                    val comGroup:String?= cursor.getString(cursor.getColumnIndex(COL_community_groups_COMM_GROUP))
+            if (cursor.moveToFirst()) {
+                do {
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_community_groups_SERVERID))
+                    val name: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_community_groups_NAME))
+                    val desc: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_community_groups_DESCIPRTION))
+                    val comGroup: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_community_groups_COMM_GROUP))
 
 
                     val taskconfig = CommunityGroup(
-                        comGroup,null,null,null,null,
-                        desc,id?.toInt(),name,null,null)
+                        comGroup, null, null, null, null,
+                        desc, id?.toInt(), name, null, null
+                    )
 
                     upCommingPackCONFIGList.add(taskconfig)
-                }while (cursor.moveToNext())
+                } while (cursor.moveToNext())
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for Taskconfig"+e.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for Taskconfig" + e.toString())
         }
 
         db.close()
 
-        return upCommingPackCONFIGList}
+        return upCommingPackCONFIGList
+    }
 
 
     @SuppressLint("Range")
 
-    fun getSinglDataFromPackConfig(selectedPackid:String): ArrayList<PackConfig> {
+    fun getSinglDataFromPackConfig(selectedPackid: String): ArrayList<PackConfig> {
 
         val query = "SELECT  * FROM ${TABLE_PACKCONFIG} " +
                 "  Where ${COL_pack_configs_SERVER_ID}  = '$selectedPackid'"
-
 
 
         val upCommingPackCONFIGList = ArrayList<PackConfig>()
@@ -3479,8 +4265,7 @@ catch (e:Exception){
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3495,25 +4280,24 @@ catch (e:Exception){
 
 
 
-                    collectactivityId = cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
+                    collectactivityId =
+                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
 
                     val packconfig = PackConfig(
-                   collect_activity_id = collectactivityId
+                        collect_activity_id = collectactivityId
                     )
 
                     upCommingPackCONFIGList.add(packconfig)
                 } while (cursor.moveToNext())
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
-
 
 
     @SuppressLint("Range")
@@ -3527,8 +4311,7 @@ catch (e:Exception){
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3537,8 +4320,8 @@ catch (e:Exception){
             if (cursor.moveToFirst()) {
                 do {
 
-                    var id: String? = null
-                    var name: String? = null
+                    var id: String?
+                    var name: String?
 
 
 
@@ -3546,14 +4329,13 @@ catch (e:Exception){
                     id = cursor.getString(cursor.getColumnIndex(COL_sensors_SERVERID))
                     name = cursor.getString(cursor.getColumnIndex(COL_sensors_NAME))
 
-                    val packconfig = Sensor(id = id?.toInt(),name = name)
+                    val packconfig = Sensor(id = id?.toInt(), name = name)
 
                     upCommingPackCONFIGList.add(packconfig)
                 } while (cursor.moveToNext())
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3562,10 +4344,12 @@ catch (e:Exception){
     }
 
     @SuppressLint("Range")
-    fun getCollectActivityResult(collectactiivtyId:String): ArrayList<CollectActivityResult> {
+    fun getCollectActivityResult(collectactiivtyId: String): ArrayList<CollectActivityResult> {
+
 
         val query = "SELECT  * FROM ${TABLE_collect_activity_results}" +
-                " Where ${COL_collect_activity_results_COLLECT_ACTIVITY_ID}='$collectactiivtyId' "
+                " Where ${COL_collect_activity_results_COLLECT_ACTIVITY_ID}='$collectactiivtyId'"
+        AppUtils.logDebug(TAG, "getCollectActivityResult QUERY   " + query.toString())
 
         val upCommingPackCONFIGList = ArrayList<CollectActivityResult>()
         val db = this.readableDatabase
@@ -3573,8 +4357,7 @@ catch (e:Exception){
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
             db.execSQL(query)
             return ArrayList()
@@ -3583,22 +4366,29 @@ catch (e:Exception){
             if (cursor.moveToFirst()) {
                 do {
 
-                    val  id : String?= cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_SERVERID))
-                    val  name: String? = cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_RESULTNAME))
-                    val listid: String? = cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_LISTID))
-                    val unitId : String?= cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_UNITID))
-                    val typeid : String?= cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_TYPEID))
+                    val id: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_SERVERID))
+                    val name: String? = cursor.getString(
+                        cursor.getColumnIndex(COL_collect_activity_results_RESULTNAME)
+                    )
+                    val listid: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_LISTID))
+                    val unitId: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_UNITID))
+                    val typeid: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_TYPEID))
 
-                    val packconfig = CollectActivityResult(id = id?.toInt(),result_name = name,
-                    type_id = typeid,unit_id = unitId,list_id = listid)
+                    val packconfig = CollectActivityResult(
+                        id = id?.toInt(), result_name = name,
+                        type_id = typeid, unit_id = unitId, list_id = listid
+                    )
 
 
                     upCommingPackCONFIGList.add(packconfig)
                 } while (cursor.moveToNext())
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"exceptopn for c0llectdata"+e.toString())
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
         db.close()
@@ -3614,8 +4404,6 @@ catch (e:Exception){
         cursor.close()
         return count
     }
-
-
 
 
 //    fun updateTask(task: ViewTaskModelClass, entryname: String): Int {
@@ -4153,5 +4941,73 @@ catch (e:Exception){
 //
 //    }
 
+    class DownloadFileFromURL(var filename: String?) :
+        AsyncTask<String?, String?, String?>() {
 
+
+
+        override fun onPreExecute() {
+            super.onPreExecute()
+            AppUtils.logDebug("##DownloadFile", "Before Downloading Downloading-----File")
+        }
+
+        override fun doInBackground(vararg f_url: String?): String? {
+            var count: Int
+            try {
+                val url = URL(f_url[0])
+                val connection = url.openConnection()
+                connection.connect()
+                val lenghtOfFile = connection.contentLength
+                val input: InputStream = BufferedInputStream(url.openStream(), 8192)
+
+//                File storage = new File(Environment.getExternalStorageDirectory() + File.separator + "/Download/");
+                val storage = File(
+                    Environment.getExternalStorageDirectory().toString() + File.separator + "/MyFarm/"
+                )
+
+                if (!storage.exists()) {
+                    storage.mkdirs()
+                }
+                val FileName = "/" + filename
+
+                localFilePath = storage.absolutePath.toString() + FileName
+
+                val checkFileExistense = File(storage.absolutePath.toString() + FileName)
+
+                Log.e("check_path", "" + localFilePath.toString() )
+
+                if (checkFileExistense.isFile) {
+                } else {
+
+                    val output = FileOutputStream(storage.toString() + FileName)
+                    val data = ByteArray(1024)
+                    var total: Long = 0
+                    while (input.read(data).also { count = it } != -1) {
+                        total += count.toLong()
+                        // publishing the progress....
+                        // After this onProgressUpdate will be called
+                        publishProgress("" + (total * 100 / lenghtOfFile).toInt())
+                        // writing data to file
+                        output.write(data, 0, count)
+                    }
+                    // flushing output
+                    output.flush()
+                    // closing streams
+                    output.close()
+                    input.close()
+                }
+
+            } catch (e: java.lang.Exception) {
+                Log.e("Error: ", e.message!!)
+            }
+            return null
+        }
+
+
+        override fun onPostExecute(file_url: String?) {
+
+        }
+
+    }
 }
+

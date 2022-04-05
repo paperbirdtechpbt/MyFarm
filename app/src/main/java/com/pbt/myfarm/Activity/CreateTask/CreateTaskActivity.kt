@@ -53,11 +53,12 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     var adapter: CreateTaskAdapter? = null
     val successObject = JSONArray()
     var toolbar:Toolbar?=null
-    var updateTaskList: TasklistDataModel? = null
+//    var updateTaskList: TasklistDataModel? = null
+    var updateTaskList: Task? = null
 
 
     val fieldModel = ArrayList<FieldModel>()
-    var configtype:ConfigTaskList?=null
+    var configtype:TaskConfig?=null
 
     companion object {
 //        var ExpAmtArray = ArrayList<String>()
@@ -90,9 +91,12 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         if (updateTaskBoolen){
             updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
+            AppUtils.logDebug(TAG," true updateTaskList"+updateTaskList.toString())
 
         }
         else{
+            AppUtils.logDebug(TAG,"false updateTaskList"+updateTaskList.toString())
+
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
 
         }
@@ -101,12 +105,15 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             buttonTask.visibility=View.GONE
         }
 
-        if (checkInternetConnection()) {
-            initViewModel()
-        }
+//        if (checkInternetConnection()) {
+//            initViewModel()
+//        }
+        initViewModel()
+
         btn_taskfuntion.setOnClickListener{
           val intent=  Intent(this,TaskFunctionActivity::class.java)
-            intent.putExtra(CONST_TASKFUNCTION_TASKID,updateTaskList?.id)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID,updateTaskList)
+            AppUtils.logDebug(TAG,"btntaskFUnction="+updateTaskList?.task_config_id)
             startActivity(intent)
         }
     }
@@ -125,25 +132,24 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             if (configtype== null) {
 
-                field_prefix.setText(updateTaskList?.name_prefix)
+                field_prefix.setText(updateTaskList?.taskConfigNamePrefix)
                 field_desciption.setText(updateTaskList?.description)
 //            btn_create_task.visibility=View.GONE
 //            btn_update_task.visibility=View.VISIBLE
             }
             else
             {
-
-
                 field_prefix.setText(configtype?.name_prefix)
                 field_desciption.setText(configtype?.description)
             }
-
-
             binding?.viewModel = viewmodel
             viewmodel?.progressbar = createtaskProgressbar
         if (updateTaskBoolen){
+
             viewmodel?.onConfigFieldList(this,
                 updateTaskBoolen,updateTaskList)
+
+            updateTaskBoolen=false
 
         }
         else{
@@ -321,13 +327,13 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                             "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
 
 
-                            successObject.toString()+"\n"+ updateTaskList?.name_prefix.toString()+"\n"+
+                            successObject.toString()+"\n"+ updateTaskList?.taskConfigNamePrefix.toString()+"\n"+
                             updateTaskList?.id.toString())
 
                     ApiClient.client.create(ApiInterFace::class.java)
                         .updateTask(
                             updateTaskList?.task_config_id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.name_prefix.toString()+updateTaskList?.padzero.toString(),
+                            successObject.toString(), updateTaskList?.taskConfigNamePrefix.toString()+updateTaskList?.padzero.toString(),
                             updateTaskList?.id.toString() ).enqueue(this)
                 }
 

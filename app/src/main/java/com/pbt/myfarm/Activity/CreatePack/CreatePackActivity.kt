@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.*
-import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter.Companion.desciptioncompanian
 
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
 import com.pbt.myfarm.Activity.Home.MainActivity
@@ -22,6 +21,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.DataBase.DbHelper
@@ -69,7 +69,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        desciptioncompanian = ""
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_pack)
         db = DbHelper(this, null)
         arrayID = ArrayList()
@@ -81,12 +81,15 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
 
+        AppUtils.logDebug(TAG,"desciption=====>>>>>>"+desciptioncompanian.toString())
 
 
 
-        if (checkInternetConnection()) {
-            initViewModel()
-        }
+
+//        if (checkInternetConnection()) {
+//            initViewModel()
+//        }
+        initViewModel()
 //        else
 //        {
 //            val list=   db.readPackConfigFieldList()
@@ -150,7 +153,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         packconfiglist = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
         AppUtils.logError(TAG, "packConfiglist" + packconfiglist?.id.toString())
 
-        viewmodel?.onConfigFieldList(this, true, packconfiglist?.id.toString())
+        viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString())
         viewmodel?.configlist?.observe(this, Observer { list ->
 
 
@@ -165,7 +168,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
             adapter = CreatePackAdapter(
-                this, config, true, packCommunityList,
+                this, config, false, packCommunityList,
                 packCommunityListname
             )
             { list, name ->

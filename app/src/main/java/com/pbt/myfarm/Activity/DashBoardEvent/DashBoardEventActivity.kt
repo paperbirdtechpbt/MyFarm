@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
-import com.pbt.myfarm.EventList
-import com.pbt.myfarm.R
+import com.pbt.myfarm.*
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Service.ResponseList
 import com.pbt.myfarm.Service.TeamList
 import com.pbt.myfarm.Util.AppUtils
@@ -29,7 +29,8 @@ import kotlin.collections.ArrayList
 class DashBoardEventActivity : AppCompatActivity() {
     //    val myCalendar: Calendar = Calendar.getInstance()
     var viewmodel: ViewModelDashBoardEvent? = null
-    var eventList = ArrayList<EventList>()
+    var eventList = ArrayList<Event>()
+    var db:DbHelper?=null
 
     companion object {
         val TAG = "##DashBoardEventActivity"
@@ -41,6 +42,8 @@ class DashBoardEventActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dash_board_event)
         supportActionBar?.hide()
+
+        db= DbHelper(this,null)
 
 
         initViewModel()
@@ -95,14 +98,14 @@ class DashBoardEventActivity : AppCompatActivity() {
         viewmodel?.eventlivelist?.observe(this, androidx.lifecycle.Observer { eventlist ->
 
             if (!eventlist.isNullOrEmpty()) {
-                eventList = eventlist as ArrayList<EventList>
+                eventList = eventlist as ArrayList<Event>
                 setCalender(eventList)
             }
 
         })
     }
 
-    private fun setCalender(eventList: ArrayList<EventList>) {
+    private fun setCalender(eventList: ArrayList<Event>) {
         val events: MutableList<EventDay> = ArrayList()
 
         for (i in 0 until eventList.size) {
@@ -360,7 +363,7 @@ class DashBoardEventActivity : AppCompatActivity() {
                 events.clear()
                 events.add(EventDay(clickedDayCalendar))
                 val clickdata=  getFormattedDate(eventDay.calendar.time)
-                val evnts=ArrayList<EventList>()
+                val evnts=ArrayList<Event>()
 
                 for(i in 0 until eventList.size){
                     if("$clickdata"==eventList.get(i).exp_start_date || "$clickdata"==eventList.get(i).actual_start_date){
@@ -377,16 +380,16 @@ class DashBoardEventActivity : AppCompatActivity() {
         })
     }
 
-    private fun setTeamASpinner(teamlist: List<TeamList>?) {
+    private fun setTeamASpinner(teamlist: List<Team>?) {
         AppUtils.logDebug(TAG, teamlist.toString())
         val teamlistname = ArrayList<String>()
         for (i in 0 until teamlist!!.size) {
-            teamlistname.add(teamlist.get(i).name)
+            teamlistname.add(teamlist.get(i).name.toString())
 
         }
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item, teamlistname
+            android.R.layout.simple_spinner_dropdown_item, teamlistname
         )
         spinner_responsibleTeam.adapter = adapter
 
@@ -394,16 +397,18 @@ class DashBoardEventActivity : AppCompatActivity() {
 
     }
 
-    private fun setResponsibleSpinner(list: List<ResponseList>?) {
+    private fun setResponsibleSpinner(list: List<People>?) {
+
+
         AppUtils.logDebug(TAG, list.toString())
         val listname = ArrayList<String>()
         for (i in 0 until list!!.size) {
-            listname.add(list.get(i).name)
+            listname.add(list.get(i).lname+list.get(i).fname)
 
         }
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_spinner_item, listname
+            android.R.layout.simple_spinner_dropdown_item, listname
         )
         spinner_responsible.adapter = adapter
         setSpinnerListner(spinner_responsible)

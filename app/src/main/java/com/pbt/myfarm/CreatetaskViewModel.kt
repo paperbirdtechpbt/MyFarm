@@ -10,14 +10,15 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import com.pbt.myfarm.Activity.FieldLIst
 import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
-import com.pbt.myfarm.HttpResponse.ComunityGroup
+import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.HttpResponse.Field
-import com.pbt.myfarm.HttpResponse.TaskFieldResponse
 import com.pbt.myfarm.Service.*
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -105,33 +106,196 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 //
 //    }
 
-    fun onConfigFieldList(
-        context: Context,
-        updateTaskIdBoolean: Boolean,
+    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskList: Task?) {
 
-        updateTaskList: TasklistDataModel?
-    ) {
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),updateTaskList?.task_config_id.toString(),
+//                updateTaskList?.id.toString()).enqueue(this)
 
-            ApiClient.client.create(ApiInterFace::class.java)
-                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),updateTaskList?.task_config_id.toString(),
-                updateTaskList?.id.toString()).enqueue(this)
 
+
+        setData(updateTaskList?.task_config_id.toString())
+        AppUtils.logError(TAG,"true configidd"+updateTaskList?.task_config_id.toString())
+
+
+//        val list = db.getTaskConfigFieldList(updateTaskList?.task_config_id.toString())
+//        AppUtils.logDebug(TAG,"task Field List"+list.toString())
+//        var configfieldList=ArrayList<ConfigFieldList>()
+//       list.forEach{
+//            configfieldList.add(
+//                ConfigFieldList(
+//                    it.editable!!, it.field_description!!, it.id.toString(),ArrayList(),
+//            "","",""))
+//        }
 
     }
 
     fun onConfigFieldListFalse(
         context: Context,
+        configId: TaskConfig?,
 
-        configId: ConfigTaskList?,
+        ) {
 
-    ) {
 
+        setData(configId?.id.toString())
+
+
+//
             AppUtils.logError(TAG,"false configidd"+configId?.id.toString())
-            ApiClient.client.create(ApiInterFace::class.java)
-                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),
-                    configId?.id.toString(),"").enqueue(this)
+//            ApiClient.client.create(ApiInterFace::class.java)
+//                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),
+//                    configId?.id.toString(),"").enqueue(this)
 
 
+    }
+
+    private fun setData(id: String) {
+        val db = DbHelper(context, null)
+
+        groupArray?.clear()
+        groupArrayId?.clear()
+
+        val communityyGrouplist = db.getCommunityGroupList()
+
+
+        communityyGrouplist.forEach {
+            groupArray?.add(it.name!!)
+            groupArrayId?.add(it.id.toString())
+        }
+
+        val list = db.getTaskConfigFieldList(id)
+        AppUtils.logDebug(TAG,"task Field List"+list.toString())
+        val userId=MySharedPreference.getUser(context)?.id.toString()
+
+        val taskConfigList = db.getTaskConfigList(userId)
+
+        val packConfigField = ArrayList<ConfigFieldList>()
+        if (list.size >= 1) {
+
+            for (i in 0 until taskConfigList.size) {
+                ExpAmtArray.add("0")
+                ExpName.add("0")
+                ExpNameKey.add("f_id")
+                ExpAmtArrayKey.add("f_value")
+
+            }
+
+            for (i in 0 until list.size) {
+                val item = list.get(i)
+                if (item.field_description == null) {
+                    val name = db.getFieldNameFromListChoice(item.field_name.toString())
+                    item.field_description = name
+                }
+
+
+                if (item.list != "N/A") {
+
+                    if (item.list == "Field") {
+
+                        val fieldList = db.getFieldList()
+                        val packfieldList = ArrayList<FieldLIst>()
+
+                        for (i in 0 until fieldList.size) {
+
+                            val itm = fieldList.get(i)
+                            packfieldList.add(
+                                FieldLIst(itm.id,itm.name)
+                            )
+
+                        }
+                        packConfigField.add(
+                            ConfigFieldList(null,
+                                item.field_description.toString(), item.field_name.toString(),packfieldList,
+                                item.field_description, item.field_type.toString(), null,)
+                        )
+                    } else if (item.list == "Person") {
+
+                        val packfieldList = ArrayList<FieldLIst>()
+
+                        val fiellist = db.getPersonList()
+
+                        for (i in 0 until fiellist.size) {
+
+                            val itm = fiellist.get(i)
+                            packfieldList.add(
+                                FieldLIst(
+                                    itm.id,
+                                    itm.lname + itm.fname,
+
+                                    )
+                            )
+
+                        }
+                        packConfigField.add(
+                            ConfigFieldList(
+                                null,
+                                item.field_description.toString(), item.field_name.toString(),packfieldList,
+                                item.field_description, item.field_type.toString(), null,
+                            )
+                        )
+                    } else if (item.list == "Team") {
+
+                        val packfieldList = ArrayList<FieldLIst>()
+
+                        val fiellist = db.getTeamList()
+
+                        for (i in 0 until fiellist.size) {
+
+                            val itm = fiellist.get(i)
+                            packfieldList.add(
+                                FieldLIst(itm.id, itm.name)
+                            )
+
+                        }
+                        packConfigField.add(
+                            ConfigFieldList(
+                                null,
+                                item.field_description.toString(), item.field_name.toString(),packfieldList,
+                                item.field_description, item.field_type.toString(), null,
+                            )
+                        )
+
+                    } else {
+
+                        val listid = item.list
+
+                        val fieldList = db.getListChoice(listid!!)
+                        val packfieldList = ArrayList<FieldLIst>()
+
+                        for (i in 0 until fieldList.size) {
+
+                            val itm = fieldList.get(i)
+                            packfieldList.add(
+                                FieldLIst(itm.id, itm.name,)
+                            )
+
+                        }
+                        AppUtils.logDebug(TAG, " packfieldList" + packfieldList.toString())
+
+                        packConfigField.add(
+                            ConfigFieldList(
+                                null,
+                                item.field_description.toString(), item.field_name.toString(),packfieldList,
+                                item.field_description, item.field_type.toString(), null,
+                            )
+                        )
+                    }
+
+                } else {
+                    packConfigField.add(
+                        ConfigFieldList(
+                            null,
+                            item.field_description.toString(), item.field_name.toString(),ArrayList(),
+                            item.field_description, item.field_type.toString(), null,
+                        )
+                    )
+                }
+
+
+            }
+            AppUtils.logDebug(TAG, "config fieldList" + packConfigField.toString())
+        }
+        configlist.value = packConfigField
     }
 
     override fun onResponse(

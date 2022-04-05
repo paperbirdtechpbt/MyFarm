@@ -10,18 +10,16 @@ data class ResponsecollectAcitivityResultValue (
         )
 
 data class UnitList (
-    @SerializedName("id")val id:String ,
-    @SerializedName("name")val name:String,)
-
-
+    @SerializedName("id")val id:String?=null ,
+    @SerializedName("name")val name:String?=null,)
 
 data class Data (
-    @SerializedName("type")val type:String,
-    @SerializedName("list_id")val list_id:String="0",
+    @SerializedName("type")val type:String?=null,
+    @SerializedName("list_id")val list_id:String?=null,
     @SerializedName("list_array")val list_array:List<List_array>,
         )
 data class List_array (
-    @SerializedName("id")val id:String ,
-    @SerializedName("lists_id")val lists_id:String,
-    @SerializedName("name")val name:String,
+    @SerializedName("id")val id:String?=null ,
+    @SerializedName("lists_id")val lists_id:String?=null,
+    @SerializedName("name")val name:String?=null,
 )

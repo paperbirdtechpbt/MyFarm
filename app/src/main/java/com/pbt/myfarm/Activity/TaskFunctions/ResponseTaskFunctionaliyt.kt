@@ -12,8 +12,10 @@ data class ResponseTaskFunctionaliyt (
 
 
 data class ListTaskFunctions (
-    @SerializedName("id") var id:String,
-    @SerializedName("name") var name:String,
+    @SerializedName("id") var id:String?=null,
+    @SerializedName("name") var name:String?=null,
+var object_class:String?=null,
+var ordinateTitle:String?=null,
         )
 
 data class FieldListTaskFunctions (
@@ -22,9 +24,10 @@ data class FieldListTaskFunctions (
     @SerializedName("link") var link:String,
         )
 data class ListFunctionFieldlist (
-    @SerializedName("id") var id:String,
-    @SerializedName("name") var name:String,
-    @SerializedName("link") var link:String,
+    @SerializedName("id") var id:String?=null,
+    @SerializedName("name") var name:String?=null,
+    @SerializedName("link") var link:String?=null,
+  var localPath:String?=null,
         )
 
 data class ListMediaFile (

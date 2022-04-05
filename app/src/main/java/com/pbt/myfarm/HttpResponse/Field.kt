@@ -1,6 +1,6 @@
 package com.pbt.myfarm.HttpResponse
 
 data class Field(
-    val id: Int,
-    val name: String
+    val id: Int?=null,
+    val name: String?=null
 )

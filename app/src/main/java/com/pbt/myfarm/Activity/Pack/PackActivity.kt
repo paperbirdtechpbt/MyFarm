@@ -62,6 +62,9 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         var TAG = "PackActivity"
         var packList: PacksNew? = null
         var updatePackBoolen = false
+
+            var desciptioncompanian: String?=null
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +73,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 //        binding = DataBindingUtil.setContentView(this, R.layout.activity_pack)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-
+        desciptioncompanian=" "
 //        getDataFromDatabase()
         val checkInternet = checkInternetConnection()
         if (checkInternet) {
@@ -361,8 +364,11 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     override fun onResume() {
         super.onResume()
-        adapter?.notifyDataSetChanged()
+        desciptioncompanian=""
+
         initViewModel()
+        adapter?.notifyDataSetChanged()
+
 //        getDataFromDatabase()
     }
 

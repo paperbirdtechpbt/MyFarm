@@ -1,5 +1,7 @@
 package com.pbt.myfarm.Util
 
+import com.google.gson.annotations.SerializedName
+
 class AppConstant {
     companion object {
         //Database
@@ -599,11 +601,23 @@ class AppConstant {
         val COL_graph_chart_objects_LINETYPE="graph_chart_objects_line_type"
         val COL_graph_chart_objects_RESULT_CLASS="graph_chart_objects_result_class"
         val COL_graph_chart_objects_REF_CLTL_POINT="graph_chart_objects_ref_ctrl_points"
+        val COL_graph_chart_objects_GRAPH_CHARTID="graph_chart_objects_graphs_graphcharts_id"
         val COL_graph_chart_objects_CREATED_BY="graph_chart_objects_created_by"
         val COL_graph_chart_objects_CREATED_DATE="graph_chart_objects_created_date"
         val COL_graph_chart_objects_LAST_CHANGED_BY="graph_chart_objects_last_changed_by"
         val COL_graph_chart_objects_LAST_CHANGED_DATE="graph_chart_objects_last_changed_date"
         val COL_graph_chart_objects_DELETED_AT="graph_chart_objects_deleted_at"
+
+        //ravi -offline---------table-----graph_chart_points
+
+        val TABLE_graph_chart_points="graph_chart_points"
+        val COL_graph_chart_points_PRIMARYKEY="graph_chart_points_primary"
+        val COL_graph_chart_points_SERVERID="graph_chart_points_serverid"
+        val COL_graph_chart_points_PACKID="graph_chart_points_packid"
+        val COL_graph_chart_points_VALUE="graph_chart_points_value"
+        val COL_graph_chart_points_CreateAt="graph_chart_points_createAt"
+        val COL_graph_chart_points_CHARTID="graph_chart_points_chartid"
+        val COL_graph_chart_points_DURATION="graph_chart_points_duration"
 
 
         //ravi -offline---------table-----lists
@@ -676,6 +690,39 @@ class AppConstant {
         val COL_units_CREATED_AT="units_created_at"
         val COL_units_UPDATED_AT="units_updated_at"
         val COL_units_DELETED_AT="units_deleted_at"
+
+   //ravi -offline---------table-----team
+
+        val TABLE_team="team"
+        val COL_team_PRIMARYID="team_primarykey"
+        val COL_team_SERVERID="team_serverid"
+        val COL_team_NAME="team_name"
+        val COL_team_DESC="team_desciption"
+        val COL_team_EMAIL="team_email"
+        val COL_team_CONTACT="team_contact"
+        val COL_team_ADDRESS="team_address"
+        val COL_team_TEAMCLASS="team_teamclass"
+        val COL_team_TEAMTYPE="team_teamtype"
+        val COL_team_RESPONSIBLE="team_responsible"
+        val COL_team_COMGROUP="team_comgroup"
+        val COL_team_LOGO="team_logo"
+        val COL_team_CREATEDBY="team_createdBy"
+        val COL_team_CREATED_AT="team_created_at"
+        val COL_team_UPDATED_BY="team_updatedBy"
+        val COL_team_UPDATED_AT="team_updatedAT"
+        val COL_team_DELETED_BY="team_deletedby"
+        val COL_team_DELETED_AT="team_deletedAt"
+
+
+        //ravi -offline---------table-----task_media_files
+
+        val TABLE_task_media_files="task_media_files"
+        val COL_task_media_files_PRIMARYID="task_media_files_primary"
+        val COL_task_media_files_SERVERID="task_media_files_serverid"
+        val COL_task_media_files_TASKID="task_media_files_taskid"
+        val COL_task_media_files_NAME="task_media_files_FILENAME"
+        val COL_task_media_files_LINK="task_media_files_link"
+        val COL_task_media_files_LOCAL_FILE_PATH="task_media_files_localFILEpath"
 
 
     }

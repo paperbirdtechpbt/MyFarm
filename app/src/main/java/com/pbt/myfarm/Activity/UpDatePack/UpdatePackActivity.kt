@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
 import com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment
 import com.pbt.myfarm.Fragement.CreatePack.UpdatePackFragement
 import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement
@@ -21,6 +22,11 @@ class UpdatePackActivity : AppCompatActivity() {
     companion object{
         var positionnn = 0
         var packlist:PacksNew?=null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        desciptioncompanian =" "
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +74,7 @@ class UpdatePackActivity : AppCompatActivity() {
          adapter.addFragment(CollectDataFragement(), "Collect Data")
          adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
         }
+
 
 
         viewpager.setAdapter(adapter)

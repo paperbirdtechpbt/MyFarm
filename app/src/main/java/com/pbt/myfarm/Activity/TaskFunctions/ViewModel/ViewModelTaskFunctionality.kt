@@ -1,32 +1,19 @@
 package com.pbt.myfarm.Activity.TaskFunctions.ViewModel
 
-import android.app.Activity
-import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.net.Uri
-import android.provider.MediaStore
-import android.view.View
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Util.AppUtils
-import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
-import java.text.DecimalFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
@@ -44,12 +31,23 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
 
     fun onTaskFunctionList(context: Context, updateTaskId: String) {
+        val db=DbHelper(context,null)
+   val list=     db.getTaskFunctionList(updateTaskId)
+        AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
+        val listtask=ArrayList<ListTaskFunctions>()
+        listtask.add(ListTaskFunctions("0","Select"))
 
-        ApiClient.client.create(ApiInterFace::class.java)
-            .taskFunctionList(
-                MySharedPreference.getUser(context)?.id.toString(),
-                updateTaskId
-            ).enqueue(this)
+        list.forEach{
+            listtask.add(ListTaskFunctions(it.id.toString(),it.name))
+        }
+        listTaskFuntions.value = listtask
+
+
+//        ApiClient.client.create(ApiInterFace::class.java)
+//            .taskFunctionList(
+//                MySharedPreference.getUser(context)?.id.toString(),
+//                updateTaskId
+//            ).enqueue(this)
 
     }
 

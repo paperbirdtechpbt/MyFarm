@@ -202,25 +202,25 @@ data class CommunityGroup(
 )
 
 data class Container(
-    val capacity_units: Int,
-    val `class`: String,
-    val com_group: String,
-    val created_by: Int,
-    val created_date: String,
-    val created_date_utc: String,
-    val deleted_at: String,
-    val description: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val last_changed_utc: String,
-    val max_capacity: Int,
-    val name: String,
-    val notification_level: String,
-    val parent_container: String,
-    val status: String,
-    val type: String,
-    val zone: String
+    val capacity_units: Int?=null,
+    val `class`: String?=null,
+    val com_group: String?=null,
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val created_date_utc: String?=null,
+    val deleted_at: String?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val last_changed_by: Int?=null,
+    val last_changed_date: String?=null,
+    val last_changed_utc: String?=null,
+    val max_capacity: Int?=null,
+    val name: String?=null,
+    val notification_level: String?=null,
+    val parent_container: String?=null,
+    val status: String?=null,
+    val type: String?=null,
+    val zone: String?=null
 )
 
 data class ContainerObject(
@@ -336,33 +336,43 @@ data class Field(
 )
 
 data class GraphChartObject(
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: String,
-    val graphs_charts_id: Int,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val line_type: String,
-    val name: String,
-    val ref_ctrl_points: String,
-    val result_class: String
+    val id: Int?=null,
+    val line_type: String?=null,
+    val name: String?=null,
+    val ref_ctrl_points: String?=null,
+    val result_class: String?=null,
+    @SerializedName("points") val points: ArrayList<Points>,
+    @SerializedName("graphs_charts_id") val graphs_charts_id:String?=null,
+    //    val created_by: Int,
+//    val created_date: String,
+//    val deleted_at: String,
+//    val graphs_charts_id: Int,
+    //    val last_changed_by: Int,
+//    val last_changed_date: String,
 )
 
+data class Points (
+    @SerializedName("id") val id:String?=null,
+    @SerializedName( "pack_id") val packId:String?=null,
+    @SerializedName("value") val value:String?=null,
+    @SerializedName("create_at") val createAt:String?=null,
+@SerializedName("duration") val duration:String?=null,
+        )
+
 data class GraphChart(
-    val abcissa_title: String,
-    val com_group: Int,
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: String,
-    val description: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val name: String,
-    val object_class: Int,
-    val ordinate_title: String,
-    val title: String
+    val abcissa_title: String?=null,
+    val com_group: Int?=null,
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val deleted_at: String?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val last_changed_by: Int?=null,
+    val last_changed_date: String?=null,
+    val name: String?=null,
+    val object_class: Int?=null,
+    val ordinate_title: String?=null,
+    val title: String?=null
 )
 
 data class Incident(
@@ -617,31 +627,31 @@ data class Sensor(
 )
 
 data class TaskConfigField(
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: String,
-    val editable: Int,
-    val field_description: String,
-    val field_name: String,
-    val field_type: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val list: String,
-    val task_config_id: Int
+    var created_by: Int?=null,
+    var created_date: String?=null,
+    var deleted_at: String?=null,
+    var editable: Int?=null,
+    var field_description: String?=null,
+    var field_name: String?=null,
+    var field_type: String?=null,
+    var id: Int?=null,
+    var last_changed_by: Int?=null,
+    var last_changed_date: String?=null,
+    var list: String?=null,
+    var task_config_id: Int?=null,
 )
 
 data class TaskConfigFunction(
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: String,
-    val description: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val name: String,
-    val privilege: Int,
-    val task_config_id: Int
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val deleted_at: String?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val last_changed_by: Int?=null,
+    val last_changed_date: String?=null,
+    val name: String?=null,
+    val privilege: Int?=null,
+    val task_config_id: Int?=null
 )
 @Parcelize
 data class TaskConfig(
@@ -662,21 +672,23 @@ data class TaskConfig(
 ):Parcelable
 
 data class TaskField(
-    val field_id: String,
-    val id: Int,
-    val task_id: Int,
-    val value: String
+    val field_id: String?=null,
+    val id: Int?=null,
+    val task_id: Int?=null,
+    val value: String?=null
 )
 
 data class TaskMediaFile(
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: Any,
-    val id: Int,
-    val latitude: Any,
-    val longitude: Any,
-    val name: String,
-    val task_id: Int
+//    val created_by: Int?=null,
+//    val created_date: Str`ing?=null,
+//    val deleted_at: String?=null,
+    val id: Int?=null,
+//    val latitude: Long?=null,
+//    val longitude: Long?=null,
+    val name: String?=null,
+    val task_id: Int?=null,
+    val link: String?=null,
+    val filePathLocal: String?=null,
 )
 
 data class TaskObject(
@@ -723,12 +735,12 @@ data class Team(
     val contact: String?=null,
     val created_at: String?=null,
     val created_by: Int?=null,
-    val deleted_at: Any?=null,
-    val deleted_by: Any?=null,
+    val deleted_at: String?=null,
+    val deleted_by: String?=null,
     val description: String?=null,
     val email: String?=null,
     val id: Int?=null,
-    val logo: Any?=null,
+    val logo: String?=null,
     val name: String?=null,
     val responsible: String?=null,
     val team_class: String?=null,

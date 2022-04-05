@@ -7,10 +7,8 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.pbt.myfarm.Event
-import com.pbt.myfarm.EventList
-import com.pbt.myfarm.ResponseEventList
-import com.pbt.myfarm.ResponseEventListDashboard
+import com.pbt.myfarm.*
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Service.*
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -21,60 +19,71 @@ import retrofit2.Response
 class ViewModelDashBoardEvent(var activity: Application) : AndroidViewModel(activity),
     retrofit2.Callback<ResponseDashBoardEvent>{
 
-    var eventResponsiblelist = MutableLiveData<List<ResponseList>>()
-    var eventTeamlist = MutableLiveData<List<TeamList>>()
-    var eventlivelist = MutableLiveData<List<EventList>>()
+    var eventResponsiblelist = MutableLiveData<List<People>>()
+    var eventTeamlist = MutableLiveData<List<Team>>()
+    var eventlivelist = MutableLiveData<List<Event>>()
     var TAG = "ViewModelDashBoardEvent"
 
     fun eventTeamList(context: Context) {
+        val db=DbHelper(context,null)
+        val teamList=db.getTeamList()
+        val responsiblelist= db.getPersonList()
+        eventTeamlist.value = teamList
+        eventResponsiblelist.value = responsiblelist
 
 
-        ApiClient.client.create(ApiInterFace::class.java)
-            .eventTeamList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+//        ApiClient.client.create(ApiInterFace::class.java)
+//            .eventTeamList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
 
 
 
 
     }
     fun eventList(context: Context){
-
-        val service=ApiClient.client.create(ApiInterFace::class.java)
-        val apiInterFace=service.myeventList(MySharedPreference.getUser(context)?.id.toString())
-        apiInterFace.enqueue(object: retrofit2.Callback<ResponseEventListDashboard>{
-            override fun onResponse(
-                call: Call<ResponseEventListDashboard>,
-                response: Response<ResponseEventListDashboard>
-            ) {
-                AppUtils.logError(TAG,"on response fun eventlist"+response.body().toString())
-                if ( !response.body()?.events.isNullOrEmpty()){
-
-                    val basereponse:ResponseEventListDashboard= Gson().fromJson(Gson().toJson(response.body()),ResponseEventListDashboard::class.java)
-                    if (!basereponse.events.isNullOrEmpty()){
-                        eventlivelist.value= emptyList()
-                        val myeventlist=ArrayList<EventList>()
-                        basereponse.events.forEach{
-                            myeventlist.add(it)
-
-                        }
-                        eventlivelist.value =myeventlist
-                    }
-
-                }
-                else{
-                    AppUtils.logError(TAG,"on response fun eventlist but events is empty")
-
-                }
+        val userId=MySharedPreference.getUser(context)?.id.toString()
+        val db=DbHelper(context,null)
+     val eventlist=   db.getAllEventListData(userId)
+        eventlivelist.value =eventlist
 
 
 
-            }
+//        val service=ApiClient.client.create(ApiInterFace::class.java)
+//        val apiInterFace=service.myeventList(MySharedPreference.getUser(context)?.id.toString())
+//        apiInterFace.enqueue(object: retrofit2.Callback<ResponseEventListDashboard>{
+//            override fun onResponse(
+//                call: Call<ResponseEventListDashboard>,
+//                response: Response<ResponseEventListDashboard>
+//            ) {
+//                AppUtils.logError(TAG,"on response fun eventlist"+response.body().toString())
+//                if ( !response.body()?.events.isNullOrEmpty()){
+//
+//                    val basereponse:ResponseEventListDashboard= Gson().fromJson(Gson().toJson(response.body()),ResponseEventListDashboard::class.java)
+//                    if (!basereponse.events.isNullOrEmpty()){
+//                        eventlivelist.value= emptyList()
+//                        val myeventlist=ArrayList<EventList>()
+//                        basereponse.events.forEach{
+//                            myeventlist.add(it)
+//
+//                        }
+//                        eventlivelist.value =myeventlist
+//                    }
+//
+//                }
+//                else{
+//                    AppUtils.logError(TAG,"on response fun eventlist but events is empty")
+//
+//                }
+//
+//
+//
+//            }
+//
+//            override fun onFailure(call: Call<ResponseEventListDashboard>, t: Throwable) {
+//                AppUtils.logError(TAG,"on failure fun eventlist")
+//
+//            }
 
-            override fun onFailure(call: Call<ResponseEventListDashboard>, t: Throwable) {
-                AppUtils.logError(TAG,"on failure fun eventlist")
-
-            }
-
-        })
+//        })
 
     }
 
@@ -110,9 +119,9 @@ class ViewModelDashBoardEvent(var activity: Application) : AndroidViewModel(acti
                 AppUtils.logDebug(TAG,"team--"+team.toString())
 //                DashBoardEventActivity().setTeamASpinner(team!!)
 //                DashBoardEventActivity().setResponsibleSpinner(responsible!!)
-                eventTeamlist.value = team
+//                eventTeamlist.value = team
 //
-                eventResponsiblelist.value = responsible
+//                eventResponsiblelist.value = responsible
 
 //            }
             }

@@ -150,24 +150,25 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
         val checkInternet = checkInternetConnection()
 
-
-        if (checkInternet) {
-            initViewModel()
-            if (collectid != null) {
-//                handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
-
-//                }, 1000)
-
-            } else {
-//                handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
-
-//                }, 1200)
-            }
-        } else {
-            Toast.makeText(requireContext(), "No InterNet", Toast.LENGTH_SHORT).show()
-        }
+        initViewModel()
+//        if (checkInternet) {
+//            initViewModel()
+//            if (collectid != null) {
+////                handler.postDelayed({
+//                setSpinner(collectActivity, sensonser, false)
+//
+////                }, 1000)
+//
+//            } else {
+////                handler.postDelayed({
+//                setSpinner(collectActivity, sensonser, false)
+//
+////                }, 1200)
+//            }
+//        }
+//    else {
+//            Toast.makeText(requireContext(), "No InterNet", Toast.LENGTH_SHORT).show()
+//        }
 
 
         if (positionnn == 2) {
@@ -219,6 +220,20 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 }
 
             })
+        }
+        else{
+            if (collectid != null) {
+                handler.postDelayed({
+                setSpinner(collectActivity, sensonser, false)
+
+                }, 1000)
+
+            } else {
+                handler.postDelayed({
+                setSpinner(collectActivity, sensonser, false)
+
+                }, 1000)
+            }
         }
         getActivity()?.setTitle("Update Pack")
 
@@ -767,22 +782,27 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 //            MySharedPreference.getUser(requireContext())?.id.toString(),
 //            collectactivity_id
 //        ).enqueue(this)
-        val resultList = db?.getCollectActivityResult(collectactivity_id)
-        collectactivitylistName.clear()
-        collectactivitylist.clear()
-        collectactivitylistid.clear()
+        if (collectactivity_id!="0"){
+            val resultList = db?.getCollectActivityResult(collectactivity_id)
+            collectactivitylistName.clear()
+            collectactivitylist.clear()
+            collectactivitylistid.clear()
+            collectactivitylist.add(CollectAcitivityResultList("0","Select",null,
+            null,null))
+            collectactivitylistName.add("Select")
+            collectactivitylistid.add("0")
 
-        collectactivitylistName.add("Select")
-        collectactivitylistid.add("0")
+            for (i in 0 until resultList!!.size) {
+                val item = resultList.get(i)
+                collectactivitylist.add(
+                    CollectAcitivityResultList(item.id.toString(),
+                        item.result_name!!, item.type_id, item.unit_id,item.list_id))
 
-        for (i in 0 until resultList!!.size) {
-            val item = resultList.get(i)
-            collectactivitylist.add(
-                CollectAcitivityResultList(item.id.toString(),
-                    item.result_name!!, item.type_id, item.unit_id,item.list_id))
+                collectactivitylistName.add(item.result_name)
+                collectactivitylistid.add(item.id.toString())
+            }
 
-            collectactivitylistName.add(item.result_name)
-            collectactivitylistid.add(item.id.toString())
+
         }
 
         if (collectactivitylistName != null) {
@@ -889,23 +909,10 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
     //    private fun callResultValueApi(resultid: String) {
     private fun callResultValueApi(resultid: String, value: String, unitid: String, listId: String?) {
-        AppUtils.logDebug(TAG, "Resultvalueapi result id " + resultid)
+        AppUtils.logDebug(TAG, "Resultvalueapi result id " + value)
         val id = resultid.toInt() + 1
 
-        val valueListname = ArrayList<String>()
-        val valueListid = ArrayList<String>()
 
-
-            val valuelist = db?.getListChoice(value)
-
-            valueListname.add("Select")
-            valueListid.add("0")
-
-            for (i in 0 until valuelist!!.size) {
-                val item = valuelist.get(i)
-                valueListname.add(item.name!!)
-                valueListid.add(item.id.toString())
-            }
 
 
 
@@ -936,11 +943,10 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             unitListId.add(item.id.toString())
         }
 
-        setUnitSpinner(valueListid, valueListname)
 
 //       setValueSpinner(unitList, unitListname, listId!!, unitListId)
         try {
-            if (value == "date") {
+            if (value == "date" || value=="Date" || value =="DATE") {
 
                 spinner_value?.visibility = View.GONE
                 ed_value?.visibility = View.GONE
@@ -979,13 +985,28 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     ).show()
                 }
 
-            } else if (value == "numeric" || value == "text") {
+            } else if (value == "numeric" || value == "text" || value == "Numeric" || value == "Text") {
                 ed_value?.visibility = View.VISIBLE
                 dt_value?.visibility = View.GONE
                 spinner_value?.visibility = View.GONE
                 ed_value?.setText(dataa?.value)
             } else if (value == "list" || value == "List" || value == "table" || value == "Table") {
 
+                val valueListname = ArrayList<String>()
+                val valueListid = ArrayList<String>()
+
+
+                val valuelist = db?.getListChoice(value)
+
+                valueListname.add("Select")
+                valueListid.add("0")
+
+                for (i in 0 until valuelist!!.size) {
+                    val item = valuelist.get(i)
+                    valueListname.add(item.name!!)
+                    valueListid.add(item.id.toString())
+                }
+                setUnitSpinner(valueListid, valueListname)
 
                 spinner_value?.visibility = View.VISIBLE
                 ed_value?.visibility = View.GONE

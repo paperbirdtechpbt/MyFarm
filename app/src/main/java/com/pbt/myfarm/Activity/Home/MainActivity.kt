@@ -4,11 +4,16 @@ package com.pbt.myfarm.Activity.Home
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
@@ -25,6 +30,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     val data = ArrayList<EventList>()
     var viewModel:MainActivityViewModel? = null
+    var MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE:Int=100
 
     companion object
     {
@@ -42,7 +48,17 @@ class MainActivity : AppCompatActivity() {
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
-        startService(Intent(this,MyFarmService::class.java))
+        if (chechpermission())
+        {
+            startService(Intent(this,MyFarmService::class.java))
+
+        }
+        else{
+            Toast.makeText(this, "Permission Mandatory", Toast.LENGTH_SHORT).show()
+        }
+
+
+
 
         if (checkInternetConnection()){
             initViewModel()
@@ -119,5 +135,21 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton(android.R.string.no, null)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .show()
+    }
+    private fun chechpermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
+                android.Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.INTERNET,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                ), 100)
+
+        }
+        return true
     }
 }

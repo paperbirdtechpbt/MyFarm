@@ -1,13 +1,14 @@
 package com.pbt.myfarm
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.Intent
+
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
+
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -19,20 +20,14 @@ import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayIDKe
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayNameKey
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.packconfiglist
-import com.pbt.myfarm.Activity.Home.MainActivity
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
-import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.*
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
+
 import com.pbt.myfarm.Util.AppUtils
-import com.pbt.myfarm.Util.MySharedPreference
+
 import retrofit2.Call
-import retrofit2.Callback
+
 import retrofit2.Response
 
 
@@ -53,9 +48,12 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
         var groupArrayIdPack: ArrayList<String>? = ArrayList()
     }
 
+    @SuppressLint("StaticFieldLeak")
     val context: Context = activity
     var configlist = MutableLiveData<List<PackConfigFieldList>>()
+    @SuppressLint("StaticFieldLeak")
     lateinit var activityContext: Activity
+    @SuppressLint("StaticFieldLeak")
     var progressbar: ProgressBar? = null
 
 
@@ -119,7 +117,6 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
 
-
 //        if (updateTaskId=="0"){
 //            ApiClient.client.create(ApiInterFace::class.java)
 //                .packConfigFieldList(MySharedPreference.getUser(context)?.id.toString(),
@@ -148,8 +145,17 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
         }
 
         progressbar?.visibility = View.GONE
+        var list=ArrayList<PackConfigField>()
+        if (updateTaskIdBoolean){
+            list = db.getPackConfigFieldList( packList?.pack_config_id.toString())
 
-        val list = db.getPackConfigFieldList(packconfiglist?.id.toString())
+        }
+        else{
+
+        list = db.getPackConfigFieldList(packconfiglist?.id.toString())
+
+        }
+
 
         val packconfigList = db.getAllPackConfig()
         AppUtils.logDebug(TAG, "PakcOCmmunityList" + packconfigList)
@@ -160,6 +166,11 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
             val item = packconfigList.get(i)
 
             if (item.id == packconfiglist?.id) {
+                labelPackConfigName = item.name
+                labelPackConfigPrefix = item.name_prefix
+                break
+            }
+            if (item.id == packList?.pack_config_id?.toInt()) {
                 labelPackConfigName = item.name
                 labelPackConfigPrefix = item.name_prefix
                 break

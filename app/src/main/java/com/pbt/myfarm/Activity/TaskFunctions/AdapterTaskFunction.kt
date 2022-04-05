@@ -36,7 +36,7 @@ var callbacks:(String,String) ->Unit)
         val item= function.get(position)
         holder.link.setText(item.name)
         holder.img_downlod.setOnClickListener{
-           callbacks.invoke(item.name,item.link)
+           callbacks.invoke(item.name!!, item.link.toString())
 
         }
     }

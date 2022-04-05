@@ -1,7 +1,9 @@
 package com.pbt.myfarm.Util
 
+import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -9,6 +11,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.loader.content.CursorLoader
 import com.pbt.myfarm.BuildConfig
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -52,8 +55,32 @@ class AppUtils {
                 param.toRequestBody("multipart/form-data".toMediaTypeOrNull());
             return parameter
         }
+        fun isFileAccessPermissionGranted(context:Context) :Boolean {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return Environment.isExternalStorageManager()
+            } else {
+                val readExtStorage = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                return readExtStorage == PackageManager.PERMISSION_GRANTED
+            }
+        }
+        fun isFileWriteAccessPermissionGranted(context:Context) :Boolean {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                return Environment.isExternalStorageManager()
+            } else {
+                val readExtStorage = ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                return readExtStorage == PackageManager.PERMISSION_GRANTED
+            }
+        }
 
     }
+
+
 
     fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
