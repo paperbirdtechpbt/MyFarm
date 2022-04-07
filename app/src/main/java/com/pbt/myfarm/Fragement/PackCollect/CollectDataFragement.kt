@@ -71,65 +71,12 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
 
         val view:View= inflater.inflate(R.layout.fragment_collect_pack_fragement, container, false)
 
-        val checkInternet = checkInternetConnection()
-
-        if (checkInternet) {
             initViewModel()
-        }
-//        else {
-//
-//            val db = DbHelper(requireContext(), null)
-//            val packconfiglist=db.getAllPackConfig()
-//            val list = db.getAllCollectData(packList?.id.toString())
-//            AppUtils.logDebug(TAG,list.size.toString())
-//            recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
-////            val listt=ArrayList<CollectData>()
-////            for (i in 0 until list.size ){
-////                listt.add(list.get(i))
-////
-////            }
-//
-//
-//            adapter = CollectDataAdapter(list!!, requireContext()) { id, boolean ->
-//                collectDataId=id
-//                if (boolean){
-//                    showAlertDialog(id)
-//                }
-//                else{
-//                    val intent=Intent(activity,UpdatePackActivity::class.java)
-//                    intent.putExtra("fragment","2")
-//                    startActivity(intent)
-//                }
-//
-//
-//            }
-//
-//            recyclerview_collectdata?.adapter = adapter
-////            if (list.isNullOrEmpty()){
-////                layout_nodata.visibility=View.VISIBLE
-////                progressbar_collectpack.visibility=View.GONE
-////            }
-////            else{
-////                layout_nodata.visibility=View.GONE
-////            }
-//        }
-
 
         return view
     }
 
-    private fun checkInternetConnection(): Boolean {
 
-        val ConnectionManager =
-            requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-
-    }
 
     private fun initViewModel() {
         viewmodel =
@@ -140,12 +87,17 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
 
         viewmodel?.collectdatalist?.observe(viewLifecycleOwner,androidx.lifecycle.Observer{list ->
 
+            AppUtils.logDebug(TAG,"collectdataList==="+list.toString())
+
             val mylist =
                 Gson().fromJson(Gson().toJson(list), ArrayList<CollectData>()::class.java)
 
             recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
 
-            adapter  = CollectDataAdapter(mylist,requireContext()){  id ,boolean->
+            adapter  = CollectDataAdapter(mylist,requireContext()){  id ,boolean,serverid->
+                AppUtils.logDebug(TAG,"SErverid===>"+ collectDataServerId)
+
+                collectDataServerId=serverid
                 collectDataId=id
                 if (boolean){
                     showAlertDialog(id)
@@ -191,6 +143,7 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
     companion object {
         val TAG="CollectPackFragement"
         var collectDataId=""
+        var collectDataServerId=""
     }
 
     override fun onResponse(

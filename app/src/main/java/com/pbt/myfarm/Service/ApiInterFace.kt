@@ -252,7 +252,7 @@ interface ApiInterFace {
     fun myeventList(
 
         @Field("user_id") user_id: String,
-        ):Call<ResponseEventListDashboard>
+        ):Call<ResponseEventList>
 
     @FormUrlEncoded
     @POST("api/deleteEvent")

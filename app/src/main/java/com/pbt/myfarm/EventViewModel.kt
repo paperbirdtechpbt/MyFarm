@@ -23,32 +23,40 @@ class EventViewModel(var activity: Application) : AndroidViewModel(activity),
     var progressbar: ProgressBar? = null
 
     fun onEventList(context: Context) {
-//        ApiClient.client.create(ApiInterFace::class.java).myeventList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
         val userid = MySharedPreference.getUser(context)?.id.toString()
-        val db = DbHelper(context, null)
-        val eventList = db.getAllEventListData(userid)
-        var events=ArrayList<Event>()
-        eventList.forEach{list ->
 
-            list.name= list.name?.replace("null","")
-            if (list.description.isNullOrEmpty()){
-                list.description="Desciption"
-            }
 
-            if (list.exp_start_date.isNullOrEmpty()){
-                if (!list.actual_start_date.isNullOrEmpty()){
-                    list.exp_start_date="Actual Start Date: ${list.actual_start_date}"
+        if (AppUtils().isInternet(context)){
+            ApiClient.client.create(ApiInterFace::class.java).myeventList(userid).enqueue(this)
+
+        }
+        else{
+            val db = DbHelper(context, null)
+            val eventList = db.getAllEventListData()
+            var events=ArrayList<Event>()
+            eventList.forEach{list ->
+
+                list.name= list.name?.replace("null","")
+                if (list.description.isNullOrEmpty()){
+                    list.description="Desciption"
+                }
+
+                if (list.exp_start_date.isNullOrEmpty()){
+                    if (!list.actual_start_date.isNullOrEmpty()){
+                        list.exp_start_date="Actual Start Date: ${list.actual_start_date}"
+                    }
+                    else{
+                        list.exp_start_date="ExpStart Date: "
+                    }
                 }
                 else{
-                    list.exp_start_date="ExpStart Date: "
+                    list.exp_start_date="ExpStart Date: ${list.exp_start_date}"
+
                 }
             }
-            else{
-                list.exp_start_date="ExpStart Date: ${list.exp_start_date}"
-
-            }
+            event.value = eventList
         }
-        event.value = eventList
+
     }
 
     override fun onResponse(call: Call<ResponseEventList>, response: Response<ResponseEventList>) {
@@ -56,11 +64,30 @@ class EventViewModel(var activity: Application) : AndroidViewModel(activity),
             progressbar?.visibility = View.GONE
             val basereponse: ResponseEventList =
                 Gson().fromJson(Gson().toJson(response.body()), ResponseEventList::class.java)
+
             if (!basereponse.events.isNullOrEmpty()) {
                 event.value = emptyList()
                 val myeventlist = ArrayList<Event>()
-                basereponse.events.forEach {
-                    myeventlist.add(it)
+                basereponse.events.forEach {list ->
+                    list.name= list.name?.replace("null","")
+                    if (list.description.isNullOrEmpty()){
+                        list.description="Desciption"
+                    }
+
+                    if (list.exp_start_date.isNullOrEmpty()){
+                        if (!list.actual_start_date.isNullOrEmpty()){
+                            list.exp_start_date="Actual Start Date: ${list.actual_start_date}"
+                        }
+                        else{
+                            list.exp_start_date="ExpStart Date: "
+                        }
+                    }
+                    else{
+                        list.exp_start_date="ExpStart Date: ${list.exp_start_date}"
+
+                    }
+
+                    myeventlist.add(list)
 
                 }
                 event.value = myeventlist

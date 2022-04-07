@@ -2,7 +2,6 @@ package com.pbt.myfarm.Activity.CreateTask
 
 
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,6 +24,7 @@ import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -147,9 +147,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         if (updateTaskBoolen){
 
             viewmodel?.onConfigFieldList(this,
-                updateTaskBoolen,updateTaskList)
+                true,updateTaskList)
 
-            updateTaskBoolen=false
+//            updateTaskBoolen=false
 
         }
         else{
@@ -163,19 +163,13 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 val config =
                     Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
                 recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
-                adapter = CreateTaskAdapter(this, config, true) { list, name ->
+                adapter = CreateTaskAdapter(this, config, updateTaskBoolen) { list, name ->
                     while (list.contains("0")) {
                         list.remove("0")
                     }
                     while (name.contains("0")) {
                         name.remove("0")
                     }
-//                    while (ExpNameKey.contains("0")) {
-//                        ExpNameKey.remove("0")
-//                    }
-//                    while (ExpAmtArrayKey.contains("0")) {
-//                        ExpAmtArrayKey.remove("0")
-//                    }
 
 
                     for (i in 0 until name.size) {
@@ -185,6 +179,20 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                         jsonObject.put(ExpNameKey.get(i), name.get(i))
 
                         successObject.put(jsonObject)
+
+                        val db=DbHelper(this,null)
+
+                        val lastValueOfPacknew=db.getLastofTask()
+                        val idd= lastValueOfPacknew.toInt()+1
+
+//                    addPackValue(list.get(i),name.get(i),idd.toString())
+                        if (updateTaskBoolen){
+                            db.addTaskValues(name.get(i),list.get(i),updateTaskList?.id.toString(),true,field_desciption.text.toString())
+                        }
+                        else{
+                            db.addTaskValues(name.get(i),list.get(i),idd.toString(),false,"")
+
+                        }
                         fieldModel.add(FieldModel(name.get(i), list.get(i)))
                     }
 
@@ -206,280 +214,68 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 }
             }
 
-
-//        viewmodel?.configlist?.observe(this, Observer { configlist ->
-////            recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
-//
-////            adapter = CreateTaskAdapter(this, configlist!!)
-////            { position, taskname ,list->
-////
-////                val intent = Intent(this, CreateTaskActivity::class.java)
-////                intent.putExtra(AppConstant.CONST_VIEWMODELCLASS_LIST,list)
-////                startActivity(intent)
-////
-////            }
-////            recycler_taskconfiglist.adapter = adapter
-//
-//        })
-//        setSpinner()
-
-
-//
-//        btn_update_task.setOnClickListener{
-//            viewmodel?.update()
-//
-//
-//        }
             btn_create_task.setOnClickListener {
+
                 adapter?.callBack()
-//                val listdata = ArrayList<String>()
-//
-//
-//                val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-//                val currentDate = sdf.format(Date())
-//                val db=DbHelper(this,null)
-//                val viewtasklist=ArrayList<Task>()
-//
-//                val d=db.getLastValue_task_new("12")
-//
-//                if (d.isEmpty()){
-//                    viewtasklist.add(
-//                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
-//                            currentDate,
-//                            "",field_desciption.text.toString(),
-//                            0, MySharedPreference.getUser(this)?.id!!,
-//                             MySharedPreference.getUser(this)?.id!!,"",1,1,
-//                            "0", configtype?.id?.toInt()!!,0)
-//                    )
-//                    val viewTask=viewtasklist.get(0)
-//                    db.tasks_create(viewTask)
-////                    for(i in 0 until ExpAmtArray.size){
-////                        db.addtaskFieldValue("1", ExpName.get(i), ExpAmtArray.get(i))
-////                    }
-//
-//                }
-//                else{
-//                    val newtaskname:Int=  d.toInt()+1
-//
-//                    viewtasklist.add(
-//                        Task(selectedCommunityGroup.toInt(), MySharedPreference.getUser(this)?.id!!,
-//                            currentDate,
-//                            "",field_desciption.text.toString(),
-//                            0, MySharedPreference.getUser(this)?.id!!,
-//                            MySharedPreference.getUser(this)?.id!!,"",newtaskname,1,
-//                            "0", configtype?.id?.toInt()!!,0))
-//
-//                   val mytask=viewtasklist.get(0)
-//
-//                    db.tasks_create(mytask)
-//
-//                    while (ExpName.contains("0")){
-//                        ExpName.remove("0")
-//                    }
-//                    while (ExpAmtArray.contains("0")){
-//                        ExpAmtArray.remove("0")
-//                    }
-////                    for(i in 0 until ExpAmtArray.size){
-////                        db.addtaskFieldValue(newtaskname.toString(), ExpName.get(i), ExpAmtArray.get(i))
-////                    }
-//                }
-//
-//
-//
-//                if (successObject != null) {
-//                    for (i in 0 until successObject.length()) {
-//                        listdata.add(successObject.getString(i))
-//                    }
-//                }
-//
-//            AppUtils.logDebug(TAG,"-->>"+successObject)
+
                 val userId = MySharedPreference.getUser(this)?.id
                 val prefix = field_desciption.text.toString()
                 selectedCommunityGroup
 
+                    if(!updateTaskBoolen){
+                        if (AppUtils().isInternet(this)){
+                            if (configtype?.name_prefix.isNullOrEmpty()){
+                                ApiClient.client.create(ApiInterFace::class.java)
+                                    .storeTask(
+                                        configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                        successObject.toString(), ""
+                                    ).enqueue(this)
+                            }
+                            else{
+                                ApiClient.client.create(ApiInterFace::class.java)
+                                    .storeTask(
+                                        configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                        successObject.toString(), configtype?.name_prefix.toString()
+                                    ).enqueue(this)
+                            }
+                        }
+
+                        else{
+                            //Store Task Offline In Database
+                                viewmodel?.desciption=field_desciption.text.toString()
+                            viewmodel?.createTaskOffline(this,configtype)
+
+                        }
+
+                        btn_create_task.visibility=View.GONE
+                        AppUtils.logDebug(TAG,  "upfateTaskboolean False"+  configtype?.id.toString()+"\n" +prefix+
+                                "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
+
+                                successObject.toString()+"\n"+ configtype?.name_prefix.toString())
+                    }
+                    else{
+                        if(AppUtils().isInternet(this)){
+                            btn_create_task.visibility=View.GONE
+
+                            ApiClient.client.create(ApiInterFace::class.java)
+                                .updateTask(
+                                    updateTaskList?.task_config_id.toString(), prefix, selectedCommunityGroup, userId.toString(),
+                                    successObject.toString(), updateTaskList?.taskConfigNamePrefix.toString()+updateTaskList?.padzero.toString(),
+                                    updateTaskList?.id.toString() ).enqueue(this)
+                        }
+
+
+
+                    }
 
                 layout_ProgressBar.visibility=View.VISIBLE
 
-                if(!updateTaskBoolen){
-                    if (configtype?.name_prefix.isNullOrEmpty()){
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .storeTask(
-                                configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                                successObject.toString(), ""
-                            ).enqueue(this)
-                    }
-                    else{
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .storeTask(
-                                configtype?.id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                                successObject.toString(), configtype?.name_prefix.toString()
-                            ).enqueue(this)
-                    }
-                    btn_create_task.visibility=View.GONE
-                    AppUtils.logDebug(TAG,  "upfateTaskboolean False"+  configtype?.id.toString()+"\n" +prefix+
-                            "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
-
-                            successObject.toString()+"\n"+ configtype?.name_prefix.toString())
-                   }
-                else{
-                    btn_create_task.visibility=View.GONE
-                    AppUtils.logDebug(TAG,"updateTaskboolean true"+    updateTaskList?.id.toString()+"\n" +prefix+
-                            "\n"+selectedCommunityGroup+"\n"+ userId.toString()+"\n"+
-
-
-                            successObject.toString()+"\n"+ updateTaskList?.taskConfigNamePrefix.toString()+"\n"+
-                            updateTaskList?.id.toString())
-
-                    ApiClient.client.create(ApiInterFace::class.java)
-                        .updateTask(
-                            updateTaskList?.task_config_id.toString(), prefix, selectedCommunityGroup, userId.toString(),
-                            successObject.toString(), updateTaskList?.taskConfigNamePrefix.toString()+updateTaskList?.padzero.toString(),
-                            updateTaskList?.id.toString() ).enqueue(this)
-                }
-
-//                -------|||do not uncomment  below code-------------------------|||||||
-//
-//            CallApiForNewTask(fieldModel,userId,configtype?.id,selectedCommunityGroup.toInt()
-//                ,prefix,configtype!!.name_prefix)
-//
-//
-//            viewmodel?.login(it)
-//            finish()
-//            AppUtils.logDebug(TAG, ravi)
             }
-//        if (ViewTaskActivity.mytasklist !=null){
-//            AppUtils.logDebug(TAG,viewtask.toString())
-//            btn_create_task.visibility=View.GONE
-//            btn_update_task.visibility=View.VISIBLE
-//            lablel_createnewtask.setText("Update A Task")
-////            val viewtask = intent.getParcelableExtra<ViewTaskModelClass>(CONST_VIEWMODELCLASS_LIST)
-//          setdata(ViewTaskActivity.mytasklist)
-//
-//
-//        }
-//
-//        else {
-//
-//
-//            val configTypeName: String? = intent.getStringExtra(CONST_CONFIGTYPE_NAME)
-//            val num: Int = intent.getIntExtra(CONST_CONFIGTYPE_TYPE_ID, -1)
-//
-//            viewmodel?.confiType?.set(configTypeName)
-//            setPrefix(num)
-//        }
-//        ed_expectedDate.setOnClickListener(this)
-//        ed_endDate.setOnClickListener(this)
-//        ed_startDate.setOnClickListener(this)
-//        ed_expectedEndDate.setOnClickListener(this)
-//    }
 
-//    private fun setdata(viewtask: TasklistDataModel?) {
-//
-//        viewmodel?.namePrefix?.set(viewtask?.name)
-//        viewmodel?.confiType?.set(viewtask?.task_config_name)
-//        viewmodel?.desciption?.set(viewtask?.description)
-//        viewmodel?.expectedStartDate?.set("Test")
-//        viewmodel?.expectedEndDate?.set("Test")
-//        viewmodel?.startDate?.set("Test")
-//        viewmodel?.EndDate?.set("Test")
-//
-//    }
-//
-//    private fun updateLabel(view: View?) {
-//        val myFormat = "yyyy-MM-dd"
-//        val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-//        when(view?.id){
-//            R.id.ed_expectedDate -> {
-//                ed_expectedDate.setText(dateFormat.format(myCalendar.time))
-//            }
-//            R.id.ed_endDate -> {
-//                ed_endDate.setText(dateFormat.format(myCalendar.time))
-//
-//            }
-//            R.id.ed_startDate -> {
-//                ed_startDate.setText(dateFormat.format(myCalendar.time))
-//            }
-//            R.id.ed_expectedEndDate -> {
-//                ed_expectedEndDate.setText(dateFormat.format(myCalendar.time))
-//            }
-//        }
-//
-//    }
-
-
-//    private fun setPrefix(num: Int) {
-//        when (num) {
-//            0 ->   viewmodel?.namePrefix?.set("TRP")
-//            1 ->viewmodel?.namePrefix?.set("VTST")
-//            2 -> viewmodel?.namePrefix?.set("TST3")
-//            3 -> viewmodel?.namePrefix?.set("FRMTN")
-//            4 -> viewmodel?.namePrefix?.set("NET")
-//            5 -> viewmodel?.namePrefix?.set("TSK")
-//            6 -> viewmodel?.namePrefix?.set("DEFRM")
-//        }
-//    }
-
-//    private fun setSpinner() {
-//        ArrayAdapter.createFromResource(
-//            this, R.array.array_communitygroup, android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            spinner_Grip.adapter = adapter
-//        }
-//
-//    }
-//
-//    override fun onClick(view: View?) {
-//        val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
-//            myCalendar.set(Calendar.YEAR, year)
-//            myCalendar.set(Calendar.MONTH, month)
-//            myCalendar.set(Calendar.DAY_OF_MONTH, day)
-//            updateLabel(view)
-//        }
-
-//        DatePickerDialog(
-//            this, date, myCalendar.get(Calendar.YEAR),
-//            myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
-//        ).show()
-
-        //---------||||| do not uncommnet above code ---------------|||||||||||||----------------||||||||||||||||||||||
 
 
     }
 
-    private fun checkInternetConnection(): Boolean {
-        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    private fun CallApiForNewTask(
-        listdata: ArrayList<FieldModel>,
-        userId: Int?,
-        id: String?,
-        selectedCommunityGroup: Int,
-        prefix: String,
-        name: String
-    ) {
-
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .storeTask(id!!,prefix,selectedCommunityGroup,userId!!,
-//                listdata,name).enqueue(this)
-
-        ApiClient.client.create(ApiInterFace::class.java)
-            .storeTask(
-                "10", "refix", "1", "2",
-                listdata.toString(), "TRP"
-            ).enqueue(this)
-//    ApiClient.client.create(ApiInterFace::class.java).storeTask().enqueue(this)
-//
-
-    }
 
     private fun setCommunityGroup(communitGroup: Spinner) {
         Handler(Looper.getMainLooper()).postDelayed({
@@ -529,6 +325,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         btn_create_task.visibility=View.VISIBLE
         layout_ProgressBar.visibility=View.GONE
     }
+
 
 }
 

@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.Event
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -57,7 +59,7 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
             editEventID = intent.extras!!.getString(CONST_EDITEVENT_ID).toString()
             isCreateEvent = intent.extras!!.getBoolean(CONST_CREATEEVENT)
 
-            initViewModel(editEventID)
+            initViewModel(editEventID, isCreateEvent)
         }
         btn_submitevent.setOnClickListener {
             if (ed_event_name.text.toString().isEmpty() &&
@@ -66,27 +68,50 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
                 Toast.makeText(this, "Please enter Name and Expected StartDate", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                ApiClient.client.create(ApiInterFace::class.java).updateEvent(
-                    MySharedPreference.getUser(this)?.id.toString(),
-                    editEventID,
-                    ed_event_name.text.toString(),
-                    ed_event_desc.text.toString(),
-                    idtype,
-                    ed_event_expstartdt.text.toString(),
-                    ed_event_expenddt.text.toString(),
-                    ed_event_expDuration.text.toString(),
-                    ed_event_startdt.text.toString(),
-                    ed_event_enddt.text.toString(),
-                    ed_event_Duration.text.toString(),
-                    idcommunity,
-                    idstatus,
-                    idresponsible,
-                    idteam,
-                    idclosed
-                ).enqueue(this)
+                if (AppUtils().isInternet(this)) {
+                    ApiClient.client.create(ApiInterFace::class.java).updateEvent(
+                        MySharedPreference.getUser(this)?.id.toString(),
+                        editEventID,
+                        ed_event_name.text.toString(),
+                        ed_event_desc.text.toString(),
+                        idtype,
+                        ed_event_expstartdt.text.toString(),
+                        ed_event_expenddt.text.toString(),
+                        ed_event_expDuration.text.toString(),
+                        ed_event_startdt.text.toString(),
+                        ed_event_enddt.text.toString(),
+                        ed_event_Duration.text.toString(),
+                        idcommunity,
+                        idstatus,
+                        idresponsible,
+                        idteam,
+                        idclosed
+                    ).enqueue(this)
+                } else {
+
+                    val db = DbHelper(this, null)
+
+
+                        val lastid = db.getLastofEvent()
+                        val idd = lastid.toInt() + 1
+                        var event: Event? = null
+                        event=Event(actual_duration = ed_event_Duration.text.toString(),
+                            actual_end_date =ed_event_enddt.text.toString(),
+                            actual_start_date = ed_event_startdt.text.toString(),
+                            assigned_team = idteam.toInt(),
+                            com_group = idcommunity.toInt(),
+                            description = ed_event_desc.text.toString(),
+                            exp_duration = ed_event_expDuration.text.toString(),
+                            exp_end_date =   ed_event_expenddt.text.toString(),
+                            exp_start_date =  ed_event_expstartdt.text.toString(),
+                            name = ed_event_name.text.toString(),
+                            responsible = idresponsible.toInt(),
+                            id = idd)
+                        db.eventsCreate(event, false)
+
+                }
 
             }
-
         }
         ed_event_expenddt.setOnClickListener {
             openDateDialog(ed_event_expenddt)
@@ -100,73 +125,130 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
         ed_event_enddt.setOnClickListener {
             openDateDialog(ed_event_enddt)
         }
-
     }
 
-    private fun initViewModel(editEventID: String) {
+    private fun initViewModel(editEventID: String, isCreateEvent: Boolean) {
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModeleditEvent::class.java)
-        viewModel?.onEditEvent(editEventID, this)
-        viewModel?.editeventlist?.observe(this, Observer { list ->
-            if (!list.isNullOrEmpty()) {
-                AppUtils.logDebug(TAG, "Editeevent ========" + Gson().toJson(list))
-                getSpinnerData(list)
-            }
+        if (AppUtils().isInternet(this)) {
 
-        })
+            viewModel?.onEditEvent(editEventID, this, isCreateEvent)
+            viewModel?.editeventlist?.observe(this, Observer { list ->
+                if (!list.isNullOrEmpty()) {
+                    AppUtils.logDebug(TAG, "Editeevent ========" + Gson().toJson(list))
+                    getSpinnerData(list)
+                }
+            })
+
+        } else {
+            setOfflineData()
+        }
+
+    }
+
+    private fun setOfflineData() {
+
+        val db = DbHelper(this, null)
+        val comGrouplist = db.getCommunityGroupList()
+        val teamlist = db.getTeamList()
+        val responsibleList = db.getPersonList()
+        val eventtype=db.getAllEventTypes()
+        val eventSts=db.getAllEventStatus()
+
+        for (i in 0 until comGrouplist.size) {
+            val item = comGrouplist.get(i)
+            communityGroupid.add(item.id.toString())
+            communityGroupname.add(item.name!!)
+        }
+
+
+        for (i in 0 until teamlist.size) {
+            val item = teamlist.get(i)
+
+            teamid.add(item.id.toString())
+            teamname.add(item.name.toString())
+        }
+
+        for (i in 0 until responsibleList.size) {
+            val item = responsibleList.get(i)
+
+            responsibleid.add(item.id.toString())
+            responsiblename.add(item.lname + item.fname)
+        }
+      for (i in 0 until eventSts.size) {
+            val item = eventSts.get(i)
+      statusid.add(item.id)
+            statusname.add(item.name)
+        }
+      for (i in 0 until eventtype.size) {
+            val item = eventtype.get(i)
+
+            tyepid.add(item.id)
+            typename.add(item.name)
+        }
+        setSpinnerCommunity(sp_event_communitygroup, communityGroupname)
+        setSpinnerresponsible(sp_event_responsible, responsiblename)
+            setSpinnerstatus(sp_event_status, statusname)
+        setSpinnerteam(sp_event_team, teamname)
+            setSpinnertype(sp_event_type, typename)
+            setSpinnerclosed(sp_event_closed, closedarray)
+
     }
 
     private fun getSpinnerData(list: List<Data>) {
 
-        for (i in 0 until list.size) {
-            val item = list.get(i)
+        if (AppUtils().isInternet(this)) {
+            for (i in 0 until list.size) {
+                val item = list.get(i)
 
-            for (g in 0 until item.field_com_group_list.size) {
-                val itemi = item.field_com_group_list.get(g)
-                communityGroupid.add(itemi.id.toString())
-                communityGroupname.add(itemi.name)
-            }
-            setSpinnerCommunity(sp_event_communitygroup, communityGroupname)
-            for (a in 0 until item.field_responsible_list.size) {
-                val itema = item.field_responsible_list.get(a)
-                responsibleid.add(itema.id.toString())
-                responsiblename.add(itema.name)
-            }
-            setSpinnerresponsible(sp_event_responsible, responsiblename)
-            for (b in 0 until item.field_status_list.size) {
-                val itemb = item.field_status_list.get(b)
-                statusid.add(itemb.id.toString())
-                statusname.add(itemb.name)
-            }
-            setSpinnerstatus(sp_event_status, statusname)
-            for (c in 0 until item.field_team_list.size) {
-                val itemc = item.field_team_list.get(c)
-                teamid.add(itemc.id.toString())
-                teamname.add(itemc.name)
-            }
-            setSpinnerteam(sp_event_team, teamname)
-            for (d in 0 until item.field_type_list.size) {
-                val itemd = item.field_type_list.get(d)
-                tyepid.add(itemd.id.toString())
-                typename.add(itemd.name)
+                for (g in 0 until item.field_com_group_list.size) {
+                    val itemi = item.field_com_group_list.get(g)
+                    communityGroupid.add(itemi.id.toString())
+                    communityGroupname.add(itemi.name)
+                }
+                setSpinnerCommunity(sp_event_communitygroup, communityGroupname)
+                for (a in 0 until item.field_responsible_list!!.size) {
+                    val itema = item.field_responsible_list.get(a)
+                    responsibleid.add(itema.id.toString())
+                    responsiblename.add(itema.name)
+                }
+                setSpinnerresponsible(sp_event_responsible, responsiblename)
+                for (b in 0 until item.field_status_list!!.size) {
+                    val itemb = item.field_status_list.get(b)
+                    statusid.add(itemb.id.toString())
+                    statusname.add(itemb.name)
+                }
+                setSpinnerstatus(sp_event_status, statusname)
+                for (c in 0 until item.field_team_list!!.size) {
+                    val itemc = item.field_team_list.get(c)
+                    teamid.add(itemc.id.toString())
+                    teamname.add(itemc.name)
+                }
+                setSpinnerteam(sp_event_team, teamname)
+                for (d in 0 until item.field_type_list!!.size) {
+                    val itemd = item.field_type_list.get(d)
+                    tyepid.add(itemd.id.toString())
+                    typename.add(itemd.name)
+
+                }
+                setSpinnertype(sp_event_type, typename)
+
+                setSpinnerclosed(sp_event_closed, closedarray)
+                if (!isCreateEvent) {
+                    getEditData(
+                        item.field_exp_start_date!!, item.field_exp_end_date!!,
+                        item.field_exp_duration!!, item.field_actual_start_date!!,
+                        item.field_actual_end_date!!,
+                        item.field_description!!,
+                        item.field_name!!, item
+                    )
+                }
 
             }
-            setSpinnertype(sp_event_type, typename)
-
-            setSpinnerclosed(sp_event_closed, closedarray)
-            if (!isCreateEvent){
-                getEditData(
-                    item.field_exp_start_date, item.field_exp_end_date,
-                    item.field_exp_duration, item.field_actual_start_date,
-                    item.field_actual_end_date,
-                    item.field_description,
-                    item.field_name, item
-                )
-            }
-
         }
+
 
     }
 
@@ -192,11 +274,11 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
     }
 
     private fun setSpinerSelection(data: Data) {
-        setselectedId(data.field_com_group, communityGroupid, sp_event_communitygroup)
-        setselectedId(data.field_responsible, responsibleid, sp_event_responsible)
-        setselectedId(data.field_type, tyepid, sp_event_type)
-        setselectedId(data.field_assigned_team, teamid, sp_event_team)
-        setselectedId(data.field_status, statusid, sp_event_status)
+        setselectedId(data.field_com_group!!, communityGroupid, sp_event_communitygroup)
+        setselectedId(data.field_responsible!!, responsibleid, sp_event_responsible)
+        setselectedId(data.field_type!!, tyepid, sp_event_type)
+        setselectedId(data.field_assigned_team!!, teamid, sp_event_team)
+        setselectedId(data.field_status!!, statusid, sp_event_status)
 
 
     }
@@ -253,6 +335,7 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
     }
 
     private fun setSpinners(spinner: Spinner?, list: ArrayList<String>) {
+
         val adapter = ArrayAdapter(this, R.layout.support_simple_spinner_dropdown_item, list)
         spinner?.adapter = adapter
     }

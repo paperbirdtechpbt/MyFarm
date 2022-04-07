@@ -61,7 +61,7 @@ class UpdatePackFragement : Fragment(),
     var name: EditText? = null
     var viewmodel: PackViewModel? = null
     var adapterr: CreatePackAdapter? = null
-    val successObject=JSONArray()
+    val successObject = JSONArray()
     var configtype: EditText? = null
     var customer: EditText? = null
     val fieldModel = ArrayList<FieldModel>()
@@ -84,10 +84,10 @@ class UpdatePackFragement : Fragment(),
     override fun onResume() {
         super.onResume()
 //        progressbar_createpackfrgm.visibility = View.VISIBLE
-        arrayID= ArrayList()
-        arrayName= ArrayList()
-        arrayIDKey= ArrayList()
-        arrayNameKey= ArrayList()
+        arrayID = ArrayList()
+        arrayName = ArrayList()
+        arrayIDKey = ArrayList()
+        arrayNameKey = ArrayList()
 
         arrayID!!.clear()
         arrayName!!.clear()
@@ -107,13 +107,13 @@ class UpdatePackFragement : Fragment(),
 //            TAG,
 //            "onconfigfieldlist" + packList1?.pack_config_id.toString() + "\n" + packList1?.id!!.toString()
 //        )
-        arrayID= ArrayList()
-        arrayName= ArrayList()
-        arrayIDKey= ArrayList()
-        arrayNameKey= ArrayList()
+        arrayID = ArrayList()
+        arrayName = ArrayList()
+        arrayIDKey = ArrayList()
+        arrayNameKey = ArrayList()
 
         arrayID!!.clear()
-            arrayName!!.clear()
+        arrayName!!.clear()
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
 
@@ -121,15 +121,22 @@ class UpdatePackFragement : Fragment(),
 
         val updateTask: Button = view.findViewById(R.id.btn_update_pack)
         val btnViewTask: Button = view.findViewById(R.id.btn_viewgraph)
+
         updateTask.setOnClickListener {
+
             adapterr?.callBack()
-            //furthur update proces is in updatePAck Method()
+
+            val db = DbHelper(requireContext(), null)
+            db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+
 
         }
         btnViewTask.setOnClickListener {
+
             val intent = Intent(requireContext(), GraphActivity::class.java)
             intent.putExtra(PACK_LIST_PACKID, packList1)
             startActivity(intent)
+
         }
 
 
@@ -140,7 +147,8 @@ class UpdatePackFragement : Fragment(),
         viewmodel =
             ViewModelProvider(this).get(PackViewModel::class.java)
 
-        viewmodel?.onConfigFieldList(requireContext(), true,
+        viewmodel?.onConfigFieldList(
+            requireContext(), true,
             packList1?.pack_config_id.toString()
         )
         viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
@@ -158,9 +166,11 @@ class UpdatePackFragement : Fragment(),
                 ) { list, name ->
 
 
-                    if (list.isNotEmpty() && name.isNotEmpty()){
-                        AppUtils.logDebug(TAG,"expname"+list.toString()+
-                                name.toString())
+                    if (list.isNotEmpty() && name.isNotEmpty()) {
+                        AppUtils.logDebug(
+                            TAG, "expname" + list.toString() +
+                                    name.toString()
+                        )
                         while (list.contains("0")) {
                             list.remove("0")
                         }
@@ -175,7 +185,6 @@ class UpdatePackFragement : Fragment(),
 //                    }
 
 
-
                         if (name.isNotEmpty()) {
 //                            for (i in 0..name.size) {
 //                                ExpAmtArrayKey!![i] = "f_id"
@@ -184,29 +193,39 @@ class UpdatePackFragement : Fragment(),
                             for (i in 0 until name.size) {
                                 val jsonObject = JSONObject()
 
-                                jsonObject.put( arrayIDKey!!.get(i), list.get(i))
+                                jsonObject.put(arrayIDKey!!.get(i), list.get(i))
                                 jsonObject.put(arrayNameKey!!.get(i), name.get(i))
 
                                 successObject?.put(jsonObject)
                                 fieldModel.add(FieldModel(name.get(i), list.get(i)))
+                                addPackValue(
+                                    list.get(i),
+                                    name.get(i),
+                                    packList1?.id.toString(),
+                                    true
+                                )
 
                             }
                         }
 
                     }
-                    if (successObject!=null){
+                    if (successObject != null) {
                         updatePAck()
-                    }
-                    else{
+
+                    } else {
                         updatePAck()
 
                     }
-
 
 
                 }
             recycler_packFieldsFragment.adapter = adapterr
         })
+    }
+
+    private fun addPackValue(list: String, name: String, idd: String, isUpdate: Boolean) {
+        val db = DbHelper(requireContext(), null)
+        db.addPackValues(list, name, idd, true)
 
     }
 
@@ -221,13 +240,12 @@ class UpdatePackFragement : Fragment(),
 //
         val db = DbHelper(requireContext(), null)
         val list = db.getAllPackConfig()
-        var prefixname: String?=null
+        var prefixname: String? = null
         for (i in 0 until list.size) {
             if (packList1?.pack_config_id == list.get(i).id.toString()) {
-                if (list.get(i).name_prefix==null){
-                    prefixname=""
-                }
-                else{
+                if (list.get(i).name_prefix == null) {
+                    prefixname = ""
+                } else {
                     prefixname = list.get(i).name_prefix!!
 
                 }
@@ -236,7 +254,7 @@ class UpdatePackFragement : Fragment(),
         }
 
         AppUtils.logDebug(
-            TAG, "update Task--" +prefixname +
+            TAG, "update Task--" + prefixname +
                     desciptioncompanian +
                     selectedCommunityGroup +
                     MySharedPreference.getUser(requireContext())?.id.toString() +
@@ -245,32 +263,34 @@ class UpdatePackFragement : Fragment(),
         )
         if (desciptioncompanian!!.isEmpty()) {
             Toast.makeText(requireContext(), "Desciption is Required", Toast.LENGTH_SHORT).show()
-            btn_create_pack.visibility= View.VISIBLE
+            btn_create_pack.visibility = View.VISIBLE
 
-        }
-        else{
-            if (prefixname.isNullOrEmpty()){
+        } else {
+            if (prefixname.isNullOrEmpty()) {
                 ApiClient.client.create(ApiInterFace::class.java)
                     .updatePack(
-                        packList1?.pack_config_id!!, desciptioncompanian!!,
-                        selectedCommunityGroup, MySharedPreference.getUser(requireContext())?.id.toString(),
-                        successObject.toString(),"",
+                        packList1?.pack_config_id!!,
+                        desciptioncompanian!!,
+                        selectedCommunityGroup,
+                        MySharedPreference.getUser(requireContext())?.id.toString(),
+                        successObject.toString(),
+                        "",
+                        packList1?.id.toString()
+                    ).enqueue(this)
+            } else {
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .updatePack(
+                        packList1?.pack_config_id!!,
+                        desciptioncompanian!!,
+                        selectedCommunityGroup,
+                        MySharedPreference.getUser(requireContext())?.id.toString(),
+                        successObject.toString(),
+                        prefixname!!,
                         packList1?.id.toString()
                     ).enqueue(this)
             }
-            else{
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .updatePack(
-                        packList1?.pack_config_id!!, desciptioncompanian!!,
-                        selectedCommunityGroup, MySharedPreference.getUser(requireContext())?.id.toString(),
-                        successObject.toString(),prefixname!!,
-                        packList1?.id.toString()
-                    ).enqueue(this)
-            }
 
         }
-
-
 
 
     }

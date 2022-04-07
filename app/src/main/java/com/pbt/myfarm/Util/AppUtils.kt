@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.loader.content.CursorLoader
 import com.pbt.myfarm.BuildConfig
@@ -25,6 +26,7 @@ import java.util.regex.Pattern
 
 class AppUtils {
     companion object {
+
 
 
         val DEBUG: Boolean = BuildConfig.DEBUG
@@ -94,4 +96,16 @@ class AppUtils {
         }
         return false
     }
+
+     fun isInternet(context: Context):Boolean {
+        val ConnectionManager = context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = ConnectionManager.activeNetworkInfo
+        if (networkInfo != null && networkInfo.isConnected == true) {
+            return true
+        } else {
+            return false
+        }
+//        return false
+    }
+
     }

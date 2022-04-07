@@ -42,12 +42,18 @@ class SelectConfigViewModel(var activity: Application):AndroidViewModel(activity
     }
 
     fun onConfigTypeRequest(context: Context) {
+        if (AppUtils().isInternet(context)){
+                    ApiClient.client.create(ApiInterFace::class.java)
+            .taskConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+        }
+        else{
+            val db=DbHelper(context,null)
+            val list=db.getTaskConfigList(MySharedPreference.getUser(context)?.id.toString())
+            configlist.value = list
+        }
 
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .taskConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
-        val db=DbHelper(context,null)
-        val list=db.getTaskConfigList(MySharedPreference.getUser(context)?.id.toString())
-        configlist.value = list
+
+
 
 
     }

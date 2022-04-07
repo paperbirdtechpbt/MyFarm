@@ -8,9 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Service.ResponseDashBoardEvent
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 import java.util.*
@@ -21,13 +23,56 @@ class ViewModeleditEvent(var activity: Application) : AndroidViewModel(activity)
     val TAG = "ViewModeleditEvent"
 
     var editeventlist= MutableLiveData<List<Data>>()
+    var teamandOtherList= MutableLiveData<List<ResponseDashBoardEvent>>()
 
-    fun onEditEvent(editEventID: String, context: Context) {
+    fun onEditEvent(editEventID: String, context: Context, isCreateEvent: Boolean) {
         ApiClient.client.create(ApiInterFace::class.java).editEvent(
             MySharedPreference.getUser(context)?.id.toString(),
             editEventID
         ).enqueue(this)
 
+    }
+    fun onTeamAndOtherList(context: Context){
+     val userId=MySharedPreference.getUser(context)?.id.toString()
+
+        val service = ApiClient.client.create(ApiInterFace::class.java)
+        val apiInterFace = service.eventTeamList(
+            userId
+        )
+
+        apiInterFace.enqueue(object : Callback<ResponseDashBoardEvent> {
+            override fun onResponse(
+                call: Call<ResponseDashBoardEvent>,
+                response: Response<ResponseDashBoardEvent>
+            ) {
+                try {
+                    if (response.body()!!.error==false){
+                        teamandOtherList.value= emptyList()
+                        val basreponsedata:ResponseDashBoardEvent=Gson().fromJson(Gson().toJson(response.body()),ResponseDashBoardEvent::class.java)
+                     val list=ArrayList<ResponseDashBoardEvent>()
+                        list.add(basreponsedata)
+                        teamandOtherList.value=list
+
+                    }
+                    else{
+                       AppUtils.logDebug(TAG,"error true")
+
+                    }
+
+                }catch (e:Exception){
+                   println(e.localizedMessage.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseDashBoardEvent>, t: Throwable) {
+                try {
+                    println(t.localizedMessage.toString())
+                }
+                catch (e:Exception){
+                    println(e.localizedMessage.toString())
+                }
+            }
+        })
     }
 
     override fun onResponse(call: Call<EditEventList>, response: Response<EditEventList>) {

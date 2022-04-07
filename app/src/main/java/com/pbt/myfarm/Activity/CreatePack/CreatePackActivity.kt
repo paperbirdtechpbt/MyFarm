@@ -169,9 +169,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
             adapter = CreatePackAdapter(
                 this, config, false, packCommunityList,
-                packCommunityListname
-            )
-            { list, name ->
+                packCommunityListname) { list, name ->
 
                 while (list.contains("0")) {
                     list.remove("0")
@@ -196,7 +194,10 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                     successObject.put(jsonObject)
                     
                    val lastValueOfPacknew=db?.getLastofPackNew()
-                    db?.addPackValues(list.get(i),name.get(i),lastValueOfPacknew)
+                    val idd= lastValueOfPacknew!!.toInt()+1
+
+//                    addPackValue(list.get(i),name.get(i),idd.toString())
+                    db?.addPackValues(list.get(i),name.get(i),idd.toString(),false)
                     fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                 }
@@ -219,110 +220,48 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
             btn_create_pack.visibility = View.GONE
             adapter?.callBackss()
 
-//
-//            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-//            val currentDate = sdf.format(Date())
-            val db = DbHelper(this, null)
-            var packsnew: PacksNew? = null
+            if (AppUtils().isInternet(this)){
+            val listdata = ArrayList<String>()
 
-            val d = db.getLastValue_pack_new(packconfiglist?.id.toString())
-            val userid = MySharedPreference.getUser(this)?.id
-            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-            val currentDate = sdf.format(Date())
+            if (successObject != null) {
+                for (i in 0 until successObject.length()) {
+                    listdata.add(successObject.getString(i))
+                }
+            }
+            val userId = MySharedPreference.getUser(this)?.id
 
-            if (d.isEmpty()) {
-                packsnew= PacksNew(null, selectedCommunityGroup?.toInt(),
-                userid,currentDate,null, desciptioncompanian,null,
-                null,null,null,null,
-                null,packconfiglist?.id.toString(),labelPackConfigPrefix,
-                null,null,null,"1")
-
-                db.addNewPack(packsnew,"1")
+            if (desciptioncompanian!!.isEmpty()) {
+                Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
+                btn_create_pack.visibility= View.VISIBLE
 
             }
+            else{
+                val db=DbHelper(this,null)
 
-
-
-        else{
-            val newPackname: Int = d.toInt() + 1
-                packsnew= PacksNew(null, selectedCommunityGroup?.toInt(),
-                    userid,currentDate,null, desciptioncompanian,null,
-                    null,null,null,null,
-                    newPackname.toString(),packconfiglist?.id.toString(),labelPackConfigPrefix,
-                    null,null,null,"1")
-
-
-                db.addNewPack(packsnew,"1")
-
-//            val viewTask = viewtasklist.get(0)
-////                db.addNewPack(viewTask,currentDate,"","")
-//            for (i in 0 until ExpAmtArray.size) {
-//                db.addpackFieldValue(newPackname.toString(), ExpName.get(i), ExpAmtArray.get(i))
-//            }
-        }}
-
-//-------------------|||Below Code is For sacving Pack Online||||--------------//
-
-
-//            adapter?.callBackss()
-////            viewmodel?.addPack()
-//            val listdata = ArrayList<String>()
-//
-//            if (successObject != null) {
-//                for (i in 0 until successObject.length()) {
-//                    listdata.add(successObject.getString(i))
-//                }
-//            }
-//            val userId = MySharedPreference.getUser(this)?.id
-//
-//            if (desciptioncompanian.isEmpty()) {
-//                Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
-//                btn_create_pack.visibility= View.VISIBLE
-//
-//            }
-//            else{
-//                val db=DbHelper(this,null)
-//
-//                ApiClient.client.create(ApiInterFace::class.java)
-//                    .storePack(
-//                        packconfiglist?.id.toString(),
-//                        desciptioncompanian!!,
-//                        selectedCommunityGroup,
-//                        userId.toString(),
-//                        successObject.toString(),
-//                        packconfiglist?.name!!
-//                    ).enqueue(this)
-//            }
-//
-//        }
-        //--------------Above code is For savging pack online ------------//
-
-//        if (viewtask!=null){
-//            AppUtils.logDebug(TAG,viewtask.toString())
-//            btn_create_pack.visibility= View.GONE
-//            btn_update_pack.visibility= View.VISIBLE
-//
-//
-//            lablel_createnewtask.setText("Update A Pack")
-////            val viewtask = intent.getParcelableExtra<ViewTaskModelClass>(CONST_VIEWMODELCLASS_LIST)
-//            setdata(viewtask)
-//        }
-//        else {
-//            val configTypeName: String = "FVSKM"
-//            viewmodel?.confiType?.set(configTypeName)
-//            viewmodel?.namePrefix?.set("DDD"+listSize)
-//        }
-    }
-
-    private fun checkInternetConnection(): Boolean {
-        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .storePack(
+                        packconfiglist?.id.toString(),
+                        desciptioncompanian!!,
+                        selectedCommunityGroup,
+                        userId.toString(),
+                        successObject.toString(),
+                        packconfiglist?.name!!
+                    ).enqueue(this)
+            }
         }
+           else{
+               viewmodel?.createPackOffline(this)
+
+                        }
+           }
+
     }
+
+    private fun addPackValue(list: String, name: String, idd: String) {
+        db?.addPackValues(list,name,idd,false)
+
+    }
+
 
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
         if (response.body()?.error == false) {

@@ -55,7 +55,12 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     companion object {
         val TAG = "ViewTaskActivity"
         var mytasklist: Task? = null
-        var updateTaskBoolen=false
+        var updateTaskBoolen = false
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initViewModel()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +71,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViewModel()
-
 
 
 //binding?.edSearch?.setQueryHint("Search Task")
@@ -80,7 +84,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     }
 
 
-
     private fun initViewModel() {
         viewModell = ViewModelProvider(
             this,
@@ -88,7 +91,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         ).get(ViewTaskViewModel::class.java)
         binding?.viewModel = viewModell
 
-
+        viewModell?.context = this
         viewModell?.progress = progressbar_eventlist
         viewModell?.onEventListRequest(this)
         viewModell?.eventlist?.observe(this, Observer { eventlistt ->
@@ -107,13 +110,12 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 if (checkAction) {
 
                     showAlertDailog(taskname, position, mytasklist!!)
-                }
-                else {
-                    updateTaskBoolen=true
-                    val intent=Intent(this,CreateTaskActivity::class.java)
+                } else {
+                    updateTaskBoolen = true
+                    val intent = Intent(this, CreateTaskActivity::class.java)
 
-                    intent.putExtra(CONST_TASK_UPDATE,mytasklist?.id)
-                    intent.putExtra(CONST_TASK_UPDATE_BOOLEAN,"1")
+                    intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
+                    intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
                     startActivity(intent)
                     finish()
@@ -165,7 +167,8 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    ApiClient.client.create(ApiInterFace::class.java).deleteTask(mytasklist.id!!.toString())
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .deleteTask(mytasklist.id!!.toString())
                         .enqueue(this)
 //                    val db=DbHelper(this,null)
 //                    db.deletenewTask("2","5")
@@ -186,19 +189,17 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     }
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        try{
+        try {
             if (response.body()?.error == false) {
                 Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ViewTaskActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
-            else{
+            } else {
                 Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
             }
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,e.localizedMessage)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.localizedMessage)
 
         }
 
@@ -207,10 +208,9 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
         Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
 
-        try{
+        try {
             AppUtils.logError(TAG, t.localizedMessage)
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             AppUtils.logError(TAG, e.localizedMessage)
 
         }

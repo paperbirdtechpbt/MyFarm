@@ -39,12 +39,16 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
     }
 
     fun onConfigTypeRequest(context: Context) {
-        val db=DbHelper(context,null)
-        val list=db.getAllPackConfig()
-        configlist.value=list
+        if (AppUtils().isInternet(context)){
+        ApiClient.client.create(ApiInterFace::class.java)
+            .packConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+        }
+        else{
+            val db=DbHelper(context,null)
+            val list=db.getAllPackConfig()
+            configlist.value=list
+        }
 
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .packConfigList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
 
     }
 

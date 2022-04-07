@@ -28,6 +28,8 @@ import java.lang.Exception
 class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
     retrofit2.Callback<PackListModel> {
 
+    var database : DbHelper?=null
+    var packconfigList=ArrayList<PackConfig>()
 
     companion object {
         const val TAG: String = "ViewPackViewModel"
@@ -49,16 +51,7 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 
     }
 
-    fun checkInteretConnection(context: Context) {
-        val ConnectionManager =
-            context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            Toast.makeText(context, "Network Available", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(context, "Network Not Available", Toast.LENGTH_LONG).show()
-        }
-    }
+
 //        fun onPackListRequest(context: Context) {
 //        val id= MySharedPreference.getUser(context)?.id.toString()
 //        ApiClient.client.create(ApiInterFace::class.java)
@@ -66,13 +59,23 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 //
 //    }
     fun onPackListRequest(context: Context) {
+    if (AppUtils().isInternet(context)){
+        val id= MySharedPreference.getUser(context)?.id.toString()
+
+
+        database = DbHelper(context, null)
+
+        ApiClient.client.create(ApiInterFace::class.java)
+            .packList(id).enqueue(this)
+    }
+    else{
         var database = DbHelper(context, null)
 
         database = DbHelper(context, null)
         val   packconfig= database.getAllPackConfig()
         val pcklist = database.getAllPack()
 
-    AppUtils.logDebug(TAG,"packlist full"+pcklist.toString())
+        AppUtils.logDebug(TAG,"packlist full"+pcklist.toString())
 
 
         val packsnew = java.util.ArrayList<PacksNew>()
@@ -96,25 +99,16 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
             }
             packsnew.add(routes)
         }
-    if (packsnew.size>=1){
-        packsnew.removeAt(0 )
-        packlist.value=packsnew
-    }
-
-    }
-
-
-
-    private fun checkInternetConnection(context: Context): Boolean {
-        val ConnectionManager =
-            context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
+        if (packsnew.size>=1){
+            packsnew.removeAt(0 )
+            packlist.value=packsnew
         }
+
     }
+
+    }
+
+
 
     override fun onResponse(call: Call<PackListModel>, response: Response<PackListModel>) {
         try{
@@ -127,9 +121,26 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 
                 val upCommingPackList = ArrayList<PacksNew>()
 
+                packconfigList= database!!.getAllPackConfig()
 
                 packListModel.data.forEach { routes ->
+                    if (packconfigList.isNotEmpty()){
+                        for (i in 0 until  packconfigList.size){
+                            if (routes.pack_config_id==packconfigList.get(i).id.toString()){
+                                val configname=packconfigList.get(i).name_prefix
+                                if (configname!=null){
+                                    routes.padzero= configname+ routes.name!!.padStart(4, '0')
+                                }
+                                else{
+                                    routes.padzero= routes.name!!.padStart(4, '0')
+                                }
+                                routes.type=" Type: "
+                                routes.labeldesciption=" Desciption: "
+                                routes.pack_config_name= packconfigList.get(i).name.toString()
 
+                            }
+                        }
+                    }
 
 //                if (packconfig.isNotEmpty()){
 //                    for (i in 0 until  packconfig.size){
@@ -140,12 +151,12 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 //
 //                            }
 //                            else{
-                    routes.padzero= routes.name!!.padStart(4, '0')
+//                    routes.padzero= routes.name!!.padStart(4, '0')
 //
 //                            }
 
-                    routes.type=" Type: "
-                    routes.labeldesciption=" Desciption: "
+//                    routes.type=" Type: "
+//                    routes.labeldesciption=" Desciption: "
 
 //                            routes.pack_config_id= packconfig.get(i).name.toString()
 //                            routes.pack_config_name= packconfig.get(i).name.toString()

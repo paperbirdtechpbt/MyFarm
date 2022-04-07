@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.google.gson.Gson
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.Util.AppUtils
@@ -30,9 +31,13 @@ class MyFarmService() : Service() {
 
         GlobalScope.launch(Dispatchers.IO){
             syncOfflineData(userID!!)
+            getEventTypeListAndOtherList(userID!!)
         }
         return START_STICKY
     }
+
+
+
     override fun onBind(intent: Intent): IBinder? {
         throw UnsupportedOperationException("Not yet implemented")
     }
@@ -156,7 +161,7 @@ class MyFarmService() : Service() {
                         }
                         if(it.Data.events.isNotEmpty()){
                             for(pack in it.Data.events) {
-                                db.eventsCreate(pack)
+                                db.eventsCreate(pack,false)
                             }
                         }
                         if(it.Data.fields.isNotEmpty()){
@@ -210,5 +215,49 @@ class MyFarmService() : Service() {
 
             }
         })
+    }
+    private fun getEventTypeListAndOtherList(userID: String) {
+        val service = ApiClient.client.create(ApiInterFace::class.java)
+        val apiInterFace = service.eventTeamList(userID)
+        apiInterFace.enqueue(object : Callback<ResponseDashBoardEvent> {
+            override fun onResponse(
+                call: Call<ResponseDashBoardEvent>,
+                response: Response<ResponseDashBoardEvent>
+            ) {
+                try {
+                    if (response.isSuccessful){
+                        response.body().let {
+                            if (it!!.error==false){
+//
+                                    for(pack in it.EventTyp) {
+                                        db.addEventType(pack)
+                                    }
+                                for(pack in it.EventSts) {
+                                        db.addEventStatus(pack)
+                                    }
+                            }
+                            else{
+                                AppUtils.logDebug(TAG,"error true")
+
+                            }
+                        }
+                    }
+
+
+                }catch (e: java.lang.Exception){
+                    println(e.localizedMessage.toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseDashBoardEvent>, t: Throwable) {
+                try {
+                    println(t.localizedMessage.toString())
+                }
+                catch (e: java.lang.Exception){
+                    println(e.localizedMessage.toString())
+                }
+            }
+        })
+
     }
 }

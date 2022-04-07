@@ -19,9 +19,9 @@ import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
 
-
 class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
     retrofit2.Callback<testresponse> {
+
     companion object {
         const val TAG: String = "ViewTaskViewModel"
     }
@@ -30,46 +30,41 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
     var eventlist = MutableLiveData<List<Task>>()
 
     @SuppressLint("StaticFieldLeak")
-    val context: Context? = null
+    var context: Context? = null
     @SuppressLint("StaticFieldLeak")
     var progress:ProgressBar?=null
 
     init {
-
 //        eventlist = MutableLiveData<List<TasklistDataModel>>()
         eventlist = MutableLiveData<List<Task>>()
-
     }
 
     fun onEventListRequest(context: Context) {
+        if (AppUtils().isInternet(context)){
 
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .eventList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+        ApiClient.client.create(ApiInterFace::class.java)
+            .eventList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
+        }
+        else{
+            val db=DbHelper(context,null)
+            val list=  db.getAllTask()
+            val upCommingTripList = ArrayList<Task>()
+            if (list.isNotEmpty()){
+                progress?.visibility= View.GONE
 
+            }
+            list.forEach { routes ->
 
-        val db=DbHelper(context,null)
-      val list=  db.getAllTask()
-        val upCommingTripList = ArrayList<Task>()
-        if (list.isNotEmpty()){
-            progress?.visibility= View.GONE
+                routes.padzero= routes.name?.padStart(4, '0').toString()
+                routes.type= "Type: "
+                routes.labeldesciption= "Desciption: "
+
+                upCommingTripList.add(routes)
+
+            }
+            eventlist.value = list
 
         }
-
-        list.forEach { routes ->
-
-            routes.padzero= routes.name?.padStart(4, '0').toString()
-                       routes.type= "Type: "
-            routes.labeldesciption= "Desciption: "
-
-            upCommingTripList.add(routes)
-
-        }
-
-
-        eventlist.value = list
-
-        AppUtils.logDebug(TAG,"get All Task list"+list.size.toString()
-        )
 
     }
 
@@ -82,9 +77,31 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
                     testresponse::class.java)
 //                val upCommingTripList = ArrayList<TasklistDataModel>()
                 val upCommingTripList = ArrayList<Task>()
-                baseList.data.forEach { routes ->
+                val userid=MySharedPreference.getUser(context!!)?.id.toString()
 
-                    routes.padzero= routes.name!!.padStart(4, '0')
+             val   database = DbHelper(context!!, null)
+                val   taskconfigs= database.getTaskConfigList(userid)
+
+                baseList.data.forEach { routes ->
+                    for (i in 0 until  taskconfigs.size){
+                        if (routes.task_config_id==taskconfigs.get(i).id){
+                            val configname=taskconfigs.get(i).name_prefix
+                            if (configname!=null){
+                                routes.padzero= configname+ routes.name!!.padStart(4, '0')
+
+                            }
+                            else{
+                                routes.padzero= routes.name!!.padStart(4, '0')
+
+                            }
+
+routes.taskConfigName=taskconfigs.get(i).name
+routes.taskConfigNamePrefix=""
+
+                        }
+                    }
+
+//                    routes.padzero= routes.name!!.padStart(4, '0')
                     routes.type= "Type: "
                     routes.labeldesciption= "Desciption: "
 

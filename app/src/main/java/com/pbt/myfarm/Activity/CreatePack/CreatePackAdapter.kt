@@ -10,22 +10,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayID
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
-
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
-
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
-import com.pbt.myfarm.DataBase.DbHelper
-
 import com.pbt.myfarm.HttpResponse.*
-import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigName
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
 import com.pbt.myfarm.PackViewModel.Companion.packconfigobject
@@ -54,7 +48,6 @@ class CreatePackAdapter(
     var isOnTextChanged = false
     val myCalendar: Calendar = Calendar.getInstance()
     var boolean = true
-
 
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
@@ -125,14 +118,15 @@ class CreatePackAdapter(
 
         val d: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
-        AppUtils.logDebug(TAG,"values"+valued)
-        if (!valued.isNullOrEmpty()){
-            if (arrayID!!.isNotEmpty()){
-                arrayID!![positionn]=field_id
-                arrayName!![positionn]=valued
-            }
+        AppUtils.logDebug(TAG, "values" + valued)
 
-        }
+//        if (!valued.isNullOrEmpty()) {
+//            if (arrayID!!.isNotEmpty()) {
+//                arrayID!![positionn] = field_id
+//                arrayName!![positionn] = valued
+//            }
+//
+//        }
 
 
         val l = list.size
@@ -166,14 +160,20 @@ class CreatePackAdapter(
             holder.mysppinner.setAdapter(aa)
 
 
-
-
         }
         if (fieldtype == "Numeric" || fieldtype == "Text") {
 
 
-            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(
+                holder.nameprefix,
+                holder.packname,
+                holder.communityGroup,
+                holder.labelpackname,
+                holder.labelnameprefix,
+                holder.labelcommunityGroup,
+                holder.labelDesciption,
+                holder.desciption
+            )
 
             holder.date.visibility = View.GONE
             holder.labeldate.visibility = View.GONE
@@ -199,8 +199,7 @@ class CreatePackAdapter(
                     holder.desciption.setText(packList?.description)
                     holder.name.setText(valued)
                 }
-            }
-            else{
+            } else {
                 holder.desciption.setText("")
 
             }
@@ -220,16 +219,24 @@ class CreatePackAdapter(
             holder.mysppinner.visibility = View.VISIBLE
 
             holder.labelSpinner.setText(namee)
-            if (!valued.isEmpty()){
+            if (!valued.isEmpty()) {
                 for (i in 0 until fieldList!!.size) {
                     if (valued == fieldListid?.get(i)) {
-                        AppUtils.logDebug(TAG,"fieldlist"+fieldListid.get(i)+valued)
+                        AppUtils.logDebug(TAG, "fieldlist" + fieldListid.get(i) + valued)
                         holder.mysppinner.setSelection(i)
                     }
                 }
             }
-            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(
+                holder.nameprefix,
+                holder.packname,
+                holder.communityGroup,
+                holder.labelpackname,
+                holder.labelnameprefix,
+                holder.labelcommunityGroup,
+                holder.labelDesciption,
+                holder.desciption
+            )
 
 
         } else if (fieldtype == "Date") {
@@ -240,8 +247,16 @@ class CreatePackAdapter(
             holder.labelname.visibility = View.GONE
             holder.mysppinner.visibility = View.GONE
             holder.labelSpinner.visibility = View.GONE
-            setSpinner(holder.nameprefix,holder.packname,holder.communityGroup,holder.labelpackname,
-                holder.labelnameprefix,holder.labelcommunityGroup,holder.labelDesciption,holder.desciption)
+            setSpinner(
+                holder.nameprefix,
+                holder.packname,
+                holder.communityGroup,
+                holder.labelpackname,
+                holder.labelnameprefix,
+                holder.labelcommunityGroup,
+                holder.labelDesciption,
+                holder.desciption
+            )
 
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
@@ -250,7 +265,6 @@ class CreatePackAdapter(
                     holder.date.setText(valued)
                 }
             }
-
 
 
         }
@@ -263,25 +277,24 @@ class CreatePackAdapter(
                 position: Int,
                 id: Long
             ) {
-                if (position!=0){
-                    var spinnername: String?=null
-                    var spinnerId: String?=null
+                if (position != 0) {
+                    var spinnername: String? = null
+                    var spinnerId: String? = null
                     spinnerId = fieldId[positionn].toString()
 //                        selectedText = fieldId!![position]
                     spinnername = fieldListid!![position]
-                    AppUtils.logError(TAG,"spinnername"+spinnername+"\nid"+
-                            spinnerId+"\n"+positionn+"size"+list.size)
+                    AppUtils.logError(
+                        TAG, "spinnername" + spinnername + "\nid" +
+                                spinnerId + "\n" + positionn + "size" + list.size
+                    )
                     try {
                         arrayID!![positionn] = spinnerId
                         arrayName!![positionn] = spinnername
-                    }
-                    catch (e:Exception){
-                        AppUtils.logDebug(TAG,"Exception in itemselect"+e.message.toString())
+                    } catch (e: Exception) {
+                        AppUtils.logDebug(TAG, "Exception in itemselect" + e.message.toString())
                     }
 
                 }
-
-
 
 
             }
@@ -387,7 +400,7 @@ class CreatePackAdapter(
                 if (isOnTextChanged) {
                     isOnTextChanged = false
                     try {
-                        desciptioncompanian=holder.desciption.text.toString()
+                        desciptioncompanian = holder.desciption.text.toString()
 
                     } catch (e: NumberFormatException) {
                         AppUtils.logDebug("asdfEXCEPTION", e.message.toString())
@@ -396,7 +409,7 @@ class CreatePackAdapter(
                             while (i <= positionn) {
                                 Log.d("TimesRemoved", " : $i")
                                 if (i == positionn) {
-                                    desciptioncompanian=holder.desciption.text.toString()
+                                    desciptioncompanian = holder.desciption.text.toString()
                                 }
                                 i++
                             }
@@ -500,24 +513,25 @@ class CreatePackAdapter(
 
 
 //            Handler(Looper.getMainLooper()).postDelayed({
-//            nameprefix.setText(packconfigobject!!.name_prefix)
 
-            nameprefix.setText(labelPackConfigPrefix)
-            packname.setText(labelPackConfigName)
-            val group=ArrayList<String>()
-            for (i in 0..3){
-                group.add("Test"+i)
-
+//
+            if (AppUtils().isInternet(context)) {
+                nameprefix.setText(packconfigobject!!.name_prefix)
+                packname.setText(packconfigobject!!.name)
+            } else {
+                nameprefix.setText(labelPackConfigPrefix)
+                packname.setText(labelPackConfigName)
             }
-            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
-//            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, group)
+
+
+            val aa =
+                ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communityGroup.setAdapter(aa)
             boolean = false
 //            },1000)
 
-        }
-        else{
+        } else {
             labelcommunityGroup.visibility = View.GONE
             communityGroup.visibility = View.GONE
             labelpackname.visibility = View.GONE
@@ -530,7 +544,7 @@ class CreatePackAdapter(
     }
 
     fun callBackss() {
-        AppUtils.logDebug(TAG, arrayName.toString()+"dsd"+ arrayID)
+        AppUtils.logDebug(TAG, arrayName.toString() + "dsd" + arrayID)
         callbacks.invoke(arrayID!!, arrayName!!)
     }
 

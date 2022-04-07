@@ -71,7 +71,10 @@ class ViewEventActivity : AppCompatActivity(),retrofit2.Callback<ResponseEventLi
                 else{
 
                     val intent=Intent(this,EditEventActivity::class.java)
+
                     intent.putExtra(CONST_EDITEVENT_ID,eventid)
+                    intent.putExtra(CONST_CREATEEVENT,false)
+
                     startActivity(intent)
 
                 }

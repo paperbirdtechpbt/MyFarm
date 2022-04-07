@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     var viewModel:MainActivityViewModel? = null
     var MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE:Int=100
 
+
+
     companion object
     {
         var ExpAmtArray = ArrayList<String>()
@@ -60,9 +62,8 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        if (checkInternetConnection()){
+        if (AppUtils().isInternet(this)){
             initViewModel()
-
          }
 
         setdata()
@@ -82,15 +83,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun checkInternetConnection():Boolean {
-        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-    }
 
     private fun setadapter() {
         val adapter = AdapterHomeActivity(this,data)

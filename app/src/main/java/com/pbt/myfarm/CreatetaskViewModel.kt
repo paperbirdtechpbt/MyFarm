@@ -11,20 +11,22 @@ import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.FieldLIst
-import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.HttpResponse.ComunityGroup
 import com.pbt.myfarm.HttpResponse.Field
-import com.pbt.myfarm.Service.*
+import com.pbt.myfarm.HttpResponse.TaskFieldResponse
+import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
-import kotlin.collections.ArrayList
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity)
@@ -45,7 +47,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     var namePrefix: ObservableField<String>? = null
     var confiType: ObservableField<String>? = null
-    var desciption: ObservableField<String>? = null
+    var desciption: String? = null
     var expectedStartDate: ObservableField<String>? = null
     var expectedEndDate: ObservableField<String>? = null
     var startDate: ObservableField<String>? = null
@@ -55,7 +57,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
     init {
         namePrefix = ObservableField("")
         confiType = ObservableField("")
-        desciption = ObservableField("")
         expectedStartDate = ObservableField("")
         expectedEndDate = ObservableField("")
         startDate = ObservableField("")
@@ -66,45 +67,52 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
 
     }
+fun createTaskOffline(context: Context, configtype: TaskConfig?) {
+    val db = DbHelper(context, null)
+    var packsnew: Task? = null
 
-//    fun login(view: View) {
-//        val db = DbHelper(activity, null)
-//        val newTask=ViewTaskModelClass(ENTRYNAME = namePrefix?.get().toString(),
-//        ENTRYTYPE = confiType?.get().toString(),ENTRYDETAIL =  desciption?.get().toString(),
-//        ExpectedStartDate = expectedStartDate?.get().toString(),
-//        ExpectedEndDate =expectedEndDate?.get().toString(),
-//        StartDate = startDate?.get().toString(), EndDate = EndDate?.get().toString() )
-//        db.addTask(
-//            "pbt",newTask
-//        )
+    val d = db.getLastValue_task_new(configtype?.id.toString())
+    val userid = MySharedPreference.getUser(context)?.id
+    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+    val currentDate = sdf.format(Date())
+
+    val lastValueOfPacknew=db.getLastofPackNew()
+    val idd=lastValueOfPacknew.toInt()+1
+
+    if (d.isEmpty()) {
+
+        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+
+        packsnew= Task(
+            selectedCommunityGroup.toInt(), userid, currentDate, "", desciption,
+            null, idd, userid, null, null, null, "1", configtype?.id,
+            null, configtype?.name, configtype?.description, configtype?.name_prefix,
+            null, null, null,
+        )
+
+        db.tasksCreateOffline(packsnew)
+
+    }
 
 
 
-//    }
+    else{
+        val newPackname: Int = d.toInt() + 1
+        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
 
-//    fun update() {
-//        val db= DbHelper(context,null)
-//        val newTask=ViewTaskModelClass(ENTRYNAME = namePrefix?.get().toString(),
-//            ENTRYTYPE = confiType?.get().toString(),ENTRYDETAIL =  desciption?.get().toString(),
-//            ExpectedStartDate = expectedStartDate?.get().toString(),
-//            ExpectedEndDate =expectedEndDate?.get().toString(),
-//            StartDate = startDate?.get().toString(), EndDate = EndDate?.get().toString() )
-//      val result=  db.updateTask(newTask,newTask.ENTRYNAME)
-//        if (result >= 0) {
-//            Toast.makeText(context, "Update Sucessfully", Toast.LENGTH_SHORT).show()
-//            val intent = Intent(context, ViewTaskActivity::class.java)
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//            context.startActivity(intent)
-//
-//            Activity().finish()
-//
-//
-//        } else {
-//            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show()
-//
-//        }
-//
-//    }
+
+        packsnew= Task(
+            selectedCommunityGroup.toInt(), userid, currentDate, null, desciption,
+            null, idd, userid, null, newPackname.toString(), null, "1", configtype?.id,
+            null, configtype?.name, configtype?.description, configtype?.name_prefix,
+            null, null, null,
+        )
+
+
+        db.tasksCreateOffline(packsnew)
+
+    }
+}
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskList: Task?) {
 
@@ -112,10 +120,10 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 //                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),updateTaskList?.task_config_id.toString(),
 //                updateTaskList?.id.toString()).enqueue(this)
 
+        AppUtils.logError(TAG,"true configidd"+updateTaskList?.toString())
 
 
-        setData(updateTaskList?.task_config_id.toString())
-        AppUtils.logError(TAG,"true configidd"+updateTaskList?.task_config_id.toString())
+        setData(updateTaskList?.task_config_id.toString(),true,updateTaskList?.id.toString())
 
 
 //        val list = db.getTaskConfigFieldList(updateTaskList?.task_config_id.toString())
@@ -135,13 +143,13 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         configId: TaskConfig?,
 
         ) {
+        AppUtils.logError(TAG,"false configidd"+configId?.toString())
 
 
-        setData(configId?.id.toString())
+        setData(configId?.id.toString(),false,"")
 
 
 //
-            AppUtils.logError(TAG,"false configidd"+configId?.id.toString())
 //            ApiClient.client.create(ApiInterFace::class.java)
 //                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),
 //                    configId?.id.toString(),"").enqueue(this)
@@ -149,7 +157,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     }
 
-    private fun setData(id: String) {
+    private fun setData(id: String,isUpdate:Boolean,taskid:String) {
         val db = DbHelper(context, null)
 
         groupArray?.clear()
@@ -163,8 +171,10 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
             groupArrayId?.add(it.id.toString())
         }
 
-        val list = db.getTaskConfigFieldList(id)
+        val list = db.getTaskConfigFieldList(id,isUpdate,taskid)
+
         AppUtils.logDebug(TAG,"task Field List"+list.toString())
+
         val userId=MySharedPreference.getUser(context)?.id.toString()
 
         val taskConfigList = db.getTaskConfigList(userId)
@@ -204,9 +214,15 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
                         }
                         packConfigField.add(
-                            ConfigFieldList(null,
-                                item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), null,)
+                            ConfigFieldList(
+                                null,
+                                item.field_description.toString(),
+                                item.field_name.toString(),
+                                packfieldList,
+                                item.field_description,
+                                item.field_type.toString(),
+                                null,
+                            )
                         )
                     } else if (item.list == "Person") {
 
@@ -230,7 +246,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                             ConfigFieldList(
                                 null,
                                 item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), null,
+                                "",
+                                item.field_type,item.field_value,
                             )
                         )
                     } else if (item.list == "Team") {
@@ -251,7 +268,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                             ConfigFieldList(
                                 null,
                                 item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), null,
+                                item.field_description, item.field_type.toString(), item.field_value,
                             )
                         )
 
@@ -266,7 +283,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
                             val itm = fieldList.get(i)
                             packfieldList.add(
-                                FieldLIst(itm.id, itm.name,)
+                                FieldLIst(itm.id, itm.name)
                             )
 
                         }
@@ -276,7 +293,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                             ConfigFieldList(
                                 null,
                                 item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), null,
+                                item.field_description, item.field_type.toString(), item.field_value,
                             )
                         )
                     }
@@ -286,7 +303,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                         ConfigFieldList(
                             null,
                             item.field_description.toString(), item.field_name.toString(),ArrayList(),
-                            item.field_description, item.field_type.toString(), null,
+                            item.field_description, item.field_type.toString(), item.field_value,
                         )
                     )
                 }

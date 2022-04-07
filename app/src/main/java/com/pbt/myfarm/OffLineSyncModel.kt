@@ -152,7 +152,15 @@ data class CollectActivityUser(
 )
 
 data class CollectData(
+    @SerializedName("collect_activity")  val collect_activity:String?=null,
+    @SerializedName("unit_value")  val unit_value:String?=null,
+    @SerializedName("result_name") val result_name:String?=null,
+    @SerializedName("sensor")val sensor:String?=null,
+    @SerializedName("user_collecting")val user_collecting:String?=null,
+    @SerializedName("datetime_collected")val datetime_collected:String?=null,
+
     val collect_activity_id: String?=null,
+    val serverid: String?=null,
     val created_at: String?=null,
     val created_by: String?=null,
     val deleted_at: String?=null,
@@ -446,6 +454,7 @@ data class PackCollectActivity(
 )
 
 data class PackConfigField(
+
     val created_by: Int?=null,
     val created_date: String?=null,
     val default_value: String?=null,
@@ -459,6 +468,7 @@ data class PackConfigField(
     val last_changed_date: String?=null,
     val list: String?=null,
     val pack_config_id: Int?=null,
+    var field_value:String?=null
 )
 @Parcelize
 data class PackConfig(
@@ -639,6 +649,8 @@ data class TaskConfigField(
     var last_changed_date: String?=null,
     var list: String?=null,
     var task_config_id: Int?=null,
+    var field_value:String?=null
+
 )
 
 data class TaskConfigFunction(
@@ -720,14 +732,14 @@ data class Task(
     val status: String?=null,
     val task_config_id: Int?=null,
     val task_func: String?=null,
-    val taskConfigName: String?=null,
+    var taskConfigName: String?=null,
     val taskConfigDesc: String?=null,
-    val taskConfigNamePrefix: String?=null,
-    var padzero:String="",
+    var taskConfigNamePrefix: String?=null,
+    var padzero:String?=null,
     var type:String?=null,
     var labeldesciption:String?=null,
 
-):Parcelable
+    ):Parcelable
 
 data class Team(
     val address: String?=null,

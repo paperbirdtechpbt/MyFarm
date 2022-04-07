@@ -36,18 +36,22 @@ class CollectDataViewModel (val activity: Application
     }
 
     fun onCollectDataList(context: Context){
-//        ApiClient.client.create(ApiInterFace::class.java).collectDataList(
-//            MySharedPreference.getUser(context)?.id.toString(),packList?.id.toString()
-//        ).enqueue(this)
-        val db = DbHelper(context, null)
-      var  collectlist = db.getAllCollectData(packList?.id.toString())
-        if (collectlist.isNotEmpty()){
-              progressBar?.visibility= View.GONE
 
-            collectdatalist.value=collectlist
+        if (AppUtils().isInternet(context)){
+                    ApiClient.client.create(ApiInterFace::class.java).collectDataList(
+            MySharedPreference.getUser(context)?.id.toString(),packList?.id.toString()
+        ).enqueue(this)
+        }
+        else{
+            val db = DbHelper(context, null)
+            var  collectlist = db.getAllCollectData(packList?.id.toString())
+            if (collectlist.isNotEmpty()){
+                progressBar?.visibility= View.GONE
+
+                collectdatalist.value=collectlist
+        }
         }
     }
-
 
 
     override fun onResponse(call: Call<CollectdataRespose>, response: Response<CollectdataRespose>) {

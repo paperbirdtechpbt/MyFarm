@@ -36,53 +36,54 @@ class CollectNewDataViewModel(
     var progressbar:ProgressBar?=null
 
     fun onCollectDataFieldList(context: Context) {
-//        ApiClient.client.create(ApiInterFace::class.java).collectDataFieldList(
-//            MySharedPreference.getUser(context)?.id.toString(),
-//            packList?.id.toString()
-//        ).enqueue(this)
 
-        val db=DbHelper(context,null)
-        val cltid =db.getSinglDataFromPackConfig(packList?.pack_config_id.toString())
-        val sensorList =db.getSensorList()
+        if (AppUtils().isInternet(context)){
+                    ApiClient.client.create(ApiInterFace::class.java).collectDataFieldList(
+            MySharedPreference.getUser(context)?.id.toString(),
+            packList?.id.toString()
+        ).enqueue(this)
+        }
+        else{
 
-        val collectActivityListOffline=  db.setCollectActivitySpinner(cltid.get(0).collect_activity_id.toString())
-        collectname.clear()
-        collectActivityList.clear()
-        collectid.clear()
-        sensorlist.clear()
-        sensorname.clear()
-        sensorid.clear()
+            val db=DbHelper(context,null)
+            val cltid =db.getSinglDataFromPackConfig(packList?.pack_config_id.toString())
+            val sensorList =db.getSensorList()
+
+            val collectActivityListOffline=  db.setCollectActivitySpinner(cltid.get(0).collect_activity_id.toString())
+            collectname.clear()
+            collectActivityList.clear()
+            collectid.clear()
+            sensorlist.clear()
+            sensorname.clear()
+            sensorid.clear()
 
 
-        collectActivityList.add(CollectActivityList("0","Select"))
-        collectid.add("0")
-        collectname.add("Select")
+            collectActivityList.add(CollectActivityList("0","Select"))
+            collectid.add("0")
+            collectname.add("Select")
 
-        sensorlist.add(SensorsList("0","Select"))
-        sensorid.add("0")
-        sensorname.add("Select")
+            sensorlist.add(SensorsList("0","Select"))
+            sensorid.add("0")
+            sensorname.add("Select")
 
-      for (i in 0 until collectActivityListOffline.size){
-          val item=collectActivityListOffline.get(i)
-          collectActivityList.add(CollectActivityList(item.id.toString(), item.name!!))
-          collectid.add(item.id.toString())
-          collectname.add(item.name)
-      }
-        for (i in 0 until sensorList.size){
-            val item=sensorList.get(i)
+            for (i in 0 until collectActivityListOffline.size){
+                val item=collectActivityListOffline.get(i)
+                collectActivityList.add(CollectActivityList(item.id.toString(), item.name!!))
+                collectid.add(item.id.toString())
+                collectname.add(item.name)
+            }
+            for (i in 0 until sensorList.size){
+                val item=sensorList.get(i)
 
-            sensorlist.add(SensorsList(item.id.toString(), item.name!!))
-            sensorid.add(item.id.toString())
-            sensorname.add(item.name)
+                sensorlist.add(SensorsList(item.id.toString(), item.name!!))
+                sensorid.add(item.id.toString())
+                sensorname.add(item.name)
+            }
         }
 
-
-
-
-
-
-
     }
+
+
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         if (response.body()?.error == false) {

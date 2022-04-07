@@ -297,7 +297,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
         viewModel?.progressBAr = progressViewPack
         viewModel?.onPackListRequest(this)
-        viewModel?.checkInteretConnection(this)
+
         viewModel?.packlist?.observe(this, androidx.lifecycle.Observer { packlist ->
 
             progressbar_createPackActivity?.visibility= View.GONE
@@ -309,22 +309,17 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     showAlertDailog(packname, position, packList!!)
                 }
                 else {
-
                     //                    updatePackBoolen = true
                     val intent = Intent(this, UpdatePackActivity::class.java)
                     intent.putExtra("fragment","0")
                     intent.putExtra(CONT_PACK,list)
                     startActivity(intent)
-
                 }
             }
-
             recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
             recyclerview_viewtask.adapter = adapter
         })
     }
-
-
 
     private fun showAlertDailog(taskname: String, position: Int, list: PacksNew) {
         AlertDialog.Builder(this)

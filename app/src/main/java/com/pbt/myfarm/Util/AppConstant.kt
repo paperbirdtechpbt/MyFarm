@@ -137,24 +137,12 @@ class AppConstant {
         val COL_PACK_CREATED_DATE="pack_new_isActive"
         val COL_PACK_LAST_CHANGED_DATE="pack_new_last_changed_Date"
 
-
-
-
-
-
-
-
-
-
         //TABLE_packFields
         val PACKFIELDS_TABLENAME="packfieldtablename"
         val PACKFIELDS_PRIMARYKEY="packfieldsprimarykey"
         val PACKFIELDS_packid="packfieldpackid"
         val PACKFIELDS_fieldid="packfieldfieldid"
         val PACKFIELDS_value="packfieldvalue"
-
-
-
 
         //collect_data TABLE
         val COLLECTDATA_TABLENAME="COLLECTDATA_TABLENAME"
@@ -262,6 +250,7 @@ class AppConstant {
         val TABLE_pack_fields="pack_fields"
         val COL_pack_fields_PRIMARY_ID="pack_fields_primaryid"
         val COL_pack_fields_SERVERID="pack_fields_serverid"
+        val COL_pack_fields_STATUS="pack_fields_status"
         val COL_pack_fields_pack_id="pack_fields_pack_id"
         val COL_pack_fields_value="pack_fields_value"
         val COL_pack_fields_field_id="pack_fields_field_id"
@@ -292,6 +281,7 @@ class AppConstant {
         val COL_task_fields_TASKID="task_fields_task_id"
         val COL_task_fields_FIELDID="task_fields_fieldid"
         val COL_task_fields_VALUE="task_fields_value"
+        val COL_task_fields_STATUS="task_fields_status"
 
 
         //ravi offline----table---task_configs
@@ -353,6 +343,7 @@ class AppConstant {
         val TABLE_collect_data="collect_data"
         val COL_collect_data_PRIMARYKEY="collectDataPrimary"
         val COL_collect_data_SERVERID="collectData_serverid"
+        val COL_collect_data_STATUS="collectData_serverid_status"
         val COL_collect_data_pack_id="collectDataPackid"
         val COL_collect_data_ResulId="collectDataResultIid"
         val COL_collect_data_ResultClass="collectData_resultclass"
@@ -724,6 +715,19 @@ class AppConstant {
         val COL_task_media_files_LINK="task_media_files_link"
         val COL_task_media_files_LOCAL_FILE_PATH="task_media_files_localFILEpath"
 
+        //ravi -offline---------table-----eventType
+
+        val TABLE_eventType="eventType"
+        val COL_eventType_PRIMARYID="eventType_primary"
+        val COL_eventType_SERVERID="eventType_serverid"
+        val COL_eventType_NAME="eventType_name"
+
+        //ravi -offline---------table-----eventStatus
+
+        val TABLE_eventStatus="eventStatus"
+        val COL_eventStatus_PRIMARYID="eventStatus_primary"
+        val COL_eventStatus_SERVERID="eventStatus_serverid"
+        val COL_eventStatus_NAME="eventStatus_name"
 
     }
 }

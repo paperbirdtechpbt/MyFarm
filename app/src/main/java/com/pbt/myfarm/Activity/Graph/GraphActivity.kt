@@ -19,20 +19,15 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
-import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
-import com.pbt.myfarm.Choices
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.R
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
+
 import com.pbt.myfarm.Util.AppConstant.Companion.PACK_LIST_PACKID
 import com.pbt.myfarm.Util.AppUtils
 import kotlinx.android.synthetic.main.activity_graph.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 import java.util.*
 
 
@@ -65,9 +60,12 @@ var packid:PacksNew?=null
     var pieData: PieData? = null
     var pieDataSet: PieDataSet? = null
     var pieEntries: ArrayList<PieEntry>? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_graph)
+
         db= DbHelper(this,null)
         if (intent.extras!=null){
             packid= intent.extras!!.getParcelable(PACK_LIST_PACKID)
@@ -263,10 +261,10 @@ var packid:PacksNew?=null
         val pointslist =db.getGraphChartObjects(list.id.toString())
         for (i in 0 until pointslist.size){
             val item=pointslist.get(i)
-            if (item.ref_ctrl_points!="N/A"){
-                if (item.points.isNotEmpty()){
 
-                }
+                if (item.points.isNotEmpty()){
+AppUtils.logDebug(TAG,"pointssss----"+item.points.toString())
+             
             }
         }
 

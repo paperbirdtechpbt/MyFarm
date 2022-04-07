@@ -1,8 +1,10 @@
 package com.pbt.myfarm.Fragement.CollectNewData
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
+import android.database.Cursor
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
@@ -19,17 +21,20 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
 import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity.Companion.positionnn
+import com.pbt.myfarm.CollectData
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Fragement.CollectNewData.Adapter.AdapterAddmultiple
 import com.pbt.myfarm.Fragement.CollectNewData.Model.ListMultipleCollcetdata
 import com.pbt.myfarm.Fragement.PackCollect.CollectActivityList
 import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement.Companion.collectDataId
+import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement.Companion.collectDataServerId
 import com.pbt.myfarm.Fragement.PackCollect.SensorsList
 import com.pbt.myfarm.HttpResponse.EditCollectData
 import com.pbt.myfarm.HttpResponse.Responseeditcollectdata
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.fragment_collect_new_data.*
@@ -88,6 +93,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
 
     companion object {
+
         var objectmultipleData: ListMultipleCollcetdata? = null
         var sensorlist = ArrayList<SensorsList>()
         var collectActivityList = ArrayList<CollectActivityList>()
@@ -112,6 +118,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
     override fun onResume() {
         super.onResume()
+
         progressbar_collectnewdata.visibility = View.GONE
         if (listmultipleData != null) {
             progressbar_collectnewdata.visibility = View.GONE
@@ -132,7 +139,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
         db = DbHelper(requireContext(), null)
         val name = arguments?.getString("ARG_NAME")
-        AppUtils.logDebug(TAG, "-=-=-=--=-=-=" + name)
 
         result = view.findViewById(R.id.field_spinner_result)
         value = view.findViewById(R.id.ed_value)
@@ -148,89 +154,92 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         val BtnUpdate: Button = view.findViewById(R.id.btn_UpdateNewData)
         val BtnAddmore: Button = view.findViewById(R.id.btn_addmoreData)
 
-        val checkInternet = checkInternetConnection()
 
         initViewModel()
-//        if (checkInternet) {
-//            initViewModel()
-//            if (collectid != null) {
-////                handler.postDelayed({
-//                setSpinner(collectActivity, sensonser, false)
-//
-////                }, 1000)
-//
-//            } else {
-////                handler.postDelayed({
-//                setSpinner(collectActivity, sensonser, false)
-//
-////                }, 1200)
-//            }
-//        }
-//    else {
-//            Toast.makeText(requireContext(), "No InterNet", Toast.LENGTH_SHORT).show()
-//        }
-
 
         if (positionnn == 2) {
             positionnn = 0
+
             button.visibility = View.GONE
             BtnAddmore.visibility = View.GONE
             BtnUpdate.visibility = View.VISIBLE
-            val service = ApiClient.client.create(ApiInterFace::class.java)
-            val apiInterFace = service.editcollectdata(
-                collectDataId
-            )
-            AppUtils.logDebug(TAG, "collectDataId-" + collectDataId)
 
-            apiInterFace.enqueue(object : Callback<Responseeditcollectdata> {
-                override fun onResponse(
-                    call: Call<Responseeditcollectdata>,
-                    response: Response<Responseeditcollectdata>
-                ) {
-                    try {
-                        AppUtils.logDebug(TAG, Gson().toJson(response.body()))
-                        if (response.body()?.error == false) {
-                            val baserespomse: Responseeditcollectdata = Gson().fromJson(
-                                Gson().toJson(response.body()),
-                                Responseeditcollectdata::class.java
-                            )
-                            dataa = Gson().fromJson(
-                                Gson().toJson(baserespomse.data),
-                                EditCollectData::class.java
-                            )
-                            if (dataa != null) {
-                                setSpinner(collectActivity, sensonser, true)
+            if (AppUtils().isInternet(requireContext())) {
+                val service = ApiClient.client.create(ApiInterFace::class.java)
+                val apiInterFace = service.editcollectdata(
+                    collectDataId
+                )
+
+                apiInterFace.enqueue(object : Callback<Responseeditcollectdata> {
+                    override fun onResponse(
+                        call: Call<Responseeditcollectdata>,
+                        response: Response<Responseeditcollectdata>
+                    ) {
+                        try {
+                            if (response.body()?.error == false) {
+                                val baserespomse: Responseeditcollectdata = Gson().fromJson(
+                                    Gson().toJson(response.body()),
+                                    Responseeditcollectdata::class.java
+                                )
+                                dataa = Gson().fromJson(
+                                    Gson().toJson(baserespomse.data),
+                                    EditCollectData::class.java
+                                )
+                                if (dataa != null) {
+                                    setSpinner(collectActivity, sensonser, true)
+                                }
+                                myduration?.setText(dataa?.duration.toString())
+
                             }
-                            myduration?.setText(dataa?.duration.toString())
+                        } catch (e: Exception) {
+                            AppUtils.logDebug(TAG, e.message.toString())
+                        }
+
+                    }
+
+                    override fun onFailure(call: Call<Responseeditcollectdata>, t: Throwable) {
+                        try {
+                            AppUtils.logError(TAG, t.message.toString())
+                        } catch (e: Exception) {
+                            AppUtils.logError(TAG, e.localizedMessage)
 
                         }
-                    } catch (e: Exception) {
-                        AppUtils.logDebug(TAG, e.message.toString())
                     }
 
+                })
+            } else {
+                val list = db!!.getEditCollectData(collectDataServerId)
+
+
+                dataa = EditCollectData(
+                    collect_activity_id = list.collect_activity_id?.toInt(),
+                    result_id = list.result_id?.toInt(),
+                    sensor_id = list.sensor_id?.toInt(),
+                    unit_id = list.unit_id?.toInt(),
+                    value = list.new_value,
+                    new_value = list.new_value,
+                    duration = list.duration?.toInt(),
+                    pack_id = list.pack_id?.toInt(),
+                    id = list.serverid?.toInt()
+                )
+
+                if (dataa != null) {
+                    setSpinner(collectActivity, sensonser, true)
                 }
+                myduration?.setText(dataa?.duration.toString())
+            }
 
-                override fun onFailure(call: Call<Responseeditcollectdata>, t: Throwable) {
-                    try {
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        AppUtils.logError(TAG, e.localizedMessage)
 
-                    }
-                }
-
-            })
-        }
-        else{
+        } else {
             if (collectid != null) {
                 handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
+                    setSpinner(collectActivity, sensonser, false)
 
                 }, 1000)
 
             } else {
                 handler.postDelayed({
-                setSpinner(collectActivity, sensonser, false)
+                    setSpinner(collectActivity, sensonser, false)
 
                 }, 1000)
             }
@@ -239,7 +248,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
         BtnUpdate.setOnClickListener {
             BtnUpdate.visibility = View.GONE
-            var unit = ""
+
             if (ed_value != null) {
                 getValueId = ed_value.text.toString()
             } else if (dt_value != null) {
@@ -260,74 +269,103 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 getResultId == dataa?.result_id.toString()
             }
 
-            val service = ApiClient.client.create(ApiInterFace::class.java)
-            val apiInterFace = service.updateCollectData(
-                MySharedPreference.getUser(requireContext())?.id.toString(),
-                packList?.id!!.toString(),
-                getResultId,
-                getValueId,
-                dataa?.unit_id.toString(),
-                dataa?.sensor_id.toString(),
-                myduration!!.text.toString(),
-                collectDataId
-            )
+            if (AppUtils().isInternet(requireContext())) {
 
-            apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
-                override fun onResponse(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    response: Response<ResponseCollectAcitivityResultList>
-                ) {
-                    try {
-                        if (response.body()?.error == false) {
+                val service = ApiClient.client.create(ApiInterFace::class.java)
+                val apiInterFace = service.updateCollectData(
+                    MySharedPreference.getUser(requireContext())?.id.toString(),
+                    packList?.id!!.toString(),
+                    getResultId,
+                    getValueId,
+                    dataa?.unit_id.toString(),
+                    dataa?.sensor_id.toString(),
+                    myduration!!.text.toString(),
+                    collectDataId
+                )
+
+                apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
+                    override fun onResponse(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        response: Response<ResponseCollectAcitivityResultList>
+                    ) {
+                        try {
+                            if (response.body()?.error == false) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "${response.body()?.msg}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                BtnUpdate.visibility = View.VISIBLE
+
+                                val intent = Intent(activity, UpdatePackActivity::class.java)
+                                intent.putExtra("fragment", "1")
+                                startActivity(intent)
+                                activity?.finish()
+
+                            } else {
+                                BtnUpdate.visibility = View.VISIBLE
+
+                                Toast.makeText(
+                                    requireContext(),
+                                    "${response.body()?.msg}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
                             Toast.makeText(
                                 requireContext(),
                                 "${response.body()?.msg}",
                                 Toast.LENGTH_SHORT
                             ).show()
-                            BtnUpdate.visibility = View.VISIBLE
-
-                            val intent = Intent(activity, UpdatePackActivity::class.java)
-                            intent.putExtra("fragment", "1")
-                            startActivity(intent)
-                            activity?.finish()
-
-                        } else {
-                            BtnUpdate.visibility = View.VISIBLE
-
-                            Toast.makeText(
-                                requireContext(),
-                                "${response.body()?.msg}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            AppUtils.logError(TAG, e.message.toString())
                         }
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            requireContext(),
-                            "${response.body()?.msg}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        AppUtils.logError(TAG, e.message.toString())
-                    }
-
-                }
-
-                override fun onFailure(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    t: Throwable
-                ) {
-                    try {
-                        BtnUpdate.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        BtnUpdate.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, e.localizedMessage)
 
                     }
-                }
 
-            })
+                    override fun onFailure(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        t: Throwable
+                    ) {
+                        try {
+                            BtnUpdate.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, t.message.toString())
+                        } catch (e: Exception) {
+                            BtnUpdate.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, e.localizedMessage)
+
+                        }
+                    }
+
+                })
+            } else {
+                if (ed_value != null) {
+                    getValueId = ed_value.text.toString()
+                } else if (dt_value != null) {
+                    getValueId = ed_value.text.toString()
+                } else {
+                    getValueId = spinner_value.getSelectedItem().toString()
+                }
+                duration = myduration?.text.toString()
+                val collectdata = CollectData(
+                    id = dataa?.id.toString(),
+                    result_id = resultid.toString(),
+                    collect_activity_id = collectId.toString(),
+                    value = getValueId,
+                    new_value = getValueId,
+                    unit_id = getSensorId,
+                    sensor_id = sensorId.toString(),
+                    duration = duration,
+                    serverid = dataa?.id.toString(),
+                    pack_id = packList?.id.toString()
+                )
+                AppUtils.logDebug(TAG, "btnUpdate CLick check datas" + collectdata.toString())
+
+                val db = DbHelper(requireContext(), null)
+                db.updateCollectDataOffline(collectdata, true)
+            }
         }
         button.setOnClickListener {
+
             if (collectActivity.selectedItemPosition == 0) {
                 Toast.makeText(
                     requireContext(),
@@ -465,18 +503,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
                 } else {
                     valueSpinner?.setSelection(0)
-
                 }
             }
-
-
         }
-
         return view
     }
 
-    private fun
-            callStoreCollectDataAPi(
+    private fun callStoreCollectDataAPi(
         edValue: String,
         dtvalue: String,
         spinnervalue: String,
@@ -486,7 +519,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         resultid: Int,
         spinnerUnitId: Int
     ) {
-        AppUtils.logDebug(TAG, "soinnerunitiD--" + spinnerUnitId)
         if (edValue != null) {
 
             callMySingleApi(edValue)
@@ -596,71 +628,95 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             if (collectId == null) {
                 collectId = collectActivityList.get(0).id.toInt()
             }
-            var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
 
+            if (AppUtils().isInternet(requireContext())) {
 
-            val service = ApiClient.client.create(ApiInterFace::class.java)
+                var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
+                val service = ApiClient.client.create(ApiInterFace::class.java)
 
+                apiInterFace = service.storecollectdata(
+                    packList?.id.toString(), resultid.toString(), collectId.toString(),
+                    edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
+                    MySharedPreference.getUser(requireContext())?.id.toString(),
+                )
 
-            apiInterFace = service.storecollectdata(
-                packList?.id.toString(), resultid.toString(), collectId.toString(),
+                apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
+                    override fun onResponse(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        response: Response<ResponseCollectAcitivityResultList>
+                    ) {
+                        try {
+                            if (response.body()?.error == false) {
+                                btn_collectNewData.visibility = View.VISIBLE
+                                btn_addmoreData.visibility = View.VISIBLE
 
-                edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
-                MySharedPreference.getUser(requireContext())?.id.toString(),
-            )
+                                progressbar_collectnewdata.visibility = View.GONE
+                                Toast.makeText(
+                                    requireContext(),
+                                    "${response.body()?.msg}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                UpdatePackActivity().finishAffinity()
+                                val intent = Intent(activity, UpdatePackActivity::class.java)
+                                intent.putExtra("fragment", "1")
+                                activity?.finish()
 
+                            } else {
+                                Toast.makeText(requireContext(), "Failed To add", Toast.LENGTH_LONG)
+                                    .show()
+                            }
+                        } catch (e: Exception) {
+                            AppUtils.logError(TAG, e.localizedMessage)
 
+                        }
 
-            apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
-                override fun onResponse(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    response: Response<ResponseCollectAcitivityResultList>
-                ) {
-                    try {
-                        if (response.body()?.error == false) {
+                    }
+
+                    override fun onFailure(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        t: Throwable
+                    ) {
+                        progressbar_collectnewdata?.visibility = View.GONE
+                        try {
                             btn_collectNewData.visibility = View.VISIBLE
                             btn_addmoreData.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, t.message.toString())
+                        } catch (e: Exception) {
+                            btn_collectNewData.visibility = View.VISIBLE
+                            btn_addmoreData.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, e.localizedMessage)
 
-                            progressbar_collectnewdata.visibility = View.GONE
-                            Toast.makeText(
-                                requireContext(),
-                                "${response.body()?.msg}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            UpdatePackActivity().finishAffinity()
-                            val intent = Intent(activity, UpdatePackActivity::class.java)
-                            intent.putExtra("fragment", "1")
-                            activity?.finish()
-
-                        } else {
-                            Toast.makeText(requireContext(), "Failed To add", Toast.LENGTH_LONG)
-                                .show()
                         }
-                    } catch (e: Exception) {
-                        AppUtils.logError(TAG, e.localizedMessage)
-
                     }
 
-                }
+                })
+            } else {
 
-                override fun onFailure(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    t: Throwable
-                ) {
-                    progressbar_collectnewdata?.visibility = View.GONE
-                    try {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, e.localizedMessage)
+                val sdf = SimpleDateFormat("yyyy-M-dd hh:mm:ss")
+                val currentDate = sdf.format(Date())
 
-                    }
-                }
+                @SuppressLint("Range")
+                val lastvalue = db?.getLastofCollectData()
+                val serverid = lastvalue?.toInt()!! + 1
 
-            })
+//
+                val collectdata = CollectData(
+                    id = packList?.id.toString(),
+                    result_id = resultid.toString(),
+                    collect_activity_id = collectId.toString(),
+                    value = edValue,
+                    new_value = edValue,
+                    unit_id = getSensorId,
+                    sensor_id = sensorId.toString(),
+                    duration = duration,
+                    date = currentDate,
+                    serverid = serverid.toString()
+                )
+
+
+                db!!.addNewCollectDataOffline(collectdata, false)
+            }
+
 
         }
 
@@ -685,10 +741,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 for (i in 0 until sensorlist.size) {
 
                     if (dataa?.sensor_id.toString() == sensorlist.get(i).id) {
-                        AppUtils.logDebug(
-                            TAG,
-                            "sensor loop" + dataa?.sensor_id.toString() + "+" + sensorid.get(i)
-                        )
 
                         sensonser.setSelection(i)
                     }
@@ -698,7 +750,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
             if (dataa?.collect_activity_id != null) {
                 myduration?.setText(dataa?.duration.toString())
-                AppUtils.logDebug(TAG, "sensor list id" + sensorid.toString())
 
 
 
@@ -731,10 +782,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
                 for (i in 0 until collectActivityList.size) {
                     if (i == position) {
-                        AppUtils.logDebug(
-                            TAG,
-                            "collectactivityname==" + collectActivityList.get(i).name
-                        )
+
                         collectId = collectActivityList.get(i).id.toInt()
                         collectNAME = collectActivityList.get(i).name
                         Handler(Looper.getMainLooper()).postDelayed({
@@ -782,21 +830,28 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 //            MySharedPreference.getUser(requireContext())?.id.toString(),
 //            collectactivity_id
 //        ).enqueue(this)
-        if (collectactivity_id!="0"){
+        if (collectactivity_id != "0") {
             val resultList = db?.getCollectActivityResult(collectactivity_id)
             collectactivitylistName.clear()
             collectactivitylist.clear()
             collectactivitylistid.clear()
-            collectactivitylist.add(CollectAcitivityResultList("0","Select",null,
-            null,null))
+            collectactivitylist.add(
+                CollectAcitivityResultList(
+                    "0", "Select", null,
+                    null, null
+                )
+            )
             collectactivitylistName.add("Select")
             collectactivitylistid.add("0")
 
             for (i in 0 until resultList!!.size) {
                 val item = resultList.get(i)
                 collectactivitylist.add(
-                    CollectAcitivityResultList(item.id.toString(),
-                        item.result_name!!, item.type_id, item.unit_id,item.list_id))
+                    CollectAcitivityResultList(
+                        item.id.toString(),
+                        item.result_name!!, item.type_id, item.unit_id, item.list_id
+                    )
+                )
 
                 collectactivitylistName.add(item.result_name)
                 collectactivitylistid.add(item.id.toString())
@@ -823,10 +878,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         response: Response<ResponseCollectAcitivityResultList>
     ) {
         if (response.body()?.error == false) {
-            AppUtils.logDebug(TAG,"Apicall")
 
-
-//      3
         }
 
     }
@@ -846,17 +898,11 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             result?.adapter = adapter
 
             if (dataa?.result_id != null) {
-                AppUtils.logDebug(
-                    TAG, "list" + collectactivitylistName + "list2" +
-                            collectactivitylistid
-                )
+
 
                 for (i in 0 until collectactivitylistid.size) {
                     if (dataa?.result_id.toString() == collectactivitylistid.get(i)) {
-                        AppUtils.logDebug(
-                            TAG,
-                            "resultname" + collectactivitylist.get(i).result_name
-                        )
+
                         result?.setSelection(i)
                     }
                 }
@@ -889,12 +935,12 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             ) {
                 for (i in 0 until collectactivitylist.size) {
                     if (i == position) {
-                        val item=collectactivitylist.get(i)
+                        val item = collectactivitylist.get(i)
                         resultid = item.id!!.toInt()
                         resultNAME = item.result_name!!
                         callResultValueApi(
                             resultid.toString(), item.typeid.toString(),
-                            item.unitId.toString(),item.listId
+                            item.unitId.toString(), item.listId
                         )
 
                         getResultId = collectactivitylistid.get(i)
@@ -908,25 +954,26 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
     }
 
     //    private fun callResultValueApi(resultid: String) {
-    private fun callResultValueApi(resultid: String, value: String, unitid: String, listId: String?) {
-        AppUtils.logDebug(TAG, "Resultvalueapi result id " + value)
+    private fun callResultValueApi(
+        resultid: String,
+        value: String,
+        unitid: String,
+        listId: String?
+    ) {
         val id = resultid.toInt() + 1
-
-
-
 
 
         var untiLst = db?.getUnitList(unitid)
 
-        var unitList: ArrayList<UnitList>?=null
-        unitList= ArrayList<UnitList>()
+        var unitList: ArrayList<UnitList>? = null
+        unitList = ArrayList<UnitList>()
 
-        var unitListname :ArrayList<String>?=null
-        var unitListId :ArrayList<String>?=null
+        var unitListname: ArrayList<String>? = null
+        var unitListId: ArrayList<String>? = null
 
-        unitList= ArrayList()
-        unitListname= ArrayList()
-        unitListId= ArrayList()
+        unitList = ArrayList()
+        unitListname = ArrayList()
+        unitListId = ArrayList()
 
 
 
@@ -946,7 +993,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
 //       setValueSpinner(unitList, unitListname, listId!!, unitListId)
         try {
-            if (value == "date" || value=="Date" || value =="DATE") {
+            if (value == "date" || value == "Date" || value == "DATE") {
 
                 spinner_value?.visibility = View.GONE
                 ed_value?.visibility = View.GONE
@@ -963,7 +1010,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                         context,
                         TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                             settime = "$hourOfDay:$minute"
-                            AppUtils.logDebug(TAG, "settime" + settime)
 //                    txtTime.setText("$hourOfDay:$minute")
                             updateLabel(dt_value, settime)
 
@@ -1131,7 +1177,6 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                         context,
                         TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                             settime = "$hourOfDay:$minute"
-                            AppUtils.logDebug(TAG, "settime" + settime)
 //                    txtTime.setText("$hourOfDay:$minute")
                             updateLabel(dt_value, settime)
 

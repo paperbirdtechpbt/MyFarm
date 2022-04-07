@@ -35,28 +35,28 @@ class PackConfigListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pack_config_list)
 
-        if(checkInternetConnection()){
+//        if(checkInternetConnection()){
             initViewModel()
 
-        }
-        else {
-            db = DbHelper(this, null)
-//          val configlist = db!!.readPackConfiglistData()
-
-            val   configlist= db?.getAllPackConfig()
-            select_packconfiglist.layoutManager= LinearLayoutManager(this)
-
-            adapter = AdapterPackSelectconfigType(this, configlist!!) { position, taskname ,list->
-
-                val intent = Intent(this, CreatePackActivity::class.java)
-                intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
-                startActivity(intent)
-                finish()
-
-            }
-            select_packconfiglist.adapter = adapter
-
-        }
+//        }
+//        else {
+//            db = DbHelper(this, null)
+////          val configlist = db!!.readPackConfiglistData()
+//
+//            val   configlist= db?.getAllPackConfig()
+//            select_packconfiglist.layoutManager= LinearLayoutManager(this)
+//
+//            adapter = AdapterPackSelectconfigType(this, configlist!!) { position, taskname ,list->
+//
+//                val intent = Intent(this, CreatePackActivity::class.java)
+//                intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)
+//                startActivity(intent)
+//                finish()
+//
+//            }
+//            select_packconfiglist.adapter = adapter
+//
+//        }
     }
 
     private fun checkInternetConnection(): Boolean {
