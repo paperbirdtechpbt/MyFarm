@@ -40,12 +40,12 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAcitivityResultList> {
+class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAcitivityResultList> {
     private var param1: String? = null
     private var param2: String? = null
-    var recylerview:RecyclerView?=null
+    var recylerview: RecyclerView? = null
     var viewmodel: CollectDataViewModel? = null
-    var adapter:CollectDataAdapter?=null
+    var adapter: CollectDataAdapter? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
 
     override fun onResume() {
         super.onResume()
-        progressbar_collectpack.visibility=View.VISIBLE
+        progressbar_collectpack.visibility = View.VISIBLE
 
         initViewModel()
 
@@ -69,59 +69,59 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
         savedInstanceState: Bundle?
     ): View {
 
-        val view:View= inflater.inflate(R.layout.fragment_collect_pack_fragement, container, false)
+        val view: View =
+            inflater.inflate(R.layout.fragment_collect_pack_fragement, container, false)
 
-            initViewModel()
+        initViewModel()
 
         return view
     }
 
 
-
     private fun initViewModel() {
         viewmodel =
             ViewModelProvider(this).get(CollectDataViewModel::class.java)
-        viewmodel?.progressBar=progressbar_collectpack
+        viewmodel?.progressBar = progressbar_collectpack
         viewmodel?.onCollectDataList(requireContext())
 
 
-        viewmodel?.collectdatalist?.observe(viewLifecycleOwner,androidx.lifecycle.Observer{list ->
+        viewmodel?.collectdatalist?.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { list ->
 
-            AppUtils.logDebug(TAG,"collectdataList==="+list.toString())
+                AppUtils.logDebug(TAG, "collectdataList===" + list.toString())
 
-            val mylist =
-                Gson().fromJson(Gson().toJson(list), ArrayList<CollectData>()::class.java)
+                val mylist =
+                    Gson().fromJson(Gson().toJson(list), ArrayList<CollectData>()::class.java)
 
-            recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
+                recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
 
-            adapter  = CollectDataAdapter(mylist,requireContext()){  id ,boolean,serverid->
-                AppUtils.logDebug(TAG,"SErverid===>"+ collectDataServerId)
+                adapter = CollectDataAdapter(mylist, requireContext()) { id, boolean, serverid ->
+                    AppUtils.logDebug(TAG, "SErverid===>" + collectDataServerId)
 
-                collectDataServerId=serverid
-                collectDataId=id
-                if (boolean){
-                    showAlertDialog(id)
+                    collectDataServerId = serverid
+                    collectDataId = id
+                    if (boolean) {
+                        showAlertDialog(id)
+                    } else {
+                        val intent = Intent(activity, UpdatePackActivity::class.java)
+                        intent.putExtra("fragment", "2")
+                        startActivity(intent)
+                    }
+
                 }
-                else{
-                    val intent=Intent(activity,UpdatePackActivity::class.java)
-                    intent.putExtra("fragment","2")
-                    startActivity(intent)
+
+                recyclerview_collectdata?.adapter = adapter
+                if (list.isNullOrEmpty()) {
+                    layout_nodata.visibility = View.VISIBLE
+                    progressbar_collectpack.visibility = View.GONE
+                } else {
+                    progressbar_collectpack.visibility = View.GONE
+                    layout_nodata.visibility = View.GONE
                 }
 
-            }
 
-            recyclerview_collectdata?.adapter=adapter
-            if (list.isNullOrEmpty()){
-                layout_nodata.visibility=View.VISIBLE
-                progressbar_collectpack.visibility=View.GONE
-            }
-            else{
-                progressbar_collectpack.visibility=View.GONE
-                layout_nodata.visibility=View.GONE
-            }
-
-
-        })
+            })
     }
 
     private fun showAlertDialog(id: String) {
@@ -130,10 +130,17 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
             .setMessage("Are you sure you want to Delete")
             .setPositiveButton("Yes", DialogInterface.OnClickListener { dialog, which ->
 
-                progressbar_collectpack.visibility=View.VISIBLE
-                ApiClient.client.create(ApiInterFace::class.java).deletecollectdata(id).enqueue(this)
+                progressbar_collectpack.visibility = View.VISIBLE
+                if (AppUtils().isInternet(requireContext())) {
+                    ApiClient.client.create(ApiInterFace::class.java).deletecollectdata(id)
+                        .enqueue(this)
 
-                })
+                } else {
+                    val db = DbHelper(requireContext(), null)
+                    db.deleteCollectData(id)
+                }
+
+            })
             .setNegativeButton(android.R.string.no, null)
             .setIcon(android.R.drawable.ic_delete)
             .show()
@@ -141,35 +148,33 @@ class CollectDataFragement : Fragment() ,retrofit2.Callback<ResponseCollectAciti
 
 
     companion object {
-        val TAG="CollectPackFragement"
-        var collectDataId=""
-        var collectDataServerId=""
+        val TAG = "CollectPackFragement"
+        var collectDataId = ""
+        var collectDataServerId = ""
     }
 
     override fun onResponse(
         call: Call<ResponseCollectAcitivityResultList>,
         response: Response<ResponseCollectAcitivityResultList>
     ) {
-        if (response.body()?.error==false){
-            Toast.makeText(requireContext(),"${response.body()?.msg}",Toast.LENGTH_LONG).show()
+        if (response.body()?.error == false) {
+            Toast.makeText(requireContext(), "${response.body()?.msg}", Toast.LENGTH_LONG).show()
             viewmodel?.onCollectDataList(requireContext())
             adapter?.notifyDataSetChanged()
-            progressbar_collectpack.visibility=View.GONE
+            progressbar_collectpack.visibility = View.GONE
         }
     }
 
     override fun onFailure(call: Call<ResponseCollectAcitivityResultList>, t: Throwable) {
         try {
-            Toast.makeText(requireContext(),"Failed to Delete",Toast.LENGTH_LONG).show()
-            progressbar_collectpack.visibility=View.GONE
+            Toast.makeText(requireContext(), "Failed to Delete", Toast.LENGTH_LONG).show()
+            progressbar_collectpack.visibility = View.GONE
 
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Failed to Delete", Toast.LENGTH_LONG).show()
+
+            progressbar_collectpack.visibility = View.GONE
         }
-        catch (e:Exception){
-            Toast.makeText(requireContext(),"Failed to Delete",Toast.LENGTH_LONG).show()
-
-            progressbar_collectpack.visibility=View.GONE
-        }
-
 
 
     }

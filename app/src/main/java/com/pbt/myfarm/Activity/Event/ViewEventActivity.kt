@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.Pack.AdapterViewPack
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.EventViewModel
 import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.R
@@ -95,7 +96,16 @@ class ViewEventActivity : AppCompatActivity(),retrofit2.Callback<ResponseEventLi
             // The dialog is automatically dismissed when a dialog button is clicked.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    ApiClient.client.create(ApiInterFace::class.java).deleteEvent(eventid).enqueue(this)
+                    if (AppUtils().isInternet(this)){
+                        ApiClient.client.create(ApiInterFace::class.java).deleteEvent(eventid).enqueue(this)
+
+                    }
+                    else{
+                        val db=DbHelper(this,null)
+                        db.deleteEvent(eventid)
+
+                    }
+
 
                     Toast.makeText(this, "Deleted ", Toast.LENGTH_SHORT).show()
                 })

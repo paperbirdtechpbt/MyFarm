@@ -291,6 +291,27 @@ fun uploadFile(
     ):Call<EditEventList>
 
     @FormUrlEncoded
+    @POST("api/storeEvent")
+
+    fun storeEvent(
+        @Field("user_id") user_id: String,
+        @Field("name") name: String,
+        @Field("description") description: String,
+        @Field("exp_start_date") exp_start_date: String,
+        @Field("type") type: String,
+        @Field("exp_end_date") exp_end_date: String,
+        @Field("exp_duration") exp_duration: String,
+        @Field("actual_start_date") actual_start_date: String,
+        @Field("actual_end_date") actual_end_date: String,
+        @Field("actual_duration") actual_duration: String,
+        @Field("community_group") community_group: String,
+        @Field("status") status: String,
+        @Field("responsible") responsible: String,
+        @Field("assigned_team") assigned_team: String,
+        @Field("closed") closed: String,
+    ):Call<ResposneUpdateEvent>
+
+    @FormUrlEncoded
     @POST("api/updateEvent")
     fun updateEvent(
         @Field("user_id") user_id: String,

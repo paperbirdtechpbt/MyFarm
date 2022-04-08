@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ResponseDashBoardEvent
@@ -26,10 +27,13 @@ class ViewModeleditEvent(var activity: Application) : AndroidViewModel(activity)
     var teamandOtherList= MutableLiveData<List<ResponseDashBoardEvent>>()
 
     fun onEditEvent(editEventID: String, context: Context, isCreateEvent: Boolean) {
-        ApiClient.client.create(ApiInterFace::class.java).editEvent(
-            MySharedPreference.getUser(context)?.id.toString(),
-            editEventID
-        ).enqueue(this)
+
+        if (AppUtils().isInternet(context)){
+            ApiClient.client.create(ApiInterFace::class.java).editEvent(
+                MySharedPreference.getUser(context)?.id.toString(),
+                editEventID
+            ).enqueue(this)
+        }
 
     }
     fun onTeamAndOtherList(context: Context){

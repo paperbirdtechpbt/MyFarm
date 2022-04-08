@@ -243,7 +243,11 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                         else{
                             //Store Task Offline In Database
                                 viewmodel?.desciption=field_desciption.text.toString()
-                            viewmodel?.createTaskOffline(this,configtype)
+                         var success=   viewmodel?.createTaskOffline(this,configtype)
+                            if (success == true){
+                                finish()
+
+                            }
 
                         }
 

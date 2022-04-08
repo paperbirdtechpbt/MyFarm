@@ -327,35 +327,23 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             .setMessage("Are you sure you want to Delete $taskname") // Specifying a listener allows you to take an action before dismissing the dialog.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-//                    ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id.toString())
-//                        .enqueue(this)
-                    val db=DbHelper(this,null)
-
-                    db.deletePackNew(list.primaryid.toString())
+                    if (AppUtils().isInternet(this)){
+                        ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id.toString())
+                            .enqueue(this)
+                    }
+                    else{
+                        val db=DbHelper(this,null)
+                        db.deletePackNew(list.id.toString())
+                    }
 
                     setDatafromlocal()
                     adapter?.notifyItemRemoved(position)
 
-
-//                    db?.deletePack(taskname)
-//                    tasklist?.removeAt(position)
-//                    adapter?.notifyDataSetChanged()
-//                    checkListEmptyOrNot(tasklist!!)
-//                    Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
                 })
             .setNegativeButton(android.R.string.no, null)
             .setIcon(android.R.drawable.ic_delete)
             .show()
     }
-
-    private fun checkListEmptyOrNot(tasklist: ArrayList<ViewPackModelClass>) {
-        if (tasklist.isEmpty()) {
-            layout_nodatavailable.visibility = View.VISIBLE
-        } else {
-            layout_nodatavailable.visibility = View.GONE
-        }
-    }
-
 
     override fun onResume() {
         super.onResume()

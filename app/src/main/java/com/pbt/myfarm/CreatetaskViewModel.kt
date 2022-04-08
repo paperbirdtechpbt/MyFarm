@@ -67,7 +67,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
 
     }
-fun createTaskOffline(context: Context, configtype: TaskConfig?) {
+fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
+    var sucess=false
     val db = DbHelper(context, null)
     var packsnew: Task? = null
 
@@ -90,7 +91,8 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) {
             null, null, null,
         )
 
-        db.tasksCreateOffline(packsnew)
+        sucess=  db.tasksCreateOffline(packsnew)
+
 
     }
 
@@ -109,9 +111,10 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) {
         )
 
 
-        db.tasksCreateOffline(packsnew)
+        sucess= db.tasksCreateOffline(packsnew)
 
     }
+    return sucess
 }
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskList: Task?) {

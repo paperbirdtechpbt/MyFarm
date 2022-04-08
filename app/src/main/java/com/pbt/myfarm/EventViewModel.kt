@@ -32,7 +32,7 @@ class EventViewModel(var activity: Application) : AndroidViewModel(activity),
         }
         else{
             val db = DbHelper(context, null)
-            val eventList = db.getAllEventListData()
+            val eventList = db.getAllEventListData("")
             var events=ArrayList<Event>()
             eventList.forEach{list ->
 
