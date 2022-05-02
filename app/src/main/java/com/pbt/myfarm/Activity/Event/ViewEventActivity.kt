@@ -5,11 +5,13 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Pack.AdapterViewPack
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
@@ -42,8 +44,14 @@ class ViewEventActivity : AppCompatActivity(),retrofit2.Callback<ResponseEventLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_event)
+        if (MainActivity.privilegeListName.contains("InsertEvent")){
+            btn_create_event.visibility=View.VISIBLE
+        }
+
+
 
         initViewModel()
+
         btn_create_event.setOnClickListener{
             val intent=Intent(this,EditEventActivity::class.java)
             intent.putExtra(CONST_CREATEEVENT,true)
@@ -102,7 +110,8 @@ class ViewEventActivity : AppCompatActivity(),retrofit2.Callback<ResponseEventLi
                     }
                     else{
                         val db=DbHelper(this,null)
-                        db.deleteEvent(eventid)
+                     val success=   db.deleteEvent(eventid)
+                      initViewModel()
 
                     }
 

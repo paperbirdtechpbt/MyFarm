@@ -25,24 +25,26 @@ class ViewModelDashBoardEvent(var activity: Application) : AndroidViewModel(acti
     var TAG = "ViewModelDashBoardEvent"
 
     fun eventTeamList(context: Context) {
-        val db=DbHelper(context,null)
-        val teamList=db.getTeamList()
-        val responsiblelist= db.getPersonList()
-        eventTeamlist.value = teamList
-        eventResponsiblelist.value = responsiblelist
 
-
+//        if (AppUtils().isInternet(context)){
+//
 //        ApiClient.client.create(ApiInterFace::class.java)
 //            .eventTeamList(MySharedPreference.getUser(context)?.id.toString()).enqueue(this)
-
-
-
-
+//        }
+//        else{
+            val db=DbHelper(context,null)
+            val teamList=db.getTeamList()
+            val responsiblelist= db.getPersonList()
+            eventTeamlist.value = teamList
+            eventResponsiblelist.value = responsiblelist
+//        }
     }
+
     fun eventList(context: Context){
         val userId=MySharedPreference.getUser(context)?.id.toString()
         val db=DbHelper(context,null)
-     val eventlist=   db.getAllEventListData(userId)
+     val eventlist=   db.getAllEventListData("")
+        AppUtils.logDebug(TAG,"offlibe eventList"+eventlist.toString())
         eventlivelist.value =eventlist
 
 
@@ -82,7 +84,7 @@ class ViewModelDashBoardEvent(var activity: Application) : AndroidViewModel(acti
 //                AppUtils.logError(TAG,"on failure fun eventlist")
 //
 //            }
-
+//
 //        })
 
     }

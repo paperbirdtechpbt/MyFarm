@@ -2,16 +2,19 @@ package com.pbt.myfarm.Activity.Event
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Event
 import com.pbt.myfarm.EventList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.ResponseEventList
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.databinding.ItemlistVieweventBinding
+import kotlinx.android.synthetic.main.activity_view_event.*
 import kotlinx.android.synthetic.main.itemlist_viewevent.view.*
 import retrofit2.Call
 import retrofit2.Response
@@ -37,6 +40,12 @@ class AdapterEventList(var context: Context, var list: List<Event>,
 
                 holder.binding.viewevent = list[position]
                 val item = list[position]
+                if (MainActivity.privilegeListName.contains("EditEvent")){
+holder.binding.iconEditEvent.visibility=View.VISIBLE
+                }
+                if (MainActivity.privilegeListName.contains("DeleteEvent")){
+holder.binding.iconDeleteEvent.visibility=View.VISIBLE
+                }
 
                 holder.itemView.icon_delete_event.setOnClickListener {
 

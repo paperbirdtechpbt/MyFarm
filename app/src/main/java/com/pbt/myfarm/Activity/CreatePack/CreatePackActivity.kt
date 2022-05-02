@@ -14,16 +14,11 @@ import com.google.gson.Gson
 import com.pbt.myfarm.*
 
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
-import com.pbt.myfarm.Activity.Home.MainActivity
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
-import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
-import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
+
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
@@ -84,63 +79,10 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         AppUtils.logDebug(TAG,"desciption=====>>>>>>"+desciptioncompanian.toString())
 
 
-
-
-//        if (checkInternetConnection()) {
-//            initViewModel()
-//        }
         initViewModel()
-//        else
-//        {
-//            val list=   db.readPackConfigFieldList()
-//            val field=   db.readPackConfigFieldList_fieldlist()
-//            val communitGroup=db.readPackCommunityGroup()
-//            AppUtils.logDebug(TAG,Gson().toJson(list+"\n"+field+"\n"+communitGroup))
-//            val packCommunityname = ArrayList<String>()
-//            for (i in 0 until communitGroup.size){
-//                packCommunityname.add(communitGroup.get(i).name)
-//
-//            }
-//            recyclerview_createPack?.layoutManager = LinearLayoutManager(this)
-//            adapter = CreatePackAdapter(
-//                this, list, true, communitGroup,
-//                packCommunityname
-//            ) { list, name ->
-//                while (list.contains("0")) {
-//                    list.remove("0")
-//                }
-//                while (name.contains("0")) {
-//                    name.remove("0")
-//                }
-//                while (ExpNameKey.contains("0")) {
-//                    ExpNameKey.remove("0")
-//                }
-//                while (ExpAmtArrayKey.contains("0")) {
-//                    ExpAmtArrayKey.remove("0")
-//                }
-//
-//
-//
-//
-//                for (i in 0 until name.size) {
-//                    val jsonObject = JSONObject()
-//                    jsonObject.put(ExpAmtArrayKey.get(i), name.get(i))
-//                    jsonObject.put(ExpNameKey.get(i), list.get(i))
-//
-//                    successObject.put(jsonObject)
-//                    fieldModel.add(FieldModel(name.get(i), list.get(i)))
-//
-//                }
-//
-//
-//            }
-//            recyclerview_createPack.adapter = adapter
-//
-//
-//        }
+
 
     }
-
     private fun initViewModel() {
         viewmodel = ViewModelProvider(
             this,
@@ -153,9 +95,11 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         packconfiglist = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
         AppUtils.logError(TAG, "packConfiglist" + packconfiglist?.id.toString())
 
-        viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString())
+        viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString(),"")
         viewmodel?.configlist?.observe(this, Observer { list ->
-
+            if (!list.isNullOrEmpty()){
+                progressbar_createPackActivity.visibility=View.GONE
+            }
 
 //            setCommunityGroup()
             val config =
@@ -165,7 +109,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 //                this, config, true, packCommunityList,
 //                packCommunityListname
 //            )
-
 
             adapter = CreatePackAdapter(
                 this, config, false, packCommunityList,
@@ -178,9 +121,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                     name.remove("0")
                 }
                 AppUtils.logDebug(TAG, "listname" + list.size + name.size)
-
-
-
 
 
                 for (i in 0 until name.size) {
@@ -250,11 +190,12 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
             }
         }
            else{
-               viewmodel?.createPackOffline(this)
-
-                        }
+            val sucess=   viewmodel?.createPackOffline(this)
+                if (sucess == true){
+                    finish()
+                }
            }
-
+           }
     }
 
     private fun addPackValue(list: String, name: String, idd: String) {

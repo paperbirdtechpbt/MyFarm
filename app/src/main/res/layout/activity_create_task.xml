@@ -431,6 +431,7 @@ app:layout_constraintBottom_toBottomOf="parent"
                 android:id="@+id/progressbar_createtask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"

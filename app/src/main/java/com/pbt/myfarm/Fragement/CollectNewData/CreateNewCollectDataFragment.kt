@@ -366,47 +366,53 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         }
         button.setOnClickListener {
 
-            if (collectActivity.selectedItemPosition == 0) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please Select CollectActivity",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (sensonser.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "Please Select Sensor", Toast.LENGTH_SHORT).show()
+            if (listmultipleData.size >= 1) {
+                for (i in 0 until listmultipleData.size) {
+                    objectmultipleData = listmultipleData.get(i)
+                    callMyApi("Value", objectmultipleData!!)
 
-            } else if (result?.selectedItemPosition == 0) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please Select Result Activity",
-                    Toast.LENGTH_SHORT
-                ).show()
+                }
 
-            } else if (valueSpinner?.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "Please Select value", Toast.LENGTH_SHORT).show()
-
-            } else if (unit?.selectedItemPosition == 0) {
-                Toast.makeText(requireContext(), "Please Select Unit", Toast.LENGTH_SHORT).show()
-
-            } else if (valueSpinner?.selectedItemPosition == 0 && value?.text!!.isEmpty() && valuedate?.text!!.isEmpty()) {
-                Toast.makeText(requireContext(), "Value is Required", Toast.LENGTH_SHORT).show()
+                listmultipleData.clear()
+                objectmultipleData = null
 
             } else {
-                progressbar_collectnewdata.visibility = View.VISIBLE
-                button.visibility = View.GONE
-                btn_addmoreData.visibility = View.GONE
+
+                if (collectActivity.selectedItemPosition == 0) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please Select CollectActivity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else if (sensonser.selectedItemPosition == 0) {
+                    Toast.makeText(requireContext(), "Please Select Sensor", Toast.LENGTH_SHORT).show()
+
+                } else if (result?.selectedItemPosition == 0) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Please Select Result Activity",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                } else if (valueSpinner?.selectedItemPosition == 0) {
+                    Toast.makeText(requireContext(), "Please Select value", Toast.LENGTH_SHORT).show()
+
+                }
+                else if (unit?.selectedItemPosition == 0) {
+                    Toast.makeText(requireContext(), "Please Select Unit", Toast.LENGTH_SHORT).show()
+
+                }
+                else if (valueSpinner?.selectedItemPosition == 0 && value?.text!!.isEmpty() && valuedate?.text!!.isEmpty()) {
+                    Toast.makeText(requireContext(), "Value is Required", Toast.LENGTH_SHORT).show()
+
+                }
+                else {
+                    progressbar_collectnewdata.visibility = View.VISIBLE
+                    button.visibility = View.GONE
+                    btn_addmoreData.visibility = View.GONE
 
 //            if (!listmultipleData.isNullOrEmpty()) {
-                if (listmultipleData.size >= 1) {
-                    for (i in 0 until listmultipleData.size) {
-                        objectmultipleData = listmultipleData.get(i)
-                        callMyApi("Value", objectmultipleData!!)
-                    }
-
-                    listmultipleData.clear()
-                    objectmultipleData = null
-
-                } else {
                     if (ed_value != null) {
                         edValue = ed_value.text.toString()
                     } else if (dt_value != null) {
@@ -426,15 +432,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                         resultid,
                         spinnerUnitId
                     )
+
                 }
-
             }
-
 
         }
         BtnAddmore.setOnClickListener {
 //            collectActivity
-
 
 //            sensonser-
             if (collectActivity.selectedItemPosition == 0) {
@@ -541,80 +545,117 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             if (collectId == null) {
                 collectId = collectActivityList.get(0).id.toInt()
             }
-            var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
+            if (AppUtils().isInternet(requireContext())){
+                var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
 
 
-            val service = ApiClient.client.create(ApiInterFace::class.java)
-            if (objectmultipleDataa != null) {
-                apiInterFace = service.storecollectdata(
-                    packList?.id.toString(),
-                    objectmultipleDataa.resultID,
-                    objectmultipleDataa.activityID,
-                    objectmultipleDataa.valueID,
-                    objectmultipleDataa.valueID,
-                    objectmultipleDataa.unitID,
-                    objectmultipleDataa.sensorID,
-                    objectmultipleDataa.duration,
-                    MySharedPreference.getUser(requireContext())?.id.toString(),
+                val service = ApiClient.client.create(ApiInterFace::class.java)
+                if (objectmultipleDataa != null) {
+                    apiInterFace = service.storecollectdata(
+                        packList?.id.toString(),
+                        objectmultipleDataa.resultID,
+                        objectmultipleDataa.activityID,
+                        objectmultipleDataa.valueID,
+                        objectmultipleDataa.valueID,
+                        objectmultipleDataa.unitID,
+                        objectmultipleDataa.sensorID,
+                        objectmultipleDataa.duration,
+                        MySharedPreference.getUser(requireContext())?.id.toString(),
+                    )
+                } else {
+                    apiInterFace = service.storecollectdata(
+                        packList?.id.toString(), resultid.toString(), collectId.toString(),
+
+                        edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
+                        MySharedPreference.getUser(requireContext())?.id.toString(),
+                    )
+                }
+
+
+                apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
+                    override fun onResponse(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        response: Response<ResponseCollectAcitivityResultList>
+                    ) {
+                        if (response.body()?.error == false) {
+                            btn_collectNewData.visibility = View.VISIBLE
+                            btn_addmoreData.visibility = View.VISIBLE
+
+                            progressbar_collectnewdata.visibility = View.GONE
+                            Toast.makeText(
+                                requireContext(),
+                                "${response.body()?.msg}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            val intent = Intent(activity, UpdatePackActivity::class.java)
+                            intent.putExtra("fragment", "1")
+                            activity?.finish()
+
+                        } else {
+                            btn_collectNewData.visibility = View.VISIBLE
+                            btn_addmoreData.visibility = View.VISIBLE
+                            Toast.makeText(
+                                requireContext(),
+                                "Failed To add Collect Data",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<ResponseCollectAcitivityResultList>,
+                        t: Throwable
+                    ) {
+                        progressbar_collectnewdata?.visibility = View.GONE
+                        try {
+                            btn_collectNewData.visibility = View.VISIBLE
+                            btn_addmoreData.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, t.message.toString())
+                        } catch (e: Exception) {
+                            btn_collectNewData.visibility = View.VISIBLE
+                            btn_addmoreData.visibility = View.VISIBLE
+                            AppUtils.logError(TAG, e.localizedMessage)
+
+                        }
+                    }
+
+                })
+            }
+            else{
+
+                val sdf = SimpleDateFormat("yyyy-M-dd hh:mm:ss")
+                val currentDate = sdf.format(Date())
+
+                @SuppressLint("Range")
+                val lastvalue = db?.getLastofCollectData()
+                val serverid = lastvalue?.toInt()!! + 1
+
+//
+                val collectdata = CollectData(
+                    id = packList?.id.toString(),
+                    result_id = resultid.toString(),
+                    collect_activity_id = collectId.toString(),
+                    value = edValue,
+                    new_value = edValue,
+                    unit_id = getSensorId,
+                    sensor_id = sensorId.toString(),
+                    duration = duration,
+                    date = currentDate,
+                    serverid = serverid.toString(),
+                    created_at=currentDate
                 )
-            } else {
-                apiInterFace = service.storecollectdata(
-                    packList?.id.toString(), resultid.toString(), collectId.toString(),
 
-                    edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
-                    MySharedPreference.getUser(requireContext())?.id.toString(),
-                )
+
+             val isSucces=   db!!.addNewCollectDataOffline(collectdata, false)
+                if (isSucces){
+                    val intent = Intent(activity, UpdatePackActivity::class.java)
+                    intent.putExtra("fragment", "1")
+                    activity?.finish()
+                }
+
             }
 
 
-            apiInterFace.enqueue(object : Callback<ResponseCollectAcitivityResultList> {
-                override fun onResponse(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    response: Response<ResponseCollectAcitivityResultList>
-                ) {
-                    if (response.body()?.error == false) {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-
-                        progressbar_collectnewdata.visibility = View.GONE
-                        Toast.makeText(
-                            requireContext(),
-                            "${response.body()?.msg}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        val intent = Intent(activity, UpdatePackActivity::class.java)
-                        intent.putExtra("fragment", "1")
-                        activity?.finish()
-
-                    } else {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-                        Toast.makeText(
-                            requireContext(),
-                            "Failed To add Collect Data",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<ResponseCollectAcitivityResultList>,
-                    t: Throwable
-                ) {
-                    progressbar_collectnewdata?.visibility = View.GONE
-                    try {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        btn_collectNewData.visibility = View.VISIBLE
-                        btn_addmoreData.visibility = View.VISIBLE
-                        AppUtils.logError(TAG, e.localizedMessage)
-
-                    }
-                }
-
-            })
 
         }
 
@@ -710,11 +751,18 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     sensor_id = sensorId.toString(),
                     duration = duration,
                     date = currentDate,
-                    serverid = serverid.toString()
+                    serverid = serverid.toString(),
+                    created_at=currentDate
                 )
 
 
-                db!!.addNewCollectDataOffline(collectdata, false)
+             val isSucces=   db!!.addNewCollectDataOffline(collectdata, false)
+                if (isSucces){
+                    val intent = Intent(activity, UpdatePackActivity::class.java)
+                    intent.putExtra("fragment", "1")
+                    activity?.finish()
+                }
+
             }
 
 

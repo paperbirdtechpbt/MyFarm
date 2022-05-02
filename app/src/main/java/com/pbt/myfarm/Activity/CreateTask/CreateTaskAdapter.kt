@@ -80,7 +80,7 @@ class CreateTaskAdapter(
         val t: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val fieldtype = t["field_type"].toString()
         val field_id = t["field_id"].toString()
-        val namee = t["field_name"].toString()
+        val namee = t["field_description"].toString()
 //        val value = t["field_value"].toString()
         val field: ArrayList<Field> = t["field_list"] as ArrayList<Field>
 
@@ -555,7 +555,7 @@ class CreateTaskAdapter(
 
 
     private fun updateLabel(date: EditText,time:String) {
-        val myFormat = "MM-dd-yyyy"
+        val myFormat = "yyyy-MM-dd"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
         if (time.isEmpty()){
             date.setText(dateFormat.format(myCalendar.time))

@@ -20,6 +20,8 @@ import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.ComunityGroup
 import com.pbt.myfarm.HttpResponse.Field
 import com.pbt.myfarm.HttpResponse.TaskFieldResponse
+import com.pbt.myfarm.Service.ApiClient
+import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -29,20 +31,20 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity)
-    ,retrofit2.Callback<TaskFieldResponse> {
+class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity),
+    retrofit2.Callback<TaskFieldResponse> {
     companion object {
         const val TAG: String = "CreateTaskViewModel"
-        var comConfigFieldList:ArrayList<ComunityGroup>?=null
-        var groupArray:ArrayList<String>?= ArrayList()
-        var groupArrayId:ArrayList<String>?= ArrayList()
-        var field_list: ArrayList<String>?= ArrayList()
-        var field: ArrayList<Field>?= ArrayList()
+        var comConfigFieldList: ArrayList<ComunityGroup>? = null
+        var groupArray: ArrayList<String>? = ArrayList()
+        var groupArrayId: ArrayList<String>? = ArrayList()
+        var field_list: ArrayList<String>? = ArrayList()
+        var field: ArrayList<Field>? = ArrayList()
 
     }
-    val context:Context=activity
-    var configlist = MutableLiveData<List<ConfigFieldList>>()
 
+    val context: Context = activity
+    var configlist = MutableLiveData<List<ConfigFieldList>>()
 
 
     var namePrefix: ObservableField<String>? = null
@@ -63,70 +65,95 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         EndDate = ObservableField("")
 
 
-            configlist = MutableLiveData<List<ConfigFieldList>>()
-
-
-    }
-fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
-    var sucess=false
-    val db = DbHelper(context, null)
-    var packsnew: Task? = null
-
-    val d = db.getLastValue_task_new(configtype?.id.toString())
-    val userid = MySharedPreference.getUser(context)?.id
-    val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-    val currentDate = sdf.format(Date())
-
-    val lastValueOfPacknew=db.getLastofPackNew()
-    val idd=lastValueOfPacknew.toInt()+1
-
-    if (d.isEmpty()) {
-
-        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-
-        packsnew= Task(
-            selectedCommunityGroup.toInt(), userid, currentDate, "", desciption,
-            null, idd, userid, null, null, null, "1", configtype?.id,
-            null, configtype?.name, configtype?.description, configtype?.name_prefix,
-            null, null, null,
-        )
-
-        sucess=  db.tasksCreateOffline(packsnew)
+        configlist = MutableLiveData<List<ConfigFieldList>>()
 
 
     }
 
+    fun createTaskOffline(context: Context, configtype: TaskConfig?, isUpdate: Boolean, updateTaskId: Task?
+    ): Boolean {
+        var sucess = false
+        val db = DbHelper(context, null)
+        var packsnew: Task? = null
+        val userid = MySharedPreference.getUser(context)?.id
 
 
-    else{
-        val newPackname: Int = d.toInt() + 1
-        val currentDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+        if (isUpdate){
 
 
-        packsnew= Task(
-            selectedCommunityGroup.toInt(), userid, currentDate, null, desciption,
-            null, idd, userid, null, newPackname.toString(), null, "1", configtype?.id,
-            null, configtype?.name, configtype?.description, configtype?.name_prefix,
-            null, null, null,
-        )
+            val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+            val currentDate = sdf.format(Date())
+            packsnew = Task(
+                selectedCommunityGroup.toInt(), userid, currentDate, "", desciption,
+                null, updateTaskId?.id, userid,
+                currentDate, updateTaskId?.name, null, "2", updateTaskId?.task_config_id,
+
+                null, updateTaskId?.taskConfigName, updateTaskId?.description,
+                updateTaskId?.taskConfigNamePrefix,
+                null, null, null,
+            )
+
+            sucess = db.tasksCreateOffline(packsnew,true)
+        }
+        else{
+
+            val d = db.getLastValue_task_new(configtype?.id.toString())
+
+            val lastValueOfPacknew = db.getLastofTask()
+            val idd = lastValueOfPacknew.toInt() + 1
+            AppUtils.logDebug(TAG,"iddd="+idd.toString())
+
+            if (d.isEmpty()) {
+
+                val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+                val currentDate = sdf.format(Date())
+                packsnew = Task(
+                    selectedCommunityGroup.toInt(), userid, currentDate, "", desciption,
+                    null, idd, userid, null, "1", null, "1", configtype?.id,
+                    null, configtype?.name, configtype?.description, configtype?.name_prefix,
+                    null, null, null,
+                )
+
+                sucess = db.tasksCreateOffline(packsnew,false)
+            } else {
+                val newPackname: Int = d.toInt() + 1
+                val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+                val currentDate = sdf.format(Date())
 
 
-        sucess= db.tasksCreateOffline(packsnew)
+                packsnew = Task(
+                    selectedCommunityGroup.toInt(), userid, currentDate, null, desciption,
+                    null, idd, userid, null, newPackname.toString(), null, "1", configtype?.id,
+                    null, configtype?.name, configtype?.description, configtype?.name_prefix,
+                    null, null, null,
+                )
 
+
+                sucess = db.tasksCreateOffline(packsnew,false)
+
+            }
+        }
+
+
+        return sucess
     }
-    return sucess
-}
 
     fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskList: Task?) {
 
-//            ApiClient.client.create(ApiInterFace::class.java)
-//                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),updateTaskList?.task_config_id.toString(),
-//                updateTaskList?.id.toString()).enqueue(this)
 
-        AppUtils.logError(TAG,"true configidd"+updateTaskList?.toString())
+        AppUtils.logError(TAG, "true configidd" + updateTaskList?.toString())
 
+        if (AppUtils().isInternet(context)) {
+            ApiClient.client.create(ApiInterFace::class.java)
+                .configFieldList(
+                    MySharedPreference.getUser(context)?.id.toString(),
+                    updateTaskList?.task_config_id.toString(),
+                    updateTaskList?.id.toString()
+                ).enqueue(this)
+        } else {
+            setData(updateTaskList?.task_config_id.toString(), true, updateTaskList?.id.toString())
 
-        setData(updateTaskList?.task_config_id.toString(),true,updateTaskList?.id.toString())
+        }
 
 
 //        val list = db.getTaskConfigFieldList(updateTaskList?.task_config_id.toString())
@@ -146,21 +173,25 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
         configId: TaskConfig?,
 
         ) {
-        AppUtils.logError(TAG,"false configidd"+configId?.toString())
+        AppUtils.logError(TAG, "false configidd" + configId?.toString())
 
 
-        setData(configId?.id.toString(),false,"")
+        if (AppUtils().isInternet(context)) {
 
+            ApiClient.client.create(ApiInterFace::class.java)
+                .configFieldList(
+                    MySharedPreference.getUser(context)?.id.toString(),
+                    configId?.id.toString(), ""
+                ).enqueue(this)
+        } else {
+            setData(configId?.id.toString(), false, "")
 
-//
-//            ApiClient.client.create(ApiInterFace::class.java)
-//                .configFieldList(MySharedPreference.getUser(context)?.id.toString(),
-//                    configId?.id.toString(),"").enqueue(this)
+        }
 
 
     }
 
-    private fun setData(id: String,isUpdate:Boolean,taskid:String) {
+    private fun setData(id: String, isUpdate: Boolean, taskid: String) {
         val db = DbHelper(context, null)
 
         groupArray?.clear()
@@ -174,11 +205,11 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
             groupArrayId?.add(it.id.toString())
         }
 
-        val list = db.getTaskConfigFieldList(id,isUpdate,taskid)
+        val list = db.getTaskConfigFieldList(id, isUpdate, taskid)
 
-        AppUtils.logDebug(TAG,"task Field List"+list.toString())
+        AppUtils.logDebug(TAG, "task Field List" + list.toString())
 
-        val userId=MySharedPreference.getUser(context)?.id.toString()
+        val userId = MySharedPreference.getUser(context)?.id.toString()
 
         val taskConfigList = db.getTaskConfigList(userId)
 
@@ -212,7 +243,7 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
 
                             val itm = fieldList.get(i)
                             packfieldList.add(
-                                FieldLIst(itm.id,itm.name)
+                                FieldLIst(itm.id, itm.name)
                             )
 
                         }
@@ -248,9 +279,12 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
                         packConfigField.add(
                             ConfigFieldList(
                                 null,
-                                item.field_description.toString(), item.field_name.toString(),packfieldList,
+                                item.field_description.toString(),
+                                item.field_name.toString(),
+                                packfieldList,
                                 "",
-                                item.field_type,item.field_value,
+                                item.field_type,
+                                item.field_value,
                             )
                         )
                     } else if (item.list == "Team") {
@@ -270,8 +304,12 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
                         packConfigField.add(
                             ConfigFieldList(
                                 null,
-                                item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), item.field_value,
+                                item.field_description.toString(),
+                                item.field_name.toString(),
+                                packfieldList,
+                                item.field_description,
+                                item.field_type.toString(),
+                                item.field_value,
                             )
                         )
 
@@ -295,8 +333,12 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
                         packConfigField.add(
                             ConfigFieldList(
                                 null,
-                                item.field_description.toString(), item.field_name.toString(),packfieldList,
-                                item.field_description, item.field_type.toString(), item.field_value,
+                                item.field_description.toString(),
+                                item.field_name.toString(),
+                                packfieldList,
+                                item.field_description,
+                                item.field_type.toString(),
+                                item.field_value,
                             )
                         )
                     }
@@ -305,8 +347,12 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
                     packConfigField.add(
                         ConfigFieldList(
                             null,
-                            item.field_description.toString(), item.field_name.toString(),ArrayList(),
-                            item.field_description, item.field_type.toString(), item.field_value,
+                            item.field_description.toString(),
+                            item.field_name.toString(),
+                            ArrayList(),
+                            item.field_description,
+                            item.field_type.toString(),
+                            item.field_value,
                         )
                     )
                 }
@@ -322,52 +368,58 @@ fun createTaskOffline(context: Context, configtype: TaskConfig?) :Boolean{
         call: Call<TaskFieldResponse>,
         response: Response<TaskFieldResponse>
     ) {
-        try{
-            if (response.body()?.error==false){
-                progressbar?.visibility= View.GONE
-                val  configlistt= Gson().fromJson(Gson().toJson(response.body()?.data), ArrayList<ConfigFieldList>()::class.java)
-                if (!configlistt.isNullOrEmpty()){
-                    for (i in 0 until configlistt.size){
+        try {
+            if (response.body()?.error == false) {
+                progressbar?.visibility = View.GONE
+                val configlistt = Gson().fromJson(
+                    Gson().toJson(response.body()?.data),
+                    ArrayList<ConfigFieldList>()::class.java
+                )
+                if (!configlistt.isNullOrEmpty()) {
+                    for (i in 0 until configlistt.size) {
                         ExpAmtArray.add("0")
                         ExpName.add("0")
                         ExpNameKey.add("f_id")
                         ExpAmtArrayKey.add("f_value")
 
                     }
-                    AppUtils.logDebug(TAG,"arrayid"+ CreatePackActivity.arrayID +"\n"+ CreatePackActivity.arrayName)
+                    AppUtils.logDebug(
+                        TAG,
+                        "arrayid" + CreatePackActivity.arrayID + "\n" + CreatePackActivity.arrayName
+                    )
 
                 }
-                comConfigFieldList= Gson().fromJson(Gson().toJson(response.body()?.CommunityGroup),ArrayList<ComunityGroup>()::class.java)
-                configlist.value= configlistt
+                comConfigFieldList = Gson().fromJson(
+                    Gson().toJson(response.body()?.CommunityGroup),
+                    ArrayList<ComunityGroup>()::class.java
+                )
+                configlist.value = configlistt
                 groupArray?.clear()
                 groupArrayId?.clear()
 
 
-                for (i in 0 until comConfigFieldList!!.size){
+                for (i in 0 until comConfigFieldList!!.size) {
                     val row: Any = comConfigFieldList!!.get(i)
                     val rowmap: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
                     val name = rowmap["name"].toString()
                     val communitygroupid = rowmap["id"].toString()
 
-                    groupArray?.add( name)
+                    groupArray?.add(name)
                     groupArrayId?.add(communitygroupid)
                 }
-            }
-            else{
+            } else {
                 println("error true")
             }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, e.toString())
         }
-        catch (e:Exception){
-        AppUtils.logError(TAG,e.toString())
-        }
-     }
+    }
 
     override fun onFailure(call: Call<TaskFieldResponse>, t: Throwable) {
         try {
-            AppUtils.logError(TAG,"Failure -->"+t.message)
-        }
-        catch (e:Exception){
-            AppUtils.logError(TAG,"Failure -->"+e.message)
+            AppUtils.logError(TAG, "Failure -->" + t.message)
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "Failure -->" + e.message)
         }
 
     }

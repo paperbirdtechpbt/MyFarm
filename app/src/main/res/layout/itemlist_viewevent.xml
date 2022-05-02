@@ -10,7 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:minHeight="110dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:layout_marginRight="3dp"
             android:layout_marginBottom="10sp"
             app:cardCornerRadius="2dp"
-
+android:minHeight="110dp"
             app:cardMaxElevation="3dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
@@ -29,7 +30,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:minHeight="110dp">
 
                 <ImageView
                     android:id="@+id/icon_delete_event"
@@ -37,6 +39,7 @@
                     android:layout_height="24dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="15dp"
+                    android:visibility="gone"
                     android:layout_marginBottom="10dp"
                     android:src="@drawable/ic__delete"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +51,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="15dp"
+                    android:visibility="gone"
 
                     android:src="@drawable/ic__edit"
                     app:layout_constraintBottom_toTopOf="@id/icon_delete_event"

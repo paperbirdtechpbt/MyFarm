@@ -15,6 +15,27 @@
         <entry key="..\:/PBT/Farm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.1" />
         <entry key="..\:/PBT/Farm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.1" />
         <entry key="..\:/PBT/Farm/app/src/main/res/layout/itempackfeildlist.xml" value="0.15" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__dashboardevent.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__task.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_box.xml" value="0.1195" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_dashboaradicon.xml" value="0.1195" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_icon_list.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_pack.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.14" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_edit_event.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_graph.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_login2.xml" value="0.16" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_pack.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.18" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_event.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_task.xml" value="0.12" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.11" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_create_pack_frament.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemcongiffeildlist.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_collectdata.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_pack.xml" value="0.1802536231884058" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewevent.xml" value="0.1802536231884058" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.1" />
       </map>
     </option>
   </component>

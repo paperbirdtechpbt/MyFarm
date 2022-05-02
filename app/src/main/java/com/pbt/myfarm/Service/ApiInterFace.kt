@@ -1,19 +1,16 @@
 package com.pbt.myfarm.Service
 
+import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Event.EditEventList
 import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
-import com.pbt.myfarm.CollectdataRespose
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
 import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.ModelClass.SendDataMasterList
-import com.pbt.myfarm.OffLineSyncModel
-import com.pbt.myfarm.ResponseEventList
-import com.pbt.myfarm.ResponseEventListDashboard
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -137,6 +134,12 @@ interface ApiInterFace {
     fun collectDataList(
         @Field("user_id") user_id: String,
         @Field("pack_id") pack_id: String,
+    ):Call<CollectdataRespose>
+
+    @FormUrlEncoded
+    @POST("api/getRoleList")
+    fun getRoleList(
+        @Field("email") email: String,
     ):Call<CollectdataRespose>
 
     @FormUrlEncoded
@@ -339,5 +342,11 @@ fun uploadFile(
     @FormUrlEncoded
     @POST("api/getAllDatalist")
     fun offLineSync(@Field("user_id") userId: String) :Call<OffLineSyncModel>
+
+    @FormUrlEncoded
+
+    @POST("api/getAllprivileges")
+    fun getAllprivileges(
+        @Field("role_id") role_id: String) :Call<AllPriviledgeListResponse>
 
 }

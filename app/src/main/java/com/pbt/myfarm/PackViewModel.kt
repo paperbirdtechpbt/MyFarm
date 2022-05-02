@@ -98,26 +98,29 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 //
 //    }
 
-    fun createPackOffline(context: Context) {
+    fun createPackOffline(context: Context):Boolean {
+         var sucess=false
+
         val db = DbHelper(context, null)
         var packsnew: PacksNew? = null
 
         val d = db.getLastValue_pack_new(packconfiglist?.id.toString())
         val userid = MySharedPreference.getUser(context)?.id
-        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val currentDate = sdf.format(Date())
 
         val lastValueOfPacknew=db.getLastofPackNew()
         val idd=lastValueOfPacknew.toInt()+1
+        AppUtils.logDebug(TAG,"idddddd======="+idd)
 
         if (d.isEmpty()) {
             packsnew= PacksNew(null, MainActivity.selectedCommunityGroup.toInt(),
                 userid,currentDate,null, PackActivity.desciptioncompanian,idd,
                 null,null,null,null,
-                null,packconfiglist?.id.toString(),labelPackConfigPrefix,
+                "1",packconfiglist?.id.toString(),labelPackConfigPrefix,
                 null,null,null,"1")
 
-            db.addNewPack(packsnew,"1")
+            sucess=   db.addNewPackOffline(packsnew,"1")
 
         }
 
@@ -132,26 +135,27 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
                 null,null,null,"1")
 
 
-            db.addNewPack(packsnew,"1")
+            sucess=     db.addNewPackOffline(packsnew,"1")
 
-        }}
+        }
+    return sucess}
 
 
-    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, updateTaskId: String) {
+    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, packconfigid: String,packid:String) {
 
         if (AppUtils().isInternet(context)){
                     if (updateTaskIdBoolean){
             ApiClient.client.create(ApiInterFace::class.java)
                 .packConfigFieldList(
                     MySharedPreference.getUser(context)?.id.toString(),
-                    packList?.pack_config_id.toString(), packList?.id!!.toString()
+                    packconfigid, packid
                 ).enqueue(this)
 
         }
         else{
             ApiClient.client.create(ApiInterFace::class.java)
                 .packConfigFieldList(MySharedPreference.getUser(context)?.id.toString(),
-                    packconfiglist?.id.toString(),"").enqueue(this)
+                    packconfigid,"").enqueue(this)
         }
         }
         else {

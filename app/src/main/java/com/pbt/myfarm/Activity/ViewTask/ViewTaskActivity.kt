@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
@@ -39,8 +41,12 @@ import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
+import kotlinx.android.synthetic.main.itemlist_viewtask.view.*
 import retrofit2.Call
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
@@ -69,6 +75,10 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_task)
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
+        if (privilegeListName.contains("InsertTask")){
+            binding?.btnCreateTask?.visibility=View.VISIBLE
+//            btn_create_task.visibility=View.VISIBLE
+        }
 
         initViewModel()
 
@@ -134,31 +144,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     }
 
-//    @SuppressLint("Range")
-//    fun getDataFromDatabase() {
-//
-//        db = DbHelper(this, null)
-//        tasklist = db!!.readData()
-//
-//        adapter = AdapterViewTask(this, tasklist!!) { position, taskname, checkAction, list ->
-//            if (checkAction) {
-//                showAlertDailog(taskname, position)
-//            } else {
-//                val intent = Intent(this, CreateTaskActivity::class.java)
-//                intent.putExtra(CONST_VIEWMODELCLASS_LIST, list)
-//                startActivity(intent)
-//
-//
-//            }
-//
-//        }
-//
-//
-//        recyclerview_viewtask.adapter = adapter
-//        checkListEmptyOrNot(tasklist!!)
-//
-//
-//    }
+
 
     private fun showAlertDailog(taskname: String, position: Int, mytasklist: Task) {
         AlertDialog.Builder(this)
@@ -174,9 +160,11 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     }
                     else{
                     val db=DbHelper(this,null)
+
                     db.deleteTaskNew(mytasklist.id!!.toString())
-                        adapter?.notifyItemRemoved(position)
+//                        adapter?.notifyItemRemoved(position)
                     }
+                    initViewModel()
 
 
 

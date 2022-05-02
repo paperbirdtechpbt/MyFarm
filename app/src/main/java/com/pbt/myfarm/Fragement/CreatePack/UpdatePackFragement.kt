@@ -21,6 +21,7 @@ import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
 import com.pbt.myfarm.Activity.Graph.GraphActivity
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
@@ -40,6 +41,7 @@ import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.fragment_create_pack_frament.*
 import kotlinx.android.synthetic.main.fragment_create_pack_frament.btn_update_pack
+import kotlinx.android.synthetic.main.itemlist_collectdata.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -94,7 +96,7 @@ class UpdatePackFragement : Fragment(),
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
 
-        initViewModel()
+//        initViewModel()
     }
 
     override fun onCreateView(
@@ -116,6 +118,9 @@ class UpdatePackFragement : Fragment(),
         arrayName!!.clear()
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
+//        if (MainActivity.privilegeListName.contains("GraphChart")){
+//            btn_viewgraph.visibility=View.VISIBLE
+//        }
 
         initViewModel()
 
@@ -126,15 +131,14 @@ class UpdatePackFragement : Fragment(),
 
             adapterr?.callBack()
 
-            val db = DbHelper(requireContext(), null)
-            db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
-
 
         }
         btnViewTask.setOnClickListener {
+//            AppUtils.logDebug(TAG,"packlistttt"+packList1.toString())
 
             val intent = Intent(requireContext(), GraphActivity::class.java)
-            intent.putExtra(PACK_LIST_PACKID, packList1)
+//            intent.putExtra(PACK_LIST_PACKID, packList1)
+            intent.putExtra(PACK_LIST_PACKID, packList1?.pack_config_id.toString())
             startActivity(intent)
 
         }
@@ -146,10 +150,12 @@ class UpdatePackFragement : Fragment(),
     private fun initViewModel() {
         viewmodel =
             ViewModelProvider(this).get(PackViewModel::class.java)
+        AppUtils.logDebug(TAG,"packlistid--packlistconfig="+packList1?.pack_config_id.toString()+"="+
+                packList1?.id.toString())
 
         viewmodel?.onConfigFieldList(
             requireContext(), true,
-            packList1?.pack_config_id.toString()
+            packList1?.pack_config_id.toString(), packList1!!.id.toString()
         )
         viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
 //            setCommunityGroup()
@@ -267,27 +273,44 @@ class UpdatePackFragement : Fragment(),
 
         } else {
             if (prefixname.isNullOrEmpty()) {
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .updatePack(
-                        packList1?.pack_config_id!!,
-                        desciptioncompanian!!,
-                        selectedCommunityGroup,
-                        MySharedPreference.getUser(requireContext())?.id.toString(),
-                        successObject.toString(),
-                        "",
-                        packList1?.id.toString()
-                    ).enqueue(this)
+                if (AppUtils().isInternet(requireContext())){
+                    val db = DbHelper(requireContext(), null)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+                }
+                else{
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .updatePack(
+                            packList1?.pack_config_id!!,
+                            desciptioncompanian!!,
+                            selectedCommunityGroup,
+                            MySharedPreference.getUser(requireContext())?.id.toString(),
+                            successObject.toString(),
+                            "",
+                            packList1?.id.toString()
+                        ).enqueue(this)
+                }
+
+
+
+
             } else {
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .updatePack(
-                        packList1?.pack_config_id!!,
-                        desciptioncompanian!!,
-                        selectedCommunityGroup,
-                        MySharedPreference.getUser(requireContext())?.id.toString(),
-                        successObject.toString(),
-                        prefixname!!,
-                        packList1?.id.toString()
-                    ).enqueue(this)
+                if (AppUtils().isInternet(requireContext())){
+                    ApiClient.client.create(ApiInterFace::class.java)
+                        .updatePack(
+                            packList1?.pack_config_id!!,
+                            desciptioncompanian!!,
+                            selectedCommunityGroup,
+                            MySharedPreference.getUser(requireContext())?.id.toString(),
+                            successObject.toString(),
+                            prefixname!!,
+                            packList1?.id.toString()
+                        ).enqueue(this)
+                }
+                else{
+                    val db = DbHelper(requireContext(), null)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+                }
+
             }
 
         }

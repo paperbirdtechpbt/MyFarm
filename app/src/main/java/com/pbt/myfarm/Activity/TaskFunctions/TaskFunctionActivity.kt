@@ -1,6 +1,7 @@
 package com.pbt.myfarm.Activity.TaskFunctions
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
@@ -9,7 +10,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -20,6 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
@@ -35,15 +40,17 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestBody
 import com.pbt.myfarm.Util.FilePath
 import com.pbt.myfarm.Util.MySharedPreference
-import kotlinx.android.synthetic.main.activity_create_task.*
 import kotlinx.android.synthetic.main.activity_task_function.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
 import java.io.File
 import java.text.DecimalFormat
+import java.util.*
 
 
 class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTaskFunctionaliyt> {
@@ -62,6 +69,8 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
     private val MY_CAMERA_PERMISSION_CODE = 1001
     var manager: DownloadManager? = null
     var filePart: MultipartBody.Part?=null
+    private val VIDEO_CAPTURE = 101
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,17 +102,17 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
         btn_choosefile.setOnClickListener {
 
             if (checkAndRequestPermissions()) {
-                val options = arrayOf<CharSequence>("Choose from Gallery", "Cancel")
+                val options = arrayOf<CharSequence>("Take Photo","Choose from Gallery","Capture Video", "Cancel")
 //        val options = arrayOf<CharSequence>("Take Photo")
                 val builder: AlertDialog.Builder = AlertDialog.Builder(this)
                 builder.setTitle("Choose your profile picture")
                 builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-//                    if (options[item] == "Take Photo") {
-//                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//                        setResult(CAMERA_REQUEST, cameraIntent)
-//                        resultLauncher.launch(cameraIntent)
-//                    }
-                     if (options[item] == "Choose from Gallery") {
+                    if (options[item] == "Take Photo") {
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        setResult(CAMERA_REQUEST, cameraIntent)
+                        resultLauncher.launch(cameraIntent)
+                    }
+                    else if (options[item] == "Choose from Gallery") {
 
                         val pickPhoto = Intent()
                         pickPhoto.setType("*/*")
@@ -111,7 +120,14 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         setResult(GELARY_REQUEST, pickPhoto)
                         gallaryLauncher.launch(pickPhoto)
 
-                    } else if (options[item] == "Cancel") {
+                    }
+                    else if (options[item] == "Capture Video") {
+
+                        openCameraToCaptureVideo()
+
+                    }
+
+                    else if (options[item] == "Cancel") {
                         dialog.dismiss()
                     }
                 })
@@ -119,64 +135,82 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
             }
         }
         btn_execute.setOnClickListener {
-            progressbar_taskexecute.visibility=View.VISIBLE
-            btn_execute.visibility=View.GONE
+//            if (selectedFunctionFieldId==0){
+//                Toast.makeText(this, "No proper Data or No Privilege Given", Toast.LENGTH_SHORT).show()
+//            }
+//            else{
+//            selectedFunctionFieldId=173
+                progressbar_taskexecute.visibility=View.VISIBLE
+                btn_execute.visibility=View.GONE
 
-            var file: File? = null
 
-            AppUtils.logDebug(
-                TAG,
-                "===>" + updateTaskID + "=" + selectedFunctionId.toString() + "=" + selectedFunctionFieldId.toString()
-            )
-            val service = ApiClient.client.create(ApiInterFace::class.java)
+                AppUtils.logDebug(
+                    TAG,
+                    "===>" + updateTaskID + "=" + selectedFunctionId.toString() + "=" + selectedFunctionFieldId.toString()
+                )
+                if (AppUtils().isInternet(this)){
+                    val service = ApiClient.client.create(ApiInterFace::class.java)
 //            val apiInterFace = service.uploadFile(filePart,
 //                updateTaskID,
 //                selectedFunctionId.toString(), MySharedPreference.getUser(this)?.id.toString(),
 //                selectedFunctionFieldId.toString(),
 //            )
 
-    val apiInterFace = service.uploadFile(
-        filePart,
-        paramRequestBody(updateTaskID?.id.toString()),
-        paramRequestBody(selectedFunctionId.toString()),
-        paramRequestBody(MySharedPreference.getUser(this)?.id.toString()),
-        paramRequestBody(selectedFunctionFieldId.toString()),
-    )
+                    val apiInterFace = service.uploadFile(
+                        filePart,
+                        paramRequestBody(updateTaskID?.id.toString()),
+                        paramRequestBody(selectedFunctionId.toString()),
+                        paramRequestBody(MySharedPreference.getUser(this)?.id.toString()),
+                       paramRequestBody(selectedFunctionFieldId.toString()),
 
-            apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
-                override fun onResponse(
-                    call: Call<ResponseTaskExecution>,
-                    response: Response<ResponseTaskExecution>
-                ) {
-                    AppUtils.logDebug(TAG, response.body().toString())
-                    if (response.body()?.error == false) {
-                        progressbar_taskexecute.visibility=View.GONE
-                        btn_execute.visibility=View.VISIBLE
-                        Toast.makeText(this@TaskFunctionActivity, response.body()!!.msg, Toast.LENGTH_SHORT).show()
-                        finish()
-                    } else {
-                        progressbar_taskexecute.visibility=View.GONE
-                        btn_execute.visibility=View.VISIBLE
-                        Toast.makeText(this@TaskFunctionActivity, response.body()!!.msg, Toast.LENGTH_SHORT).show()
+                    )
 
-                    }
+                    apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
+                        override fun onResponse(
+                            call: Call<ResponseTaskExecution>,
+                            response: Response<ResponseTaskExecution>
+                        ) {
+                            AppUtils.logDebug(TAG, response.body().toString())
+                            if (response.body()?.error == false) {
+                                progressbar_taskexecute.visibility=View.GONE
+                                btn_execute.visibility=View.VISIBLE
+                                Toast.makeText(this@TaskFunctionActivity, response.body()!!.msg, Toast.LENGTH_SHORT).show()
+                                finish()
+                            } else {
+                                progressbar_taskexecute.visibility=View.GONE
+                                btn_execute.visibility=View.VISIBLE
+                                Toast.makeText(this@TaskFunctionActivity, response.body()!!.msg, Toast.LENGTH_SHORT).show()
+
+                            }
+                        }
+//
+                        override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
+                            try {
+                                progressbar_taskexecute.visibility=View.GONE
+                                btn_execute.visibility=View.VISIBLE
+                                AppUtils.logError(TAG, t.message.toString())
+                            } catch (e: Exception) {
+                                progressbar_taskexecute.visibility=View.GONE
+                                btn_execute.visibility=View.VISIBLE
+                                AppUtils.logError(TAG, t.message.toString())
+
+                            }
+                            Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT).show()
+                        }
+
+                    })
+                }
+                else{
+                    val db=DbHelper(this,null)
+                    val taskobject=com.pbt.myfarm.TaskObject(
+                        task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
+                        function = selectedFunctionId.toString(),
+                    )
+
+                    db.addTaskObjectCreate(taskobject,"1")
                 }
 
-                override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
-                    try {
-                        progressbar_taskexecute.visibility=View.GONE
-                        btn_execute.visibility=View.VISIBLE
-                        AppUtils.logError(TAG, t.message.toString())
-                    } catch (e: Exception) {
-                        progressbar_taskexecute.visibility=View.GONE
-                        btn_execute.visibility=View.VISIBLE
-                        AppUtils.logError(TAG, t.message.toString())
 
-                    }
-                    Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT).show()
-                }
-
-            })
 
 //            ApiClient.client.create(ApiInterFace::class.java).taskExecuteFunction(
 //                updateTaskID,
@@ -184,7 +218,9 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
 //                selectedFunctionFieldId.toString(),
 //                body!!
 //            ).enqueue(this)
-        }
+//            }
+            }
+
     }
 
     private fun initViewModel(updateTaskID: String) {
@@ -203,9 +239,12 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
                     } else if (list.get(i).id == "173") {
-                        taskfunction_media.visibility = View.VISIBLE
-                        btn_choosefile.visibility = View.VISIBLE
-                        label_attachmedia.visibility = View.VISIBLE
+                            taskfunction_media.visibility = View.VISIBLE
+                            btn_choosefile.visibility = View.VISIBLE
+                            label_attachmedia.visibility = View.VISIBLE
+
+
+                      
                     } else if (list.get(i).id == "174") {
                         //pass intent to craete packactivty with task id
                         //change in api according to this
@@ -376,11 +415,6 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
 
 
 
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .taskFunctionFieldList(
-//                MySharedPreference.getUser(this)?.id.toString(),
-//                updateTaskID, selectedFunctionId
-//            ).enqueue(this)
 
 //        ApiClient.client.create(ApiInterFace::class.java)
 //            .taskFunctionFieldList(
@@ -391,35 +425,45 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
     }
 
     private fun setImageList(imageList: ArrayList<TaskMediaFile>) {
-        val arrayAdapter: ArrayAdapter<*>
-        val imagenameList=ArrayList<String>()
-        val function=ArrayList<ListFunctionFieldlist>()
+        if(AppUtils().isInternet(this)){
+            ApiClient.client.create(ApiInterFace::class.java)
+                .taskFunctionFieldList(
+                    MySharedPreference.getUser(this)?.id.toString(),
+                    updateTaskID?.id.toString(), "173"
+                ).enqueue(this)
 
-        for (i in 0 until imageList.size){
-            val item=imageList.get(i)
-            imagenameList.add(item.name!!)
-            function.add(ListFunctionFieldlist(item.id.toString(),item.name,item.link,
-                item.filePathLocal))
         }
-        
+        else{
+            val arrayAdapter: ArrayAdapter<*>
+            val imagenameList=ArrayList<String>()
+            val function=ArrayList<ListFunctionFieldlist>()
 
-        val adapter = AdapterTaskFunction(this, function){ name ,link ->
-            if (checkInternetConncetion()){
-                            downloadFile(link,name)
+            for (i in 0 until imageList.size){
+                val item=imageList.get(i)
+                imagenameList.add(item.name!!)
+                function.add(ListFunctionFieldlist(item.id.toString(),item.name,item.link,
+                    item.filePathLocal))
             }
-            else{
-                try{
-//                        val imgFile = File("storage/emulated/0/MyFarm/"+name)
-                    val pdffile = File("file:///android_assets/$name")
 
-                    val path = Uri.fromFile(pdffile)
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                intent.setDataAndType(path, "Image/*")
-                startActivity(intent)}
-                catch (e:Exception){
-                    AppUtils.logDebug(TAG,"failed to load image or other file's"+e.message.toString())
+
+
+            val adapter = AdapterTaskFunction(this, function){ name ,link ->
+                if (checkInternetConncetion()){
+                    downloadFile(link,name)
                 }
+                else{
+                    try{
+//                        val imgFile = File("storage/emulated/0/MyFarm/"+name)
+                        val pdffile = File("file:///android_assets/$name")
+
+                        val path = Uri.fromFile(pdffile)
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        intent.setDataAndType(path, "Image/*")
+                        startActivity(intent)}
+                    catch (e:Exception){
+                        AppUtils.logDebug(TAG,"failed to load image or other file's"+e.message.toString())
+                    }
 
 //        if (imgFile.exists()) {
 //            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
@@ -429,12 +473,14 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
 //                val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
 //                startActivityForResult(gallery, pickImage)
 
-                Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
+
+                }
 
             }
-
+            recycler_viewMedia.adapter = adapter
         }
-        recycler_viewMedia.adapter = adapter
+
 
 
 
@@ -459,10 +505,6 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         val fileBody = ProgressRequestBody(file, contentType)
                         filePart  = MultipartBody.Part.createFormData("file", file.getName(), fileBody)
                         AppUtils.logDebug(TAG,"File part--$filePart")
-
-
-//
-
 
                         val absolutePath = file.absolutePath
                         val fileExtention: String = file.extension
@@ -507,7 +549,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
                         }
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Error", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "Error "+e.message.toString(), Toast.LENGTH_LONG)
                         .show()
 
                     AppUtils.logError(TAG, "Catch Exception----" + "$e")
@@ -516,6 +558,79 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
             }
 
         }
+
+    var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            AppUtils.logDebug(TAG, "Camera Result ${result.resultCode}")
+            if (result.resultCode == Activity.RESULT_OK) {
+                if (result.data != null) {
+
+                    val selectedImageUri: Uri? = result.data?.data
+
+
+                    val root = Environment.getExternalStorageDirectory().toString()
+                    val myDir = File("$root/req_images")
+
+                    myDir.mkdirs()
+                    val generator = Random()
+                    var n = 10000
+                    n = generator.nextInt(n)
+                    val fname = "Image-$n.jpg"
+//                    val file = File(myDir, fname)
+                    val path = Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_PICTURES
+                    )
+                    val file = File(path, fname)
+                    try {
+                        // Make sure the Pictures directory exists.
+                        path.mkdirs()}
+                    catch (e:Exception){
+                        AppUtils.logError(TAG,e.message.toString()  )
+                    }
+                    if (file.exists()) file.delete()
+//                    try {
+//                        val out = FileOutputStream(file)
+//                     imageBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+//                        out.flush()
+//                        out.close()
+//                    } catch (e: Exception) {
+//                        e.printStackTrace()
+//                    }
+                    val contentType = "file"
+                    val filePath = Uri.parse("$root/req_images/"+fname).toString()
+                    val fileBody = ProgressRequestBody(file, contentType)
+                    filePart  = MultipartBody.Part.createFormData("file", file.getName(), fileBody)
+                    taskfunction_media.setText(file.name)
+
+
+                    AppUtils.logDebug(TAG,"$filePart")
+
+//                val finalFile = File(getRealPathFromURIII(tempUri))
+
+                    val fileinBytes=file.length()
+                    val fileSizeInKB: Long = fileinBytes / 1024
+
+                    val fileSizeInMB = fileSizeInKB / 1024
+
+                    AppUtils.logDebug(TAG,"Result  File size-----  $fileSizeInMB-- $fileinBytes")
+
+                }
+            }
+            AppUtils.logDebug(TAG,"Outside the result ok dialog")
+        }
+
+
+    private fun openCameraToCaptureVideo() {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) { // First check if camera is available in the device
+            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            startActivityForResult(intent, VIDEO_CAPTURE)
+        }
+    }
+    fun playVideoInDevicePlayer(videoPath: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoPath))
+        intent.setDataAndType(Uri.parse(videoPath), "video/mp4")
+        startActivity(intent)
+    }
 
 
     override fun onResponse(
@@ -607,9 +722,12 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
+if(privilegeListName.contains("CanOverideEditTask")){
+    selectedFunctionFieldId = function.get(position).id!!.toInt()
+
+}
 
 
-                selectedFunctionFieldId = function.get(position).id!!.toInt()
 //                callApi(selectedFunctionId.toString())
 
 
@@ -676,7 +794,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
         }
         return true
     }
-
+//
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>,
         grantResults: IntArray
@@ -721,6 +839,22 @@ fun downloadFile(url: String, name: String){
     val reference: Long = manager!!.enqueue(request)
 
 }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        val videoUri = data?.data
+
+        if (requestCode == VIDEO_CAPTURE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Video saved to:\n"
+                        + videoUri, Toast.LENGTH_LONG).show()
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Video recording cancelled.",
+                    Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Failed to record video",
+                    Toast.LENGTH_LONG).show()
+            }
+    }
 
 
-}
+}}

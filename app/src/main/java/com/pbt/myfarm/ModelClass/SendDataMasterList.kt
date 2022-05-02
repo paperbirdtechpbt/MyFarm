@@ -23,7 +23,8 @@ data class CollectData(
     val unit_id: String?=null,
     val updated_at: String?=null,
     val user_id: Int?=null,
-    val value: String?=null
+    val value: String?=null,
+    val id:String?=null
 )
 
 data class Event(
@@ -45,7 +46,9 @@ data class Event(
     val responsible: String?=null,
     val status: Int?=null,
     val type: String?=null,
-    val user_id: Int?=null
+    val user_id: Int?=null,
+    val created_date: String?=null,
+    val deleted_at: String?=null
 )
 
 data class PacksNew(
@@ -62,9 +65,9 @@ data class PacksNew(
 )
 
 data class TaskField(
+    val task_func: String?=null,
     val field_id: String?=null,
     val status: Int?=null,
-    val task_func: String?=null,
     val task_id: String?=null,
     val user_id: Int?=null,
     val value: String?=null

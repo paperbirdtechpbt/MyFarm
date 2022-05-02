@@ -84,10 +84,9 @@ dependencies {
     implementation 'com.android.support:design:23.0.1'
 
 
-
-
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
 
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
 
 
 }

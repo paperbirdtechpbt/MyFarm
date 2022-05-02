@@ -3,18 +3,15 @@ package com.pbt.myfarm.Activity
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.net.ConnectivityManager
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.PackConfig
-import com.pbt.myfarm.PackList
 
 import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.Service.ApiClient
@@ -62,21 +59,18 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
     if (AppUtils().isInternet(context)){
         val id= MySharedPreference.getUser(context)?.id.toString()
 
-
         database = DbHelper(context, null)
 
         ApiClient.client.create(ApiInterFace::class.java)
             .packList(id).enqueue(this)
     }
     else{
-        var database = DbHelper(context, null)
 
-        database = DbHelper(context, null)
+       val database = DbHelper(context, null)
         val   packconfig= database.getAllPackConfig()
         val pcklist = database.getAllPack()
 
         AppUtils.logDebug(TAG,"packlist full"+pcklist.toString())
-
 
         val packsnew = java.util.ArrayList<PacksNew>()
         pcklist.forEach { routes ->
@@ -93,7 +87,6 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                         routes.type=" Type: "
                         routes.labeldesciption=" Desciption: "
                         routes.pack_config_name= packconfig.get(i).name.toString()
-
                     }
                 }
             }
@@ -103,12 +96,8 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
             packsnew.removeAt(0 )
             packlist.value=packsnew
         }
-
     }
-
     }
-
-
 
     override fun onResponse(call: Call<PackListModel>, response: Response<PackListModel>) {
         try{
@@ -118,9 +107,7 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                     Gson().toJson(response.body()),
                     PackListModel::class.java
                 )
-
                 val upCommingPackList = ArrayList<PacksNew>()
-
                 packconfigList= database!!.getAllPackConfig()
 
                 packListModel.data.forEach { routes ->

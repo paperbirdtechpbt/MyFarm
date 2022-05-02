@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 class AppConstant {
     companion object {
         //Database
+        val CONST_ROLEID="adminroleid"
+
         val CONST_DATABASE_NAME = "myfarm"
         val CONST_DATABASE_VERSION = 1
         val CONST_USERS_TABLE = "MyFarmUsers"
@@ -21,6 +23,7 @@ class AppConstant {
         val CONST_SHARED_PREF_TOKEN = "mysharedpreferenceToken"
         val CONST_SHARED_PREF_USERNAME = "username"
         val CONST_PREF_IS_LOGIN = "isLogin"
+        val CONST_PREF_ROLE_ID = "RoleId"
 
         //TABLE NewTask
         val CONST_NEW_TASK = "newtask"
@@ -515,6 +518,7 @@ class AppConstant {
         val COL_events_LAST_CHANGED_BY="events_last_changed_by"
         val COL_events_LAST_CHANGED_DATE="events_last_changed_date"
         val COL_events_DELETED_AT="events_deleted_at"
+        val COL_events_EVENTSTATUS="events_eventStatus"
 
         //ravi -offline---------table-----fields
 
@@ -728,6 +732,20 @@ class AppConstant {
         val COL_eventStatus_PRIMARYID="eventStatus_primary"
         val COL_eventStatus_SERVERID="eventStatus_serverid"
         val COL_eventStatus_NAME="eventStatus_name"
+
+        //ravi--offline--------table-task_objects
+
+        val TABLE_task_objects="task_objects"
+        val COL_task_objects_PRIMARYID="task_objects_primaryid"
+        val COL_task_objects_SERVERID="task_objects_serverid"
+        val COL_task_objects_TASKID="task_objects_taskId"
+        val COL_task_objects_FUNCTION="task_objects_function"
+        val COL_task_objects_CONTAINER="task_objects_container"
+        val COL_task_objects_STATUS="task_objects_status"
+        val COL_task_objects_LASTCHANGEDDATE="task_objects_lastchnagedDATE"
+
+
+
 
     }
 }

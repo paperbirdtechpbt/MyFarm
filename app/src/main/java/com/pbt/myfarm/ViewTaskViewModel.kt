@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.Service.ApiClient
@@ -48,14 +49,23 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
         else{
             val db=DbHelper(context,null)
             val list=  db.getAllTask()
+            AppUtils.logDebug(ViewTaskActivity.TAG,"mytasklist===>"+ list.toString())
+
             val upCommingTripList = ArrayList<Task>()
             if (list.isNotEmpty()){
                 progress?.visibility= View.GONE
 
             }
-            list.forEach { routes ->
 
-                routes.padzero= routes.name?.padStart(4, '0').toString()
+            list.forEach { routes ->
+                if (routes.taskConfigNamePrefix!=null){
+                    routes.padzero= routes.taskConfigNamePrefix+routes.name?.padStart(4, '0').toString()
+
+                }else{
+                    routes.padzero=  routes.name?.padStart(4, '0').toString()
+
+                }
+
                 routes.type= "Type: "
                 routes.labeldesciption= "Desciption: "
 
@@ -81,6 +91,7 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
 
              val   database = DbHelper(context!!, null)
                 val   taskconfigs= database.getTaskConfigList(userid)
+                AppUtils.logDebug(ViewTaskActivity.TAG,"mytasklist===>"+ taskconfigs.toString())
 
                 baseList.data.forEach { routes ->
                     for (i in 0 until  taskconfigs.size){
@@ -96,7 +107,7 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
                             }
 
 routes.taskConfigName=taskconfigs.get(i).name
-routes.taskConfigNamePrefix=""
+routes.taskConfigNamePrefix=configname
 
                         }
                     }

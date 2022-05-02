@@ -3,29 +3,20 @@ package com.pbt.myfarm.Fragement.PackCollect
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.pbt.myfarm.*
-import com.pbt.myfarm.Activity.Pack.PackActivity
-import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
-import com.pbt.myfarm.HttpResponse.PackConfigFieldList
-import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
@@ -33,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_collect_pack_fragement.*
 import retrofit2.Call
 import retrofit2.Response
 import java.util.ArrayList
-import javax.security.auth.callback.Callback
 
 
 private const val ARG_PARAM1 = "param1"
@@ -96,13 +86,13 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
 
                 recyclerview_collectdata?.layoutManager = LinearLayoutManager(requireContext())
 
-                adapter = CollectDataAdapter(mylist, requireContext()) { id, boolean, serverid ->
+                adapter = CollectDataAdapter(mylist, requireContext()) { id, boolean, serverid,position ->
                     AppUtils.logDebug(TAG, "SErverid===>" + collectDataServerId)
 
                     collectDataServerId = serverid
                     collectDataId = id
                     if (boolean) {
-                        showAlertDialog(id)
+                        showAlertDialog(id,position)
                     } else {
                         val intent = Intent(activity, UpdatePackActivity::class.java)
                         intent.putExtra("fragment", "2")
@@ -124,7 +114,7 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
             })
     }
 
-    private fun showAlertDialog(id: String) {
+    private fun showAlertDialog(id: String, position: Int) {
         AlertDialog.Builder(requireContext())
             .setTitle("Delete")
             .setMessage("Are you sure you want to Delete")
@@ -137,7 +127,13 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
 
                 } else {
                     val db = DbHelper(requireContext(), null)
-                    db.deleteCollectData(id)
+                 val isSucess=   db.deleteCollectData(id)
+//                    if (isSucess){
+
+                    adapter?.notifyItemRemoved(position)
+                    initViewModel()
+
+//                    }
                 }
 
             })

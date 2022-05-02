@@ -95,9 +95,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         }
         else{
-            AppUtils.logDebug(TAG,"false updateTaskList"+updateTaskList.toString())
 
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+            AppUtils.logDebug(TAG,"false updateTaskList"+configtype.toString())
 
         }
         if (updateTaskList==null){
@@ -159,7 +159,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
 
-
+if (!list.isNullOrEmpty()){
+    createtaskProgressbar.visibility=View.GONE
+}
                 val config =
                     Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
                 recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
@@ -179,20 +181,26 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                         jsonObject.put(ExpNameKey.get(i), name.get(i))
 
                         successObject.put(jsonObject)
+                        AppUtils.logDebug(TAG,successObject.toString())
 
-                        val db=DbHelper(this,null)
+                        if (!AppUtils().isInternet(this)){
+                            val db=DbHelper(this,null)
 
-                        val lastValueOfPacknew=db.getLastofTask()
-                        val idd= lastValueOfPacknew.toInt()+1
+                            val lastValueOfPacknew=db.getLastofTask()
+                            val idd= lastValueOfPacknew.toInt()+1
 
 //                    addPackValue(list.get(i),name.get(i),idd.toString())
-                        if (updateTaskBoolen){
-                            db.addTaskValues(name.get(i),list.get(i),updateTaskList?.id.toString(),true,field_desciption.text.toString())
-                        }
-                        else{
-                            db.addTaskValues(name.get(i),list.get(i),idd.toString(),false,"")
+                            if (updateTaskBoolen){
+                                db.addTaskValues(name.get(i),list.get(i),updateTaskList?.id.toString(),
+                                    true,field_desciption.text.toString())
+                            }
+                            else{
+                                db.addTaskValues(name.get(i),list.get(i),idd.toString(),false,field_desciption.text.toString())
 
+                            }
                         }
+
+
                         fieldModel.add(FieldModel(name.get(i), list.get(i)))
                     }
 
@@ -243,7 +251,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                         else{
                             //Store Task Offline In Database
                                 viewmodel?.desciption=field_desciption.text.toString()
-                         var success=   viewmodel?.createTaskOffline(this,configtype)
+                         var success=   viewmodel?.createTaskOffline(this,configtype,false,updateTaskList)
                             if (success == true){
                                 finish()
 
@@ -267,8 +275,15 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                                     successObject.toString(), updateTaskList?.taskConfigNamePrefix.toString()+updateTaskList?.padzero.toString(),
                                     updateTaskList?.id.toString() ).enqueue(this)
                         }
+                        else{
+                            viewmodel?.desciption=field_desciption.text.toString()
+                            var success=   viewmodel?.createTaskOffline(this,configtype,true,updateTaskList)
+                            if (success == true){
+                                finish()
 
+                            }
 
+                        }
 
                     }
 

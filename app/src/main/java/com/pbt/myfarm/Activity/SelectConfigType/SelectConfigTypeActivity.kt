@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.SelectConfigType
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
@@ -45,6 +46,9 @@ class SelectConfigTypeActivity : AppCompatActivity() {
 viewModell?.progressbar=configprogress
         viewModell?.onConfigTypeRequest(this)
         viewModell?.configlist?.observe(this, Observer { configtype ->
+            if(!configtype.isNullOrEmpty()){
+                configprogress.visibility=View.GONE
+            }
 
             recylcerview_selectConfigType?.layoutManager = LinearLayoutManager(this)
 

@@ -13,7 +13,9 @@ import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.HttpResponse.loginResult
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,17 +33,31 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
     var userLogin: MutableLiveData<HttpResponse>? = null
     lateinit var progressBar:ProgressBar
     lateinit var btnlogin:Button
+     var rolesIdString:String?=null
     init {
         email= ObservableField("")
         password= ObservableField("")
         userLogin = MutableLiveData<HttpResponse>()
     }
     fun login(view: View){
+
+AppUtils.logDebug(TAG,"RoleidString=="+rolesIdString.toString())
         progressBar.visibility=View.VISIBLE
         btnlogin.visibility=View.GONE
-        ApiClient.client.create(ApiInterFace::class.java).login(
-            email = email?.get()!!, password = password?.get()!!
-        ).enqueue(this)
+
+       if ( rolesIdString!="0"){
+           ApiClient.client.create(ApiInterFace::class.java).login(
+               email = email?.get()!!, password = password?.get()!!
+           ).enqueue(this)
+       }
+        else{
+            Toast.makeText(context,"Please Select Role ",Toast.LENGTH_SHORT).show()
+           btnlogin.visibility=View.VISIBLE
+           progressBar.visibility=View.GONE
+
+
+       }
+
 
     }
 
@@ -50,6 +66,8 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
             progressBar.visibility=View.GONE
             btnlogin.visibility=View.VISIBLE
             userLogin?.value = response.body()
+            MySharedPreference.setStringValue(context, CONST_PREF_ROLE_ID, rolesIdString)
+
         }
         else{
             progressBar.visibility=View.GONE

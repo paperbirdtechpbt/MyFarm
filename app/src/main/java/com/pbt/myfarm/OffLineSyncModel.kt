@@ -6,7 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 data class OffLineSyncModel(
     val Data: Data,
-    val error: Boolean
+    val error: Boolean,
+    val msg:String?=null
 )
 
 data class Data(
@@ -63,52 +64,52 @@ data class Data(
 )
 
 data class AlertRange(
-    val alert_id: Int,
-    val alert_type: String,
-    val collect_activity_id: Int,
-    val created_at: String,
-    val created_by: Int,
-    val deleted_at: Any,
-    val deleted_by: Any,
-    val duration_max_value: Any,
-    val duration_min_value: Any,
-    val id: Int,
-    val max_value: Int,
-    val min_value: Int,
-    val notif_level: String,
-    val notif_message: String,
-    val result_id: Any,
-    val updated_at: String,
-    val updated_by: Any
+    val alert_id: Int?=null,
+    val alert_type: String?=null,
+    val collect_activity_id: Int?=null,
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Any?=null,
+    val duration_max_value: Any?=null,
+    val duration_min_value: Any?=null,
+    val id: Int?=null,
+    val max_value: Int?=null,
+    val min_value: Int?=null,
+    val notif_level: String?=null,
+    val notif_message: String?=null,
+    val result_id: Any?=null,
+    val updated_at: String?=null,
+    val updated_by: Any?=null
 )
 
 data class Alert(
-    val communitygroup: String,
-    val created_at: String,
-    val created_by: Int,
-    val deleted_at: Any,
-    val deleted_by: Any,
-    val description: String,
-    val id: Int,
-    val name: String,
-    val updated_at: String,
-    val updated_by: Any
+    val communitygroup: String?=null,
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Any?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val name: String?=null,
+    val updated_at: String?=null,
+    val updated_by: Any?=null
 )
 
 data class ArchContainerObject(
-    val added_by: Int,
-    val added_date: String,
-    val added_utc: String,
-    val `class`: String,
-    val container_no: String,
-    val deleted_by: Any,
-    val deleted_date: Any,
-    val deleted_utc: Any,
-    val id: Int,
-    val object_name: String,
-    val object_no: String,
-    val session_id: String,
-    val type: String
+    val added_by: Int?=null,
+    val added_date: String?=null,
+    val added_utc: String?=null,
+    val `class`: String?=null,
+    val container_no: String?=null,
+    val deleted_by: Any?=null,
+    val deleted_date: Any?=null,
+    val deleted_utc: Any?=null,
+    val id: Int?=null,
+    val object_name: String?=null,
+    val object_no: String?=null,
+    val session_id: String?=null,
+    val type: String?=null
 )
 
 data class CollectActivity(
@@ -124,9 +125,9 @@ data class CollectActivity(
 )
 
 data class CollectActivityResultUnit(
-    val collect_activity_result_id: Int,
-    val id: Int,
-    val unit_id: Int
+    val collect_activity_result_id: Int?=null,
+    val id: Int?=null,
+    val unit_id: Int?=null
 )
 
 data class CollectActivityResult(
@@ -146,9 +147,9 @@ data class CollectActivityResult(
 )
 
 data class CollectActivityUser(
-    val collect_activity_id: Int,
-    val id: Int,
-    val user_id: Int
+    val collect_activity_id: Int?=null,
+    val id: Int?=null,
+    val user_id: Int?=null
 )
 
 data class CollectData(
@@ -184,16 +185,16 @@ data class CollectData(
 )
 
 data class CommunityGroupUser(
-    val community_group_id: Int,
-    val id: Int,
-    val user_id: Int
+    val community_group_id: Int?=null,
+    val id: Int?=null,
+    val user_id: Int?=null
 )
 
 data class CommunityGroupable(
-    val community_group_id: Int,
-    val community_groupable_id: Int,
-    val community_groupable_type: String,
-    val id: Int
+    val community_group_id: Int?=null,
+    val community_groupable_id: Int?=null,
+    val community_groupable_type: String?=null,
+    val id: Int?=null
 )
 
 data class CommunityGroup(
@@ -232,44 +233,44 @@ data class Container(
 )
 
 data class ContainerObject(
-    val added_by: Int,
-    val added_date: String,
-    val added_utc: String,
-    val `class`: String,
-    val container_no: String,
-    val deleted_at: String,
-    val id: Int,
-    val object_name: String,
-    val object_no: String,
-    val session_id: String,
-    val type: String
+    val added_by: Int?=null,
+    val added_date: String?=null,
+    val added_utc: String?=null,
+    val `class`: String?=null,
+    val container_no: String?=null,
+    val deleted_at: String?=null,
+    val id: Int?=null,
+    val object_name: String?=null,
+    val object_no: String?=null,
+    val session_id: String?=null,
+    val type: String?=null
 )
 
-data class DashboardSettingObject(
-    val created_by: Int,
-    val created_date: String,
-    val dashboard_setting_id: Int,
-    val deleted_at: Any,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val object_class: Int,
-    val object_key: Int
-)
+//data class DashboardSettingObject(
+//    val created_by: Int?=null,
+//    val created_date: String,
+//    val dashboard_setting_id: Int,
+//    val deleted_at: Any,
+//    val id: Int,
+//    val last_changed_by: Int,
+//    val last_changed_date: String,
+//    val object_class: Int,
+//    val object_key: Int
+//)
 
-data class DashboardSetting(
-    val com_group: Int,
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: Any,
-    val description: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val max_number: Int,
-    val name: String,
-    val title: String
-)
+//data class DashboardSetting(
+//    val com_group: Int,
+//    val created_by: Int,
+//    val created_date: String,
+//    val deleted_at: Any,
+//    val description: String,
+//    val id: Int,
+//    val last_changed_by: Int,
+//    val last_changed_date: String,
+//    val max_number: Int,
+//    val name: String,
+//    val title: String
+//)
 
 data class Event(
     val actual_duration: String?=null,
@@ -294,7 +295,8 @@ data class Event(
     val responsible: Int?=null,
     val status: Int?=null,
     val task_id: String?=null,
-    val type: Int?=null
+    val type: Int?=null,
+    val eventStatus:Int?=null
 )
 
 data class Field(
@@ -384,20 +386,20 @@ data class GraphChart(
 )
 
 data class Incident(
-    val closed_by: Any,
-    val closed_date: Any,
-    val com_group: Any,
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: Any,
-    val description: Any,
-    val id: Int,
-    val pack_reference: Any,
-    val pic_link: Any,
-    val resolution: Any,
-    val status: Any,
-    val title: Any,
-    val video_link: Any
+    val closed_by: Any?=null,
+    val closed_date: Any?=null,
+    val com_group: Any?=null,
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val deleted_at: Any?=null,
+    val description: Any?=null,
+    val id: Int?=null,
+    val pack_reference: Any?=null,
+    val pic_link: Any?=null,
+    val resolution: Any?=null,
+    val status: Any?=null,
+    val title: Any?=null,
+    val video_link: Any?=null
 )
 
 data class Choices(
@@ -413,44 +415,44 @@ data class Choices(
 )
 
 data class Lists(
-    val community_group_id: String,
-    val communitygroup: String,
-    val created_at: String,
-    val created_by: Int,
-    val deleted_at: String,
-    val deleted_by: String,
-    val description: String,
-    val id: Int,
-    val name: String,
-    val updated_at: String,
-    val updated_by: Int
+    val community_group_id: String?=null,
+    val communitygroup: String?=null,
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val deleted_at: String?=null,
+    val deleted_by: String?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val name: String?=null,
+    val updated_at: String?=null,
+    val updated_by: Int?=null
 )
 
 data class Notification(
-    val closed: String,
-    val closed_by: Int,
-    val closed_date: String,
-    val com_group: Any,
-    val created_by: Int,
-    val created_date: String,
-    val deleted_at: Any,
-    val id: Int,
-    val level: Int,
-    val message: String,
-    val ref_class: Any,
-    val ref_container: Any,
-    val ref_object_name: Any,
-    val ref_object_no: Any,
-    val ref_zone: Any,
-    val result_id: Int,
-    val status: String,
-    val type: Int
+    val closed: String?=null,
+    val closed_by: Int?=null,
+    val closed_date: String?=null,
+    val com_group: Any?=null,
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val deleted_at: Any?=null,
+    val id: Int?=null,
+    val level: Int?=null,
+    val message: String?=null,
+    val ref_class: Any?=null,
+    val ref_container: Any?=null,
+    val ref_object_name: Any?=null,
+    val ref_object_no: Any?=null,
+    val ref_zone: Any?=null,
+    val result_id: Int?=null,
+    val status: String?=null,
+    val type: Int?=null
 )
 
 data class PackCollectActivity(
-    val collect_activity_id: Int,
-    val id: Int,
-    val pack_id: Int
+    val collect_activity_id: Int?=null,
+    val id: Int?=null,
+    val pack_id: Int?=null
 )
 
 data class PackConfigField(
@@ -489,10 +491,10 @@ data class PackConfig(
 ):Parcelable
 
 data class PackField(
-    val field_id: String,
-    val id: Int,
-    val pack_id: Int,
-    val value: String
+    val field_id: String?=null,
+    val id: Int?=null,
+    val pack_id: Int?=null,
+    val value: String?=null
 )
 @Parcelize
 data class PacksNew(
@@ -547,69 +549,69 @@ data class People(
 )
 
 data class PersonTeam(
-    val id: Int,
-    val person_id: Int,
-    val team_id: Int
+    val id: Int?=null,
+    val person_id: Int?=null,
+    val team_id: Int?=null
 )
 
 data class Privilege(
-    val id: Int,
-    val name: String
+    val id: Int?=null,
+    val name: String?=null
 )
 
 data class Reminder(
-    val code: String,
-    val completed: Int,
-    val completed_at: String,
-    val created_at: String,
-    val id: Int,
-    val updated_at: String,
-    val user_id: Int
+    val code: String?=null,
+    val completed: Int?=null,
+    val completed_at: String?=null,
+    val created_at: String?=null,
+    val id: Int?=null,
+    val updated_at: String?=null,
+    val user_id: Int?=null
 )
 
 data class RolePrivilege(
-    val created_at: String,
-    val created_by: Int,
-    val deleted_at: Any,
-    val deleted_by: Any,
-    val id: Int,
-    val privilege: String,
-    val role_id: Int,
-    val updated_at: String,
-    val updated_by: Int
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Any?=null,
+    val id: Int?=null,
+    val privilege: String?=null,
+    val role_id: Int?=null,
+    val updated_at: String?=null,
+    val updated_by: Int?=null
 )
 
 data class RoleUser(
-    val id: Int,
-    val role_id: Int,
-    val user_id: Int
+    val id: Int?=null,
+    val role_id: Int?=null,
+    val user_id: Int?=null
 )
 
 data class Role(
-    val community_group: String,
-    val created_at: String,
-    val created_by: Int,
-    val dashboard_view: String,
-    val deleted_at: Any,
-    val deleted_by: Int,
-    val description: String,
-    val id: Int,
-    val name: String,
-    val updated_at: String,
-    val updated_by: Int
+    val community_group: String?=null,
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val dashboard_view: String?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Int?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val name: String?=null,
+    val updated_at: String?=null,
+    val updated_by: Int?=null
 )
 
 data class SensorType(
-    val communitygroup: Int,
-    val created_at: String,
-    val created_by: Int,
-    val deleted_at: Any,
-    val deleted_by: Any,
-    val description: String,
-    val id: Int,
-    val name: String,
-    val updated_at: String,
-    val updated_by: Int
+    val communitygroup: Int?=null,
+    val created_at: String?=null,
+    val created_by: Int?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Any?=null,
+    val description: String?=null,
+    val id: Int?=null,
+    val name: String?=null,
+    val updated_at: String?=null,
+    val updated_by: Int?=null
 )
 
 data class Sensor(
@@ -704,17 +706,19 @@ data class TaskMediaFile(
 )
 
 data class TaskObject(
-    val `class`: String,
-    val deleted_at: Any,
-    val function: String,
-    val id: Int,
-    val last_changed_by: Int,
-    val last_changed_date: String,
-    val name: String,
-    val no: String,
-    val origin: Any,
-    val task_id: Int,
-    val type: String
+    val `class`: String?=null,
+    val deleted_at: String?=null,
+    val function: String?=null,
+    val id: Int?=null,
+    val last_changed_by: Int?=null,
+    val last_changed_date: String?=null,
+    val name: String?=null,
+    val no: String?=null,
+    val origin: String?=null,
+    val task_id: Int?=null,
+    val type: String?=null,
+    val container: String?=null,
+    val status: String?=null,
 )
 @Parcelize
 data class Task(
@@ -775,46 +779,46 @@ data class Unit(
 )
 
 data class UserCollectActivity(
-    val collect_activity_id: Int,
-    val id: Int,
-    val user_id: Int
+    val collect_activity_id: Int?=null,
+    val id: Int?=null,
+    val user_id: Int?=null
 )
 
 data class User(
-    val collect_activity_id: String,
-    val community_group_id: String,
-    val communitygroup: Int,
-    val communitygroup_pass: Any,
-    val created_at: String,
-    val created_by: Any,
-    val deleted_at: Any,
-    val deleted_by: Any,
-    val email: String,
-    val external_id: String,
-    val family_name: String,
-    val id: Int,
-    val is_active: String,
-    val language: Int,
-    val name: String,
-    val timezone: Int,
-    val updated_at: String,
-    val updated_by: Any
+    val collect_activity_id: String?=null,
+    val community_group_id: String?=null,
+    val communitygroup: Int?=null,
+    val communitygroup_pass: Any?=null,
+    val created_at: String?=null,
+    val created_by: Any?=null,
+    val deleted_at: Any?=null,
+    val deleted_by: Any?=null,
+    val email: String?=null,
+    val external_id: String?=null,
+    val family_name: String?=null,
+    val id: Int?=null,
+    val is_active: String?=null,
+    val language: Int?=null,
+    val name: String?=null,
+    val timezone: Int?=null,
+    val updated_at: String?=null,
+    val updated_by: Any?=null
 )
 
 data class Zone(
-    val `class`: String,
-    val com_group: String,
-    val created_by: Int,
-    val created_date: String,
-    val created_date_utc: String,
-    val deleted_at: Any,
-    val description: String,
-    val last_changed_by: Any,
-    val last_changed_date: String,
-    val last_changed_utc: String,
-    val name: String,
-    val no: Int,
-    val parent_zone: String,
-    val plan: Any,
-    val type: String
+    val `class`: String?=null,
+    val com_group: String?=null,
+    val created_by: Int?=null,
+    val created_date: String?=null,
+    val created_date_utc: String?=null,
+    val deleted_at: Any?=null,
+    val description: String?=null,
+    val last_changed_by: Any?=null,
+    val last_changed_date: String?=null,
+    val last_changed_utc: String?=null,
+    val name: String?=null,
+    val no: Int?=null,
+    val parent_zone: String?=null,
+    val plan: Any?=null,
+    val type: String?=null
 )

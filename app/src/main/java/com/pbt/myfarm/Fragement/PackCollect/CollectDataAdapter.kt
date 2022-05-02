@@ -12,9 +12,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.annotations.SerializedName
 import com.google.gson.internal.LinkedTreeMap
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
 import com.pbt.myfarm.CollectData
 import com.pbt.myfarm.CollectDataFieldListItem
+import com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.databinding.ItemlistCollectdataBinding
@@ -23,7 +25,7 @@ import java.text.SimpleDateFormat
 
 
 class CollectDataAdapter(private val list: List<CollectData>, var context: Context,
-                         var callbacks: (String,Boolean,String) -> Unit) :
+                         var callbacks: (String,Boolean,String,Int) -> Unit) :
     RecyclerView.Adapter<CollectDataAdapter.ViewHolder>() {
     val TAG="CollectDataAdapter"
 
@@ -53,6 +55,16 @@ class CollectDataAdapter(private val list: List<CollectData>, var context: Conte
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 //           holder.binding.collectdata = list[position]
+
+
+        if (MainActivity.privilegeListName.contains("DeleteCollectData")){
+            holder.itemView.icon_deletetest.visibility=View.VISIBLE
+        }
+
+        if (MainActivity.privilegeListName.contains("EditCollectData")){
+            holder.itemView.icon_edittest.visibility=View.VISIBLE
+
+        }
         if (AppUtils().isInternet(context)){
             //
             val getrow: Any = this.list.get(position)
@@ -81,11 +93,11 @@ class CollectDataAdapter(private val list: List<CollectData>, var context: Conte
             holder.itemView.txt_valueunitstest.setText("* Unit: "+unit_value)
 
             holder.itemView.icon_edittest.setOnClickListener{
-                callbacks.invoke(id,false,serverid)
+                callbacks.invoke(id,false,serverid,position)
                 Toast.makeText(context, "Editing $result_name", Toast.LENGTH_SHORT).show()
             }
             holder.itemView.icon_deletetest.setOnClickListener{
-                callbacks.invoke(id,true,serverid)
+                callbacks.invoke(id,true,serverid,position)
             }
 
         }
@@ -130,11 +142,11 @@ class CollectDataAdapter(private val list: List<CollectData>, var context: Conte
             holder.txt_collectactivitytest.setText(collectactivity_name)
 
             holder.itemView.icon_edittest.setOnClickListener{
-                callbacks.invoke(id,false,serverid)
+                callbacks.invoke(id,false,serverid,position)
                 Toast.makeText(context, "Editing $resultname", Toast.LENGTH_SHORT).show()
             }
             holder.itemView.icon_deletetest.setOnClickListener{
-                callbacks.invoke(id,true,serverid)
+                callbacks.invoke(id,true,serverid,position)
             }
         }
 

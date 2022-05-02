@@ -63,10 +63,10 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
             initViewModel(editEventID, isCreateEvent)
         }
         btn_submitevent.setOnClickListener {
-            if (ed_event_name.text.toString().isEmpty() &&
-                ed_event_expstartdt.text.toString().isEmpty()
+            if (ed_event_name.text.isEmpty() &&
+                ed_event_expstartdt.text.isEmpty()&& ed_event_startdt.text.isEmpty()
             ) {
-                Toast.makeText(this, "Please enter Name and Expected StartDate", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Please fill Name or Expected StartDate or Start Date", Toast.LENGTH_SHORT)
                     .show()
             } else {
                 if (AppUtils().isInternet(this)) {
@@ -115,6 +115,8 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
 
                     val db = DbHelper(this, null)
 
+                    val sdf = SimpleDateFormat("yyyy-M-dd hh:mm:ss")
+                    val currentDate = sdf.format(Date())
 
                     val lastid = db.getLastofEvent()
                     val idd = lastid.toInt() + 1
@@ -122,6 +124,7 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
 
                     if (isCreateEvent){
                         event = Event(
+
                             actual_duration = ed_event_Duration.text.toString(),
                             actual_end_date = ed_event_enddt.text.toString(),
                             actual_start_date = ed_event_startdt.text.toString(),
@@ -133,12 +136,23 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
                             exp_start_date = ed_event_expstartdt.text.toString(),
                             name = ed_event_name.text.toString(),
                             responsible = idresponsible.toInt(),
-                            id = idd
+                            id = idd,
+                            type = idtype.toInt(),
+                            closed = idclosed.toInt(),
+                            created_date = currentDate,last_changed_date = currentDate,
+                            closed_date = "",
+                            eventStatus=idstatus.toInt(),
+
+
                         )
-                        db.eventsCreateOffline(event, false)
+                     val issuccess=   db.eventsCreateOffline(event, false)
+                        if (issuccess){
+                            finish()
+                        }
 
                     }
                     else{
+
                         event = Event(
                             actual_duration = ed_event_Duration.text.toString(),
                             actual_end_date = ed_event_enddt.text.toString(),
@@ -151,12 +165,20 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
                             exp_start_date = ed_event_expstartdt.text.toString(),
                             name = ed_event_name.text.toString(),
                             responsible = idresponsible.toInt(),
-                            id = editEventID.toInt()
-                        )
-                        db.eventsCreateOffline(event, true)
+                            id = editEventID.toInt(),
+                            type = idtype.toInt(),
+                            closed = idclosed.toInt(),
+                            created_date = currentDate,
+                            last_changed_date = currentDate,
+                            closed_date = "",
+                            eventStatus=idstatus.toInt(),
 
+                            )
+                        val issuccess=  db.eventsCreateOffline(event, true)
+                        if (issuccess){
+                            finish()
+                        }
                     }
-
                 }
 
             }
