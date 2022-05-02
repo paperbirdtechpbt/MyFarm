@@ -5,7 +5,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -15,9 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
-import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
 import com.pbt.myfarm.DataBase.DbHelper
@@ -37,16 +34,13 @@ import com.pbt.myfarm.databinding.ActivityViewTaskBinding
 import kotlinx.android.synthetic.main.activity_pack.*
 import kotlinx.android.synthetic.main.activity_view_task.*
 import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
-
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
 import kotlinx.android.synthetic.main.itemlist_viewtask.view.*
 import retrofit2.Call
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
@@ -64,10 +58,10 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         var updateTaskBoolen = false
     }
 
-    override fun onResume() {
-        super.onResume()
-        initViewModel()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        initViewModel()
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,7 +100,14 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         viewModell?.onEventListRequest(this)
         viewModell?.eventlist?.observe(this, Observer { eventlistt ->
 
-            recyclerview_viewtask?.layoutManager = LinearLayoutManager(this)
+            val linearLayoutManager = LinearLayoutManager(this)
+            linearLayoutManager.reverseLayout = true
+            linearLayoutManager.stackFromEnd = true
+            recyclerview_viewtask.setLayoutManager(linearLayoutManager)
+
+//            recyclerview_viewtask?.layoutManager = LinearLayoutManager(this)
+
+
             val animator: ItemAnimator = recyclerview_viewtask.getItemAnimator()!!
             if (animator is SimpleItemAnimator) {
                 (animator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -187,9 +188,11 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         try {
             if (response.body()?.error == false) {
                 Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, ViewTaskActivity::class.java)
-                startActivity(intent)
-                finish()
+                initViewModel()
+
+//                val intent = Intent(this, ViewTaskActivity::class.java)
+//                startActivity(intent)
+//                finish()
             } else {
                 Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
             }

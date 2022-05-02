@@ -74,7 +74,8 @@
             android:name=".Activity.CreateTask.CreateTaskActivity"
             android:exported="true"
             android:label="Create Task"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.SelectConfigType.SelectConfigTypeActivity" />

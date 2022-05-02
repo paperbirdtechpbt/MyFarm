@@ -194,7 +194,13 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     startActivity(intent)
                 }
             }
-            recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
+            val linearLayoutManager = LinearLayoutManager(this)
+            linearLayoutManager.reverseLayout = true
+            linearLayoutManager.stackFromEnd = true
+            recyclerview_viewtask.setLayoutManager(linearLayoutManager)
+
+
+//            recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
             recyclerview_viewtask.adapter = adapter
         })
     }
@@ -213,8 +219,8 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                         val db=DbHelper(this,null)
                         db.deletePackNew(list.id.toString())
                     }
-
-                    setDatafromlocal()
+initViewModel()
+//                    setDatafromlocal()
 //                    adapter?.notifyItemRemoved(position)
 
                 })

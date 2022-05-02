@@ -318,7 +318,7 @@
                 android:id="@+id/label_prefix"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Name Prefix"
+                android:text="Name"
                 android:textSize="12sp"
                 android:textColor="#807D7D"
                 app:layout_constraintBottom_toTopOf="@id/field_prefix"
@@ -391,7 +391,6 @@
         android:layout_height="0dp"
         android:visibility="visible"
         tools:ignore="MissingConstraints"
-
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp"
         tools:listitem="@layout/itemcongiffeildlist" />

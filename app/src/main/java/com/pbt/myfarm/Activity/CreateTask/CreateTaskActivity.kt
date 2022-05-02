@@ -132,14 +132,14 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             if (configtype== null) {
 
-                field_prefix.setText(updateTaskList?.taskConfigNamePrefix)
+                field_prefix.setText(updateTaskList?.taskConfigName)
                 field_desciption.setText(updateTaskList?.description)
 //            btn_create_task.visibility=View.GONE
 //            btn_update_task.visibility=View.VISIBLE
             }
             else
             {
-                field_prefix.setText(configtype?.name_prefix)
+                field_prefix.setText(configtype?.name)
                 field_desciption.setText(configtype?.description)
             }
             binding?.viewModel = viewmodel
@@ -309,6 +309,8 @@ if (!list.isNullOrEmpty()){
         try {
             if (response.body()?.error==false){
                 Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                ViewTaskActivity().finish()
                 val intent = Intent(this, ViewTaskActivity::class.java)
                 startActivity(intent)
                 finish()

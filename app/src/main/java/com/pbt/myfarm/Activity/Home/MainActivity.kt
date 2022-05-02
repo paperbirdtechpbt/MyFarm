@@ -24,7 +24,9 @@ import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.MyFarmService
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,7 +39,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
     val data = ArrayList<EventList>()
     var viewModel: MainActivityViewModel? = null
-    var MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE: Int = 100
     val TAG = "MainActivity"
 
     companion object {
@@ -65,9 +66,10 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         } else {
             Toast.makeText(this, "Permission Mandatory", Toast.LENGTH_SHORT).show()
         }
+        val adminname=MySharedPreference.getStringValue(this,CONST_PREF_ROLE_NAME,"")
 
-
-
+        label_username_main.setText(MySharedPreference.getUser(this)?.name)
+        label_userrole_main.setText(adminname)
 
         if (AppUtils().isInternet(this)) {
             initViewModel()
@@ -88,7 +90,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             ApiClient.client.create(ApiInterFace::class.java)
                 .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
         }
-
     }
 
     private fun initViewModel() {
@@ -135,40 +136,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
             setadapter(data)
         }
-
-
-//        setWhatToShow(data)
-
-
     }
 
-    private fun setWhatToShow(dataaa: ArrayList<EventList>) {
-        try {
-            for (i in 0 until dataaa.size) {
-                val item = dataaa.get(i)
-                var isthere = false
-                for (z in 0 until privilegeList.size) {
-                    if (item.evenetName == privilegeList.get(z).privilege) {
-                        isthere = true
 
-                    }
-                }
-                if (isthere == false) {
-                    dataaa.removeAt(i)
-                }
-
-            }
-            AppUtils.logDebug("###TAG", "data size===" + this.data.size)
-
-
-        } catch (e: Exception) {
-            AppUtils.logError("###TAG", e.toString())
-
-        }
-
-
-//
-    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
@@ -249,18 +219,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-//        data.clear()
-//        val selectedroldid = MySharedPreference.getStringValue(
-//            this,
-//            CONST_PREF_ROLE_ID, "0"
-//        )
-//        AppUtils.logDebug(TAG, "Selected Role iD=>>" + selectedroldid)
-//        callPrivilegeAPI(selectedroldid)
-
-        AppUtils.logDebug(TAG,"ON resume Main Activity")
-    }
 
 
 }

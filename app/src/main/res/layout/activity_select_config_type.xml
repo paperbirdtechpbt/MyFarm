@@ -51,6 +51,7 @@
         android:layout_height="0px"
         android:layout_marginTop="25dp"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:listitem="@layout/item_config_type_list"
        />

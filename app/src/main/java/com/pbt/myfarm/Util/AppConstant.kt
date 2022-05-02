@@ -24,6 +24,7 @@ class AppConstant {
         val CONST_SHARED_PREF_USERNAME = "username"
         val CONST_PREF_IS_LOGIN = "isLogin"
         val CONST_PREF_ROLE_ID = "RoleId"
+        val CONST_PREF_ROLE_NAME = "RoleName"
 
         //TABLE NewTask
         val CONST_NEW_TASK = "newtask"

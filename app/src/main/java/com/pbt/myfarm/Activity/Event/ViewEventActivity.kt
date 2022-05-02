@@ -21,6 +21,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CREATEEVENT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EDITEVENT_ID
 import com.pbt.myfarm.Util.AppUtils
 import kotlinx.android.synthetic.main.activity_view_event.*
+import kotlinx.android.synthetic.main.activity_view_task.*
 import retrofit2.Call
 import retrofit2.Response
 
@@ -80,7 +81,13 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
 
 
             }
-            recyclerview_viewEvent.layoutManager = LinearLayoutManager(this)
+            val linearLayoutManager = LinearLayoutManager(this)
+            linearLayoutManager.reverseLayout = true
+            linearLayoutManager.stackFromEnd = true
+            recyclerview_viewEvent.setLayoutManager(linearLayoutManager)
+
+
+//            recyclerview_viewEvent.layoutManager = LinearLayoutManager(this)
             recyclerview_viewEvent.adapter = adapter
 
         })
@@ -100,9 +107,9 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
                     } else {
                         val db = DbHelper(this, null)
                         val success = db.deleteEvent(eventid)
-                        initViewModel()
 
                     }
+                    initViewModel()
 
 
                     Toast.makeText(this, "Deleted ", Toast.LENGTH_SHORT).show()

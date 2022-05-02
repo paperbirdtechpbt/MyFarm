@@ -13,26 +13,30 @@ import com.pbt.myfarm.TaskConfig
 import com.pbt.myfarm.databinding.ItemConfigTypeListBindingImpl
 import com.pbt.myfarm.databinding.ItemlistViewtaskBinding
 
-class AdapterSelectconfigType(var context: Context,
-                              var list: List<TaskConfig>,
-                              var callbacks: (Int, String, TaskConfig) -> Unit) :
+class AdapterSelectconfigType(
+    var context: Context,
+    var list: List<TaskConfig>,
+    var callbacks: (Int, String, TaskConfig) -> Unit
+) :
     RecyclerView.Adapter<AdapterSelectconfigType.ViewHolder>() {
-    inner class ViewHolder(val binding: ItemConfigTypeListBindingImpl): RecyclerView.ViewHolder(binding.root)
+    inner class ViewHolder(val binding: ItemConfigTypeListBindingImpl) :
+        RecyclerView.ViewHolder(binding.root)
 
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)=
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(
             DataBindingUtil.inflate(
-            LayoutInflater.from(parent.context), R.layout.item_config_type_list, parent, false))
+                LayoutInflater.from(parent.context), R.layout.item_config_type_list, parent, false
+            )
+        )
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.configtype = list[position]
         var item = list[position]
-holder.itemView.setOnClickListener{
-    callbacks.invoke(position, item.name!!,item)
-}
+        holder.itemView.setOnClickListener {
+            callbacks.invoke(position, item.name!!, item)
+        }
 
     }
 

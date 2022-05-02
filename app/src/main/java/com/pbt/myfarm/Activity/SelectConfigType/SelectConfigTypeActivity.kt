@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.Adapter.SelectConfigType.AdapterSelectconfigType
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant
@@ -53,6 +55,7 @@ viewModell?.progressbar=configprogress
             recylcerview_selectConfigType?.layoutManager = LinearLayoutManager(this)
 
             adapter = AdapterSelectconfigType(this, configtype!!) { position, taskname ,list->
+                updateTaskBoolen = false
 
                 val intent = Intent(this, CreateTaskActivity::class.java)
                     intent.putExtra(CONST_VIEWMODELCLASS_LIST,list)

@@ -61,12 +61,7 @@ class MainActivityViewModel(val activity: Application):AndroidViewModel(activity
 
     }
 
-//    private fun addPackToDatabase(packconfiglist: ArrayList<PackConfigList>) {
-//        for (i in 0 until packconfiglist.size){
-//            val db = DbHelper(activity, null)
-//            db.addPackConfigList(packconfiglist.get(i))
-//        }
-//    }
+
 
     override fun onFailure(call: Call<PackConfigResponse>, t: Throwable) {
         Toast.makeText(activity, "Configlist failure response", Toast.LENGTH_SHORT).show()

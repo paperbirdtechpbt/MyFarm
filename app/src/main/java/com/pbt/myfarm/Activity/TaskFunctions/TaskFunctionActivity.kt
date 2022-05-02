@@ -569,7 +569,7 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { it ->
                     val imageBitmap = it.extras!!.get("data") as Bitmap
-                    filePart = buildImageBodyPart("file", imageBitmap)
+                    filePart = buildImageBodyPart("image", imageBitmap)
                     val fileUri = getImageUri(getApplicationContext(), imageBitmap)
                     val file = File(fileUri?.path)
                     taskfunction_media.setText(file.name)
@@ -580,7 +580,11 @@ class TaskFunctionActivity : AppCompatActivity(), retrofit2.Callback<ResponseTas
     private fun buildImageBodyPart(fileName: String, bitmap: Bitmap): MultipartBody.Part {
         val leftImageFile = convertBitmapToFile(fileName, bitmap)
         val reqFile = leftImageFile.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+//        val reqFile = leftImageFile.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData(fileName, leftImageFile.extension, reqFile)
+        return MultipartBody.Part.createFormData("image", leftImageFile.name, reqFile)
+
+
     }
 
     private fun convertBitmapToFile(fileName: String, bitmap: Bitmap): File {

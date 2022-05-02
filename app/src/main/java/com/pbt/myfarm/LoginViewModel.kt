@@ -14,6 +14,7 @@ import com.pbt.myfarm.HttpResponse.loginResult
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
@@ -34,6 +35,7 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
     lateinit var progressBar:ProgressBar
     lateinit var btnlogin:Button
      var rolesIdString:String?=null
+     var rolesName:String?=null
     init {
         email= ObservableField("")
         password= ObservableField("")
@@ -67,9 +69,12 @@ AppUtils.logDebug(TAG,"RoleidString=="+rolesIdString.toString())
             btnlogin.visibility=View.VISIBLE
             userLogin?.value = response.body()
             MySharedPreference.setStringValue(context, CONST_PREF_ROLE_ID, rolesIdString)
+            MySharedPreference.setStringValue(context, CONST_PREF_ROLE_NAME, rolesName)
 
         }
         else{
+            Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
+
             progressBar.visibility=View.GONE
             btnlogin.visibility=View.VISIBLE
         }

@@ -98,6 +98,7 @@ class LoginActivity : AppCompatActivity(), retrofit2.Callback<CollectdataRespose
 //                    if (position.toString()==roleListId.get(i)){
 //                        selectedroleId=roleListId.get(i)
                 viewModel?.rolesIdString = roleListId.get(position)
+                viewModel?.rolesName = roleList.get(position)
                 AppUtils.logDebug("####LoginActivity", roleListId.get(position))
 
 //                    }
