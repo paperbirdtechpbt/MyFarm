@@ -38,7 +38,6 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
             sendDataMastersApi(userID!!)
             syncOfflineData(userID!!)
             getEventTypeListAndOtherList(userID!!)
-
         }
         return START_STICKY
     }
