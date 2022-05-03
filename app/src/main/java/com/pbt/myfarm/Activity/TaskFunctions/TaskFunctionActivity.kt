@@ -149,13 +149,13 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             if (AppUtils().isInternet(this)) {
 
                 val service = ApiClient.client.create(ApiInterFace::class.java)
+
                 val body = if(fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
                     fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
                 else
                     fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
 
-                val dataVideo: MultipartBody.Part = MultipartBody.Part.createFormData("file", fileVideo!!.name, body!!)
-
+                val dataVideo: MultipartBody.Part? = body?.let { MultipartBody.Part.createFormData("file", fileVideo!!.name, it) }
                 val taskID = paramRequestTextBody(updateTaskID?.id.toString())
                 val functionID = paramRequestTextBody(selectedFunctionId.toString())
                 val userID = paramRequestTextBody(MySharedPreference.getUser(this)?.id.toString())
