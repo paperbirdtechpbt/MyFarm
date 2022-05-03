@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
 
-                android:text="@{viewtask.type+viewtask.taskConfigName}"
+                android:text="@{viewtask.type+viewtask.task_config_name}"
                 android:textSize="12sp"
                 android:textStyle="bold"
 

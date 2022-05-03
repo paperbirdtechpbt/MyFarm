@@ -17,7 +17,7 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.TaskConfig
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
-import com.pbt.myfarm.ViewTaskViewModel
+
 import retrofit2.Call
 import retrofit2.Response
 
@@ -51,11 +51,6 @@ class SelectConfigViewModel(var activity: Application):AndroidViewModel(activity
             val list=db.getTaskConfigList(MySharedPreference.getUser(context)?.id.toString())
             configlist.value = list
         }
-
-
-
-
-
     }
 
     override fun onResponse(call: Call<ConfigResponse>, response: Response<ConfigResponse>) {

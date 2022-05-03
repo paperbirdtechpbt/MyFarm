@@ -49,7 +49,7 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
         else{
             val db=DbHelper(context,null)
             val list=  db.getAllTask()
-            AppUtils.logDebug(ViewTaskActivity.TAG,"mytasklist===>"+ list.toString())
+//            AppUtils.logDebug(ViewTaskActivity.TAG,"mytasklist===>"+ list.get(1).toString())
 
             val upCommingTripList = ArrayList<Task>()
             if (list.isNotEmpty()){
@@ -58,8 +58,10 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
             }
 
             list.forEach { routes ->
-                if (routes.taskConfigNamePrefix!=null){
-                    routes.padzero= routes.taskConfigNamePrefix+routes.name?.padStart(4, '0').toString()
+
+
+                if (routes.taskConfigName!=null){
+                    routes.padzero= routes.taskConfigName+routes.name?.padStart(4, '0').toString()
 
                 }else{
                     routes.padzero=  routes.name?.padStart(4, '0').toString()
@@ -94,23 +96,40 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
                 AppUtils.logDebug(ViewTaskActivity.TAG,"mytasklist===>"+ taskconfigs.toString())
 
                 baseList.data.forEach { routes ->
-                    for (i in 0 until  taskconfigs.size){
-                        if (routes.task_config_id==taskconfigs.get(i).id){
-                            val configname=taskconfigs.get(i).name_prefix
-                            if (configname!=null){
-                                routes.padzero= configname+ routes.name!!.padStart(4, '0')
 
-                            }
-                            else{
-                                routes.padzero= routes.name!!.padStart(4, '0')
-
-                            }
-
-routes.taskConfigName=taskconfigs.get(i).name
-routes.taskConfigNamePrefix=configname
+                    if (taskconfigs.isNullOrEmpty()){
+                        if (routes.task_config_name!=null){
+                            routes.padzero= routes.name_prefix+ routes.name!!.padStart(4, '0')
 
                         }
+                        else{
+                            routes.padzero= routes.name!!.padStart(4, '0')
+
+                        }
+
+                        routes.taskConfigName=routes.task_config_name
+                        routes.taskConfigNamePrefix=routes.name_prefix
                     }
+                    else{
+                        for (i in 0 until  taskconfigs.size){
+                            if (routes.task_config_id==taskconfigs.get(i).id){
+                                val configname=taskconfigs.get(i).name_prefix
+                                if (configname!=null){
+                                    routes.padzero= configname+ routes.name!!.padStart(4, '0')
+
+                                }
+                                else{
+                                    routes.padzero= routes.name!!.padStart(4, '0')
+
+                                }
+
+                                routes.taskConfigName=taskconfigs.get(i).name
+                                routes.taskConfigNamePrefix=configname
+
+                            }
+                        }
+                    }
+
 
 //                    routes.padzero= routes.name!!.padStart(4, '0')
                     routes.type= "Type: "

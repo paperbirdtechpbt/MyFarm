@@ -90,6 +90,19 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                     }
                 }
             }
+            else{
+                val configname=routes.name_prefix
+                if (configname!=null){
+                    routes.padzero= configname+ routes.name!!.padStart(4, '0')
+                }
+                else{
+                    routes.padzero= routes.name!!.padStart(4, '0')
+                }
+                routes.type=" Type: "
+                routes.labeldesciption=" Desciption: "
+                routes.pack_config_name= routes.pack_config_name.toString()
+
+            }
             packsnew.add(routes)
         }
         if (packsnew.size>=1){

@@ -5885,31 +5885,46 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         cursor.close()
         return count
     }
+fun truncateAllTables(){
+    val db = this.getWritableDatabase()
+    db.execSQL("delete from "+ TABLE_CREAT_PACK)
+            db.execSQL("delete from "+    TABLE_PACKCONFIG)
+            db.execSQL("delete from "+    TABLE_collect_activities)
+            db.execSQL("delete from "+   TABLE_collect_activity_results)
+            db.execSQL("delete from "+   TABLE_collect_activity_results_unit)
+            db.execSQL("delete from "+  TABLE_collect_data)
+            db.execSQL("delete from "+  TABLE_community_groups)
+            db.execSQL("delete from "+  TABLE_container)
+            db.execSQL("delete from "+    TABLE_container_object)
+            db.execSQL("delete from "+   TABLE_eventStatus)
+            db.execSQL("delete from "+    TABLE_eventType)
+            db.execSQL("delete from "+    TABLE_events)
+            db.execSQL("delete from "+   TABLE_fields)
+            db.execSQL("delete from "+   TABLE_graph_chart_objects)
+            db.execSQL("delete from "+  TABLE_graph_chart_points)
+            db.execSQL("delete from "+    TABLE_graph_charts)
+            db.execSQL("delete from "+   TABLE_list_choices)
+            db.execSQL("delete from "+  TABLE_lists)
+            db.execSQL("delete from "+  TABLE_pack_collect_activity)
+            db.execSQL("delete from "+  TABLE_pack_config_fields)
+            db.execSQL("delete from "+    TABLE_pack_fields)
+            db.execSQL("delete from "+     TABLE_people)
+            db.execSQL("delete from "+  TABLE_sensors)
+            db.execSQL("delete from "+   TABLE_task_config_fields)
+            db.execSQL("delete from "+  TABLE_task_config_functions)
+            db.execSQL("delete from "+   TABLE_task_configs)
+            db.execSQL("delete from "+  TABLE_task_fields)
+            db.execSQL("delete from "+   TABLE_task_media_files)
+            db.execSQL("delete from "+    TABLE_task_objects)
+            db.execSQL("delete from "+     TABLE_tasks)
+            db.execSQL("delete from "+    TABLE_team)
+            db.execSQL("delete from "+    TABLE_units)
+
+//    db.execSQL("delete from "+ TABLE_NAME)
+
+}
 
 
-//    fun deleteTask(taskname: String) {
-//        val db = this.writableDatabase
-//        val contentValues = ContentValues()
-//        contentValues.put(CONST_TASK_NAME, taskname)
-//        db.delete(CONST_NEW_TASK, "taskname=?", arrayOf(taskname))
-//        db.close()
-//
-//    }
-
-//    fun deletenewPack(packid: String, configid: String) {
-//
-//        val db = this.writableDatabase
-//        val success = db.delete(
-//            TABLE_CREAT_PACK,
-//            PACKNEW_CONFIGID + "=" + configid + " and " + PACKNEW_NAME + "=" + packid,
-//            null
-//        )
-//        if (success > 0) {
-//            Toast.makeText(context, "DeleteSuccessFull", Toast.LENGTH_SHORT).show()
-//        }
-//        db.close()
-//
-//    }
 
 
     class DownloadFileFromURL(var filename: String?) :

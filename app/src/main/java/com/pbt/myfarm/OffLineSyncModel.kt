@@ -512,11 +512,13 @@ data class PacksNew(
     var name: String?=null,
     var pack_config_id: String?=null,
     var pack_config_name: String?=null,
-    var type:String?=null,
+
+var type:String?=null,
     var labeldesciption:String?=null,
     var padzero:String?=null,
     var status:String?=null,
-var primaryid:Int?=null
+var primaryid:Int?=null,
+    var name_prefix:String?=null,
 ):Parcelable
 
 data class People(
@@ -736,6 +738,8 @@ data class Task(
     val status: String?=null,
     val task_config_id: Int?=null,
     val task_func: String?=null,
+    val task_config_name: String?=null,
+val name_prefix: String?=null,
     var taskConfigName: String?=null,
     val taskConfigDesc: String?=null,
     var taskConfigNamePrefix: String?=null,

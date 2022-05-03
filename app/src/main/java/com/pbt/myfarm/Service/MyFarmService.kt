@@ -4,11 +4,16 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigViewModel
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.ConfigResponse
 import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.ModelClass.*
 import com.pbt.myfarm.OffLineSyncModel
+import com.pbt.myfarm.TaskConfig
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +47,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         return START_STICKY
     }
 
-    private fun sendDataMastersApi(userID: String) {
+     fun sendDataMastersApi(userID: String) {
         var senddata: SendDataMasterList? = null
 
         val collectData = db.getCollectDataToBeSend(userID)
@@ -149,6 +154,9 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                             for (pack in it.Data.task_configs) {
                                 db.task_configs_create(pack)
                             }
+                        }
+                        else{
+                            calltaskConfigApi()
                         }
                         if (it.Data.task_config_fields.isNotEmpty()) {
                             for (pack in it.Data.task_config_fields) {
@@ -259,6 +267,46 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         })
     }
 
+    private fun calltaskConfigApi() {
+        val service=ApiClient.getClient()?.create(ApiInterFace::class.java)
+        val apiInterFace=service?.taskConfigList(MySharedPreference.getUser(this)?.id.toString())
+        apiInterFace?.enqueue(object :Callback<ConfigResponse>{
+            override fun onResponse(
+                call: Call<ConfigResponse>,
+                response: Response<ConfigResponse>
+            ) {
+                try{
+                    if (response.body()?.error == false) {
+
+
+                        val baseList : ConfigResponse =  Gson().fromJson(
+                            Gson().toJson(response.body()),
+                            ConfigResponse::class.java)
+                        val upCommingTripList = ArrayList<TaskConfig>()
+//                val upCommingTripList = ArrayList<ConfigTaskList>()
+                        baseList.data.forEach { routes ->
+                            db.task_configs_create(routes)
+
+                            upCommingTripList.add(routes)
+
+                        }
+
+                    }
+                }
+                catch (e:Exception){
+                    AppUtils.logError(SelectConfigViewModel.TAG,e.message.toString())
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ConfigResponse>, t: Throwable) {
+            }
+
+        })
+
+    }
+
     private fun getEventTypeListAndOtherList(userID: String) {
         val service = ApiClient.client.create(ApiInterFace::class.java)
         val apiInterFace = service.eventTeamList(userID)
@@ -351,6 +399,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                             }
                         }
                     }
+
 
                     AppUtils.logDebug(
                         TAG,

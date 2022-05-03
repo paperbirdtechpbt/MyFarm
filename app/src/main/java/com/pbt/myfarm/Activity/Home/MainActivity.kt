@@ -1,7 +1,9 @@
 package com.pbt.myfarm.Activity.Home
 
 
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,13 +20,13 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
 import com.pbt.myfarm.AllPriviledgeListResponse
+import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.MyFarmService
-import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
@@ -32,7 +34,6 @@ import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Response
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListResponse> {
@@ -59,14 +60,14 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 //        val selectedroldid = intent.extras?.get(CONST_ROLEID).toString()
-        AppUtils.logDebug(TAG,"ON create Main Activity")
+        AppUtils.logDebug(TAG, "ON create Main Activity")
 
         if (chechpermission()) {
             startService(Intent(this, MyFarmService::class.java))
         } else {
             Toast.makeText(this, "Permission Mandatory", Toast.LENGTH_SHORT).show()
         }
-        val adminname=MySharedPreference.getStringValue(this,CONST_PREF_ROLE_NAME,"")
+        val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
         label_username_main.setText(MySharedPreference.getUser(this)?.name)
         label_userrole_main.setText(adminname)
@@ -139,7 +140,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         menuInflater.inflate(R.menu.main, menu)
@@ -149,22 +149,57 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         if (id == R.id.action_logout) {
-            showAlertDialog()
+            checkOfflineDataToSync()
+//            showAlertDialog()
 
             return true
         }
         return true
     }
 
-    private fun showAlertDialog() {
-        AlertDialog.Builder(this)
+    private fun checkOfflineDataToSync() {
+        var userID = MySharedPreference.getUser(this)?.id.toString()
+        val db = DbHelper(this, null)
+
+        val collectData = db.getCollectDataToBeSend(userID)
+        val events = db.getEventsTobeSend(userID)
+        var packnew = db.getPacksToBeSend(userID)
+        val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
+        val taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
+        val task = db.getTasksToBeSend(userID)
+
+        if (collectData.isNullOrEmpty() && events.isNullOrEmpty() && packnew.isNullOrEmpty() &&
+            taskField.isNullOrEmpty() && taskobject.isNullOrEmpty() && task.isNullOrEmpty()
+        ) {
+            showAlertDialog(this)
+        } else {
+            if (AppUtils().isInternet(this)) {
+                Toast.makeText(this, "Uploading Offline Data", Toast.LENGTH_SHORT).show()
+
+                viewModel?.sendDataMastersApi(userID, this)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Please Connect to Internet \n Pending offline Data to Send     ",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    }
+
+    fun showAlertDialog(context: Context) {
+        AlertDialog.Builder(context)
             .setTitle("LogOut")
             .setMessage("Are you sure you want to Logout")
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    MySharedPreference.clearPref(this)
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
+                    viewModel?.truncateAllTables(this)
+
+                    MySharedPreference.clearPref(context)
+                    startActivity(Intent(context, LoginActivity::class.java))
+//                   finish()
+                    (context as Activity).finish()
                 })
             .setNegativeButton(android.R.string.no, null)
             .setIcon(android.R.drawable.ic_dialog_alert)
@@ -218,7 +253,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             println(e.message.toString())
         }
     }
-
 
 
 }
