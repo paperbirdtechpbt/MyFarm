@@ -4,23 +4,17 @@ import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.loader.content.CursorLoader
 import com.pbt.myfarm.BuildConfig
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
@@ -28,8 +22,14 @@ class AppUtils {
     companion object {
 
 
-
         val DEBUG: Boolean = BuildConfig.DEBUG
+
+        private val fileImages = arrayOf(
+            "jpg",
+            "png",
+            "gif",
+            "jpeg"
+        )
 
         fun isEmailValid(email: String): Boolean {
             val expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$"
@@ -52,12 +52,18 @@ class AppUtils {
             if (DEBUG == true)
                 Log.w("##" + tag, message)
         }
+
         fun paramRequestBody(param: String): RequestBody {
             val parameter: RequestBody =
                 param.toRequestBody("multipart/form-data".toMediaTypeOrNull());
             return parameter
         }
-        fun isFileAccessPermissionGranted(context:Context) :Boolean {
+
+        fun paramRequestTextBody(param: String): RequestBody {
+            return param.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        }
+
+        fun isFileAccessPermissionGranted(context: Context): Boolean {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 return Environment.isExternalStorageManager()
             } else {
@@ -68,7 +74,8 @@ class AppUtils {
                 return readExtStorage == PackageManager.PERMISSION_GRANTED
             }
         }
-        fun isFileWriteAccessPermissionGranted(context:Context) :Boolean {
+
+        fun isFileWriteAccessPermissionGranted(context: Context): Boolean {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 return Environment.isExternalStorageManager()
             } else {
@@ -83,13 +90,14 @@ class AppUtils {
     }
 
 
-
     fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val services: List<ActivityManager.RunningServiceInfo> = activityManager.getRunningServices(Int.MAX_VALUE)
+        val services: List<ActivityManager.RunningServiceInfo> =
+            activityManager.getRunningServices(Int.MAX_VALUE)
         for (runningServiceInfo in services) {
             Log.d(
-            "Service:%s", runningServiceInfo.service.getClassName())
+                "Service:%s", runningServiceInfo.service.getClassName()
+            )
             if (runningServiceInfo.service.getClassName().equals(serviceClass.name)) {
                 return true
             }
@@ -97,15 +105,21 @@ class AppUtils {
         return false
     }
 
-     fun isInternet(context: Context):Boolean {
-        val ConnectionManager = context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+    fun isInternet(context: Context): Boolean {
+        val ConnectionManager =
+            context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-//        return false
+        return networkInfo != null && networkInfo.isConnected
     }
 
+    fun checkImageFile(file: File): Boolean {
+        for (extension in fileImages) {
+            if (file.getName().lowercase(Locale.getDefault()).endsWith(extension)) {
+                return true
+            }
+        }
+        return false
     }
+
+
+}
