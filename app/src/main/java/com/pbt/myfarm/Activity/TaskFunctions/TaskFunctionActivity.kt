@@ -476,11 +476,59 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 result.data?.let { it ->
                     val contentURI = result.data!!.data
                     recordedVideoPath = contentURI!!.path.toString()
-                    recordedVideoPath = getRealPathFromURI(contentURI)
+//                    recordedVideoPath = getRealPathFromURI(contentURI)
+                    recordedVideoPath = getRealPathFromURITestt(this,contentURI)!!
                     fileVideo = File(recordedVideoPath)
+                    taskfunction_media.setText(fileVideo!!.name)
+
+
                 }
             }
         }
+
+    fun getRealPathFromURITestt(context: Context?, contentUri: Uri?): String? {
+        val out: OutputStream
+        val file = File(getFilename(context))
+        try {
+            if (file.createNewFile()) {
+                val iStream = if (context != null) context.contentResolver.openInputStream(
+                    contentUri!!
+                )
+                else contentResolver.openInputStream(contentUri!!)
+
+                val inputData = getBytes(iStream)
+                out = FileOutputStream(file)
+                out.write(inputData)
+                out.close()
+                return file.absolutePath
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    @Throws(IOException::class)
+    private fun getBytes(inputStream: InputStream?): ByteArray {
+        val byteBuffer = ByteArrayOutputStream()
+        val bufferSize = 1024
+        val buffer = ByteArray(bufferSize)
+        var len = 0
+        while (inputStream!!.read(buffer).also { len = it } != -1) {
+            byteBuffer.write(buffer, 0, len)
+        }
+        return byteBuffer.toByteArray()
+    }
+
+    private fun getFilename(context: Context?): String? {
+        val mediaStorageDir = File(context!!.getExternalFilesDir(""), "patient_data")
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            mediaStorageDir.mkdirs()
+        }
+        val mImageName = "IMG_" + System.currentTimeMillis().toString() + ".png"
+        return mediaStorageDir.absolutePath.toString() + "/" + mImageName
+    }
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -504,6 +552,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 recordedVideoPath = contentURI!!.path.toString()
                 recordedVideoPath = getRealPathFromURI(contentURI)
                 fileVideo = File(recordedVideoPath)
+                taskfunction_media.setText(fileVideo!!.name)
+
             }
         }
 

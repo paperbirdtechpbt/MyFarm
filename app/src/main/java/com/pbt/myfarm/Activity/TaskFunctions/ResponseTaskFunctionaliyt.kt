@@ -12,10 +12,10 @@ data class ResponseTaskFunctionaliyt (
 
 
 data class ListTaskFunctions (
-    @SerializedName("id") var id:String?=null,
-    @SerializedName("name") var name:String?=null,
-var object_class:String?=null,
-var ordinateTitle:String?=null,
+    @SerializedName("id") var id:String?="",
+    @SerializedName("name") var name:String?="",
+var object_class:String?="",
+var ordinateTitle:String?="",
         )
 
 data class FieldListTaskFunctions (

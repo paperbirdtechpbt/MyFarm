@@ -9,7 +9,10 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.Service.ApiClient
+import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
 import java.util.*
@@ -31,23 +34,31 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
 
     fun onTaskFunctionList(context: Context, updateTaskId: String) {
-        val db=DbHelper(context,null)
-   val list=     db.getTaskFunctionList(updateTaskId)
-        AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
-        val listtask=ArrayList<ListTaskFunctions>()
-        listtask.add(ListTaskFunctions("0","Select"))
-
-        list.forEach{
-            listtask.add(ListTaskFunctions(it.id.toString(),it.name))
+        if (AppUtils().isInternet(context)){
+                    ApiClient.client.create(ApiInterFace::class.java)
+            .taskFunctionList(
+                MySharedPreference.getUser(context)?.id.toString(),
+                updateTaskId
+            ).enqueue(this)
         }
-        listTaskFuntions.value = listtask
+        else{
+            val db=DbHelper(context,null)
+            val list=     db.getTaskFunctionList(updateTaskId)
+            AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
+            val listtask=ArrayList<ListTaskFunctions>()
+            listtask.add(ListTaskFunctions("0","Select"))
+
+            list.forEach{
+                listtask.add(ListTaskFunctions(it.id.toString(),it.name))
+            }
+            listTaskFuntions.value = listtask
+        }
 
 
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .taskFunctionList(
-//                MySharedPreference.getUser(context)?.id.toString(),
-//                updateTaskId
-//            ).enqueue(this)
+
+
+
+
 
     }
 

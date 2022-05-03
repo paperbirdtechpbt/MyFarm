@@ -124,7 +124,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 } else {
                     updateTaskBoolen = true
                     val intent = Intent(this, CreateTaskActivity::class.java)
-
+AppUtils.logDebug(TAG, mytasklist.toString())
                     intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
