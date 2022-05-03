@@ -78,6 +78,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var recordedVideoName: String = ""
     var fileVideo: File? = null
     var progress_circular : CircularProgressIndicator ? = null
+    var progress_circularlabel : TextView ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +86,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         spinner = findViewById(R.id.taskfunction_field)
         progress_circular = findViewById(R.id.progress_circular)
+        progress_circularlabel = findViewById(R.id.progress_circular_label)
 
         edAttachMedia = findViewById(R.id.taskfunction_media)
 
@@ -98,15 +100,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
         recycler_viewMedia?.visibility = View.GONE
+        label_filename?.visibility = View.GONE
 
 
-//        val imgFile = File("/storage/emulated/0/MyFarm/1647246628_WWW.YIFY-TORRENTS.COM.jpg")
-//
-//        if (imgFile.exists()) {
-//            val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-//            val myImage = findViewById<View>(R.id.testImageView) as ImageView
-//            myImage.setImageBitmap(myBitmap)
-//        }
 
         btn_choosefile.setOnClickListener {
 
@@ -147,6 +143,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         btn_execute.setOnClickListener {
 
             progress_circular?.visibility = View.VISIBLE
+            progress_circularlabel?.visibility = View.VISIBLE
             btn_execute.visibility = View.GONE
 
             if (AppUtils().isInternet(this)) {
@@ -174,6 +171,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         AppUtils.logDebug(TAG, response.body().toString())
                         if (response.body()?.error == false) {
                             progress_circular?.visibility  = View.GONE
+                            progress_circularlabel?.visibility  = View.GONE
                             btn_execute.visibility = View.VISIBLE
                             Toast.makeText(
                                 this@TaskFunctionActivity,
@@ -183,6 +181,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             finish()
                         } else {
                             progress_circular?.visibility  = View.GONE
+                            progress_circularlabel?.visibility  = View.GONE
                             btn_execute.visibility = View.VISIBLE
                             Toast.makeText(
                                 this@TaskFunctionActivity,
@@ -197,10 +196,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
                         try {
                             progress_circular?.visibility  = View.GONE
+                            progress_circularlabel?.visibility  = View.GONE
                             btn_execute.visibility = View.VISIBLE
                             AppUtils.logError(TAG, t.message.toString())
                         } catch (e: Exception) {
                             progress_circular?.visibility  = View.GONE
+                            progress_circularlabel?.visibility  = View.GONE
                             btn_execute.visibility = View.VISIBLE
                             AppUtils.logError(TAG, t.message.toString())
 
@@ -285,6 +286,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     taskfunction_field.visibility = View.GONE
                     label_fieldname.visibility = View.GONE
                     recycler_viewMedia.visibility = View.GONE
+                    label_filename.visibility = View.GONE
                     taskfunction_media.visibility = View.GONE
                     btn_choosefile.visibility = View.GONE
                     label_attachmedia.visibility = View.GONE
@@ -297,6 +299,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_attachmedia.visibility = View.GONE
                         label_filename.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
+                        label_filename.visibility = View.GONE
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
 
@@ -318,6 +321,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         btn_choosefile.visibility = View.VISIBLE
                         label_attachmedia.visibility = View.VISIBLE
                         recycler_viewMedia.visibility = View.VISIBLE
+                        label_filename.visibility = View.VISIBLE
+
                         label_attachmedia.setText("Attach Media")
                         callApi("173")
 
@@ -329,6 +334,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
+                        label_filename.visibility = View.GONE
                     } else if (item == "174" || item == "175") {
                         val intent =
                             Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
@@ -338,6 +344,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
+                        label_filename.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
@@ -750,6 +757,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     private fun setAdapter(function: ArrayList<ListFunctionFieldlist>) {
         recycler_viewMedia.visibility = View.VISIBLE
+        label_filename.visibility = View.VISIBLE
         AppUtils.logDebug(TAG, "In Set Adapter")
         val adapter = AdapterTaskFunction(this, function) { name, link ->
             if (checkInternetConncetion()) {
@@ -838,7 +846,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     override fun onProgressUpdate(percentage: Int) {
-        Log.d("onResponse", "$percentage");
+        Log.d("onResponse", "$percentage")
         progress_circular?.setProgressCompat(percentage, true)
+        progress_circular_label.setText(percentage.toString()+"%")
     }
 }

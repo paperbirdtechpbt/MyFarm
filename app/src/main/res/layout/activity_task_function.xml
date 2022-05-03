@@ -109,6 +109,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="50dp"
             android:text="FileName"
+            android:visibility="gone"
             android:textColor="@color/black"
             android:textStyle="bold"
 
@@ -119,9 +120,10 @@
             android:id="@+id/recycler_viewMedia"
             android:layout_width="match_parent"
             android:visibility="gone"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="150dp"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/btn_execute"
             app:layout_constraintTop_toBottomOf="@id/taskfunction_field"
             tools:listitem="@layout/item_viewmedia"/>
         <ListView
@@ -159,6 +161,18 @@
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="gone"
             app:trackColor="@color/green" />
+        <TextView
+            android:id="@+id/progress_circular_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/progress_circular"
+            app:layout_constraintEnd_toEndOf="@id/progress_circular"
+            app:layout_constraintStart_toStartOf="@id/progress_circular"
+            app:layout_constraintTop_toTopOf="@id/progress_circular"
+            android:text="100%"
+            android:visibility="gone"
+            android:textColor="@color/black"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
