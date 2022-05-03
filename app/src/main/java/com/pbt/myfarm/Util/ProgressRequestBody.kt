@@ -1,4 +1,4 @@
-package com.pbt.myfarm.Activity.TaskFunctions
+package com.pbt.myfarm.Util
 
 import android.os.Handler
 import android.os.Looper
@@ -8,12 +8,12 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 
 
-class ProgressRequestBody(private val file: File,
-                          private val contentType: String,
-                          private val callback: UploadCallback
+class ProgressRequestBody(
+    private val file: File,
+    private val contentType: String,
+    private val callback: UploadCallback
 ) : RequestBody() {
 
     override fun contentType() = "$contentType/*".toMediaTypeOrNull()
