@@ -157,34 +157,45 @@ class LoginActivity : AppCompatActivity(), retrofit2.Callback<CollectdataRespose
         response: Response<CollectdataRespose>
     ) {
         AppUtils.logDebug("##LoginActivity", response.body().toString())
-        if (response.body()!!.error == false) {
-            val baseresponse: CollectdataRespose =
-                Gson().fromJson(Gson().toJson(response.body()), CollectdataRespose::class.java)
-            val list = baseresponse.roles
-            roleList.clear()
-            roleListId.clear()
+        try {
+            if (response.body()!!.error == false) {
+                val baseresponse: CollectdataRespose =
+                    Gson().fromJson(Gson().toJson(response.body()), CollectdataRespose::class.java)
+                val list = baseresponse.roles
+                roleList.clear()
+                roleListId.clear()
 
-            roleList.add("Select Role")
-            roleListId.add("0")
+                roleList.add("Select Role")
+                roleListId.add("0")
 
-            for (i in 0 until list.size) {
+                for (i in 0 until list.size) {
 
-                val item = baseresponse.roles.get(i).name
-                val id = baseresponse.roles.get(i).id
-                roleList.add(item)
-                roleListId.add(id)
+                    val item = baseresponse.roles.get(i).name
+                    val id = baseresponse.roles.get(i).id
+                    roleList.add(item)
+                    roleListId.add(id)
 
+                }
+
+                val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, roleList)
+                dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinner_role.setAdapter(dd)
             }
 
-            val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, roleList)
-            dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner_role.setAdapter(dd)
+        } catch (e: Exception) {
+            println(e.message.toString())
         }
 
     }
 
     override fun onFailure(call: Call<CollectdataRespose>, t: Throwable) {
+        try {
+            println(t.message.toString())
 
+        } catch (e: Exception) {
+            println(e.message.toString())
+
+        }
     }
 
 

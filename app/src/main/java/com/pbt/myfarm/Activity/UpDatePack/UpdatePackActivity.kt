@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment
 import com.pbt.myfarm.Fragement.CreatePack.UpdatePackFragement
 import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement
@@ -66,26 +67,50 @@ class UpdatePackActivity : AppCompatActivity() {
      if (positionnn==0){
 
          adapter.addFragment(UpdatePackFragement(), "UpdatePack")
-         if (privilegeListName.contains("CollectData")){
-             adapter.addFragment(CollectDataFragement(), "Collect Data")
-         }
+         if (AppUtils().isInternet(this)){
+             if (privilegeListName.contains("CollectData")){
+                 adapter.addFragment(CollectDataFragement(), "Collect Data")
+             }
 //         adapter.addFragment(CollectDataFragement(), "Collect Data")
-         if (privilegeListName.contains("InsertCollectData")){
-             adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+             if (privilegeListName.contains("InsertCollectData")){
+                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+             }
          }
+         else{
+             if (privilegeListNameOffline.contains("CollectData")){
+                 adapter.addFragment(CollectDataFragement(), "Collect Data")
+             }
+//         adapter.addFragment(CollectDataFragement(), "Collect Data")
+             if (privilegeListNameOffline.contains("InsertCollectData")){
+                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+             }
+         }
+
 
 //         adapter.addFragment(CreateNewCollectDataFragment(), "Collect New ")
      }
         else{
 
          adapter.addFragment(UpdatePackFragement(), "UpdatePack")
-         if (privilegeListName.contains("CollectData")){
-             adapter.addFragment(CollectDataFragement(), "Collect Data")
+         if (AppUtils().isInternet(this)){
+             if (privilegeListName.contains("CollectData")){
+                 adapter.addFragment(CollectDataFragement(), "Collect Data")
+             }
+
+             if (privilegeListName.contains("InsertCollectData")){
+                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+             }
+         }
+         else{
+             if (privilegeListNameOffline.contains("CollectData")){
+                 adapter.addFragment(CollectDataFragement(), "Collect Data")
+             }
+
+             if (privilegeListNameOffline.contains("InsertCollectData")){
+                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+             }
          }
 
-         if (privilegeListName.contains("InsertCollectData")){
-             adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
-         }
 
 
         }

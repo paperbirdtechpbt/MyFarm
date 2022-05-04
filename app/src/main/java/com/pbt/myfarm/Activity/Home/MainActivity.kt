@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         var selectedCommunityGroup = ""
         var privilegeList = ArrayList<ListPrivilege>()
         val privilegeListName = ArrayList<String>()
+        val privilegeListNameOffline = ArrayList<String>()
 
     }
 
@@ -87,10 +88,21 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
-        if (selectedroldid != "0") {
-            ApiClient.client.create(ApiInterFace::class.java)
-                .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+        if (AppUtils().isInternet(this)){
+            if (selectedroldid != "0") {
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+            }
         }
+        else{
+            val db=DbHelper(this,null)
+          val  list=  db.getAllPrivilege()
+            list.forEach{
+                privilegeListNameOffline.add(it.name.toString())
+            }
+        }
+
+
     }
 
     private fun initViewModel() {

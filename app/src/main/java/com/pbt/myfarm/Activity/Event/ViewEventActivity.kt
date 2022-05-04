@@ -38,9 +38,17 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_event)
-        if (MainActivity.privilegeListName.contains("InsertEvent")) {
-            btn_create_event.visibility = View.VISIBLE
+        if (AppUtils().isInternet(this)){
+            if (MainActivity.privilegeListName.contains("InsertEvent")) {
+                btn_create_event.visibility = View.VISIBLE
+            }
         }
+        else{
+            if (MainActivity.privilegeListNameOffline.contains("InsertEvent")) {
+                btn_create_event.visibility = View.VISIBLE
+            }
+        }
+
 
         initViewModel()
 

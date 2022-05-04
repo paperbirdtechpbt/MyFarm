@@ -18,6 +18,7 @@ import com.google.gson.JsonArray
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
 import com.pbt.myfarm.Activity.ViewPackViewModel
@@ -76,9 +77,18 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
         desciptioncompanian=" "
 
-        if (privilegeListName.contains("InsertPack")){
-            btn_create_task.visibility=View.VISIBLE
+        if (AppUtils().isInternet(this)){
+            if (privilegeListName.contains("InsertPack")){
+                btn_create_task.visibility=View.VISIBLE
+            }
         }
+        else{
+            if (privilegeListNameOffline.contains("InsertPack")){
+                btn_create_task.visibility=View.VISIBLE
+            }
+        }
+
+
 
             initViewModel()
 

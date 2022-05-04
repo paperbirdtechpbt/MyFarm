@@ -31,6 +31,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     var packlist = ArrayList<com.pbt.myfarm.ModelClass.PacksNew>()
     var eventlist = ArrayList<com.pbt.myfarm.ModelClass.Event>()
     var collecrDataList = ArrayList<com.pbt.myfarm.ModelClass.CollectData>()
+    var taskobjectt = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
 
     val db = DbHelper(this, null)
 
@@ -47,11 +48,11 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         return START_STICKY
     }
 
-     fun sendDataMastersApi(userID: String) {
+    fun sendDataMastersApi(userID: String) {
         var senddata: SendDataMasterList? = null
 
         val collectData = db.getCollectDataToBeSend(userID)
-        collecrDataList=collectData
+        collecrDataList = collectData
 
         AppUtils.logError(TAG, "collectdaa" + collectData.toString())
 
@@ -59,13 +60,15 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         eventlist = evnet
 
 
-        var packnew = db.getPacksToBeSend(userID)
+        val packnew = db.getPacksToBeSend(userID)
         packlist = packnew
 
 
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
 
-        val taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
+        var taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
+        val taskObject = db.getTaskObject()
+//        taskobjectt = taskObject
 
         val task = db.getTasksToBeSend(userID)
         tasklist = task
@@ -154,8 +157,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                             for (pack in it.Data.task_configs) {
                                 db.task_configs_create(pack)
                             }
-                        }
-                        else{
+                        } else {
                             calltaskConfigApi()
                         }
                         if (it.Data.task_config_fields.isNotEmpty()) {
@@ -259,6 +261,19 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
                             }
                         }
+                        if (it.Data.privileges.isNotEmpty()) {
+                            for (pack in it.Data.privileges) {
+                                db.addPrivilege(pack)
+
+                            }
+                        }
+                               if (it.Data.task_objects.isNotEmpty()) {
+                            for (pack in it.Data.task_objects) {
+                                db.addTaskObjectCreate(pack,"0")
+
+                            }
+                        }
+
 //                            deleteExtraData(it)
                     }
 
@@ -268,20 +283,21 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     }
 
     private fun calltaskConfigApi() {
-        val service=ApiClient.getClient()?.create(ApiInterFace::class.java)
-        val apiInterFace=service?.taskConfigList(MySharedPreference.getUser(this)?.id.toString())
-        apiInterFace?.enqueue(object :Callback<ConfigResponse>{
+        val service = ApiClient.getClient()?.create(ApiInterFace::class.java)
+        val apiInterFace = service?.taskConfigList(MySharedPreference.getUser(this)?.id.toString())
+        apiInterFace?.enqueue(object : Callback<ConfigResponse> {
             override fun onResponse(
                 call: Call<ConfigResponse>,
                 response: Response<ConfigResponse>
             ) {
-                try{
+                try {
                     if (response.body()?.error == false) {
 
 
-                        val baseList : ConfigResponse =  Gson().fromJson(
+                        val baseList: ConfigResponse = Gson().fromJson(
                             Gson().toJson(response.body()),
-                            ConfigResponse::class.java)
+                            ConfigResponse::class.java
+                        )
                         val upCommingTripList = ArrayList<TaskConfig>()
 //                val upCommingTripList = ArrayList<ConfigTaskList>()
                         baseList.data.forEach { routes ->
@@ -292,9 +308,8 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                         }
 
                     }
-                }
-                catch (e:Exception){
-                    AppUtils.logError(SelectConfigViewModel.TAG,e.message.toString())
+                } catch (e: Exception) {
+                    AppUtils.logError(SelectConfigViewModel.TAG, e.message.toString())
 
                 }
 
@@ -374,7 +389,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                 val db = DbHelper(this, null)
                                 db.changePackStatus(
                                     item.name.toString(),
-                                    item.pack_config_id.toString(),item
+                                    item.pack_config_id.toString(), item
                                 )
                             }
 
@@ -399,6 +414,15 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                             }
                         }
                     }
+//                    if (!taskobjectt.isNullOrEmpty()) {
+//                        for (i in 0 until taskobjectt.size) {
+//                            val item = taskobjectt.get(i)
+////                            if (item.status != 3) {
+//                                val db = DbHelper(this, null)
+//                                db.changeTaskObjectStatus()
+////                            }
+//                        }
+//                    }
 
 
                     AppUtils.logDebug(

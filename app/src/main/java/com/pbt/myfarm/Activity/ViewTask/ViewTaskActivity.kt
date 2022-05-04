@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
 import com.pbt.myfarm.DataBase.DbHelper
@@ -69,10 +70,19 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_task)
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
-        if (privilegeListName.contains("InsertTask")){
-            binding?.btnCreateTask?.visibility=View.VISIBLE
+        if (AppUtils().isInternet(this)){
+            if (privilegeListName.contains("InsertTask")){
+                binding?.btnCreateTask?.visibility=View.VISIBLE
 //            btn_create_task.visibility=View.VISIBLE
+            }
         }
+        else{
+            if (privilegeListNameOffline.contains("InsertTask")){
+                binding?.btnCreateTask?.visibility=View.VISIBLE
+//            btn_create_task.visibility=View.VISIBLE
+            }
+        }
+
 
         initViewModel()
 

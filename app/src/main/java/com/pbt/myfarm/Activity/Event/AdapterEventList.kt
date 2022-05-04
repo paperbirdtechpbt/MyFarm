@@ -40,11 +40,24 @@ class AdapterEventList(var context: Context, var list: List<Event>,
 
                 holder.binding.viewevent = list[position]
                 val item = list[position]
-                if (MainActivity.privilegeListName.contains("EditEvent")){
-holder.binding.iconEditEvent.visibility=View.VISIBLE
+
+                if (AppUtils().isInternet(context)){
+                    if (MainActivity.privilegeListName.contains("EditEvent")){
+                        holder.binding.iconEditEvent.visibility=View.VISIBLE
+                    }
+                    if (MainActivity.privilegeListName.contains("DeleteEvent")){
+                        holder.binding.iconDeleteEvent.visibility=View.VISIBLE
+                    }
+
                 }
-                if (MainActivity.privilegeListName.contains("DeleteEvent")){
-holder.binding.iconDeleteEvent.visibility=View.VISIBLE
+                else{
+                    if (MainActivity.privilegeListNameOffline.contains("EditEvent")){
+                        holder.binding.iconEditEvent.visibility=View.VISIBLE
+                    }
+                    if (MainActivity.privilegeListNameOffline.contains("DeleteEvent")){
+                        holder.binding.iconDeleteEvent.visibility=View.VISIBLE
+                    }
+
                 }
 
                 holder.itemView.icon_delete_event.setOnClickListener {
@@ -56,7 +69,10 @@ holder.binding.iconDeleteEvent.visibility=View.VISIBLE
                     callbacks.invoke(item.id!!.toString(),position,false)
 
 
-                }}
+                }
+
+
+            }
 
 
         }

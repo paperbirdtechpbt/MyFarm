@@ -746,6 +746,12 @@ class AppConstant {
         val COL_task_objects_LASTCHANGEDDATE="task_objects_lastchnagedDATE"
 
 
+        val TABLE_privileges="privileges"
+        val COL_privileges_SERVERID="privileges_serverid"
+        val COL_privileges_PRIMARYID="privileges_primary"
+        val COL_privileges_NAME="privileges_name"
+
+
 
 
     }

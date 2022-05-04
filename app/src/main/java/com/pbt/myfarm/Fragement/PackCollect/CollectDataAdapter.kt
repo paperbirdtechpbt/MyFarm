@@ -57,16 +57,15 @@ class CollectDataAdapter(private val list: List<CollectData>, var context: Conte
 //           holder.binding.collectdata = list[position]
 
 
-        if (MainActivity.privilegeListName.contains("DeleteCollectData")){
-            holder.itemView.icon_deletetest.visibility=View.VISIBLE
-        }
-
-        if (MainActivity.privilegeListName.contains("EditCollectData")){
-            holder.itemView.icon_edittest.visibility=View.VISIBLE
-
-        }
         if (AppUtils().isInternet(context)){
-            //
+            if (MainActivity.privilegeListName.contains("DeleteCollectData")){
+                holder.itemView.icon_deletetest.visibility=View.VISIBLE
+            }
+
+            if (MainActivity.privilegeListName.contains("EditCollectData")){
+                holder.itemView.icon_edittest.visibility=View.VISIBLE
+
+            }
             val getrow: Any = this.list.get(position)
             val t: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
 
@@ -102,6 +101,14 @@ class CollectDataAdapter(private val list: List<CollectData>, var context: Conte
 
         }
         else{
+            if (MainActivity.privilegeListNameOffline.contains("DeleteCollectData")){
+                holder.itemView.icon_deletetest.visibility=View.VISIBLE
+            }
+
+            if (MainActivity.privilegeListNameOffline.contains("EditCollectData")){
+                holder.itemView.icon_edittest.visibility=View.VISIBLE
+
+            }
 
             val getrow: Any = this.list.get(position)
             val t: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
