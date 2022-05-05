@@ -66,17 +66,17 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var selectedFunctionId = 0
     var selectedFunctionFieldId = 0
     var body: MultipartBody.Part? = null
-    var requestbody: RequestBody? = null
+//    var requestbody: RequestBody? = null
     var edAttachMedia: EditText? = null
     val TAG: String = "TaskFunctionActivity"
     private val CAMERA_REQUEST = 1888
     private val GELARY_REQUEST = 1088
     private val MY_CAMERA_PERMISSION_CODE = 1001
     var manager: DownloadManager? = null
-    var filePart: MultipartBody.Part? = null
+//    var filePart: MultipartBody.Part? = null
     private val VIDEO_CAPTURE = 101
     var recordedVideoPath: String = ""
-    var recordedVideoName: String = ""
+//    var recordedVideoName: String = ""
     var fileVideo: File? = null
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
@@ -289,15 +289,14 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         })
     }
 
-    private fun setSpinner(list: List<ListTaskFunctions>, taskfunction: Spinner) {
+    private fun setSpinner(list: List<ListOfTaskFunctions>, taskfunction: Spinner) {
         val listname = ArrayList<String>()
         val listid = ArrayList<String>()
 
 
         for (i in 0 until list.size) {
-            listname.add(list.get(i).name!!)
-            listid.add(list.get(i).id!!)
-
+            listname.add(list.get(i).name1.toString())
+            listid.add(list.get(i).id.toString())
         }
 
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listname)

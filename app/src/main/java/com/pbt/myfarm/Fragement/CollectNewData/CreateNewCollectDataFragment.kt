@@ -256,29 +256,37 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             } else {
                 getValueId = spinner_value.getSelectedItem().toString()
             }
-            if (getUnitId == null) {
+            if (getUnitId.isNullOrEmpty()) {
                 getUnitId = dataa?.unit_id.toString()
             }
-            if (getCollectId == null) {
+            if (getCollectId.isNullOrEmpty()) {
                 getCollectId == dataa?.collect_activity_id.toString()
             }
-            if (getSensorId == null) {
+            if (getSensorId.isNullOrEmpty()) {
                 getSensorId == dataa?.sensor_id.toString()
             }
-            if (getResultId == null) {
+            if (getResultId.isNullOrEmpty()) {
                 getResultId == dataa?.result_id.toString()
             }
 
             if (AppUtils().isInternet(requireContext())) {
 
                 val service = ApiClient.client.create(ApiInterFace::class.java)
+
+                AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
+                        "Resultid=="+getResultId.toString()+"Collectid-"+ collectDataId.toString()+" " +
+                        "edvalue="+getValueId+" spinnerunit"+ dataa?.sensor_id.toString().toString()+
+                        " sensorid="+sensorId.toString()+" duration"+duration+"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
+
                 val apiInterFace = service.updateCollectData(
                     MySharedPreference.getUser(requireContext())?.id.toString(),
                     packList?.id!!.toString(),
                     getResultId,
                     getValueId,
-                    dataa?.unit_id.toString(),
-                    dataa?.sensor_id.toString(),
+//                    dataa?.unit_id.toString(),
+                    getUnitId,
+//                    dataa?.sensor_id.toString(),
+                    getSensorId,
                     myduration!!.text.toString(),
                     collectDataId
                 )
@@ -421,6 +429,9 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                         spinnervalue = spinner_value.getSelectedItem().toString()
                     }
                     duration = myduration?.text.toString()
+
+
+
 
                     callStoreCollectDataAPi(
                         edValue,
@@ -674,10 +685,12 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
                 var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
                 val service = ApiClient.client.create(ApiInterFace::class.java)
-
+AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
+"Resultid=="+resultid.toString()+"Collectid-"+ collectId.toString()+" edvalue="+edValue+" spinnerunit"+getSensorId.toString()+
+" sensorid="+sensorId.toString()+" duration"+duration+"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
                 apiInterFace = service.storecollectdata(
                     packList?.id.toString(), resultid.toString(), collectId.toString(),
-                    edValue, edValue, spinnerUnitId.toString(), sensorId.toString(), duration,
+                    edValue, edValue, getSensorId.toString(), sensorId.toString(), duration,
                     MySharedPreference.getUser(requireContext())?.id.toString(),
                 )
 
@@ -1295,6 +1308,8 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 for (i in 0 until unitListname.size) {
                     if (i == position) {
                         spinnerUnitId = unitList.get(i).id!!.toInt()
+                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitId.toString()
+                        )
                         spinnerUnitNAme = unitList.get(i).name!!
 //                        callResultValueApi(resultid.toString())
                         getSensorId = spinnerUnitId.toString()

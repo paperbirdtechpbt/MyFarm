@@ -6,6 +6,8 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.TaskFunctions.GetResponseTaskFunctionList
+import com.pbt.myfarm.Activity.TaskFunctions.ListOfTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
 import com.pbt.myfarm.DataBase.DbHelper
@@ -20,16 +22,16 @@ import kotlin.collections.ArrayList
 
 
 class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
-    retrofit2.Callback<ResponseTaskFunctionaliyt> {
+    retrofit2.Callback<GetResponseTaskFunctionList> {
     private val CAMERA_REQUEST = 1888
     private val GELARY_REQUEST = 1088
     private val MY_CAMERA_PERMISSION_CODE = 1001
     val TAG = "ViewModelTaskFunctionality"
     var context: Context? = null
-    var listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
+    var listTaskFuntions = MutableLiveData<List<ListOfTaskFunctions>>()
 
     init {
-        listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
+        listTaskFuntions = MutableLiveData<List<ListOfTaskFunctions>>()
     }
 
 
@@ -45,53 +47,55 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             val db=DbHelper(context,null)
             val list=     db.getTaskFunctionList(updateTaskId)
             AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
-            val listtask=ArrayList<ListTaskFunctions>()
-            listtask.add(ListTaskFunctions("0","Select"))
+            val listtask=ArrayList<ListOfTaskFunctions>()
+            listtask.add(ListOfTaskFunctions("0",name = "Select"))
 
             list.forEach{
-                listtask.add(ListTaskFunctions(it.id.toString(),it.name))
+                listtask.add(ListOfTaskFunctions(id = it.id.toString(),name = it.name))
             }
             listTaskFuntions.value = listtask
         }
-
-
-
-
-
-
-
     }
-
-
-
 
     override fun onResponse(
-        call: Call<ResponseTaskFunctionaliyt>,
-        response: Response<ResponseTaskFunctionaliyt>
+        call: Call<GetResponseTaskFunctionList>,
+        response: Response<GetResponseTaskFunctionList>
     ) {
-        if (response.body()?.error == false) {
-            val baseresponse: ResponseTaskFunctionaliyt = Gson().fromJson(
-                Gson().toJson(response.body()),
-                ResponseTaskFunctionaliyt::class.java
-            )
-            val list = ArrayList<ListTaskFunctions>()
-            if (baseresponse != null) {
-                baseresponse.data.forEach { item ->
-                    list.add(item)
-                }
-                if (!list.isNullOrEmpty()) {
-                    listTaskFuntions.value = list
-                    AppUtils.logDebug(TAG, "resposenselist ==>" + Gson().toJson(list))
+        try {
+            if (response.body()?.error == false) {
+                val baseresponse: GetResponseTaskFunctionList = Gson().fromJson(
+                    Gson().toJson(response.body()),
+                    GetResponseTaskFunctionList::class.java
+                )
+                val list = ArrayList<ListOfTaskFunctions>()
+                if (baseresponse != null) {
+                    baseresponse.data.forEach { item ->
+                        list.add(item)
+                    }
+                    if (!list.isNullOrEmpty()) {
+                        listTaskFuntions.value = list
+                        AppUtils.logDebug(TAG, "resposenselist ==>" + Gson().toJson(list))
+
+                    }
 
                 }
-
             }
         }
-
+        catch (e:Exception){
+           AppUtils.logError(TAG,"$TAG "+e.message.toString())
+        }
 
     }
 
-    override fun onFailure(call: Call<ResponseTaskFunctionaliyt>, t: Throwable) {
+    override fun onFailure(call: Call<GetResponseTaskFunctionList>, t: Throwable) {
+        try {
+            AppUtils.logError(TAG,"$TAG "+t.message.toString())
+
+        }
+        catch (e:Exception){
+            AppUtils.logError(TAG,"$TAG "+e.message.toString())
+
+        }
     }
 
 }

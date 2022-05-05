@@ -6,6 +6,7 @@ import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
+import com.pbt.myfarm.Activity.TaskFunctions.GetResponseTaskFunctionList
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
 import com.pbt.myfarm.Fragement.CollectNewData.ResponseCollectAcitivityResultList
 import com.pbt.myfarm.Fragement.CollectNewData.ResponsecollectAcitivityResultValue
@@ -214,7 +215,7 @@ interface ApiInterFace {
         @Field("user_id") user_id: String,
         @Field("task_id") task_id: String,
 
-    ):Call<ResponseTaskFunctionaliyt>
+    ):Call<GetResponseTaskFunctionList>
     @FormUrlEncoded
     @POST("api/taskFunctionFieldList")
     fun taskFunctionFieldList(
