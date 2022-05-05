@@ -60,6 +60,13 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
+
+        val selectedroldid = MySharedPreference.getStringValue(
+            this,
+            CONST_PREF_ROLE_ID, "0"
+        )
+        AppUtils.logDebug(TAG, "Selected Role iD=>>" + selectedroldid)
+        callPrivilegeAPI(selectedroldid)
 //        val selectedroldid = intent.extras?.get(CONST_ROLEID).toString()
         AppUtils.logDebug(TAG, "ON create Main Activity")
 
@@ -77,12 +84,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             initViewModel()
         }
 
-        val selectedroldid = MySharedPreference.getStringValue(
-            this,
-            CONST_PREF_ROLE_ID, "0"
-        )
-        AppUtils.logDebug(TAG, "Selected Role iD=>>" + selectedroldid)
-        callPrivilegeAPI(selectedroldid)
+
 
 //        setadapter()
     }
@@ -94,12 +96,16 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                     .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
             }
         }
-        else{
+
+        if (!AppUtils().isInternet(this)){
             val db=DbHelper(this,null)
           val  list=  db.getAllPrivilege()
+            AppUtils.logDebug(TAG,"getAll Privilege"+list.toString())
             list.forEach{
                 privilegeListNameOffline.add(it.name.toString())
             }
+
+            setdata(privilegeListNameOffline)
         }
 
 
@@ -127,28 +133,55 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
     private fun setdata(privilegeList: ArrayList<String>) {
         data.clear()
-        data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
+        if (AppUtils().isInternet(this)){
+            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
 
-        if (privilegeList.contains("Pack")) {
-            data.add(EventList("Pack", R.drawable.ic_box))
+            if (privilegeList.contains("Pack")) {
+                data.add(EventList("Pack", R.drawable.ic_box))
 
-        }
-        if (privilegeList.contains("Task")) {
-            data.add(EventList("Task", R.drawable.ic__task))
+            }
+            if (privilegeList.contains("Task")) {
+                data.add(EventList("Task", R.drawable.ic__task))
 
-        }
-        if (privilegeList.contains("DashboardEvent")) {
-            data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
+            }
+            if (privilegeList.contains("DashboardEvent")) {
+                data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
 
-        }
-        if (privilegeList.contains("Event")) {
-            data.add(EventList("Event", R.drawable.ic_icon_list))
+            }
+            if (privilegeList.contains("Event")) {
+                data.add(EventList("Event", R.drawable.ic_icon_list))
 
-        }
-        if (!data.isNullOrEmpty()) {
+            }
+            if (!data.isNullOrEmpty()) {
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
-            setadapter(data)
+                setadapter(data)
+            }
         }
+        else{
+            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
+
+            if (privilegeListNameOffline.contains("Pack")) {
+                data.add(EventList("Pack", R.drawable.ic_box))
+
+            }
+            if (privilegeListNameOffline.contains("Task")) {
+                data.add(EventList("Task", R.drawable.ic__task))
+
+            }
+            if (privilegeListNameOffline.contains("DashboardEvent")) {
+                data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
+
+            }
+            if (privilegeListNameOffline.contains("Event")) {
+                data.add(EventList("Event", R.drawable.ic_icon_list))
+
+            }
+            if (!data.isNullOrEmpty()) {
+                setadapter(data)
+            }
+        }
+
+
     }
 
 

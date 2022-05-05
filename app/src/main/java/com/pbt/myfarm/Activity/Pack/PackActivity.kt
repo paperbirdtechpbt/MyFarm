@@ -83,6 +83,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             }
         }
         else{
+            AppUtils.logDebug(TAG,"privilegeListNameOffline"+privilegeListNameOffline.toString())
             if (privilegeListNameOffline.contains("InsertPack")){
                 btn_create_task.visibility=View.VISIBLE
             }
@@ -197,10 +198,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     showAlertDailog(packname, position, packList!!)
                 }
                 else {
-                    //                    updatePackBoolen = true
                     val intent = Intent(this, UpdatePackActivity::class.java)
-//                    intent.putExtra("fragment","0")
-//                    intent.putExtra(CONT_PACK,list)
                     startActivity(intent)
                 }
             }

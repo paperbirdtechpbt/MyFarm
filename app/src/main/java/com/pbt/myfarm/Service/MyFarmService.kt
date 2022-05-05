@@ -43,9 +43,9 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         userID = MySharedPreference.getUser(this)?.id.toString()
 
         GlobalScope.launch(Dispatchers.IO) {
-//            sendDataMastersApi(userID!!)
+            sendDataMastersApi(userID!!)
 //            syncOfflineData(userID!!)
-//            getEventTypeListAndOtherList(userID!!)
+            getEventTypeListAndOtherList(userID!!)
         }
 
         return START_STICKY

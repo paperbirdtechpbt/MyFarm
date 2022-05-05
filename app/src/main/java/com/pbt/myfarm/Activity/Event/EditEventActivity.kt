@@ -57,8 +57,9 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
         setContentView(R.layout.activity_edit_event)
 
         if (intent.extras != null) {
-            editEventID = intent.extras!!.getString(CONST_EDITEVENT_ID).toString()
+            editEventID = intent.extras!!.getString(CONST_EDITEVENT_ID)!!
             isCreateEvent = intent.extras!!.getBoolean(CONST_CREATEEVENT)
+            AppUtils.logDebug(TAG,"EDITEVENTid "+editEventID +"IsCreateevent "+ isCreateEvent.toString())
 
             initViewModel(editEventID, isCreateEvent)
         }
@@ -206,7 +207,6 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
 
             if (isCreateEvent){
                 setOfflineData(false)
-
             }
             else{
                 viewModel?.onEditEvent(editEventID, this, isCreateEvent)

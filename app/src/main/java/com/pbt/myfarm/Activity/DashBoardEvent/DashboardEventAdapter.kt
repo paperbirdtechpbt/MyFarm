@@ -13,7 +13,10 @@ import com.pbt.myfarm.Activity.TaskFunctions.AdapterTaskFunction
 import com.pbt.myfarm.Event
 import com.pbt.myfarm.R
 import com.pbt.myfarm.EventList
+import com.pbt.myfarm.Util.AppConstant
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CREATEEVENT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_EDITEVENT_ID
+import com.pbt.myfarm.Util.AppUtils
 
 
 class DashboardEventAdapter(var context: Context,var list: ArrayList<Event>) : RecyclerView.Adapter<DashboardEventAdapter.ViewHolder>() {
@@ -56,7 +59,9 @@ class DashboardEventAdapter(var context: Context,var list: ArrayList<Event>) : R
         }
         holder.editicon.setOnClickListener{
             val intent=Intent(context,EditEventActivity::class.java)
-            intent.putExtra(CONST_EDITEVENT_ID,item.id)
+            intent.putExtra(CONST_EDITEVENT_ID,item.id.toString())
+            intent.putExtra(CONST_CREATEEVENT,false)
+            AppUtils.logDebug("#####TAG","Dashoboardevent idf"+item.id.toString())
             context.startActivity(intent)
         }
 

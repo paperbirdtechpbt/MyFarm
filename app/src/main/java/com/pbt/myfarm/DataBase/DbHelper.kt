@@ -4491,7 +4491,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         if (isPackUpdate) {
             query =
-                "SELECT $TABLE_pack_config_fields.*, $TABLE_pack_fields.${COL_pack_fields_value}" +
+                "SELECT DISTINCT $TABLE_pack_config_fields.*, $TABLE_pack_fields.${COL_pack_fields_value}" +
                         " From $TABLE_pack_config_fields LEFT JOIN $TABLE_pack_fields on " +
                         "$TABLE_pack_config_fields.${COL_pack_config_fields_field_name} = $TABLE_pack_fields.${COL_pack_fields_field_id} " +
                         "WHERE $COL_pack_config_fields_pack_config_id ='$configId'" +
@@ -4500,7 +4500,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } else {
             query =
                 "SELECT * FROM $TABLE_pack_config_fields Where $COL_pack_config_fields_pack_config_id ='$configId' "
-
 
         }
 

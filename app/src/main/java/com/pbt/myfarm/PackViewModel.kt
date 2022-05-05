@@ -180,10 +180,12 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
             var list = ArrayList<PackConfigField>()
             if (updateTaskIdBoolean) {
                 list = db.getPackConfigFieldList(packList?.pack_config_id.toString(),true,packList?.id.toString())
+                AppUtils.logDebug(TAG, "fieldlist" + list.size)
 
             } else {
 
                 list = db.getPackConfigFieldList(packconfiglist?.id.toString(),false,"")
+                AppUtils.logDebug(TAG, "fieldlist" + list.size)
 
             }
 
@@ -210,6 +212,9 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
             val packConfigField = ArrayList<PackConfigFieldList>()
             if (list.size >= 1) {
+                AppUtils.logDebug(TAG,"packconfigfieldlis-=-=-="+packconfigList.size.toString()+
+                        " list=-=-=-"+list.size.toString()
+                )
 
                 for (i in 0 until packconfigList.size) {
                     arrayID!!.add("0")
@@ -342,6 +347,7 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
 
                 }
+
                 AppUtils.logDebug(TAG, "config fieldList" + packConfigField.toString())
             }
             configlist.value = packConfigField

@@ -120,14 +120,6 @@ class CreatePackAdapter(
         val valued = d["field_value"].toString()
         AppUtils.logDebug(TAG, "values" + valued)
 
-//        if (!valued.isNullOrEmpty()) {
-//            if (arrayID!!.isNotEmpty()) {
-//                arrayID!![positionn] = field_id
-//                arrayName!![positionn] = valued
-//            }
-//
-//        }
-
 
         val l = list.size
         val f = fieldId!!.size
@@ -205,7 +197,8 @@ class CreatePackAdapter(
             }
 //            }, 3500)
 
-        } else if (fieldtype == "List" || fieldtype == "Table") {
+        }
+        else if (fieldtype == "List" || fieldtype == "Table") {
             holder.desciption.setText(packList?.description)
 
 
@@ -321,8 +314,6 @@ class CreatePackAdapter(
             }
         }
 
-
-
         holder.date.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence, i: Int, i1: Int, i2: Int
@@ -381,6 +372,7 @@ class CreatePackAdapter(
                 }
             }
         })
+
         holder.desciption.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence, i: Int, i1: Int, i2: Int
@@ -432,6 +424,7 @@ class CreatePackAdapter(
                 myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+
         holder.name.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence, i: Int, i1: Int, i2: Int

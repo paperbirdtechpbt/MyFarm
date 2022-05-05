@@ -96,7 +96,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
-            initViewModel(updateTaskID?.task_config_id.toString())
+            initViewModel(updateTaskID?.id.toString())
             checkAndRequestPermissions()
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
@@ -270,21 +270,21 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             if (!list.isNullOrEmpty()) {
                 val taskfunction: Spinner = findViewById(R.id.taskfunction)
                 setSpinner(list, taskfunction)
-                for (i in 0 until list.size) {
-                    if (list.get(i).id == "171" || list.get(i).id == "175" || list.get(i).id == "176") {
-                        taskfunction_field.visibility = View.VISIBLE
-                        label_fieldname.visibility = View.VISIBLE
-                    } else if (list.get(i).id == "173") {
-                        taskfunction_media.visibility = View.VISIBLE
-                        btn_choosefile.visibility = View.VISIBLE
-                        label_attachmedia.visibility = View.VISIBLE
-
-
-                    } else if (list.get(i).id == "174") {
-                        //pass intent to craete packactivty with task id
-                        //change in api according to this
-                    }
-                }
+//                for (i in 0 until list.size) {
+//                    if (list.get(i).id == "171" || list.get(i).id == "175" || list.get(i).id == "176") {
+//                        taskfunction_field.visibility = View.VISIBLE
+//                        label_fieldname.visibility = View.VISIBLE
+//                    } else if (list.get(i).id == "173") {
+//                        taskfunction_media.visibility = View.VISIBLE
+//                        btn_choosefile.visibility = View.VISIBLE
+//                        label_attachmedia.visibility = View.VISIBLE
+//
+//
+//                    } else if (list.get(i).id == "174") {
+//                        //pass intent to craete packactivty with task id
+//                        //change in api according to this
+//                    }
+//                }
             }
         })
     }
@@ -295,15 +295,22 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
         for (i in 0 until list.size) {
-            listname.add(list.get(i).name1!!)
-            listid.add(list.get(i).id!!)
+            val privilegemane=list.get(i).privilegeName
+            if (privilegeListName.contains(privilegemane)){
+                listname.add(list.get(i).name1!!)
+                listid.add(list.get(i).name!!)
+            }
+
 
         }
+
 
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listname)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction.setAdapter(dd)
         setListner(taskfunction, listid, listname)
+
+
     }
 
     private fun setListner(
@@ -317,6 +324,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             ) {
                 selectedFunctionId = listid.get(position).toDouble().toInt()
 
+AppUtils.logDebug(TAG,"SelectedFunctionId"+selectedFunctionId.toString())
                 if (selectedFunctionId == 0) {
                     label_filename.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE

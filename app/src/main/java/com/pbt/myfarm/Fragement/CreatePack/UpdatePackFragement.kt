@@ -3,6 +3,7 @@ package com.pbt.myfarm.Fragement.CreatePack
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,15 +87,15 @@ class UpdatePackFragement : Fragment(),
     override fun onResume() {
         super.onResume()
 //        progressbar_createpackfrgm.visibility = View.VISIBLE
-        arrayID = ArrayList()
-        arrayName = ArrayList()
-        arrayIDKey = ArrayList()
-        arrayNameKey = ArrayList()
-
-        arrayID!!.clear()
-        arrayName!!.clear()
-        arrayIDKey!!.clear()
-        arrayNameKey!!.clear()
+//        arrayID = ArrayList()
+//        arrayName = ArrayList()
+//        arrayIDKey = ArrayList()
+//        arrayNameKey = ArrayList()
+//
+//        arrayID!!.clear()
+////        arrayName!!.clear()
+//        arrayIDKey!!.clear()
+//        arrayNameKey!!.clear()
 
 //        initViewModel()
     }
@@ -159,17 +160,17 @@ class UpdatePackFragement : Fragment(),
         )
         viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
 //            setCommunityGroup()
+
+            Log.d("###456","Updated ID ${arrayName!!.size} ${arrayID!!.size}")
             if (!list.isNullOrEmpty()) {
                 progressbar_createpackfrgm.visibility = View.GONE
             }
-            val config =
-                Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
+            val config = Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
             recycler_packFieldsFragment?.layoutManager = LinearLayoutManager(requireContext())
-            adapterr =
-                CreatePackAdapter(
-                    requireContext(), config, true, packCommunityList,
-                    packCommunityListname
-                ) { list, name ->
+
+
+
+            adapterr = CreatePackAdapter(requireContext(), config, true, packCommunityList, packCommunityListname) { list, name ->
 
 
                     if (list.isNotEmpty() && name.isNotEmpty()) {
@@ -183,19 +184,9 @@ class UpdatePackFragement : Fragment(),
                         while (name.contains("0")) {
                             name.remove("0")
                         }
-//                    while (ExpNameKey.contains("0")) {
-//                        ExpNameKey.remove("0")
-//                    }
-//                    while (ExpAmtArrayKey.contains("0")) {
-//                        ExpAmtArrayKey.remove("0")
-//                    }
-
 
                         if (name.isNotEmpty()) {
-//                            for (i in 0..name.size) {
-//                                ExpAmtArrayKey!![i] = "f_id"
-//                                ExpNameKey!![i] = "f_value"
-//                            }
+
                             for (i in 0 until name.size) {
                                 val jsonObject = JSONObject()
 
@@ -220,7 +211,6 @@ class UpdatePackFragement : Fragment(),
 
                     } else {
                         updatePAck()
-
                     }
 
 

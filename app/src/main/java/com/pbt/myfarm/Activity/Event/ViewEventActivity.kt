@@ -55,6 +55,7 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
         btn_create_event.setOnClickListener {
             val intent = Intent(this, EditEventActivity::class.java)
             intent.putExtra(CONST_CREATEEVENT, true)
+            intent.putExtra(CONST_EDITEVENT_ID, "")
             startActivity(intent)
         }
     }
