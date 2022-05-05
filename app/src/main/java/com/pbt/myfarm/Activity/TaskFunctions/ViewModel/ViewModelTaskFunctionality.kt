@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.TaskFunctions.ViewModel
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,8 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ResponseTaskFunctionaliyt
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.BaseTaskFunction
+import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
@@ -19,11 +22,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
-    retrofit2.Callback<ResponseTaskFunctionaliyt> {
-    private val CAMERA_REQUEST = 1888
-    private val GELARY_REQUEST = 1088
-    private val MY_CAMERA_PERMISSION_CODE = 1001
+class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity), retrofit2.Callback<HttpResponse> {
+
     val TAG = "ViewModelTaskFunctionality"
     var context: Context? = null
     var listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
@@ -33,11 +33,14 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     }
 
 
-    fun onTaskFunctionList(context: Context, updateTaskId: String) {
+    fun onTaskFunctionList(context: Context, updateTaskId: String ,userID : String ) {
+
+        Log.d("Apicall","Param updateTsk : $updateTaskId  UserID $userID ")
+
         if (AppUtils().isInternet(context)){
                     ApiClient.client.create(ApiInterFace::class.java)
             .taskFunctionList(
-                MySharedPreference.getUser(context)?.id.toString(),
+               userID,
                 updateTaskId
             ).enqueue(this)
         }
@@ -53,45 +56,31 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             }
             listTaskFuntions.value = listtask
         }
-
-
-
-
-
-
-
     }
-
-
-
 
     override fun onResponse(
-        call: Call<ResponseTaskFunctionaliyt>,
-        response: Response<ResponseTaskFunctionaliyt>
+        call: Call<HttpResponse>,
+        response: Response<HttpResponse>
     ) {
         if (response.body()?.error == false) {
-            val baseresponse: ResponseTaskFunctionaliyt = Gson().fromJson(
-                Gson().toJson(response.body()),
-                ResponseTaskFunctionaliyt::class.java
-            )
-            val list = ArrayList<ListTaskFunctions>()
-            if (baseresponse != null) {
-                baseresponse.data.forEach { item ->
-                    list.add(item)
+            if(response.body() != null){
+                val response: HttpResponse =
+                    Gson().fromJson(Gson().toJson(response.body()), HttpResponse::class.java)
+                if (response != null) {
+                    val baseTaskFunction: BaseTaskFunction =
+                        Gson().fromJson(Gson().toJson(response.data), BaseTaskFunction::class.java)
+                    if (!baseTaskFunction.listTask.isNullOrEmpty()) {
+                        listTaskFuntions.value = baseTaskFunction.listTask
+                        AppUtils.logDebug(
+                            TAG,
+                            "resposenselist ==>" + Gson().toJson(baseTaskFunction.listTask)
+                        )
+                    }
                 }
-                if (!list.isNullOrEmpty()) {
-                    listTaskFuntions.value = list
-                    AppUtils.logDebug(TAG, "resposenselist ==>" + Gson().toJson(list))
-
-                }
-
             }
         }
-
-
     }
 
-    override fun onFailure(call: Call<ResponseTaskFunctionaliyt>, t: Throwable) {
+    override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
     }
-
 }
