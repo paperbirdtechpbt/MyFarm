@@ -16,6 +16,7 @@ import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.TaskConfig
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -35,16 +36,18 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
     val db = DbHelper(this, null)
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, " Service run ${System.currentTimeMillis()}")
 
         userID = MySharedPreference.getUser(this)?.id.toString()
 
         GlobalScope.launch(Dispatchers.IO) {
-            sendDataMastersApi(userID!!)
-            syncOfflineData(userID!!)
-            getEventTypeListAndOtherList(userID!!)
+//            sendDataMastersApi(userID!!)
+//            syncOfflineData(userID!!)
+//            getEventTypeListAndOtherList(userID!!)
         }
+
         return START_STICKY
     }
 

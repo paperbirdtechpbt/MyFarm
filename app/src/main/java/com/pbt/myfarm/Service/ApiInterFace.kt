@@ -209,12 +209,9 @@ interface ApiInterFace {
 
     @FormUrlEncoded
     @POST("api/taskFunctionList")
-    fun taskFunctionList(
+    fun taskFunctionList(@Field("user_id") user_id: String, @Field("task_id") task_id: String, ):Call<HttpResponse>
 
-        @Field("user_id") user_id: String,
-        @Field("task_id") task_id: String,
 
-    ):Call<ResponseTaskFunctionaliyt>
     @FormUrlEncoded
     @POST("api/taskFunctionFieldList")
     fun taskFunctionFieldList(

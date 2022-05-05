@@ -263,7 +263,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
-        viewmodel?.onTaskFunctionList(this, updateTaskID)
+        viewmodel?.onTaskFunctionList(this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
 
             AppUtils.logDebug(TAG, "list og list functions=" + list.toString())
@@ -295,7 +295,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
         for (i in 0 until list.size) {
-            listname.add(list.get(i).name!!)
+            listname.add(list.get(i).name1!!)
             listid.add(list.get(i).id!!)
 
         }
@@ -315,7 +315,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-                selectedFunctionId = listid.get(position).toInt()
+                selectedFunctionId = listid.get(position).toDouble().toInt()
                 if (selectedFunctionId == 0) {
                     label_filename.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE
@@ -371,8 +371,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         recycler_viewMedia.visibility = View.GONE
                         label_filename.visibility = View.GONE
                     } else if (item == "174" || item == "175") {
-                        val intent =
-                            Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
+
+                        val intent = Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
                         startActivity(intent)
 
                         label_filename.visibility = View.GONE
