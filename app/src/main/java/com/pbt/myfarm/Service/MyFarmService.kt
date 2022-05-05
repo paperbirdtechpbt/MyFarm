@@ -44,7 +44,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
         GlobalScope.launch(Dispatchers.IO) {
             sendDataMastersApi(userID!!)
-//            syncOfflineData(userID!!)
+            syncOfflineData(userID!!)
             getEventTypeListAndOtherList(userID!!)
         }
 
@@ -114,6 +114,8 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                 p1: Response<OffLineSyncModel>
             ) {
 
+
+                Log.d("SERVERREsponse","Resoiseb => ${p1.body()}")
                 if (p1.isSuccessful) {
                     p1.body()?.let {
                         if (it.Data.packs_new.isNotEmpty()) {
