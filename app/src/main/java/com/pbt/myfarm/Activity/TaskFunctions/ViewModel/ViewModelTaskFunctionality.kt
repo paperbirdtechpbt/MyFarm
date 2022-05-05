@@ -56,7 +56,17 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             }
             listTaskFuntions.value = listtask
         }
+
+
+
+
+
+
+
     }
+
+
+
 
     override fun onResponse(
         call: Call<HttpResponse>,
