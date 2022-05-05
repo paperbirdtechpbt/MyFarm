@@ -316,6 +316,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
                 selectedFunctionId = listid.get(position).toDouble().toInt()
+
                 if (selectedFunctionId == 0) {
                     label_filename.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE
