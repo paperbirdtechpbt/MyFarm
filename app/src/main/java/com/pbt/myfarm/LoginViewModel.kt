@@ -37,8 +37,8 @@ class LoginViewModel(val activity: Application): AndroidViewModel(activity),
      var rolesIdString:String?=null
      var rolesName:String?=null
     init {
-        email= ObservableField("")
-        password= ObservableField("")
+        email= ObservableField("pbt@admin.com")
+        password= ObservableField("pbtadmin")
         userLogin = MutableLiveData<HttpResponse>()
     }
     fun login(view: View){

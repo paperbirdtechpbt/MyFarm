@@ -59,11 +59,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         var updateTaskBoolen = false
     }
 
-//    override fun onResume() {
-//        super.onResume()
-//        initViewModel()
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,30 +68,21 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         if (AppUtils().isInternet(this)){
             if (privilegeListName.contains("InsertTask")){
                 binding?.btnCreateTask?.visibility=View.VISIBLE
-//            btn_create_task.visibility=View.VISIBLE
             }
         }
         else{
             if (privilegeListNameOffline.contains("InsertTask")){
                 binding?.btnCreateTask?.visibility=View.VISIBLE
-//            btn_create_task.visibility=View.VISIBLE
             }
         }
 
-
         initViewModel()
-
-
-//binding?.edSearch?.setQueryHint("Search Task")
-//        binding?.edSearch?.setOnClickListener(View.OnClickListener {
-//            binding?.edSearch?.setIconified(false) })
 
         btn_create_task.setOnClickListener {
             startActivity(Intent(this, SelectConfigTypeActivity::class.java))
 
         }
     }
-
 
     private fun initViewModel() {
         viewModell = ViewModelProvider(
@@ -115,9 +101,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             linearLayoutManager.stackFromEnd = true
             recyclerview_viewtask.setLayoutManager(linearLayoutManager)
 
-//            recyclerview_viewtask?.layoutManager = LinearLayoutManager(this)
-
-
             val animator: ItemAnimator = recyclerview_viewtask.getItemAnimator()!!
             if (animator is SimpleItemAnimator) {
                 (animator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -125,8 +108,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
             tasklistSize.setText("Total Tasks-" + eventlistt.size)
             adapter = AdapterViewTask(this, eventlistt!!) { position, taskname, checkAction, list ->
-
-//
                 mytasklist = list
                 if (checkAction) {
 
@@ -134,16 +115,12 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 } else {
                     updateTaskBoolen = true
                     val intent = Intent(this, CreateTaskActivity::class.java)
-AppUtils.logDebug(TAG, mytasklist.toString())
                     intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
                     startActivity(intent)
                     finish()
-//
                 }
-
-
             }
             recyclerview_viewtask.adapter = adapter
             if (eventlistt.isNullOrEmpty()) {
@@ -154,8 +131,6 @@ AppUtils.logDebug(TAG, mytasklist.toString())
         })
 
     }
-
-
 
     private fun showAlertDailog(taskname: String, position: Int, mytasklist: Task) {
         AlertDialog.Builder(this)
@@ -178,7 +153,6 @@ AppUtils.logDebug(TAG, mytasklist.toString())
                     initViewModel()
 
 
-
                     Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
                 })
             .setNegativeButton(android.R.string.no, null)
@@ -199,10 +173,6 @@ AppUtils.logDebug(TAG, mytasklist.toString())
             if (response.body()?.error == false) {
                 Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
                 initViewModel()
-
-//                val intent = Intent(this, ViewTaskActivity::class.java)
-//                startActivity(intent)
-//                finish()
             } else {
                 Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
             }

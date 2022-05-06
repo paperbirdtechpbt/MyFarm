@@ -61,14 +61,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
-        val selectedroldid = MySharedPreference.getStringValue(
-            this,
-            CONST_PREF_ROLE_ID, "0"
-        )
-        AppUtils.logDebug(TAG, "Selected Role iD=>>" + selectedroldid)
-        callPrivilegeAPI(selectedroldid)
-//        val selectedroldid = intent.extras?.get(CONST_ROLEID).toString()
-        AppUtils.logDebug(TAG, "ON create Main Activity")
+        val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+        callPrivilegeAPI(roleID)
 
         if (chechpermission()) {
             startService(Intent(this, MyFarmService::class.java))
@@ -84,9 +78,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             initViewModel()
         }
 
-
-
-//        setadapter()
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
@@ -112,20 +103,11 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(MainActivityViewModel::class.java)
-
-//        viewModel?.packConfigList(this)
-//        viewModel?.packCOnfigFielList(this, packconfiglist)
-
+        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(MainActivityViewModel::class.java)
         AppUtils().isServiceRunning(this, MyFarmService::class.java)
-
     }
 
     private fun setadapter(dataa: ArrayList<EventList>) {
-//        val adapter = AdapterHomeActivity(this, this.data)
         val adapter = AdapterHomeActivity(this, dataa)
         recyclerview_main.adapter = adapter
     }
@@ -281,7 +263,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             privilegeListName.clear()
             privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
             for (i in 0 until privilegeList.size) {
-
                 privilegeListName.add(privilegeList.get(i).privilege)
             }
             setdata(privilegeListName)
