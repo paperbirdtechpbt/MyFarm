@@ -201,8 +201,10 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                 if (it.Data.collect_data.isNotEmpty()) {
                                     for (pack in it.Data.collect_data) {
                                         db.collectDataCreate(pack)
+                                        Log.d("LocalDataInsert"," Serverice insert Data  ${pack.id}")
                                     }
                                 }
+                                db.close()
                             }
 
                             GlobalScope.launch {
@@ -350,6 +352,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                         db.sensorCreate(pack)
                                     }
                                 }
+                                db.close()
                             }
                         }
                     }

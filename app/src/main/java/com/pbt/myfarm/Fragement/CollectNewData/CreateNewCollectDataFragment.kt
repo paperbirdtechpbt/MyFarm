@@ -382,7 +382,8 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 listmultipleData.clear()
                 objectmultipleData = null
 
-            } else {
+            }
+            else {
 
                 if (collectActivity.selectedItemPosition == 0) {
                     Toast.makeText(
@@ -478,17 +479,16 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             } else {
 
                 var valuee: String = ""
-                 if (ed_value != null) {
+                 if (ed_value.text.isNotEmpty()) {
                     valuee = ed_value.text.toString()
-                } else if (dt_value != null) {
+                } else if (dt_value.text.isNotEmpty()) {
                     valuee = dt_value.text.toString()
                 } else {
                     valuee = spinner_value.getSelectedItem().toString()
                 }
                 duration = ed_duration?.text.toString()
-
                 recyclerview_addmultipledata?.layoutManager = LinearLayoutManager(requireContext())
-
+                spinnerUnitNAme
                 listmultipleData.add(
                     ListMultipleCollcetdata(
                         collectNAME, collectId.toString(),
@@ -499,6 +499,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     )
                 )
                 Toast.makeText(requireContext(), "Added $collectNAME", Toast.LENGTH_SHORT).show()
+                AppUtils.logDebug(TAG,"Multiple Data ==>"+listmultipleData.toString())
 
                 adapterAddmultiple = AdapterAddmultiple(requireContext(), listmultipleData)
                 recyclerview_addmultipledata.adapter = adapterAddmultiple
@@ -508,11 +509,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 result?.setSelection(0)
                 unit?.setSelection(0)
                 sensonser.setSelection(0)
-                if (!edValue.isNullOrEmpty()) {
+                if (ed_value.text.isNotEmpty()) {
                     ed_value?.setText("")
 
-                } else if (!dtvalue.isNullOrEmpty()) {
+                } else if (dt_value.text.isNotEmpty()) {
                     dt_value?.setText("")
+                    dt_value.visibility=View.GONE
+                    ed_value.visibility=View.VISIBLE
 
                 } else {
                     valueSpinner?.setSelection(0)
@@ -562,13 +565,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 if (objectmultipleDataa != null) {
                     apiInterFace = service.storecollectdata(
                         packList?.id.toString(),
-                        objectmultipleDataa.resultID,
-                        objectmultipleDataa.activityID,
-                        objectmultipleDataa.valueID,
-                        objectmultipleDataa.valueID,
-                        objectmultipleDataa.unitID,
-                        objectmultipleDataa.sensorID,
-                        objectmultipleDataa.duration,
+                        objectmultipleDataa.resultID!!,
+                        objectmultipleDataa.activityID!!,
+                        objectmultipleDataa.valueID!!,
+                        objectmultipleDataa.valueID!!,
+                        objectmultipleDataa.unitID!!,
+                        objectmultipleDataa.sensorID!!,
+                        objectmultipleDataa.duration!!,
                         MySharedPreference.getUser(requireContext())?.id.toString(),
                     )
                 } else {
@@ -872,6 +875,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                     if (i == position) {
                         sensorId = sensorlist.get(i).id.toInt()
                         sensorNAME = sensorlist.get(i).name
+
                         getSensorId = sensorId.toString()
 
 
@@ -1290,11 +1294,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 
 
 
-
-
-
-
-        unit?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinner_units?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
@@ -1306,11 +1306,15 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                 id: Long
             ) {
                 for (i in 0 until unitListname.size) {
+                    val item=unitListname.get(i)
                     if (i == position) {
+                        spinnerUnitNAme = unitList.get(position).name.toString()
+
                         spinnerUnitId = unitList.get(i).id!!.toInt()
-                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitId.toString()
+
+                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitNAme.toString()
                         )
-                        spinnerUnitNAme = unitList.get(i).name!!
+
 //                        callResultValueApi(resultid.toString())
                         getSensorId = spinnerUnitId.toString()
 
@@ -1323,18 +1327,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 
     }
 
-    private fun checkInternetConnection(): Boolean {
 
-        val ConnectionManager =
-            requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-
-    }
 
     private fun updateLabel(dtValue: EditText, time: String) {
         val myFormat = "yyyy-MM-dd"

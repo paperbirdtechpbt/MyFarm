@@ -1454,7 +1454,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_CREAT_PACK, null, values)
-                db.close()
+                // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Added Pack SuccessFully", Toast.LENGTH_SHORT).show()
                     isSuccessFull = true
@@ -1496,7 +1496,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             val db = this.writableDatabase
             val result = db.insert(TABLE_CREAT_PACK, null, values)
-            db.close()
+            // // db.close()
             if (result >= 0) {
                 Toast.makeText(context, "Added Pack SuccessFully", Toast.LENGTH_SHORT).show()
                 isSuccessFull = true
@@ -1530,7 +1530,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_task_objects, null, values)
-                db.close()
+                // // db.close()
 
                 if (result >= 0) {
                     isAdded = true
@@ -1561,7 +1561,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_task_objects, null, values)
-                db.close()
+                // // db.close()
 
                 if (result >= 0) {
                     isAdded = true
@@ -1621,7 +1621,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -1659,7 +1659,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     "$COL_pack_fields_pack_id=? AND $COL_pack_fields_field_id=?",
                     arrayOf(lastValueOfPacknew, fieldid)
                 )
-                db.close()
+                // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
                     checkDataSaved = true
@@ -1669,7 +1669,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
             } else {
                 val result = db.insert(TABLE_pack_fields, null, values)
-                db.close()
+                // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
                     checkDataSaved = true
@@ -1740,7 +1740,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     " $COL_tasks_SERVERid=?",
                     arrayOf(lastValueOfPacknew)
                 )
-                db.close()
+                // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Updated TaskSuccessfully", Toast.LENGTH_SHORT).show()
                     checkDataSaved = true
@@ -1750,7 +1750,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
             } else {
                 val result = db.insert(TABLE_task_fields, null, values)
-                db.close()
+                // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
                     checkDataSaved = true
@@ -1781,7 +1781,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 " $COL_tasks_NAME=? And $COL_tasks_TASK_CONFIGID=?",
                 arrayOf(taskname, taskconfigid)
             )
-            db.close()
+            // // db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1807,7 +1807,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 arrayOf(packname, packconfigid)
             )
 //
-            db.close()
+            // // db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1823,7 +1823,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             values.put(COL_events_STATUS, "0")
 
             db.update(TABLE_events, values, " $COL_events_SERVERID=?", arrayOf(eventid))
-            db.close()
+            // // db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1839,7 +1839,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             values.put(COL_collect_data_STATUS, "0")
 
             db.update(TABLE_collect_data, values, " $COL_collect_data_SERVERID=?", arrayOf(eventid))
-            db.close()
+            // // db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1855,7 +1855,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
             db.update(TABLE_task_objects, values, " $COL_task_objects_STATUS=?", arrayOf("1"))
-            db.close()
+            // // db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1888,7 +1888,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_PACKCONFIG, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -1930,7 +1930,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_media_files, null, values)
-                db.close()
+                // // db.close()
 
             }
         } catch (e: Exception) {
@@ -2006,7 +2006,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_collect_activity, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2036,7 +2036,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_fields, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2075,7 +2075,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_config_fields, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2091,44 +2091,89 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     //ravi - offline ----------insert--table---collectdata
 
 
-    fun collectDataCreate(pack: CollectData) {
-
-        try {
-            val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_collect_data_SERVERID)
-            if (i < 1) {
-
-                val values = ContentValues()
-                values.put(COL_collect_data_SERVERID, pack.id)
-                values.put(COL_collect_data_pack_id, pack.pack_id)
-                values.put(COL_collect_data_STATUS, "0")
-                values.put(COL_collect_data_ResulId, pack.result_id)
-                values.put(COL_collect_data_ResultClass, pack.result_class)
-                values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
-                values.put(COL_collect_data_NEWVALUE, pack.new_value)
-                values.put(COL_collect_data_UNITID, pack.unit_id)
-                values.put(COL_collect_data_SENSORID, pack.sensor_id)
-                values.put(COL_collect_data_DURATION, pack.duration)
-                values.put(COL_collect_data_UPDATED_BY, pack.created_by)
-                values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
-                values.put(COL_collect_data_CREATED_AT, pack.created_at)
-                values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
-                values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
-
-
-                val db = this.writableDatabase
-                val result = db.insert(TABLE_collect_data, null, values)
-                db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added Collect data successfullly", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+//    fun collectDataCreate(pack: CollectData) {
+//
+//        try {
+//            val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_collect_data_SERVERID)
+//            if (i < 1) {
+//
+//                val values = ContentValues()
+//                values.put(COL_collect_data_SERVERID, pack.id)
+//                values.put(COL_collect_data_pack_id, pack.pack_id)
+//                values.put(COL_collect_data_STATUS, "0")
+//                values.put(COL_collect_data_ResulId, pack.result_id)
+//                values.put(COL_collect_data_ResultClass, pack.result_class)
+//                values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
+//                values.put(COL_collect_data_NEWVALUE, pack.new_value)
+//                values.put(COL_collect_data_UNITID, pack.unit_id)
+//                values.put(COL_collect_data_SENSORID, pack.sensor_id)
+//                values.put(COL_collect_data_DURATION, pack.duration)
+//                values.put(COL_collect_data_UPDATED_BY, pack.created_by)
+//                values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
+//                values.put(COL_collect_data_CREATED_AT, pack.created_at)
+//                values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
+//                values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
+//
+//
+//                val db = this.writableDatabase
+//                val result = db.insert(TABLE_collect_data, null, values)
+//                // // db.close()
+////            if (result >= 0) {
+////                Toast.makeText(context, "Added Collect data successfullly", Toast.LENGTH_SHORT).show()
+////            } else {
+////                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+////            }
 //            }
-            }
+//
+//        } catch (e: Exception) {
+//            AppUtils.logError(TAG, e.message!!)
+//        }
+//    }
+fun collectDataCreate(pack: CollectData) {
+    val db = this.writableDatabase
 
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
+    try {
+        val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_collect_data_SERVERID)
+        if (i < 1) {
+
+            val values = ContentValues()
+            values.put(COL_collect_data_SERVERID, pack.id)
+            values.put(COL_collect_data_pack_id, pack.pack_id)
+            values.put(COL_collect_data_STATUS, "0")
+            values.put(COL_collect_data_ResulId, pack.result_id)
+            values.put(COL_collect_data_ResultClass, pack.result_class)
+            values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
+            values.put(COL_collect_data_NEWVALUE, pack.new_value)
+            values.put(COL_collect_data_UNITID, pack.unit_id)
+            values.put(COL_collect_data_SENSORID, pack.sensor_id)
+            values.put(COL_collect_data_DURATION, pack.duration)
+            values.put(COL_collect_data_UPDATED_BY, pack.created_by)
+            values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
+            values.put(COL_collect_data_CREATED_AT, pack.created_at)
+            values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
+            values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
+
+
+            val result = db.insert(TABLE_collect_data, null, values)
+
+            if (result >= 0) {
+                Log.d("LocalDataInsert", " Data  insert ==>> ${pack.id}")
+            } else {
+                Log.d("LocalDataInsert", " Data not isert ${pack.id}")
+            }
         }
-    }
+
+        else {
+            Log.d("LocalDataInsert", " Table Store data Already  exsit ${pack.id}")
+        }
+//        // // db.close()
+
+
+} catch (e: Exception) {
+    Log.d("LocalDataInsert", " Exception ${e.message} ${pack.id}  ")
+    AppUtils.logError(TAG, e.message!!)
+}
+}
 
     fun addNewCollectDataOffline(pack: CollectData, isUpdate: Boolean): Boolean {
         var isSuccess = false
@@ -2177,7 +2222,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
             }
 
-            db.close()
+            // // db.close()
 
 
         } catch (e: Exception) {
@@ -2218,7 +2263,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
 
-            db.close()
+            // // db.close()
 
 
         } catch (e: Exception) {
@@ -2275,7 +2320,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_collect_activities, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2319,7 +2364,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_collect_activity_results, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2354,7 +2399,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_collect_activity_results_unit, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2405,7 +2450,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_people, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2448,7 +2493,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_container, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2483,7 +2528,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_container_object, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2520,7 +2565,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_community_groups, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2560,7 +2605,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_configs, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2599,7 +2644,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_config_fields, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2637,7 +2682,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_lists, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2671,7 +2716,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_list_choices, null, values)
-                db.close()
+                // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2713,7 +2758,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_team, null, values)
-                db.close()
+                // // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -2753,7 +2798,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_task_config_functions, null, values)
-                db.close()
+                // // // db.close()
                 if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
                 } else {
@@ -2808,7 +2853,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         "$COL_events_SERVERID=?",
                         arrayOf(pack?.id.toString())
                     )
-                    db.close()
+                    // // db.close()
 //                    if (result >= 0) {
 //                        Toast.makeText(context, "Update Event SuccessFully", Toast.LENGTH_SHORT)
 //                            .show()
@@ -2819,7 +2864,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 } else {
                     val db = this.writableDatabase
                     val result = db.insert(TABLE_events, null, values)
-                    db.close()
+                    // db.close()
 //
 //                    if (result >= 0) {
 //                        Toast.makeText(context, "Added Event SuccessFully", Toast.LENGTH_SHORT)
@@ -2872,7 +2917,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     "$COL_events_SERVERID=?",
                     arrayOf(pack?.id.toString())
                 )
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     Toast.makeText(context, "Update Event SuccessFully", Toast.LENGTH_SHORT)
                         .show()
@@ -2887,7 +2932,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_events, null, values)
-                db.close()
+                // db.close()
 
                 if (result >= 0) {
                     Toast.makeText(context, "Added Event SuccessFully", Toast.LENGTH_SHORT)
@@ -2936,7 +2981,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_tasks, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
 //
@@ -2987,7 +3032,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     "$COL_tasks_SERVERid=?",
                     arrayOf(task.id.toString())
                 )
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     Toast.makeText(context, "update TAskSuccessfully", Toast.LENGTH_SHORT).show()
                     isSuccessFull = true
@@ -2999,7 +3044,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
             } else {
                 val result = db.insert(TABLE_tasks, null, values)
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
                     isSuccessFull = true
@@ -3036,7 +3081,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_fields, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
@@ -3078,7 +3123,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_graph_charts, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
@@ -3139,7 +3184,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                             val db = this.writableDatabase
                             db.insert(TABLE_graph_chart_points, null, myvalues)
-                            db.close()
+                            // db.close()
 //                            }
                         } catch (e: Exception) {
                             AppUtils.logError(TAG, e.message!!)
@@ -3148,7 +3193,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 }
                 val db = this.writableDatabase
                 db.insert(TABLE_graph_chart_objects, null, values)
-                db.close()
+                // db.close()
 
             }
         } catch (e: Exception) {
@@ -3193,7 +3238,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_sensors, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
@@ -3234,7 +3279,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_units, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
@@ -3307,7 +3352,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_fields, null, values)
-                db.close()
+                // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
 
@@ -3346,7 +3391,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             val db = this.writableDatabase
             val result = db.insert(CONST_TABLE_PACK, null, values)
-            db.close()
+            // db.close()
             if (result >= 0) {
                 AppUtils.logDebug(TAG, "ADDed packlist to database ")
             } else {
@@ -3372,7 +3417,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_eventType, null, values)
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     AppUtils.logDebug(TAG, "ADDed packlist to database ")
                 } else {
@@ -3399,7 +3444,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_eventStatus, null, values)
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     AppUtils.logDebug(TAG, "ADDed packlist to database ")
                 } else {
@@ -3429,7 +3474,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_privileges, null, values)
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     AppUtils.logDebug(TAG, "ADDed packlist to database ")
                 } else {
@@ -3474,7 +3519,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             } while (cursor.moveToNext())
         }
 
-        db.close()
+        // db.close()
         return upCommingPackList
     }
 
@@ -3547,7 +3592,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -3620,7 +3665,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -3699,7 +3744,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -3794,7 +3839,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -3897,7 +3942,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -3951,7 +3996,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackList
     }
@@ -4023,7 +4068,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "Exeption for getAllPackConfig " + e.message.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4060,7 +4105,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4190,7 +4235,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4268,7 +4313,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList!!
     }
@@ -4386,7 +4431,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4476,7 +4521,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList!!
     }
@@ -4609,7 +4654,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4730,7 +4775,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4788,7 +4833,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4841,7 +4886,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4910,7 +4955,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "getGraphChartObjects" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -4957,7 +5002,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "getGraphChartObjects" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5002,7 +5047,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "getGraphChartObjects" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5048,7 +5093,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "getGraphChartObjects" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5113,7 +5158,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5156,7 +5201,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return chartname.toString()
     }
@@ -5203,7 +5248,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5242,7 +5287,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return name!!
     }
@@ -5298,7 +5343,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5346,7 +5391,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5401,7 +5446,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5452,7 +5497,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5512,7 +5557,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5585,7 +5630,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
-        db.close()
+        // db.close()
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -5609,7 +5654,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
-        db.close()
+        // db.close()
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -5636,7 +5681,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
-        db.close()
+        // db.close()
         return result
     }
 
@@ -5669,7 +5714,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
-        db.close()
+        // db.close()
         return isSuces
     }
 
@@ -5745,7 +5790,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
         // close db connection
-        db.close()
+        // db.close()
 
         // return notes list
         return upCommingPackList
@@ -5808,7 +5853,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for Taskconfig" + e.toString())
         }
         cursor.close()
-        db.close()
+        // db.close()
 
         return upCommingPackCONFIGList
     }
@@ -5854,7 +5899,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for Taskconfig" + e.toString())
         }
 
-        db.close()
+        // db.close()
 
         return upCommingPackCONFIGList
     }
@@ -5903,7 +5948,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -5947,7 +5992,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -6000,7 +6045,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
         // close db connection
-        db.close()
+        // db.close()
         // return notes list
         return upCommingPackCONFIGList
     }
@@ -6013,6 +6058,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val count = cursor.count
         cursor.close()
         return count
+//        cursor.close()
     }
 
     fun truncateAllTables() {
@@ -6101,7 +6147,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
 //        }
 //        // close db connection
-//        db.close()
+//        // db.close()
 //        // return notes list
 //        return upCommingPackCONFIGList
 //
