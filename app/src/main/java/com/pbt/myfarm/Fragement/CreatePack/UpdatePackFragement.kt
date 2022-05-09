@@ -264,10 +264,6 @@ class UpdatePackFragement : Fragment(),
         } else {
             if (prefixname.isNullOrEmpty()) {
                 if (AppUtils().isInternet(requireContext())){
-                    val db = DbHelper(requireContext(), null)
-                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
-                }
-                else{
                     ApiClient.client.create(ApiInterFace::class.java)
                         .updatePack(
                             packList1?.pack_config_id!!,
@@ -278,6 +274,11 @@ class UpdatePackFragement : Fragment(),
                             "",
                             packList1?.id.toString()
                         ).enqueue(this)
+                }
+                else{
+
+                    val db = DbHelper(requireContext(), null)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
                 }
 
 
@@ -331,7 +332,9 @@ class UpdatePackFragement : Fragment(),
 
 //            val db=DbHelper(requireContext(),null)
 //            db.updatePackNew(packList1, desciptioncompanian, selectedCommunityGroup)
-            startActivity(Intent(requireContext(), PackActivity::class.java))
+
+
+//            startActivity(Intent(requireContext(), PackActivity::class.java))
             activity?.finish()
         } else {
             progressbar_createpackfrgm.visibility = View.GONE

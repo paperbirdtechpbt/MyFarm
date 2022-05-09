@@ -5,18 +5,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.JsonReader
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonArray
-import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
-import com.pbt.myfarm.Activity.CreateTask.FieldModel
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
@@ -24,28 +17,21 @@ import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
 import com.pbt.myfarm.Activity.ViewPackViewModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.ModelClass.*
 import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.PackList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_LIST_SIZE
-import com.pbt.myfarm.Util.AppConstant.Companion.CONT_PACK
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SELECTED_COM_GROUP
 import com.pbt.myfarm.Util.AppUtils
-import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestBody
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_pack.*
-import kotlinx.android.synthetic.main.activity_view_event.*
 import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
-import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import java.io.StringReader
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -66,6 +52,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         var updatePackBoolen = false
 
             var desciptioncompanian: String?=null
+            var selectedcom_Group_companian: String?=null
 
     }
 
@@ -145,9 +132,11 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             } else {
 
                 updatePackBoolen = true
+
                 val intent = Intent(this, UpdatePackActivity::class.java)
                 startActivity(intent)
 
+                selectedcom_Group_companian=list.com_group.toString()
             }
         }
 
@@ -160,17 +149,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     }
 
-    private fun checkInternetConnection(): Boolean {
 
-        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-
-    }
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(
@@ -199,6 +178,8 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 }
                 else {
                     val intent = Intent(this, UpdatePackActivity::class.java)
+                  selectedcom_Group_companian=list.com_group.toString()
+
                     startActivity(intent)
                 }
             }
@@ -226,8 +207,10 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     else{
                         val db=DbHelper(this,null)
                         db.deletePackNew(list.id.toString())
+                        initViewModel()
+
                     }
-initViewModel()
+
 //                    setDatafromlocal()
 //                    adapter?.notifyItemRemoved(position)
 
@@ -250,7 +233,7 @@ initViewModel()
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         if (response.body()?.error == false) {
                         Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
-
+            initViewModel()
 //            Toast.makeText(this, "Pack Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
 //            val intent = Intent(this, PackActivity::class.java)
 //            startActivity(intent)

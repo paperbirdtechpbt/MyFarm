@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.database.Cursor
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
@@ -34,7 +33,6 @@ import com.pbt.myfarm.HttpResponse.Responseeditcollectdata
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.fragment_collect_new_data.*
@@ -249,10 +247,10 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         BtnUpdate.setOnClickListener {
             BtnUpdate.visibility = View.GONE
 
-            if (ed_value != null) {
+            if (ed_value.text.isNotEmpty()) {
                 getValueId = ed_value.text.toString()
-            } else if (dt_value != null) {
-                getValueId = ed_value.text.toString()
+            } else if (dt_value.text.isNotEmpty()) {
+                getValueId = dt_value.text.toString()
             } else {
                 getValueId = spinner_value.getSelectedItem().toString()
             }
@@ -353,7 +351,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 } else {
                     getValueId = spinner_value.getSelectedItem().toString()
                 }
-                duration = myduration?.text.toString()
+                duration = ed_duration?.text.toString()
                 val collectdata = CollectData(
                     id = dataa?.id.toString(),
                     result_id = resultid.toString(),
@@ -421,14 +419,14 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     btn_addmoreData.visibility = View.GONE
 
 //            if (!listmultipleData.isNullOrEmpty()) {
-                    if (ed_value != null) {
+                    if (ed_value.text.isNotEmpty()) {
                         edValue = ed_value.text.toString()
-                    } else if (dt_value != null) {
-                        dtvalue = ed_value.text.toString()
+                    } else if (dt_value.text.isNotEmpty()) {
+                        dtvalue = dt_value.text.toString()
                     } else {
                         spinnervalue = spinner_value.getSelectedItem().toString()
                     }
-                    duration = myduration?.text.toString()
+                    duration = ed_duration?.text.toString()
 
 
 
@@ -480,14 +478,14 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             } else {
 
                 var valuee: String = ""
-                if (ed_value != null) {
+                 if (ed_value != null) {
                     valuee = ed_value.text.toString()
                 } else if (dt_value != null) {
                     valuee = dt_value.text.toString()
                 } else {
                     valuee = spinner_value.getSelectedItem().toString()
                 }
-                duration = myduration?.text.toString()
+                duration = ed_duration?.text.toString()
 
                 recyclerview_addmultipledata?.layoutManager = LinearLayoutManager(requireContext())
 
@@ -510,11 +508,11 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 result?.setSelection(0)
                 unit?.setSelection(0)
                 sensonser.setSelection(0)
-                if (edValue != null) {
-                    value?.setText("")
+                if (!edValue.isNullOrEmpty()) {
+                    ed_value?.setText("")
 
-                } else if (dtvalue != null) {
-                    valuedate?.setText("")
+                } else if (!dtvalue.isNullOrEmpty()) {
+                    dt_value?.setText("")
 
                 } else {
                     valueSpinner?.setSelection(0)
@@ -534,15 +532,15 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         resultid: Int,
         spinnerUnitId: Int
     ) {
-        if (edValue != null) {
+        if (edValue.isNotEmpty()) {
 
-            callMySingleApi(edValue)
+            callMySingleApi(edValue,duration)
 
 
-        } else if (dtvalue != null) {
-            callMySingleApi(dtvalue)
+        } else if (dtvalue.isNotEmpty()) {
+            callMySingleApi(dtvalue,duration)
         } else {
-            callMySingleApi(spinnervalue)
+            callMySingleApi(spinnervalue,duration)
 
         }
 
@@ -672,7 +670,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
     }
 
-    private fun callMySingleApi(edValue: String) {
+    private fun callMySingleApi(edValue: String, duration: String) {
 
 
         if (edValue != null) {
@@ -685,9 +683,11 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
                 var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
                 val service = ApiClient.client.create(ApiInterFace::class.java)
+
 AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 "Resultid=="+resultid.toString()+"Collectid-"+ collectId.toString()+" edvalue="+edValue+" spinnerunit"+getSensorId.toString()+
-" sensorid="+sensorId.toString()+" duration"+duration+"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
+" sensorid="+sensorId.toString()+" duration"+ duration +"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
+
                 apiInterFace = service.storecollectdata(
                     packList?.id.toString(), resultid.toString(), collectId.toString(),
                     edValue, edValue, getSensorId.toString(), sensorId.toString(), duration,
@@ -762,7 +762,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                     new_value = edValue,
                     unit_id = getSensorId,
                     sensor_id = sensorId.toString(),
-                    duration = duration,
+                    duration =duration,
                     date = currentDate,
                     serverid = serverid.toString(),
                     created_at=currentDate

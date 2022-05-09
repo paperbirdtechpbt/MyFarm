@@ -17,6 +17,7 @@ class AppConstant {
 
             //packid
         val PACK_LIST_PACKID="packlistpackid"
+        val CONST_SELECTED_COM_GROUP="selected_communityGroup"
 
         //SharePreference
         val CONST_SHARED_PREF_NAME = "mysharedpreference"
@@ -750,6 +751,8 @@ class AppConstant {
         val COL_privileges_SERVERID="privileges_serverid"
         val COL_privileges_PRIMARYID="privileges_primary"
         val COL_privileges_NAME="privileges_name"
+
+
 
 
 
