@@ -1,6 +1,7 @@
 package com.pbt.myfarm.DataBase
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
@@ -5567,7 +5568,8 @@ fun collectDataCreate(pack: CollectData) {
     fun updatePackNew(
         packList1: PacksNew?,
         desciptioncompanian: String,
-        selectedCommunityGroup: String
+        selectedCommunityGroup: String,
+        context: Context
     ) {
         try {
             val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
@@ -5597,6 +5599,7 @@ fun collectDataCreate(pack: CollectData) {
             if (result >= 0) {
                 Toast.makeText(context, "Updated SuccessFully", Toast.LENGTH_SHORT).show()
                 AppUtils.logDebug(TAG, "updated Pacl")
+                (context as Activity).finish()
             } else {
 //                Toast.makeText(context, "Failed To Update", Toast.LENGTH_SHORT).show()
 

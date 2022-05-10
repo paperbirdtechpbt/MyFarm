@@ -157,45 +157,51 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
         btn_create_pack.setOnClickListener {
-            btn_create_pack.visibility = View.GONE
-            adapter?.callBackss()
-
-            if (AppUtils().isInternet(this)){
-            val listdata = ArrayList<String>()
-
-            if (successObject != null) {
-                for (i in 0 until successObject.length()) {
-                    listdata.add(successObject.getString(i))
-                }
-            }
-            val userId = MySharedPreference.getUser(this)?.id
-
-            if (desciptioncompanian!!.isEmpty()) {
-                Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
-                btn_create_pack.visibility= View.VISIBLE
-
+            if(desciptioncompanian.isNullOrEmpty()){
+                Toast.makeText(this, "Desription Is required", Toast.LENGTH_SHORT).show()
             }
             else{
-                val db=DbHelper(this,null)
+                btn_create_pack.visibility = View.GONE
+                adapter?.callBackss()
 
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .storePack(
-                        packconfiglist?.id.toString(),
-                        desciptioncompanian!!,
-                        selectedCommunityGroup,
-                        userId.toString(),
-                        successObject.toString(),
-                        packconfiglist?.name!!
-                    ).enqueue(this)
-            }
-        }
-           else{
-            val sucess=   viewmodel?.createPackOffline(this)
-                if (sucess == true){
-                    finish()
+                if (AppUtils().isInternet(this)){
+                    val listdata = ArrayList<String>()
+
+                    if (successObject != null) {
+                        for (i in 0 until successObject.length()) {
+                            listdata.add(successObject.getString(i))
+                        }
+                    }
+                    val userId = MySharedPreference.getUser(this)?.id
+
+                    if (desciptioncompanian!!.isEmpty()) {
+                        Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
+                        btn_create_pack.visibility= View.VISIBLE
+
+                    }
+                    else{
+                        val db=DbHelper(this,null)
+
+                        ApiClient.client.create(ApiInterFace::class.java)
+                            .storePack(
+                                packconfiglist?.id.toString(),
+                                desciptioncompanian!!,
+                                selectedCommunityGroup,
+                                userId.toString(),
+                                successObject.toString(),
+                                packconfiglist?.name!!
+                            ).enqueue(this)
+                    }
                 }
-           }
-           }
+                else{
+                    val sucess=   viewmodel?.createPackOffline(this)
+                    if (sucess == true){
+                        finish()
+                    }
+                }
+            }
+            }
+          
     }
 
     private fun addPackValue(list: String, name: String, idd: String) {

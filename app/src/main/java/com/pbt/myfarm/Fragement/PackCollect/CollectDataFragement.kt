@@ -78,7 +78,13 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
         viewmodel?.collectdatalist?.observe(
             viewLifecycleOwner,
             androidx.lifecycle.Observer { list ->
-
+                if (list.isNullOrEmpty()) {
+                    layout_nodata.visibility = View.VISIBLE
+                    progressbar_collectpack.visibility = View.GONE
+                } else {
+                    progressbar_collectpack.visibility = View.GONE
+                    layout_nodata.visibility = View.GONE
+                }
                 AppUtils.logDebug(TAG, "collectdataList===" + list.toString())
 
                 val mylist =
@@ -102,13 +108,7 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
                 }
 
                 recyclerview_collectdata?.adapter = adapter
-                if (list.isNullOrEmpty()) {
-                    layout_nodata.visibility = View.VISIBLE
-                    progressbar_collectpack.visibility = View.GONE
-                } else {
-                    progressbar_collectpack.visibility = View.GONE
-                    layout_nodata.visibility = View.GONE
-                }
+
 
 
             })
@@ -130,11 +130,12 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
                  val isSucess=   db.deleteCollectData(id)
 //                    if (isSucess){
 
-                    adapter?.notifyItemRemoved(position)
-                    initViewModel()
+//                    adapter?.notifyItemRemoved(position)
 
 //                    }
                 }
+                initViewModel()
+
 
             })
             .setNegativeButton(android.R.string.no, null)

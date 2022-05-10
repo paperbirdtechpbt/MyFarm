@@ -54,7 +54,9 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         val collectData = db.getCollectDataToBeSend(userID)
         collecrDataList = collectData
 
-        AppUtils.logError(TAG, "collectdaa" + collectData.toString())
+        AppUtils.logError(TAG, "packnew to be send" +
+                "" + Gson().toJson(collectData).toString())
+
 
         val evnet = db.getEventsTobeSend(userID)
         eventlist = evnet
@@ -64,18 +66,21 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         packlist = packnew
 
 
+
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
 
         var taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
         val taskObject = db.getTaskObject()
-//        taskobjectt = taskObject
+        taskobjectt = taskObject
+
 
         val task = db.getTasksToBeSend(userID)
         tasklist = task
 
-        senddata = SendDataMasterList(collectData, evnet, packnew, taskField, taskobject, task)
 
-        AppUtils.logDebug(TAG, "Events" + Gson().toJson(senddata).toString())
+
+        senddata = SendDataMasterList(collectData, evnet, packnew, taskField, taskObject, task)
+
 
         ApiClient.client.create(ApiInterFace::class.java).postJson(
             senddata
@@ -448,6 +453,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         try {
             if (response.body()?.error == false) {
+                AppUtils.logError(TAG,"Offline Data  Syc is SuccessFull")
                 if (!response.body()?.msg.isNullOrBlank()) {
 
                     if (!tasklist.isNullOrEmpty()) {

@@ -278,7 +278,7 @@ class UpdatePackFragement : Fragment(),
                 else{
 
                     val db = DbHelper(requireContext(), null)
-                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup,requireContext())
                 }
 
 
@@ -299,7 +299,7 @@ class UpdatePackFragement : Fragment(),
                 }
                 else{
                     val db = DbHelper(requireContext(), null)
-                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup,requireContext())
                 }
 
             }

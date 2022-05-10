@@ -160,13 +160,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             .show()
     }
 
-    private fun checkListEmptyOrNot(tasklist: ArrayList<ViewTaskModelClass>) {
-        if (tasklist.isEmpty()) {
-            layout_nodatavailable.visibility = View.VISIBLE
-        } else {
-            layout_nodatavailable.visibility = View.GONE
-        }
-    }
+
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         try {

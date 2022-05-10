@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
         }
 
-        if (!AppUtils().isInternet(this)){
+//        if (!AppUtils().isInternet(this)){
             val db=DbHelper(this,null)
           val  list=  db.getAllPrivilege()
             AppUtils.logDebug(TAG,"getAll Privilege"+list.toString())
@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
 
             setdata(privilegeListNameOffline)
-        }
+//        }
 
 
     }
