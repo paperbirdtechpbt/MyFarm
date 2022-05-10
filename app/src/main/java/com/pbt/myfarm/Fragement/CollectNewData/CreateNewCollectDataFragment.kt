@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.database.Cursor
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,8 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -26,6 +24,7 @@ import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.Fragement.CollectNewData.Adapter.AdapterAddmultiple
 import com.pbt.myfarm.Fragement.CollectNewData.Model.ListMultipleCollcetdata
 import com.pbt.myfarm.Fragement.PackCollect.CollectActivityList
+import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement
 import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement.Companion.collectDataId
 import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement.Companion.collectDataServerId
 import com.pbt.myfarm.Fragement.PackCollect.SensorsList
@@ -34,7 +33,6 @@ import com.pbt.myfarm.HttpResponse.Responseeditcollectdata
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.fragment_collect_new_data.*
@@ -43,7 +41,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val ARG_PARAM1 = "param1"
@@ -249,10 +246,10 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         BtnUpdate.setOnClickListener {
             BtnUpdate.visibility = View.GONE
 
-            if (ed_value != null) {
+            if (ed_value.text.isNotEmpty()) {
                 getValueId = ed_value.text.toString()
-            } else if (dt_value != null) {
-                getValueId = ed_value.text.toString()
+            } else if (dt_value.text.isNotEmpty()) {
+                getValueId = dt_value.text.toString()
             } else {
                 getValueId = spinner_value.getSelectedItem().toString()
             }
@@ -274,10 +271,12 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 val service = ApiClient.client.create(ApiInterFace::class.java)
 
                 AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
-                        "Resultid=="+getResultId.toString()+"Collectid-"+ collectDataId.toString()+" " +
-                        "edvalue="+getValueId+" spinnerunit"+ dataa?.sensor_id.toString().toString()+
-                        " sensorid="+sensorId.toString()+" duration"+duration+"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
-
+                        "Resultid=="+getResultId+"Collectid-"+ collectDataId+" " +
+                        "edvalue="+getValueId+" spinnerunit"+ getUnitId+
+                        " sensorid="+getSensorId+
+                        " duration"+ myduration!!.text.toString()+"userid"
+                        +MySharedPreference.getUser(requireContext())?.id.toString())
+//
                 val apiInterFace = service.updateCollectData(
                     MySharedPreference.getUser(requireContext())?.id.toString(),
                     packList?.id!!.toString(),
@@ -298,16 +297,22 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     ) {
                         try {
                             if (response.body()?.error == false) {
+
                                 Toast.makeText(
                                     requireContext(),
                                     "${response.body()?.msg}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 BtnUpdate.visibility = View.VISIBLE
+                                val transaction: FragmentTransaction =
+                                    activity!!.supportFragmentManager.beginTransaction()
+                                val fragment = CollectDataFragement()
 
-                                val intent = Intent(activity, UpdatePackActivity::class.java)
-                                intent.putExtra("fragment", "1")
-                                startActivity(intent)
+                                transaction.replace(R.id.container, fragment)
+
+//                                val intent = Intent(activity, UpdatePackActivity::class.java)
+//                                intent.putExtra("fragment", "1")
+//                                startActivity(intent)
                                 activity?.finish()
 
                             } else {
@@ -353,7 +358,11 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 } else {
                     getValueId = spinner_value.getSelectedItem().toString()
                 }
-                duration = myduration?.text.toString()
+                val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+                val currentDate = sdf.format(Date())
+
+
+                duration = ed_duration?.text.toString()
                 val collectdata = CollectData(
                     id = dataa?.id.toString(),
                     result_id = resultid.toString(),
@@ -364,7 +373,8 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     sensor_id = sensorId.toString(),
                     duration = duration,
                     serverid = dataa?.id.toString(),
-                    pack_id = packList?.id.toString()
+                    pack_id = packList?.id.toString(),
+                    updated_at = currentDate
                 )
                 AppUtils.logDebug(TAG, "btnUpdate CLick check datas" + collectdata.toString())
 
@@ -384,7 +394,8 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 listmultipleData.clear()
                 objectmultipleData = null
 
-            } else {
+            }
+            else {
 
                 if (collectActivity.selectedItemPosition == 0) {
                     Toast.makeText(
@@ -421,14 +432,14 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     btn_addmoreData.visibility = View.GONE
 
 //            if (!listmultipleData.isNullOrEmpty()) {
-                    if (ed_value != null) {
+                    if (ed_value.text.isNotEmpty()) {
                         edValue = ed_value.text.toString()
-                    } else if (dt_value != null) {
-                        dtvalue = ed_value.text.toString()
+                    } else if (dt_value.text.isNotEmpty()) {
+                        dtvalue = dt_value.text.toString()
                     } else {
                         spinnervalue = spinner_value.getSelectedItem().toString()
                     }
-                    duration = myduration?.text.toString()
+                    duration = ed_duration?.text.toString()
 
 
 
@@ -480,17 +491,16 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
             } else {
 
                 var valuee: String = ""
-                if (ed_value != null) {
+                 if (ed_value.text.isNotEmpty()) {
                     valuee = ed_value.text.toString()
-                } else if (dt_value != null) {
+                } else if (dt_value.text.isNotEmpty()) {
                     valuee = dt_value.text.toString()
                 } else {
                     valuee = spinner_value.getSelectedItem().toString()
                 }
-                duration = myduration?.text.toString()
-
+                duration = ed_duration?.text.toString()
                 recyclerview_addmultipledata?.layoutManager = LinearLayoutManager(requireContext())
-
+                spinnerUnitNAme
                 listmultipleData.add(
                     ListMultipleCollcetdata(
                         collectNAME, collectId.toString(),
@@ -501,6 +511,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                     )
                 )
                 Toast.makeText(requireContext(), "Added $collectNAME", Toast.LENGTH_SHORT).show()
+                AppUtils.logDebug(TAG,"Multiple Data ==>"+listmultipleData.toString())
 
                 adapterAddmultiple = AdapterAddmultiple(requireContext(), listmultipleData)
                 recyclerview_addmultipledata.adapter = adapterAddmultiple
@@ -510,11 +521,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 result?.setSelection(0)
                 unit?.setSelection(0)
                 sensonser.setSelection(0)
-                if (edValue != null) {
-                    value?.setText("")
+                if (ed_value.text.isNotEmpty()) {
+                    ed_value?.setText("")
 
-                } else if (dtvalue != null) {
-                    valuedate?.setText("")
+                } else if (dt_value.text.isNotEmpty()) {
+                    dt_value?.setText("")
+                    dt_value.visibility=View.GONE
+                    ed_value.visibility=View.VISIBLE
 
                 } else {
                     valueSpinner?.setSelection(0)
@@ -534,15 +547,15 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         resultid: Int,
         spinnerUnitId: Int
     ) {
-        if (edValue != null) {
+        if (edValue.isNotEmpty()) {
 
-            callMySingleApi(edValue)
+            callMySingleApi(edValue,duration)
 
 
-        } else if (dtvalue != null) {
-            callMySingleApi(dtvalue)
+        } else if (dtvalue.isNotEmpty()) {
+            callMySingleApi(dtvalue,duration)
         } else {
-            callMySingleApi(spinnervalue)
+            callMySingleApi(spinnervalue,duration)
 
         }
 
@@ -564,13 +577,13 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
                 if (objectmultipleDataa != null) {
                     apiInterFace = service.storecollectdata(
                         packList?.id.toString(),
-                        objectmultipleDataa.resultID,
-                        objectmultipleDataa.activityID,
-                        objectmultipleDataa.valueID,
-                        objectmultipleDataa.valueID,
-                        objectmultipleDataa.unitID,
-                        objectmultipleDataa.sensorID,
-                        objectmultipleDataa.duration,
+                        objectmultipleDataa.resultID!!,
+                        objectmultipleDataa.activityID!!,
+                        objectmultipleDataa.valueID!!,
+                        objectmultipleDataa.valueID!!,
+                        objectmultipleDataa.unitID!!,
+                        objectmultipleDataa.sensorID!!,
+                        objectmultipleDataa.duration!!,
                         MySharedPreference.getUser(requireContext())?.id.toString(),
                     )
                 } else {
@@ -672,7 +685,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
     }
 
-    private fun callMySingleApi(edValue: String) {
+    private fun callMySingleApi(edValue: String, duration: String) {
 
 
         if (edValue != null) {
@@ -685,9 +698,11 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
 
                 var apiInterFace: Call<ResponseCollectAcitivityResultList>? = null
                 val service = ApiClient.client.create(ApiInterFace::class.java)
+
 AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 "Resultid=="+resultid.toString()+"Collectid-"+ collectId.toString()+" edvalue="+edValue+" spinnerunit"+getSensorId.toString()+
-" sensorid="+sensorId.toString()+" duration"+duration+"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
+" sensorid="+sensorId.toString()+" duration"+ duration +"userid"+MySharedPreference.getUser(requireContext())?.id.toString())
+
                 apiInterFace = service.storecollectdata(
                     packList?.id.toString(), resultid.toString(), collectId.toString(),
                     edValue, edValue, getSensorId.toString(), sensorId.toString(), duration,
@@ -744,7 +759,8 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                     }
 
                 })
-            } else {
+            }
+            else {
 
                 val sdf = SimpleDateFormat("yyyy-M-dd hh:mm:ss")
                 val currentDate = sdf.format(Date())
@@ -753,7 +769,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                 val lastvalue = db?.getLastofCollectData()
                 val serverid = lastvalue?.toInt()!! + 1
 
-//
+
                 val collectdata = CollectData(
                     id = packList?.id.toString(),
                     result_id = resultid.toString(),
@@ -762,10 +778,10 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                     new_value = edValue,
                     unit_id = getSensorId,
                     sensor_id = sensorId.toString(),
-                    duration = duration,
+                    duration =duration,
                     date = currentDate,
                     serverid = serverid.toString(),
-                    created_at=currentDate
+                    created_at=currentDate,
                 )
 
 
@@ -872,6 +888,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                     if (i == position) {
                         sensorId = sensorlist.get(i).id.toInt()
                         sensorNAME = sensorlist.get(i).name
+
                         getSensorId = sensorId.toString()
 
 
@@ -928,6 +945,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
     }
 
     private fun initViewModel() {
+
         viewmodel = ViewModelProvider(this).get(CollectNewDataViewModel::class.java)
         viewmodel?.progressbar = progressbar_collectnewdata
         viewmodel?.onCollectDataFieldList(requireContext())
@@ -1124,6 +1142,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                 android.R.layout.simple_spinner_dropdown_item, unitListname
             )
             unit?.adapter = adapter
+            setunitListner(unitListname,unitList)
             if (dataa?.unit_id != null) {
 
                 for (i in 0 until unitListname.size) {
@@ -1198,6 +1217,39 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 //            }
 //
 //        })
+    }
+
+    private fun setunitListner(unitListname: ArrayList<String>, unitList: ArrayList<UnitList>) {
+        spinner_units?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                for (i in 0 until unitListname.size) {
+                    val item=unitListname.get(i)
+                    if (i == position) {
+                        spinnerUnitNAme = unitList.get(position).name.toString()
+
+                        spinnerUnitId = unitList.get(i).id!!.toInt()
+
+                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitNAme.toString()
+                        )
+
+//                        callResultValueApi(resultid.toString())
+                        getSensorId = spinnerUnitId.toString()
+
+                    }
+                }
+
+            }
+
+        }
     }
 
     private fun setUnitSpinner(
@@ -1290,11 +1342,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 
 
 
-
-
-
-
-        unit?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        spinner_units?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
@@ -1306,11 +1354,15 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
                 id: Long
             ) {
                 for (i in 0 until unitListname.size) {
+                    val item=unitListname.get(i)
                     if (i == position) {
+                        spinnerUnitNAme = unitList.get(position).name.toString()
+
                         spinnerUnitId = unitList.get(i).id!!.toInt()
-                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitId.toString()
+
+                        AppUtils.logDebug(TAG,"spinnerunitid++++"+spinnerUnitNAme.toString()
                         )
-                        spinnerUnitNAme = unitList.get(i).name!!
+
 //                        callResultValueApi(resultid.toString())
                         getSensorId = spinnerUnitId.toString()
 
@@ -1323,18 +1375,7 @@ AppUtils.logDebug(TAG,"CallMySingApi====="+"pacjid-"+packList?.id.toString()+
 
     }
 
-    private fun checkInternetConnection(): Boolean {
 
-        val ConnectionManager =
-            requireContext().getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        if (networkInfo != null && networkInfo.isConnected == true) {
-            return true
-        } else {
-            return false
-        }
-
-    }
 
     private fun updateLabel(dtValue: EditText, time: String) {
         val myFormat = "yyyy-MM-dd"

@@ -391,9 +391,13 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
             }
 
             if (!packconfigList.isNullOrEmpty()) {
+//                PackActivity.desciptioncompanian=pack
                 for (i in 0 until packconfigList.size) {
-                    arrayID!!.add("0")
-                    arrayName!!.add("0")
+                    val item= packconfigList.get(i)
+//                    arrayID!!.add("0")
+//                    arrayName!!.add("0")
+                    arrayID!!.add(item.field_id.toString())
+                    arrayName!!.add(item.field_value.toString())
                     arrayIDKey!!.add("f_id")
                     arrayNameKey!!.add("f_value")
                 }

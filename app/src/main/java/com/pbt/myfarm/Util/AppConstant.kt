@@ -13,8 +13,9 @@ class AppConstant {
         const val CONST_USERROLE = "userrole"
         const val CONST_USERPASS = "userpass"
 
-        //packid
-        const val PACK_LIST_PACKID = "packlistpackid"
+           //packid
+        val PACK_LIST_PACKID="packlistpackid"
+        val CONST_SELECTED_COM_GROUP="selected_communityGroup"
 
         //SharePreference
         const val CONST_SHARED_PREF_NAME = "mysharedpreference"

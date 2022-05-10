@@ -17,8 +17,10 @@ import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
+import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
+import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.selectedcom_Group_companian
 import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigName
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
@@ -185,10 +187,12 @@ class CreatePackAdapter(
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
                     holder.desciption.setText(packList?.description)
+                        desciptioncompanian=packList?.description
 
                     holder.name.setText("")
                 } else {
                     holder.desciption.setText(packList?.description)
+                    desciptioncompanian=packList?.description
                     holder.name.setText(valued)
                 }
             } else {
@@ -234,6 +238,7 @@ class CreatePackAdapter(
 
         } else if (fieldtype == "Date") {
             holder.desciption.setText(packList?.description)
+            desciptioncompanian=packList?.description
 
 
             holder.name.visibility = View.GONE
@@ -521,6 +526,11 @@ class CreatePackAdapter(
                 ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communityGroup.setAdapter(aa)
+
+            if (!selectedcom_Group_companian.isNullOrEmpty()){
+                communityGroup.setSelection(selectedcom_Group_companian?.toDouble()?.toInt()!!-1)
+            }
+
             boolean = false
 //            },1000)
 

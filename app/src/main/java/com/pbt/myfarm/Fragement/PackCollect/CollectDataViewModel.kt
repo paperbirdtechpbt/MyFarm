@@ -44,7 +44,7 @@ class CollectDataViewModel (val activity: Application
         }
         else{
             val db = DbHelper(context, null)
-            var  collectlist = db.getAllCollectData(packList?.id.toString())
+            val  collectlist = db.getAllCollectData(packList?.id.toString())
             if (collectlist.isNotEmpty()){
                 progressBar?.visibility= View.GONE
 

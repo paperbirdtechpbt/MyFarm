@@ -18,14 +18,15 @@ import com.pbt.myfarm.Activity.UpDatePack.UpdatePackActivity
 import com.pbt.myfarm.Activity.ViewPackViewModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.PackList
 import com.pbt.myfarm.PacksNew
+import com.pbt.myfarm.PackList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_LIST_SIZE
 import com.pbt.myfarm.Util.AppConstant.Companion.CON_PACK_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SELECTED_COM_GROUP
 import com.pbt.myfarm.Util.AppUtils
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_pack.*
@@ -34,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.collections.ArrayList
 
 
 class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
@@ -52,7 +54,8 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         var packList: PacksNew? = null
         var updatePackBoolen = false
 
-        var desciptioncompanian: String? = null
+            var desciptioncompanian: String?=null
+            var selectedcom_Group_companian: String?=null
 
     }
 
@@ -81,8 +84,66 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             val intent = Intent(this, PackConfigListActivity::class.java)
             intent.putExtra(CONST_LIST_SIZE, listsize)
             startActivity(intent)
+
         }
     }
+
+
+    private fun setDatafromlocal() {
+
+
+        db = DbHelper(this, null)
+        val   packconfig= db?.getAllPackConfig()
+        val packlist = db?.getAllPack()
+//            progressViewPack.visibility=View.GONE
+
+        val packsnew = ArrayList<PacksNew>()
+        packlist?.forEach { routes ->
+            if (packconfig!!.isNotEmpty()){
+                for (i in 0 until  packconfig.size){
+                    if (routes.pack_config_id==packconfig.get(i).id.toString()){
+                        val configname=packconfig.get(i).name_prefix
+                        if (configname!=null){
+                            routes.padzero= configname+ routes.name!!.padStart(4, '0')
+                        }
+                        else{
+                            routes.padzero= routes.name!!.padStart(4, '0')
+                        }
+                        routes.type=" Type: "
+                        routes.labeldesciption=" Desciption: "
+                    }
+                }
+            }
+            packsnew.add(routes)
+        }
+        packsnew.removeAt(0 )
+        tasklistSize.setText("Total Tasks-" + packsnew.size)
+
+        adapter = AdapterViewPack(this, packsnew) { position, packname, boolean, list ->
+            packList = list
+            if (boolean) {
+                showAlertDailog(packname, position, list)
+            } else {
+
+                updatePackBoolen = true
+
+                val intent = Intent(this, UpdatePackActivity::class.java)
+                startActivity(intent)
+
+                selectedcom_Group_companian=list.com_group.toString()
+            }
+        }
+
+        recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
+        recyclerview_viewtask.adapter = adapter
+
+
+
+
+
+    }
+
+
 
     private fun initViewModel() {
         viewModel = ViewModelProvider(
@@ -95,28 +156,26 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
         viewModel?.packlist?.observe(this, androidx.lifecycle.Observer { packlist ->
 
-            if (!packlist.isNullOrEmpty()) {
-                progressViewPack.visibility = View.GONE
+            if (!packlist.isNullOrEmpty()){
+                progressViewPack.visibility=View.GONE
             }
 
-            progressbar_createPackActivity?.visibility = View.GONE
+            progressbar_createPackActivity?.visibility= View.GONE
 
             tasklistSize.setText("Total Tasks-" + packlist.size)
             adapter = AdapterViewPack(this, packlist!!) { position, packname, boolean, list ->
-
-                Log.d("PackactivityAcj", "Pack ID ${list.id}")
-
-
                 packList = list
+                AppUtils.logDebug(TAG,"packListt=="+list.toString())
                 if (boolean) {
                     showAlertDailog(packname, position, packList!!)
-                } else {
+                }
+                else {
                     val intent = Intent(this, UpdatePackActivity::class.java)
-                    intent.putExtra(CON_PACK_ID,list.id.toString())
+                  selectedcom_Group_companian=list.com_group.toString()
+
                     startActivity(intent)
                 }
             }
-
             val linearLayoutManager = LinearLayoutManager(this)
             linearLayoutManager.reverseLayout = true
             linearLayoutManager.stackFromEnd = true
@@ -131,15 +190,19 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             .setMessage("Are you sure you want to Delete $taskname") // Specifying a listener allows you to take an action before dismissing the dialog.
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
-                    if (AppUtils().isInternet(this)) {
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .deletePack(list.id.toString())
+                    if (AppUtils().isInternet(this)){
+                        ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id.toString())
                             .enqueue(this)
-                    } else {
-                        val db = DbHelper(this, null)
-                        db.deletePackNew(list.id.toString())
                     }
-                    initViewModel()
+                    else{
+                        val db=DbHelper(this,null)
+                        db.deletePackNew(list.id.toString())
+                        initViewModel()
+
+                    }
+
+//                    setDatafromlocal()
+//                    adapter?.notifyItemRemoved(position)
 
                 })
             .setNegativeButton(android.R.string.no, null)
@@ -149,7 +212,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     override fun onResume() {
         super.onResume()
-        desciptioncompanian = ""
+        desciptioncompanian=""
 
         initViewModel()
         adapter?.notifyDataSetChanged()
@@ -157,7 +220,12 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         if (response.body()?.error == false) {
-            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
+            initViewModel()
+//            Toast.makeText(this, "Pack Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
+//            val intent = Intent(this, PackActivity::class.java)
+//            startActivity(intent)
+//            finish()
         }
     }
 
