@@ -5,16 +5,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-
 import android.view.View
 import android.widget.ProgressBar
-
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
-import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayID
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayIDKey
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
@@ -27,16 +24,12 @@ import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
-
 import retrofit2.Call
-
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class PackViewModel(val activity: Application) : AndroidViewModel(activity),
@@ -59,8 +52,10 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
     @SuppressLint("StaticFieldLeak")
     val context: Context = activity
     var configlist = MutableLiveData<List<PackConfigFieldList>>()
+
     @SuppressLint("StaticFieldLeak")
     lateinit var activityContext: Activity
+
     @SuppressLint("StaticFieldLeak")
     var progressbar: ProgressBar? = null
 
@@ -98,8 +93,8 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 //
 //    }
 
-    fun createPackOffline(context: Context):Boolean {
-         var sucess=false
+    fun createPackOffline(context: Context): Boolean {
+        var sucess = false
 
         val db = DbHelper(context, null)
         var packsnew: PacksNew? = null
@@ -109,56 +104,62 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val currentDate = sdf.format(Date())
 
-        val lastValueOfPacknew=db.getLastofPackNew()
-        val idd=lastValueOfPacknew.toInt()+1
-        AppUtils.logDebug(TAG,"idddddd======="+idd)
+        val lastValueOfPacknew = db.getLastofPackNew()
+        val idd = lastValueOfPacknew.toInt() + 1
+        AppUtils.logDebug(TAG, "idddddd=======" + idd)
 
         if (d.isEmpty()) {
-            packsnew= PacksNew(null, MainActivity.selectedCommunityGroup.toInt(),
-                userid,currentDate,null, PackActivity.desciptioncompanian,idd,
-                null,null,null,null,
-                "1",packconfiglist?.id.toString(),labelPackConfigPrefix,
-                null,null,null,"1")
+            packsnew = PacksNew(
+                null, MainActivity.selectedCommunityGroup.toInt(),
+                userid, currentDate, null, PackActivity.desciptioncompanian, idd,
+                null, null, null, null,
+                "1", packconfiglist?.id.toString(), labelPackConfigPrefix,
+                null, null, null, "1"
+            )
 
-            sucess=   db.addNewPackOffline(packsnew,"1")
+            sucess = db.addNewPackOffline(packsnew, "1")
 
-        }
-
-
-
-        else{
+        } else {
             val newPackname: Int = d.toInt() + 1
-            packsnew= PacksNew(null, MainActivity.selectedCommunityGroup.toInt(),
-                userid,currentDate,null, PackActivity.desciptioncompanian,idd,
-                null,null,null,null,
-                newPackname.toString(),packconfiglist?.id.toString(),labelPackConfigPrefix,
-                null,null,null,"1")
+            packsnew = PacksNew(
+                null, MainActivity.selectedCommunityGroup.toInt(),
+                userid, currentDate, null, PackActivity.desciptioncompanian, idd,
+                null, null, null, null,
+                newPackname.toString(), packconfiglist?.id.toString(), labelPackConfigPrefix,
+                null, null, null, "1"
+            )
 
 
-            sucess=     db.addNewPackOffline(packsnew,"1")
-
-        }
-    return sucess}
-
-
-    fun onConfigFieldList(context: Context, updateTaskIdBoolean: Boolean, packconfigid: String,packid:String) {
-
-        if (AppUtils().isInternet(context)){
-                    if (updateTaskIdBoolean){
-            ApiClient.client.create(ApiInterFace::class.java)
-                .packConfigFieldList(
-                    MySharedPreference.getUser(context)?.id.toString(),
-                    packconfigid, packid
-                ).enqueue(this)
+            sucess = db.addNewPackOffline(packsnew, "1")
 
         }
-        else{
-            ApiClient.client.create(ApiInterFace::class.java)
-                .packConfigFieldList(MySharedPreference.getUser(context)?.id.toString(),
-                    packconfigid,"").enqueue(this)
-        }
-        }
-        else {
+        return sucess
+    }
+
+
+    fun onConfigFieldList(
+        context: Context,
+        updateTaskIdBoolean: Boolean,
+        packconfigid: String,
+        packid: String
+    ) {
+
+        if (AppUtils().isInternet(context)) {
+            if (updateTaskIdBoolean) {
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .packConfigFieldList(
+                        MySharedPreference.getUser(context)?.id.toString(),
+                        packconfigid, packid
+                    ).enqueue(this)
+
+            } else {
+                ApiClient.client.create(ApiInterFace::class.java)
+                    .packConfigFieldList(
+                        MySharedPreference.getUser(context)?.id.toString(),
+                        packconfigid, ""
+                    ).enqueue(this)
+            }
+        } else {
 
 
             val db = DbHelper(context, null)
@@ -179,12 +180,16 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
             progressbar?.visibility = View.GONE
             var list = ArrayList<PackConfigField>()
             if (updateTaskIdBoolean) {
-                list = db.getPackConfigFieldList(packList?.pack_config_id.toString(),true,packList?.id.toString())
+                list = db.getPackConfigFieldList(
+                    packList?.pack_config_id.toString(),
+                    true,
+                    packList?.id.toString()
+                )
                 AppUtils.logDebug(TAG, "fieldlist" + list.size)
 
             } else {
 
-                list = db.getPackConfigFieldList(packconfiglist?.id.toString(),false,"")
+                list = db.getPackConfigFieldList(packconfiglist?.id.toString(), false, "")
                 AppUtils.logDebug(TAG, "fieldlist" + list.size)
 
             }
@@ -212,8 +217,9 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
             val packConfigField = ArrayList<PackConfigFieldList>()
             if (list.size >= 1) {
-                AppUtils.logDebug(TAG,"packconfigfieldlis-=-=-="+packconfigList.size.toString()+
-                        " list=-=-=-"+list.size.toString()
+                AppUtils.logDebug(
+                    TAG, "packconfigfieldlis-=-=-=" + packconfigList.size.toString() +
+                            " list=-=-=-" + list.size.toString()
                 )
 
                 for (i in 0 until packconfigList.size) {
@@ -242,8 +248,10 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
                                 val itm = fieldList.get(i)
                                 packfieldList.add(
-                                    PackFieldList(itm.id.toString(), itm.name,
-                                        null, null, null)
+                                    PackFieldList(
+                                        itm.id.toString(), itm.name,
+                                        null, null, null
+                                    )
                                 )
 
                             }
@@ -317,8 +325,10 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
 
                                 val itm = fieldList.get(i)
                                 packfieldList.add(
-                                    PackFieldList(itm.id.toString(), itm.name,
-                                        null, null, null)
+                                    PackFieldList(
+                                        itm.id.toString(), itm.name,
+                                        null, null, null
+                                    )
                                 )
 
                             }
@@ -387,13 +397,7 @@ class PackViewModel(val activity: Application) : AndroidViewModel(activity),
                     arrayIDKey!!.add("f_id")
                     arrayNameKey!!.add("f_value")
                 }
-                AppUtils.logDebug(
-                    TAG,
-                    "arrayid" + CreatePackActivity.arrayID + "\n" + CreatePackActivity.arrayName
-                )
-
             }
-
 
             configlist.value = packconfigList
             var comConfigFieldList: ArrayList<PackCommunityList>? = null

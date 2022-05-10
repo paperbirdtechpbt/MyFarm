@@ -5,14 +5,12 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
-
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.PackConfig
-
 import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -20,13 +18,12 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
 import retrofit2.Response
-import java.lang.Exception
 
 class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
     retrofit2.Callback<PackListModel> {
 
-    var database : DbHelper?=null
-    var packconfigList=ArrayList<PackConfig>()
+    var database: DbHelper? = null
+    var packconfigList = ArrayList<PackConfig>()
 
     companion object {
         const val TAG: String = "ViewPackViewModel"
@@ -48,72 +45,61 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 
     }
 
-
-//        fun onPackListRequest(context: Context) {
-//        val id= MySharedPreference.getUser(context)?.id.toString()
-//        ApiClient.client.create(ApiInterFace::class.java)
-//            .packList(id).enqueue(this)
-//
-//    }
     fun onPackListRequest(context: Context) {
-    if (AppUtils().isInternet(context)){
-        val id= MySharedPreference.getUser(context)?.id.toString()
+        if (AppUtils().isInternet(context)) {
+            val id = MySharedPreference.getUser(context)?.id.toString()
 
-        database = DbHelper(context, null)
+            database = DbHelper(context, null)
 
-        ApiClient.client.create(ApiInterFace::class.java)
-            .packList(id).enqueue(this)
-    }
-    else{
+            ApiClient.client.create(ApiInterFace::class.java)
+                .packList(id).enqueue(this)
+        } else {
 
-       val database = DbHelper(context, null)
-        val   packconfig= database.getAllPackConfig()
-        val pcklist = database.getAllPack()
+            val database = DbHelper(context, null)
+            val packconfig = database.getAllPackConfig()
+            val pcklist = database.getAllPack()
 
-        AppUtils.logDebug(TAG,"packlist full"+pcklist.toString())
+            AppUtils.logDebug(TAG, "packlist full" + pcklist.toString())
 
-        val packsnew = java.util.ArrayList<PacksNew>()
-        pcklist.forEach { routes ->
-            if (packconfig.isNotEmpty()){
-                for (i in 0 until  packconfig.size){
-                    if (routes.pack_config_id==packconfig.get(i).id.toString()){
-                        val configname=packconfig.get(i).name_prefix
-                        if (configname!=null){
-                            routes.padzero= configname+ routes.name!!.padStart(4, '0')
+            val packsnew = java.util.ArrayList<PacksNew>()
+            pcklist.forEach { routes ->
+                if (packconfig.isNotEmpty()) {
+                    for (i in 0 until packconfig.size) {
+                        if (routes.pack_config_id == packconfig.get(i).id.toString()) {
+                            val configname = packconfig.get(i).name_prefix
+                            if (configname != null) {
+                                routes.padzero = configname + routes.name!!.padStart(4, '0')
+                            } else {
+                                routes.padzero = routes.name!!.padStart(4, '0')
+                            }
+                            routes.type = " Type: "
+                            routes.labeldesciption = " Desciption: "
+                            routes.pack_config_name = packconfig.get(i).name.toString()
                         }
-                        else{
-                            routes.padzero= routes.name!!.padStart(4, '0')
-                        }
-                        routes.type=" Type: "
-                        routes.labeldesciption=" Desciption: "
-                        routes.pack_config_name= packconfig.get(i).name.toString()
                     }
-                }
-            }
-            else{
-                val configname=routes.name_prefix
-                if (configname!=null){
-                    routes.padzero= configname+ routes.name!!.padStart(4, '0')
-                }
-                else{
-                    routes.padzero= routes.name!!.padStart(4, '0')
-                }
-                routes.type=" Type: "
-                routes.labeldesciption=" Desciption: "
-                routes.pack_config_name= routes.pack_config_name.toString()
+                } else {
+                    val configname = routes.name_prefix
+                    if (configname != null) {
+                        routes.padzero = configname + routes.name!!.padStart(4, '0')
+                    } else {
+                        routes.padzero = routes.name!!.padStart(4, '0')
+                    }
+                    routes.type = " Type: "
+                    routes.labeldesciption = " Desciption: "
+                    routes.pack_config_name = routes.pack_config_name.toString()
 
+                }
+                packsnew.add(routes)
             }
-            packsnew.add(routes)
+            if (packsnew.size >= 1) {
+                packsnew.removeAt(0)
+                packlist.value = packsnew
+            }
         }
-        if (packsnew.size>=1){
-            packsnew.removeAt(0 )
-            packlist.value=packsnew
-        }
-    }
     }
 
     override fun onResponse(call: Call<PackListModel>, response: Response<PackListModel>) {
-        try{
+        try {
             if (response.body()?.error == false) {
                 packlist.value = emptyList()
                 val packListModel: PackListModel = Gson().fromJson(
@@ -121,22 +107,21 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                     PackListModel::class.java
                 )
                 val upCommingPackList = ArrayList<PacksNew>()
-                packconfigList= database!!.getAllPackConfig()
+                packconfigList = database!!.getAllPackConfig()
 
                 packListModel.data.forEach { routes ->
-                    if (packconfigList.isNotEmpty()){
-                        for (i in 0 until  packconfigList.size){
-                            if (routes.pack_config_id==packconfigList.get(i).id.toString()){
-                                val configname=packconfigList.get(i).name_prefix
-                                if (configname!=null){
-                                    routes.padzero= configname+ routes.name!!.padStart(4, '0')
+                    if (packconfigList.isNotEmpty()) {
+                        for (i in 0 until packconfigList.size) {
+                            if (routes.pack_config_id == packconfigList.get(i).id.toString()) {
+                                val configname = packconfigList.get(i).name_prefix
+                                if (configname != null) {
+                                    routes.padzero = configname + routes.name!!.padStart(4, '0')
+                                } else {
+                                    routes.padzero = routes.name!!.padStart(4, '0')
                                 }
-                                else{
-                                    routes.padzero= routes.name!!.padStart(4, '0')
-                                }
-                                routes.type=" Type: "
-                                routes.labeldesciption=" Desciption: "
-                                routes.pack_config_name= packconfigList.get(i).name.toString()
+                                routes.type = " Type: "
+                                routes.labeldesciption = " Desciption: "
+                                routes.pack_config_name = packconfigList.get(i).name.toString()
 
                             }
                         }
@@ -166,7 +151,6 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
 //                }
 
 
-
                     upCommingPackList.add(routes)
 //
 //                viewPackModeClass.add(ViewPackModelClass(routes.id,routes.name,routes.name_prefix,
@@ -184,9 +168,8 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                 AppUtils.logDebug(TAG, "Something went Wrong")
             }
 
-        }
-        catch (e:Exception){
-            AppUtils.logDebug(TAG,e.message.toString())
+        } catch (e: Exception) {
+            AppUtils.logDebug(TAG, e.message.toString())
         }
 
     }
@@ -205,8 +188,7 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
         try {
             progressBAr?.visibility = View.GONE
 
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             progressBAr?.visibility = View.GONE
 
         }

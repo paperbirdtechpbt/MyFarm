@@ -11,18 +11,25 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import android.widget.Toast
-import com.google.gson.Gson
 import com.pbt.myfarm.*
-import com.pbt.myfarm.Activity.Event.*
 import com.pbt.myfarm.Activity.Event.Data
-import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.Graph.ListCharts
+import com.pbt.myfarm.Activity.Graph.ListLines
+import com.pbt.myfarm.Activity.Graph.ListPoints
+import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
 import com.pbt.myfarm.Unit
-import com.pbt.myfarm.Util.AppConstant
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHARTS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_RESULT_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_LISTS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_LOCAL_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKNEW_Status
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIG_ID
@@ -64,22 +71,22 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activity_results_un
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activity_results_unit_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activity_results_unit_UNITID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_CREATEDBY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_CollectActivityId
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_DELETED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_DELETED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_DURATION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_NEWVALUE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_DURATION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_VALUE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_ResulId
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_ResultClass
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_RESULE_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_SENSORID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_SERVERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_UNITID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_UPDATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_UPDATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_data_pack_id
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_PACK_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_COMM_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_CREATED_BY
@@ -206,11 +213,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_GRAPH_C
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LAST_CHANGED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LAST_CHANGED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_LINETYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_REF_CLTL_POINT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_RESULT_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_objects_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_CHARTID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_CreateAt
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_chart_points_DURATION
@@ -230,15 +233,12 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_OBJECTCLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_ORDINATE_TITLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_TITLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CHOICE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CHOICE_COM_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_COM_GROUP_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_LISTID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_UPDATED_AT
@@ -398,9 +398,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_CONTAINER
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_FUNCTION
-
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_LASTCHANGEDDATE
-
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_PRIMARYID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_STATUS
@@ -499,6 +497,8 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_GRAPH_CHARTS
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LIST_CHOICES
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACKCONFIG
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activities
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results
@@ -513,8 +513,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_events
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_objects
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_points
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_charts
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_list_choices
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_lists
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_collect_activity
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_config_fields
@@ -539,7 +537,6 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -758,20 +755,20 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val collect_data = ("CREATE TABLE " + TABLE_collect_data + " ("
                 + COL_collect_data_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_collect_data_SERVERID + " TEXT," +
+                COL_COLLECT_DATA_ID + " TEXT," +
                 COL_collect_data_STATUS + " TEXT," +
-                COL_collect_data_pack_id + " TEXT," +
+                COL_COLLECT_DATA_PACK_ID + " TEXT," +
                 COL_collect_data_ResulId + " TEXT," +
-                COL_collect_data_ResultClass + " TEXT," +
+                COL_COLLECT_DATA_RESULE_CLASS + " TEXT," +
                 COL_collect_data_CollectActivityId + " TEXT," +
-                COL_collect_data_NEWVALUE + " TEXT," +
+                COL_COLLECT_DATA_VALUE + " TEXT," +
                 COL_collect_data_UNITID + " TEXT," +
                 COL_collect_data_SENSORID + " TEXT," +
                 COL_collect_data_CREATEDBY + " TEXT," +
-                COL_collect_data_DURATION + " TEXT," +
+                COL_COLLECT_DATA_DURATION + " TEXT," +
                 COL_collect_data_UPDATED_BY + " TEXT," +
                 COL_collect_data_DELETED_BY + " TEXT," +
-                COL_collect_data_CREATED_AT + " TEXT," +
+                COL_COLLECT_DATA_CREATED_AT + " TEXT," +
                 COL_collect_data_UPDATED_AT + " TEXT," +
                 COL_collect_data_DELETED_AT + " TEXT " + ")")
         db?.execSQL(collect_data)
@@ -1123,9 +1120,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         //ravi -offline---------table-----graph_charts
 
-        val graph_charts = ("CREATE TABLE " + TABLE_graph_charts + " ("
+        val graph_charts = ("CREATE TABLE " + TABLE_GRAPH_CHARTS + " ("
                 + COL_graph_charts_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_graph_charts_SERVERID + " TEXT," +
+                COL_GRAPH_CHARTS_ID + " TEXT," +
                 COL_graph_charts_NAME + " TEXT," +
                 COL_graph_charts_DESCIPTION + " TEXT," +
                 COL_graph_charts_OBJECTCLASS + " TEXT," +
@@ -1143,13 +1140,13 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val graph_chart_objects = ("CREATE TABLE " + TABLE_graph_chart_objects + " ("
                 + COL_graph_chart_objects_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_graph_chart_objects_SERVERID + " TEXT," +
+                COL_GRAPH_CHART_OBJECT_ID + " TEXT," +
                 COL_graph_chart_objects_CHARTID + " TEXT," +
-                COL_graph_chart_objects_NAME + " TEXT," +
+                COL_GRAPH_CHART_OBJECT_NAME + " TEXT," +
                 COL_graph_chart_objects_LINETYPE + " TEXT," +
                 COL_graph_chart_objects_GRAPH_CHARTID + " TEXT," +
-                COL_graph_chart_objects_RESULT_CLASS + " TEXT," +
-                COL_graph_chart_objects_REF_CLTL_POINT + " TEXT," +
+                COL_GRAPH_CHART_OBJECT_RESULT_CLASS + " TEXT," +
+                COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT + " TEXT," +
                 COL_graph_chart_objects_CREATED_BY + " TEXT," +
                 COL_graph_chart_objects_CREATED_DATE + " TEXT," +
                 COL_graph_chart_objects_LAST_CHANGED_BY + " TEXT," +
@@ -1188,12 +1185,12 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         //ravi -offline---------table-----list_choices
 
-        val list_choices = ("CREATE TABLE " + TABLE_list_choices + " ("
+        val list_choices = ("CREATE TABLE " + TABLE_LIST_CHOICES + " ("
                 + COL_list_choices_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
                 COL_list_choices_SERVERID + " TEXT," +
-                COL_list_choices_LISTID + " TEXT," +
+                COL_LIST_CHOICES_LISTS_ID + " TEXT," +
                 COL_list_choices_CHOICE + " TEXT," +
-                COL_list_choices_NAME + " TEXT," +
+                COL_LIST_CHOICES_NAME + " TEXT," +
                 COL_list_choices_CHOICE_COM_GROUP + " TEXT," +
                 COL_list_choices_COM_GROUP_ID + " TEXT," +
                 COL_list_choices_CREATED_AT + " TEXT," +
@@ -1551,26 +1548,26 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var isAdded = false
         try {
 
-                val values = ContentValues()
-                values.put(COL_task_objects_TASKID, pack.task_id)
-                values.put(COL_task_objects_FUNCTION, pack.function)
-                values.put(COL_task_objects_CONTAINER, pack.container)
-                values.put(COL_task_objects_STATUS, status)
-                values.put(COL_task_objects_LASTCHANGEDDATE, pack.last_changed_date)
+            val values = ContentValues()
+            values.put(COL_task_objects_TASKID, pack.task_id)
+            values.put(COL_task_objects_FUNCTION, pack.function)
+            values.put(COL_task_objects_CONTAINER, pack.container)
+            values.put(COL_task_objects_STATUS, status)
+            values.put(COL_task_objects_LASTCHANGEDDATE, pack.last_changed_date)
 
 
-                val db = this.writableDatabase
-                val result = db.insert(TABLE_task_objects, null, values)
-                db.close()
+            val db = this.writableDatabase
+            val result = db.insert(TABLE_task_objects, null, values)
+            db.close()
 
-                if (result >= 0) {
-                    isAdded = true
+            if (result >= 0) {
+                isAdded = true
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    isAdded = false
+            } else {
+                isAdded = false
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-                }
+            }
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1838,13 +1835,14 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             values.put(COL_collect_data_STATUS, "0")
 
-            db.update(TABLE_collect_data, values, " $COL_collect_data_SERVERID=?", arrayOf(eventid))
+            db.update(TABLE_collect_data, values, " $COL_COLLECT_DATA_ID=?", arrayOf(eventid))
             db.close()
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
     }
+
     fun changeTaskObjectStatus() {
         try {
             val db = this.writableDatabase
@@ -2094,23 +2092,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun collectDataCreate(pack: CollectData) {
 
         try {
-            val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_collect_data_SERVERID)
+            val i = checkEntry(pack.id?.toInt(), TABLE_collect_data, COL_COLLECT_DATA_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_collect_data_SERVERID, pack.id)
-                values.put(COL_collect_data_pack_id, pack.pack_id)
+                values.put(COL_COLLECT_DATA_ID, pack.id)
+                values.put(COL_COLLECT_DATA_PACK_ID, pack.pack_id)
                 values.put(COL_collect_data_STATUS, "0")
                 values.put(COL_collect_data_ResulId, pack.result_id)
-                values.put(COL_collect_data_ResultClass, pack.result_class)
+                values.put(COL_COLLECT_DATA_RESULE_CLASS, pack.result_class)
                 values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
-                values.put(COL_collect_data_NEWVALUE, pack.new_value)
+                values.put(COL_COLLECT_DATA_VALUE, pack.new_value)
                 values.put(COL_collect_data_UNITID, pack.unit_id)
                 values.put(COL_collect_data_SENSORID, pack.sensor_id)
-                values.put(COL_collect_data_DURATION, pack.duration)
+                values.put(COL_COLLECT_DATA_DURATION, pack.duration)
                 values.put(COL_collect_data_UPDATED_BY, pack.created_by)
                 values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
-                values.put(COL_collect_data_CREATED_AT, pack.created_at)
+                values.put(COL_COLLECT_DATA_CREATED_AT, pack.created_at)
                 values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
                 values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
 
@@ -2136,22 +2134,22 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             val values = ContentValues()
 
-            values.put(COL_collect_data_pack_id, pack.id)
+            values.put(COL_COLLECT_DATA_PACK_ID, pack.id)
             values.put(COL_collect_data_ResulId, pack.result_id)
             values.put(COL_collect_data_STATUS, "1")
             values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
-            values.put(COL_collect_data_NEWVALUE, pack.new_value)
+            values.put(COL_COLLECT_DATA_VALUE, pack.new_value)
             values.put(COL_collect_data_UNITID, pack.unit_id)
             values.put(COL_collect_data_SENSORID, pack.sensor_id)
-            values.put(COL_collect_data_DURATION, pack.duration)
-            values.put(COL_collect_data_CREATED_AT, pack.date)
-            values.put(COL_collect_data_SERVERID, pack.serverid)
+            values.put(COL_COLLECT_DATA_DURATION, pack.duration)
+            values.put(COL_COLLECT_DATA_CREATED_AT, pack.date)
+            values.put(COL_COLLECT_DATA_ID, pack.serverid)
 
             val db = this.writableDatabase
 
             if (isUpdate) {
                 val result = db.update(
-                    TABLE_collect_data, values, "$COL_collect_data_SERVERID=?",
+                    TABLE_collect_data, values, "$COL_COLLECT_DATA_ID=?",
                     arrayOf(pack.serverid)
                 )
                 if (result >= 0) {
@@ -2193,21 +2191,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val values = ContentValues()
 
 
-            values.put(COL_collect_data_pack_id, pack.pack_id)
+            values.put(COL_COLLECT_DATA_PACK_ID, pack.pack_id)
             values.put(COL_collect_data_ResulId, pack.result_id)
             values.put(COL_collect_data_STATUS, "2")
             values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
-            values.put(COL_collect_data_NEWVALUE, pack.new_value)
+            values.put(COL_COLLECT_DATA_VALUE, pack.new_value)
             values.put(COL_collect_data_UNITID, pack.unit_id)
             values.put(COL_collect_data_SENSORID, pack.sensor_id)
-            values.put(COL_collect_data_DURATION, pack.duration)
-            values.put(COL_collect_data_SERVERID, pack.serverid)
+            values.put(COL_COLLECT_DATA_DURATION, pack.duration)
+            values.put(COL_COLLECT_DATA_ID, pack.serverid)
 
             val db = this.writableDatabase
 
 
             val result = db.update(
-                TABLE_collect_data, values, "$COL_collect_data_SERVERID=?",
+                TABLE_collect_data, values, "$COL_COLLECT_DATA_ID=?",
                 arrayOf(pack.serverid)
             )
             if (result >= 0) {
@@ -2247,7 +2245,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             do {
                 val result = cursor.getInt(0)
 //                AppUtils.logDebug(TAG, "resultt" + result)
-                myid = cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                myid = cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
             } while (cursor.moveToNext())
         }
         return myid.toString()
@@ -2654,14 +2652,14 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun listChoicesCreate(pack: Choices) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_list_choices, COL_list_choices_SERVERID)
+            val i = checkEntry(pack.id, TABLE_LIST_CHOICES, COL_list_choices_SERVERID)
             if (i < 1) {
 
                 val values = ContentValues()
                 values.put(COL_list_choices_SERVERID, pack.id)
-                values.put(COL_list_choices_LISTID, pack.lists_id)
+                values.put(COL_LIST_CHOICES_LISTS_ID, pack.lists_id)
                 values.put(COL_list_choices_CHOICE, pack.choice)
-                values.put(COL_list_choices_NAME, pack.name)
+                values.put(COL_LIST_CHOICES_NAME, pack.name)
                 values.put(COL_list_choices_CHOICE_COM_GROUP, pack.choice_communitygroup)
                 values.put(COL_list_choices_COM_GROUP_ID, pack.community_group_id)
                 values.put(COL_list_choices_CREATED_AT, pack.created_at)
@@ -2670,7 +2668,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                 val db = this.writableDatabase
-                db.insert(TABLE_list_choices, null, values)
+                db.insert(TABLE_LIST_CHOICES, null, values)
                 db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3057,11 +3055,11 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun graphChartsCreate(task: GraphChart) {
 
         try {
-            val i = checkEntry(task.id, TABLE_graph_charts, COL_graph_charts_SERVERID)
+            val i = checkEntry(task.id, TABLE_GRAPH_CHARTS, COL_GRAPH_CHARTS_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_graph_charts_SERVERID, task.id)
+                values.put(COL_GRAPH_CHARTS_ID, task.id)
                 values.put(COL_graph_charts_NAME, task.name)
                 values.put(COL_graph_charts_DESCIPTION, task.description)
                 values.put(COL_graph_charts_OBJECTCLASS, task.object_class)
@@ -3077,7 +3075,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                 val db = this.writableDatabase
-                db.insert(TABLE_graph_charts, null, values)
+                db.insert(TABLE_GRAPH_CHARTS, null, values)
                 db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3100,16 +3098,16 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun graphChartObjectsCreate(task: GraphChartObject) {
 
         try {
-            val i = checkEntry(task.id, TABLE_graph_chart_objects, COL_graph_chart_objects_SERVERID)
+            val i = checkEntry(task.id, TABLE_graph_chart_objects, COL_GRAPH_CHART_OBJECT_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_graph_chart_objects_SERVERID, task.id)
+                values.put(COL_GRAPH_CHART_OBJECT_ID, task.id)
 //            values.put(COL_graph_chart_objects_CHARTID, task.graphs_charts_id)
-                values.put(COL_graph_chart_objects_NAME, task.name)
+                values.put(COL_GRAPH_CHART_OBJECT_NAME, task.name)
                 values.put(COL_graph_chart_objects_LINETYPE, task.line_type)
-                values.put(COL_graph_chart_objects_RESULT_CLASS, task.result_class)
-                values.put(COL_graph_chart_objects_REF_CLTL_POINT, task.ref_ctrl_points)
+                values.put(COL_GRAPH_CHART_OBJECT_RESULT_CLASS, task.result_class)
+                values.put(COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT, task.ref_ctrl_points)
                 values.put(COL_graph_chart_objects_GRAPH_CHARTID, task.graphs_charts_id)
 //            values.put(COL_graph_chart_objects_CREATED_BY, task.created_by)
 //            values.put(COL_graph_chart_objects_CREATED_DATE, task.created_date)
@@ -3575,25 +3573,25 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_STATUS))
 
                 val id: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
                 val packid: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_pack_id))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_PACK_ID))
                 val resultid: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_ResulId))
 
                 val resultclass: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_ResultClass))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_RESULE_CLASS))
                 val collectactivityId: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_CollectActivityId))
 
                 val newvalue: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_NEWVALUE))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_VALUE))
                 val unitid: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_UNITID))
                 val sensorId: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_SENSORID)) ?: ""
                 val duration: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_DURATION))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_DURATION))
                 val updatedBy: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_UPDATED_BY))
                 val createdBy: String? =
@@ -3601,7 +3599,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 val deletedBy: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_DELETED_BY))
                 val createdAt: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_collect_data_CREATED_AT))
+                    cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_CREATED_AT))
                 val updatedAt: String? =
                     cursor.getString(cursor.getColumnIndex(COL_collect_data_UPDATED_AT))
                 val deletedAt: String? =
@@ -4070,7 +4068,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val query =
             "SELECT $TABLE_collect_data.*, " +
-                    " strftime('%Y-%m-%d %H:%M:%S', $TABLE_collect_data.$COL_collect_data_CREATED_AT) as 'DATE'," +
+                    " strftime('%Y-%m-%d %H:%M:%S', $TABLE_collect_data.$COL_COLLECT_DATA_CREATED_AT) as 'DATE'," +
                     " $TABLE_collect_activities.$COL_collect_activities_NAME, " +
                     " $TABLE_collect_activity_results.$COL_collect_activity_results_RESULTNAME, " +
                     " $TABLE_units.$COL_units_NAME, " +
@@ -4084,7 +4082,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     " $TABLE_collect_data.$COL_collect_data_UNITID = $TABLE_units.$COL_units_SERVERID " +
                     " INNER JOIN $TABLE_sensors ON " +
                     " $TABLE_collect_data.$COL_collect_data_SENSORID = $TABLE_sensors.$COL_sensors_SERVERID " +
-                    "  Where $TABLE_collect_data.$COL_collect_data_pack_id = '$selectedPackid' And  $COL_collect_data_STATUS In(0,1,2)"
+                    "  Where $TABLE_collect_data.$COL_COLLECT_DATA_PACK_ID = '$selectedPackid' And  $COL_collect_data_STATUS In(0,1,2)"
         AppUtils.logError(TAG, "my query " + query)
 
 
@@ -4107,7 +4105,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val collect_activity_id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_CollectActivityId))
                     val created_at: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_CREATED_AT))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_CREATED_AT))
                     val created_by: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_CREATEDBY))
                     val deleted_at: String? =
@@ -4115,15 +4113,15 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val deleted_by: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_DELETED_BY))
                     val duration: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_DURATION))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_DURATION))
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
                     val new_value: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_NEWVALUE))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_VALUE))
                     val pack_id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_pack_id))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_PACK_ID))
                     val result_class: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_ResultClass))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_RESULE_CLASS))
                     val sensor_id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_SENSORID))
                     val result_id: String? =
@@ -4135,9 +4133,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val updated_by: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_UPDATED_BY))
                     val value: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_NEWVALUE))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_VALUE))
                     val serverId: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
                     val activityname: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_activities_NAME))
                     val resultname: String? =
@@ -4200,7 +4198,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
         val query =
-            "SELECT * FROM $TABLE_collect_data WHERE $COL_collect_data_SERVERID='$selectedPackid'"
+            "SELECT * FROM $TABLE_collect_data WHERE $COL_COLLECT_DATA_ID='$selectedPackid'"
 
         AppUtils.logError(TAG, "my query " + query)
 
@@ -4224,13 +4222,13 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_CollectActivityId))
 
                     val duration: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_DURATION))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_DURATION))
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
                     val new_value: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_NEWVALUE))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_VALUE))
                     val pack_id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_pack_id))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_PACK_ID))
 
                     val sensor_id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_SENSORID))
@@ -4239,9 +4237,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val unit_id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_collect_data_UNITID))
                     val serverId: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_ID))
                     val value: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_collect_data_NEWVALUE))
+                        cursor.getString(cursor.getColumnIndex(COL_COLLECT_DATA_VALUE))
 
 
 
@@ -4797,7 +4795,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getGraphChartNames(graphId: String): ArrayList<GraphChart> {
 
         val query =
-            "SELECT * FROM $TABLE_graph_charts Where ${TABLE_graph_charts}.${COL_graph_charts_SERVERID} In($graphId)"
+            "SELECT * FROM $TABLE_GRAPH_CHARTS Where ${TABLE_GRAPH_CHARTS}.${COL_GRAPH_CHARTS_ID} In($graphId)"
 
         AppUtils.logError(TAG, "getGraphChartNames Query" + query)
 
@@ -4820,7 +4818,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 do {
 
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_graph_charts_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_GRAPH_CHARTS_ID))
                     val name: String? =
                         cursor.getString(cursor.getColumnIndex(COL_graph_charts_NAME))
                     val objectClass: String? =
@@ -4852,9 +4850,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val query = "select $TABLE_collect_data.* from $TABLE_collect_data, " +
                 " $TABLE_collect_activity_results.$COL_collect_activity_results_SERVERID " +
                 "left join $TABLE_collect_activity_results on $TABLE_collect_data.$COL_collect_data_ResulId = $TABLE_collect_activity_results.$COL_collect_activity_results_SERVERID " +
-                "where $TABLE_collect_data.$COL_collect_data_pack_id ='$packid' " +
+                "where $TABLE_collect_data.$COL_COLLECT_DATA_PACK_ID ='$packid' " +
                 "and $TABLE_collect_activity_results.$COL_collect_activity_results_RESULTCLASS =?  " +
-                " order by $TABLE_collect_data.$COL_collect_data_DURATION asc"
+                " order by $TABLE_collect_data.$COL_COLLECT_DATA_DURATION asc"
         var pointlist = getAllPointsList(chartID)
 
 //        val query = "SELECT * FROM $TABLE_graph_chart_objects " + "Where $COL_graph_chart_objects_GRAPH_CHARTID='$chartID'"
@@ -4880,13 +4878,13 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 do {
 
                     val name: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_NAME))
+                        cursor.getString(cursor.getColumnIndex(COL_GRAPH_CHART_OBJECT_NAME))
                     val lineType: String? =
                         cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_LINETYPE))
                     val resultClass: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_RESULT_CLASS))
+                        cursor.getString(cursor.getColumnIndex(COL_GRAPH_CHART_OBJECT_RESULT_CLASS))
                     val refCltPoint: String? = cursor.getString(
-                        cursor.getColumnIndex(COL_graph_chart_objects_REF_CLTL_POINT)
+                        cursor.getColumnIndex(COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT)
                     )
                     val graphchartid: String? =
                         cursor.getString(cursor.getColumnIndex(COL_graph_chart_objects_GRAPH_CHARTID))
@@ -4916,6 +4914,142 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     @SuppressLint("Range")
+    fun getGraphData(graphID: String, packID: String): ResponseGraphDetail? {
+
+        var result: ResponseGraphDetail? = null
+
+        val graphChartPoint = ArrayList<Points>()
+        val listCharts = ArrayList<ListCharts>()
+        val listPoints = ArrayList<ListPoints>()
+        val listLines = ArrayList<ListLines>()
+
+        var graphType = "";
+        var chartName = "";
+        var graphDesc = "";
+        var graphTitle = "";
+        var graphAbcissaTitle = "";
+        var graphOrdinateTitle = "";
+
+        val db = this.readableDatabase
+
+        try {
+
+            // ================== new data
+            val chartTableQuery = "SELECT * FROM $TABLE_GRAPH_CHARTS Where $COL_GRAPH_CHARTS_ID= $graphID LIMIT 1"
+            val cursorGraphChart = db.rawQuery(chartTableQuery, null)
+            if (cursorGraphChart.moveToFirst()) {
+                do {
+                    chartName = getColumnString(cursorGraphChart, COL_LIST_CHOICES_NAME)
+                    graphTitle = getColumnString(cursorGraphChart, COL_LIST_CHOICES_NAME)
+                    graphAbcissaTitle = getColumnString(cursorGraphChart, COL_LIST_CHOICES_NAME)
+                    graphOrdinateTitle = getColumnString(cursorGraphChart, COL_LIST_CHOICES_NAME)
+
+                } while (cursorGraphChart.moveToNext())
+            }
+
+            // ================== new data
+            val queryListChoices = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_LIST_CHOICES_LISTS_ID = $graphID LIMIT 1"
+            val cursorListChoices = db.rawQuery(queryListChoices, null)
+            if (cursorListChoices.moveToFirst()) {
+                do {
+                    graphType = getColumnString(cursorListChoices, COL_LIST_CHOICES_NAME)
+                } while (cursorListChoices.moveToNext())
+            }
+
+            val queryChartObjects = "SELECT * FROM $TABLE_graph_chart_objects Where $COL_graph_chart_objects_GRAPH_CHARTID='$graphID'"
+            val cursorChartObjects = db.rawQuery(queryChartObjects, null)
+
+            if (cursorChartObjects.moveToFirst()) {
+                do {
+
+                    val lineType: String = getColumnString(cursorChartObjects, COL_graph_chart_objects_LINETYPE)
+
+                    var id = ""
+                    var lineName = ""
+                    var lineResultClass = ""
+
+                    if (lineType == "Result_Line" || lineType == "N/A") {
+
+                        val resultClass: String = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_RESULT_CLASS)
+
+                        val collectDataQuery = "SELECT * from  collect_data AS cd  LEFT JOIN collect_activity_results AS car on  cd.collectDataResultIid = car.collect_activity_results_SERVERID where cd.collectDataPackid = $packID  AND car.collect_activity_results_result_class = '$resultClass' ORDER BY cd.collectData_duration asc"
+
+                        val cursorCollectData = db.rawQuery(collectDataQuery, null)
+                        if (cursorCollectData.moveToFirst()) {
+                            do {
+                                id = getColumnString(cursorCollectData, COL_COLLECT_DATA_ID)
+                                val value = getColumnString(cursorCollectData, COL_COLLECT_DATA_VALUE)
+                                val createdAt = getColumnString(cursorCollectData, COL_COLLECT_DATA_CREATED_AT)
+                                val duration = getColumnString(cursorCollectData, COL_COLLECT_DATA_DURATION)
+                                val points = ListPoints(id, packID, value, createdAt, duration)
+                                listPoints.add(points)
+
+                                id = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_ID)
+                                lineName = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_NAME)
+                                lineResultClass = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_RESULT_CLASS)
+
+
+                                val listLineObj = ListLines(id, lineName, lineType, lineResultClass, listPoints)
+                                listLines.add(listLineObj)
+
+                            } while (cursorCollectData.moveToNext())
+                        }
+                    }
+                    else if (lineType == "Ref_Control_Line") {
+
+                        val referenceCultPont: String = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT)
+
+                        if (!referenceCultPont.isNullOrEmpty()) {
+                            val pointData: List<String> = referenceCultPont.split(";")
+
+                            pointData.forEach {
+                                val pointArray: List<String> = it.split("/")
+                                if (pointArray.size == 2) {
+                                    val points = ListPoints("", packID, pointArray[1], "", pointArray[0])
+                                    listPoints.add(points)
+                                }
+                            }
+                        }
+
+                        id = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_ID)
+                        lineName = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_NAME)
+                        lineResultClass = getColumnString(cursorChartObjects, COL_GRAPH_CHART_OBJECT_RESULT_CLASS)
+
+                        val listLineObj = ListLines(id, lineName, lineType, lineResultClass, listPoints)
+                        listLines.add(listLineObj)
+                    }
+
+                    val listChartObj = ListCharts(
+                        graphType,
+                        chartName,
+                        graphDesc,
+                        graphTitle,
+                        graphAbcissaTitle,
+                        graphOrdinateTitle,
+                        listLines
+                    )
+                    listCharts.add(listChartObj)
+                } while (cursorChartObjects.moveToNext())
+            }
+
+            result = ResponseGraphDetail(listCharts, "success")
+
+        } catch (e: Exception) {
+            Log.e("DbHelper", "getGraphData Exception ${e.message}")
+        }
+        return result
+    }
+
+    @SuppressLint("Range")
+    fun getColumnString(cursor: Cursor, columnName: String): String {
+        try {
+            return cursor.getString(cursor.getColumnIndex(columnName))
+        } catch (e: java.lang.Exception) {
+            return ""
+        }
+    }
+
+    @SuppressLint("Range")
     fun getAllPointsList(chartID: String): ArrayList<Points> {
 
         val query = "SELECT * FROM $TABLE_graph_chart_points " +
@@ -4926,6 +5060,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val upCommingPackCONFIGList = ArrayList<Points>()
         val db = this.readableDatabase
         AppUtils.logError(TAG, "getGraphChartNames Query" + query)
+
 
 //        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
@@ -5056,7 +5191,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getListChoice(listId: String): ArrayList<Choices> {
 
-        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_LISTID ='$listId' "
+        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_LIST_CHOICES_LISTS_ID ='$listId' "
 
         AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
@@ -5081,11 +5216,11 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val id: String? =
                         cursor.getString(cursor.getColumnIndex(COL_list_choices_SERVERID))
                     val listID: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_LISTID))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_LISTS_ID))
                     val choice: String? =
                         cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE))
                     val name: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_NAME))
                     val choiceComGroup: String? =
                         cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE_COM_GROUP))
                     val comGroupId: String? =
@@ -5122,7 +5257,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getListChoiceSingleValue(listId: String): String {
         var chartname: String? = null
 
-        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_SERVERID ='$listId' "
+        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_list_choices_SERVERID ='$listId' "
 
         AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
@@ -5146,7 +5281,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                     chartname =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_NAME))
 
 
                 } while (cursor.moveToNext())
@@ -5211,7 +5346,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getFieldNameFromListChoice(id: String): String {
 
-        val query = "SELECT * FROM $TABLE_list_choices Where $COL_list_choices_SERVERID ='$id' "
+        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_list_choices_SERVERID ='$id' "
 
         AppUtils.logError(TAG, "getFieldNameFromListChoice Query " + query)
 
@@ -5233,7 +5368,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 do {
 
 
-                    name = cursor.getString(cursor.getColumnIndex(COL_list_choices_NAME))
+                    name = cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_NAME))
 
 
                 } while (cursor.moveToNext())
@@ -5656,7 +5791,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val result = db.update(
                 TABLE_collect_data,
                 contentValues,
-                "$COL_collect_data_SERVERID=?",
+                "$COL_COLLECT_DATA_ID=?",
                 arrayOf(collectdataid)
             )
             if (result >= 0) {
@@ -6032,8 +6167,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_fields)
         db.execSQL("delete from " + TABLE_graph_chart_objects)
         db.execSQL("delete from " + TABLE_graph_chart_points)
-        db.execSQL("delete from " + TABLE_graph_charts)
-        db.execSQL("delete from " + TABLE_list_choices)
+        db.execSQL("delete from " + TABLE_GRAPH_CHARTS)
+        db.execSQL("delete from " + TABLE_LIST_CHOICES)
         db.execSQL("delete from " + TABLE_lists)
         db.execSQL("delete from " + TABLE_pack_collect_activity)
         db.execSQL("delete from " + TABLE_pack_config_fields)

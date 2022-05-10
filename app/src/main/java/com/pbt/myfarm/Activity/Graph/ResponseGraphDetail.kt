@@ -31,13 +31,5 @@ data class ListPoints (
     @SerializedName("value")var value:String?=null,
     @SerializedName("create_at")var create_at:String?=null,
     @SerializedName("duration")var duration :String?=null,
+    )
 
-        )
-data class ListMYPoints (
-    @SerializedName("id")var id:String?=null,
-    @SerializedName("pack_id")var pack_id:String?=null,
-    @SerializedName("value")var value:String?=null,
-    @SerializedName("create_at")var create_at:String?=null,
-    @SerializedName("duration")var duration :String?=null,
-
-        )

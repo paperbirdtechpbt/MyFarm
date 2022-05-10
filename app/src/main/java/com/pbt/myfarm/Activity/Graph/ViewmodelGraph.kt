@@ -23,8 +23,6 @@ class ViewmodelGraph(var activity: Application):AndroidViewModel(activity) ,retr
     var configlist = MutableLiveData<List<ListTaskFunctions>>()
     var graphlist=ArrayList<ListTaskFunctions>()
 
-
-
     fun onConfigFieldList(context: Context, packid: String) {
 //
         val db= DbHelper(context,null)

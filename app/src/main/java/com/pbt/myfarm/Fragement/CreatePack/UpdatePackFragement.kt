@@ -36,6 +36,8 @@ import com.pbt.myfarm.PackViewModel.Companion.packCommunityListname
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppConstant
+import com.pbt.myfarm.Util.AppConstant.Companion.CON_PACK_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.PACK_LIST_PACKID
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -56,8 +58,8 @@ private const val ARG_PARAM2 = "param2"
 
 //this fragement is for update pack
 
-class UpdatePackFragement : Fragment(),
-    retrofit2.Callback<testresponse> {
+class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -66,38 +68,22 @@ class UpdatePackFragement : Fragment(),
     var adapterr: CreatePackAdapter? = null
     val successObject = JSONArray()
     var configtype: EditText? = null
-    var customer: EditText? = null
     val fieldModel = ArrayList<FieldModel>()
     val TAG = "CreatePackFragment"
-    val packconfigListfrgm = ArrayList<PackConfigFieldList>()
     var recyclerView: RecyclerView? = null
 
+    var packID = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
-//            param3=it.getParcelable(CONST_PACK_UPDATE_LIST)
-//            AppUtils.logDebug(TAG,"param3----"+param3.toString())
-
         }
     }
 
     override fun onResume() {
         super.onResume()
-//        progressbar_createpackfrgm.visibility = View.VISIBLE
-//        arrayID = ArrayList()
-//        arrayName = ArrayList()
-//        arrayIDKey = ArrayList()
-//        arrayNameKey = ArrayList()
-//
-//        arrayID!!.clear()
-////        arrayName!!.clear()
-//        arrayIDKey!!.clear()
-//        arrayNameKey!!.clear()
-
-//        initViewModel()
     }
 
     override fun onCreateView(
@@ -105,11 +91,6 @@ class UpdatePackFragement : Fragment(),
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_create_pack_frament, container, false)
-//        quantity=view?.findViewById(R.id.fed_pack_quantity)
-//        AppUtils.logError(
-//            TAG,
-//            "onconfigfieldlist" + packList1?.pack_config_id.toString() + "\n" + packList1?.id!!.toString()
-//        )
         arrayID = ArrayList()
         arrayName = ArrayList()
         arrayIDKey = ArrayList()
@@ -119,104 +100,78 @@ class UpdatePackFragement : Fragment(),
         arrayName!!.clear()
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
-//        if (MainActivity.privilegeListName.contains("GraphChart")){
-//            btn_viewgraph.visibility=View.VISIBLE
-//        }
 
+        packID = arguments?.getString(AppConstant.CON_PACK_ID) ?: ""
+        Log.d("UpdatePackActivity","ID  : $packID")
         initViewModel()
 
         val updateTask: Button = view.findViewById(R.id.btn_update_pack)
         val btnViewTask: Button = view.findViewById(R.id.btn_viewgraph)
 
         updateTask.setOnClickListener {
-
             adapterr?.callBack()
-
-
         }
+
         btnViewTask.setOnClickListener {
-//            AppUtils.logDebug(TAG,"packlistttt"+packList1.toString())
-
             val intent = Intent(requireContext(), GraphActivity::class.java)
-//            intent.putExtra(PACK_LIST_PACKID, packList1)
-            intent.putExtra(PACK_LIST_PACKID, packList1?.pack_config_id.toString())
+            intent.putExtra(CON_PACK_ID, packID)
             startActivity(intent)
-
         }
-
 
         return view
     }
 
     private fun initViewModel() {
-        viewmodel =
-            ViewModelProvider(this).get(PackViewModel::class.java)
-        AppUtils.logDebug(TAG,"packlistid--packlistconfig="+packList1?.pack_config_id.toString()+"="+
-                packList1?.id.toString())
+        viewmodel = ViewModelProvider(this).get(PackViewModel::class.java)
+
 
         viewmodel?.onConfigFieldList(
             requireContext(), true,
-            packList1?.pack_config_id.toString(), packList1!!.id.toString()
+            packList1?.pack_config_id.toString(),packID
         )
-        viewmodel?.configlist?.observe(viewLifecycleOwner, androidx.lifecycle.Observer { list ->
-//            setCommunityGroup()
+        viewmodel?.configlist?.observe(viewLifecycleOwner) { list ->
 
-            Log.d("###456","Updated ID ${arrayName!!.size} ${arrayID!!.size}")
             if (!list.isNullOrEmpty()) {
                 progressbar_createpackfrgm.visibility = View.GONE
             }
-            val config = Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
+            val config =
+                Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
             recycler_packFieldsFragment?.layoutManager = LinearLayoutManager(requireContext())
-
-
 
             adapterr = CreatePackAdapter(requireContext(), config, true, packCommunityList, packCommunityListname) { list, name ->
 
+                if (list.isNotEmpty() && name.isNotEmpty()) {
 
-                    if (list.isNotEmpty() && name.isNotEmpty()) {
-                        AppUtils.logDebug(
-                            TAG, "expname" + list.toString() +
-                                    name.toString()
-                        )
-                        while (list.contains("0")) {
-                            list.remove("0")
-                        }
-                        while (name.contains("0")) {
-                            name.remove("0")
-                        }
-
-                        if (name.isNotEmpty()) {
-
-                            for (i in 0 until name.size) {
-                                val jsonObject = JSONObject()
-
-                                jsonObject.put(arrayIDKey!!.get(i), list.get(i))
-                                jsonObject.put(arrayNameKey!!.get(i), name.get(i))
-
-                                successObject?.put(jsonObject)
-                                fieldModel.add(FieldModel(name.get(i), list.get(i)))
-                                addPackValue(
-                                    list.get(i),
-                                    name.get(i),
-                                    packList1?.id.toString(),
-                                    true
-                                )
-
-                            }
-                        }
-
+                    while (list.contains("0")) {
+                        list.remove("0")
                     }
-                    if (successObject != null) {
-                        updatePAck()
-
-                    } else {
-                        updatePAck()
+                    while (name.contains("0")) {
+                        name.remove("0")
                     }
 
+                    if (name.isNotEmpty()) {
+
+                        for (i in 0 until name.size) {
+                            val jsonObject = JSONObject()
+
+                            jsonObject.put(arrayIDKey!!.get(i), list.get(i))
+                            jsonObject.put(arrayNameKey!!.get(i), name.get(i))
+
+                            successObject?.put(jsonObject)
+                            fieldModel.add(FieldModel(name.get(i), list.get(i)))
+                            addPackValue(list.get(i), name.get(i), packList1?.id.toString(), true)
+                        }
+                    }
 
                 }
+                if (successObject != null) {
+                    updatePAck()
+                } else {
+                    updatePAck()
+                }
+            }
             recycler_packFieldsFragment.adapter = adapterr
-        })
+        }
     }
 
     private fun addPackValue(list: String, name: String, idd: String, isUpdate: Boolean) {
@@ -233,7 +188,6 @@ class UpdatePackFragement : Fragment(),
             desciptioncompanian = "Desciption"
         }
 
-//
         val db = DbHelper(requireContext(), null)
         val list = db.getAllPackConfig()
         var prefixname: String? = null
@@ -246,19 +200,10 @@ class UpdatePackFragement : Fragment(),
 
                 }
             }
-
         }
 
-        AppUtils.logDebug(
-            TAG, "update Task--" + prefixname +
-                    desciptioncompanian +
-                    selectedCommunityGroup +
-                    MySharedPreference.getUser(requireContext())?.id.toString() +
-                    successObject.toString() +
-                    packList1?.id.toString()
-        )
         if (desciptioncompanian!!.isEmpty()) {
-            Toast.makeText(requireContext(), "Desciption is Required", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Description is Required", Toast.LENGTH_SHORT).show()
             btn_create_pack.visibility = View.VISIBLE
 
         } else {
@@ -279,10 +224,6 @@ class UpdatePackFragement : Fragment(),
                             packList1?.id.toString()
                         ).enqueue(this)
                 }
-
-
-
-
             } else {
                 if (AppUtils().isInternet(requireContext())){
                     ApiClient.client.create(ApiInterFace::class.java)

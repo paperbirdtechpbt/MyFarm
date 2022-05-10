@@ -1,13 +1,13 @@
 package com.pbt.myfarm.Activity.UpDatePack
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.pbt.myfarm.Activity.CreatePack.CreatePackAdapter
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment
@@ -16,16 +16,19 @@ import com.pbt.myfarm.Fragement.PackCollect.CollectDataFragement
 import com.pbt.myfarm.PacksNew
 import com.pbt.myfarm.R
 import com.pbt.myfarm.TasklistDataModel
+import com.pbt.myfarm.Util.AppConstant.Companion.CON_PACK_ID
 import com.pbt.myfarm.Util.AppUtils
 
 
 class UpdatePackActivity : AppCompatActivity() {
-    var viewtask: TasklistDataModel?=null
-    companion object{
+    var viewtask: TasklistDataModel? = null
+
+    companion object {
         var positionnn = 0
-        var packlist:PacksNew?=null
+        var packlist: PacksNew? = null
     }
 
+    var packID: String = ""
     override fun onDestroy() {
         super.onDestroy()
 //        desciptioncompanian =" "
@@ -38,17 +41,15 @@ class UpdatePackActivity : AppCompatActivity() {
 
         val extras = intent.extras
 
+//        if (extras != null) {
+//            positionnn = extras.getString("fragment")!!.toInt()
+//        }
 
-        if (extras != null) {
-            positionnn = extras.getString("fragment")!!.toInt()
-            AppUtils.logDebug("##TAG","extras"+ positionnn.toString())
+        if (!extras?.getString(CON_PACK_ID).isNullOrEmpty()) {
+            packID = extras?.getString(CON_PACK_ID) ?: ""
         }
 
-
         CreateNewCollectDataFragment.newInstance("Hi Test Data pass")
-
-
-
 
         val tab_viewpager = findViewById<ViewPager>(R.id.tab_viewpager)
         val tab_tablayout = findViewById<TabLayout>(R.id.tab_tablayout)
@@ -64,53 +65,59 @@ class UpdatePackActivity : AppCompatActivity() {
 
 
 
-     if (positionnn==0){
+        if (positionnn == 0) {
 
-         adapter.addFragment(UpdatePackFragement(), "UpdatePack")
-         if (AppUtils().isInternet(this)){
-             if (privilegeListName.contains("CollectData")){
-                 adapter.addFragment(CollectDataFragement(), "Collect Data")
-             }
+            val updatePackFragment = UpdatePackFragement()
+            val bundle = Bundle();
+            bundle.putString(CON_PACK_ID, packID);
+            updatePackFragment.arguments = bundle;
+            adapter.addFragment(updatePackFragment, "UpdatePack")
+
+            if (AppUtils().isInternet(this)) {
+                if (privilegeListName.contains("CollectData")) {
+                    adapter.addFragment(CollectDataFragement(), "Collect Data")
+                }
 //         adapter.addFragment(CollectDataFragement(), "Collect Data")
-             if (privilegeListName.contains("InsertCollectData")){
-                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
-             }
-         }
-         else{
-             if (privilegeListNameOffline.contains("CollectData")){
-                 adapter.addFragment(CollectDataFragement(), "Collect Data")
-             }
+                if (privilegeListName.contains("InsertCollectData")) {
+                    adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+                }
+            } else {
+                if (privilegeListNameOffline.contains("CollectData")) {
+                    adapter.addFragment(CollectDataFragement(), "Collect Data")
+                }
 //         adapter.addFragment(CollectDataFragement(), "Collect Data")
-             if (privilegeListNameOffline.contains("InsertCollectData")){
-                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
-             }
-         }
+                if (privilegeListNameOffline.contains("InsertCollectData")) {
+                    adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+                }
+            }
 
 
 //         adapter.addFragment(CreateNewCollectDataFragment(), "Collect New ")
-     }
-        else{
+        } else {
 
-         adapter.addFragment(UpdatePackFragement(), "UpdatePack")
-         if (AppUtils().isInternet(this)){
-             if (privilegeListName.contains("CollectData")){
-                 adapter.addFragment(CollectDataFragement(), "Collect Data")
-             }
+            val updatePackFragment = UpdatePackFragement()
+            val bundle = Bundle();
+            bundle.putString(CON_PACK_ID, packID);
+            updatePackFragment.arguments = bundle;
+            adapter.addFragment(updatePackFragment, "UpdatePack")
 
-             if (privilegeListName.contains("InsertCollectData")){
-                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
-             }
-         }
-         else{
-             if (privilegeListNameOffline.contains("CollectData")){
-                 adapter.addFragment(CollectDataFragement(), "Collect Data")
-             }
+            if (AppUtils().isInternet(this)) {
+                if (privilegeListName.contains("CollectData")) {
+                    adapter.addFragment(CollectDataFragement(), "Collect Data")
+                }
 
-             if (privilegeListNameOffline.contains("InsertCollectData")){
-                 adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
-             }
-         }
+                if (privilegeListName.contains("InsertCollectData")) {
+                    adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+                }
+            } else {
+                if (privilegeListNameOffline.contains("CollectData")) {
+                    adapter.addFragment(CollectDataFragement(), "Collect Data")
+                }
 
+                if (privilegeListNameOffline.contains("InsertCollectData")) {
+                    adapter.addFragment(CreateNewCollectDataFragment(), "Edit Data ")
+                }
+            }
 
 
         }
@@ -119,12 +126,13 @@ class UpdatePackActivity : AppCompatActivity() {
 
         viewpager.setAdapter(adapter)
     }
+
     class ViewPagerAdapter(supportFragmentManager: FragmentManager) :
         FragmentPagerAdapter(supportFragmentManager) {
 
 
-        private  var fragmentList1: ArrayList<Fragment> = ArrayList()
-        private  var fragmentTitleList1: ArrayList<String> = ArrayList()
+        private var fragmentList1: ArrayList<Fragment> = ArrayList()
+        private var fragmentTitleList1: ArrayList<String> = ArrayList()
 
 
         override fun getItem(position: Int): Fragment {

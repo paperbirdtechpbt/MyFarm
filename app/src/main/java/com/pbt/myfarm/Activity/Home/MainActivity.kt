@@ -81,18 +81,18 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
-        if (AppUtils().isInternet(this)){
+        if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
                 ApiClient.client.create(ApiInterFace::class.java)
                     .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
             }
         }
 
-        if (!AppUtils().isInternet(this)){
-            val db=DbHelper(this,null)
-          val  list=  db.getAllPrivilege()
-            AppUtils.logDebug(TAG,"getAll Privilege"+list.toString())
-            list.forEach{
+        if (!AppUtils().isInternet(this)) {
+            val db = DbHelper(this, null)
+            val list = db.getAllPrivilege()
+            AppUtils.logDebug(TAG, "getAll Privilege" + list.toString())
+            list.forEach {
                 privilegeListNameOffline.add(it.name.toString())
             }
 
@@ -103,7 +103,10 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(MainActivityViewModel::class.java)
         AppUtils().isServiceRunning(this, MyFarmService::class.java)
     }
 
@@ -112,10 +115,16 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         recyclerview_main.adapter = adapter
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+        if (!roleID.equals("0"))
+            callPrivilegeAPI(roleID)
+    }
 
     private fun setdata(privilegeList: ArrayList<String>) {
         data.clear()
-        if (AppUtils().isInternet(this)){
+        if (AppUtils().isInternet(this)) {
             data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
 
             if (privilegeList.contains("Pack")) {
@@ -138,8 +147,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
                 setadapter(data)
             }
-        }
-        else{
+        } else {
             data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
 
             if (privilegeListNameOffline.contains("Pack")) {
