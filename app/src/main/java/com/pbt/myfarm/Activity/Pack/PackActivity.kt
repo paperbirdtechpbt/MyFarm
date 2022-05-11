@@ -168,14 +168,13 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                 AppUtils.logDebug(TAG,"packListt=="+list.toString())
                 if (boolean) {
                     showAlertDailog(packname, position, packList!!)
-                }
-                else {
+                } else {
                     val intent = Intent(this, UpdatePackActivity::class.java)
-                  selectedcom_Group_companian=list.com_group.toString()
-
+                    intent.putExtra(CON_PACK_ID,list.id.toString())
                     startActivity(intent)
                 }
             }
+
             val linearLayoutManager = LinearLayoutManager(this)
             linearLayoutManager.reverseLayout = true
             linearLayoutManager.stackFromEnd = true
@@ -193,16 +192,11 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     if (AppUtils().isInternet(this)){
                         ApiClient.client.create(ApiInterFace::class.java).deletePack(list.id.toString())
                             .enqueue(this)
-                    }
-                    else{
-                        val db=DbHelper(this,null)
+                    } else{
+                        val db = DbHelper(this,null)
                         db.deletePackNew(list.id.toString())
-                        initViewModel()
-
                     }
-
-//                    setDatafromlocal()
-//                    adapter?.notifyItemRemoved(position)
+                    initViewModel()
 
                 })
             .setNegativeButton(android.R.string.no, null)
@@ -220,12 +214,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
         if (response.body()?.error == false) {
-                        Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
-            initViewModel()
-//            Toast.makeText(this, "Pack Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
-//            val intent = Intent(this, PackActivity::class.java)
-//            startActivity(intent)
-//            finish()
+            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
         }
     }
 

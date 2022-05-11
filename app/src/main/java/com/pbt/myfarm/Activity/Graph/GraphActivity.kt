@@ -74,12 +74,12 @@ class GraphActivity : AppCompatActivity() {
         }
 
         db= DbHelper(this,null)
+        conNoData = findViewById(R.id.conNoData)
 
-        initviewmodel(packid)
         lineChart = findViewById(R.id.chartLine)
         barChart = findViewById(R.id.barChart)
         pieChart = findViewById(R.id.chartPeiChart)
-        conNoData = findViewById(R.id.conNoData)
+        initviewmodel(packid)
 
         lineChart!!.getDescription().setEnabled(false)
         barChart!!.getDescription().setEnabled(false)
@@ -161,7 +161,7 @@ class GraphActivity : AppCompatActivity() {
 
             val service = ApiClient.client.create(ApiInterFace::class.java)
             val apiInterFace = service.getgraphdetail(
-                    packid, id
+                packID, id
             )
 
             apiInterFace.enqueue(object : Callback<ResponseGraphDetail> {
@@ -468,8 +468,10 @@ class GraphActivity : AppCompatActivity() {
             val d = LineDataSet(lineEntriess, lines.get(z).name+" ($ordinateTitle)")
             d.lineWidth = 2.5f
 
-            d.setCircleColor(colors.get(z))
-            d.setColor(colors.get(z))
+            val random = (0..4).random()
+
+            d.setCircleColor(colors.get(random))
+            d.setColor(colors.get(random))
             d.circleRadius = 4f
             dataSets.add(d)
         }
@@ -484,9 +486,9 @@ class GraphActivity : AppCompatActivity() {
         l.isWordWrapEnabled = true
         l.isEnabled = true
 
-
+        lineChart?.clear()
         val data = LineData(dataSets)
-        lineChart?.setData(data)
+        lineChart?.data = data
         lineChart?.invalidate()
 
 
@@ -498,22 +500,6 @@ class GraphActivity : AppCompatActivity() {
             listMYPoints: ArrayList<ListPoints>,
             ordinateTitle: String
     ) {
-
-
-//
-//        barDataSet = BarDataSet(barEntries, "")
-//        barData = BarData(barDataSet)
-//        barData?.setBarWidth(12f)
-//        barChart!!.data = barData
-//
-//
-//
-//        barDataSet?.setColors(mlist)
-//
-//        barDataSet?.setValueTextColor(Color.BLACK)
-//        barDataSet?.setValueTextSize(12f)
-//
-//        barChart?.invalidate()
         barEntries = ArrayList()
         val colors = arrayOf(
 
@@ -579,8 +565,6 @@ class GraphActivity : AppCompatActivity() {
             val x = listMYPoints.get(i).duration!!.toFloat()
             val y = listMYPoints.get(i).value!!.toFloat()
             pieEntries!!.add(PieEntry(x, y))
-
-
         }
 
 

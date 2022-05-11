@@ -411,7 +411,7 @@ class AppConstant {
         const val COL_collect_activity_results_RESULTCLASS = "collect_activity_results_result_class"
         const val COL_collect_activity_results_CREATEDBY = "collect_activity_results_created_by"
         const val COL_collect_activity_results_UPDATEDBY = "collect_activity_results_updated_by"
-        const val COL_collect_activity_results_DELETEDBY = "collect_activity_results_deleted_by"
+        const val COL_COLLECT_ACTIVITY_RESULTS_DELETED_BY = "collect_activity_results_deleted_by"
         const val COL_collect_activity_results_CREATEDAT = "collect_activity_results_created_at"
         const val COL_collect_activity_results_UPDATEDAT = "collect_activity_results_updated_at"
         const val COL_collect_activity_results_DELETEAT = "collect_activity_results_deleted_at"

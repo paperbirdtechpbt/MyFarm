@@ -33,9 +33,8 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     }
 
 
-    fun onTaskFunctionList(context: Context, updateTaskId: String ,userID : String ) {
+    fun onTaskFunctionList(taskConfigID : String ,context: Context, updateTaskId: String ,userID : String ) {
 
-        Log.d("Apicall","Param updateTsk : $updateTaskId  UserID $userID ")
 
         if (AppUtils().isInternet(context)){
                     ApiClient.client.create(ApiInterFace::class.java)
@@ -46,8 +45,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         }
         else{
             val db=DbHelper(context,null)
-            val list=     db.getTaskFunctionList(updateTaskId)
-            AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
+            val list= db.getTaskFunctionList(taskConfigID)
             val listtask=ArrayList<ListTaskFunctions>()
             listtask.add(ListTaskFunctions("0","Select"))
 

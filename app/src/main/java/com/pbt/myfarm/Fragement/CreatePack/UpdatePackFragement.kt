@@ -68,8 +68,10 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
     var adapterr: CreatePackAdapter? = null
     val successObject = JSONArray()
     var configtype: EditText? = null
+    var customer: EditText? = null
     val fieldModel = ArrayList<FieldModel>()
     val TAG = "CreatePackFragment"
+    val packconfigListfrgm = ArrayList<PackConfigFieldList>()
     var recyclerView: RecyclerView? = null
 
     var packID = ""
@@ -200,19 +202,16 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
 
                 }
             }
+
         }
 
         if (desciptioncompanian!!.isEmpty()) {
-            Toast.makeText(requireContext(), "Description is Required", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Desciption is Required", Toast.LENGTH_SHORT).show()
             btn_create_pack.visibility = View.VISIBLE
 
         } else {
             if (prefixname.isNullOrEmpty()) {
                 if (AppUtils().isInternet(requireContext())){
-                    val db = DbHelper(requireContext(), null)
-                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
-                }
-                else{
                     ApiClient.client.create(ApiInterFace::class.java)
                         .updatePack(
                             packList1?.pack_config_id!!,
@@ -224,6 +223,15 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
                             packList1?.id.toString()
                         ).enqueue(this)
                 }
+                else{
+
+                    val db = DbHelper(requireContext(), null)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup,requireContext())
+                }
+
+
+
+
             } else {
                 if (AppUtils().isInternet(requireContext())){
                     ApiClient.client.create(ApiInterFace::class.java)
@@ -239,7 +247,7 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
                 }
                 else{
                     val db = DbHelper(requireContext(), null)
-                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup)
+                    db.updatePackNew(packList1, desciptioncompanian!!, selectedCommunityGroup,requireContext())
                 }
 
             }
@@ -272,7 +280,9 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
 
 //            val db=DbHelper(requireContext(),null)
 //            db.updatePackNew(packList1, desciptioncompanian, selectedCommunityGroup)
-            startActivity(Intent(requireContext(), PackActivity::class.java))
+
+
+//            startActivity(Intent(requireContext(), PackActivity::class.java))
             activity?.finish()
         } else {
             progressbar_createpackfrgm.visibility = View.GONE

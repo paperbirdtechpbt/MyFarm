@@ -113,7 +113,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         btn_taskfuntion.setOnClickListener {
             val intent = Intent(this, TaskFunctionActivity::class.java)
             intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
-            AppUtils.logDebug(TAG, "btntaskFUnction=" + updateTaskList?.task_config_id)
             startActivity(intent)
         }
     }
@@ -148,8 +147,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 this,
                 true, updateTaskList
             )
-
-//            updateTaskBoolen=false
 
         } else {
             viewmodel?.onConfigFieldListFalse(this, configtype)

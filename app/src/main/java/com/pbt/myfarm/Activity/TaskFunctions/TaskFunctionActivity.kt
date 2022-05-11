@@ -96,7 +96,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
-            initViewModel(updateTaskID?.id.toString())
+            updateTaskID?.let {
+                initViewModel(it.task_config_id.toString(),it.id.toString())
+            }
+
             checkAndRequestPermissions()
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
@@ -257,34 +260,18 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
     }
 
-    private fun initViewModel(updateTaskID: String) {
+    private fun initViewModel(taskConfigID : String ,updateTaskID: String) {
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
-        viewmodel?.onTaskFunctionList(this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
+        viewmodel?.onTaskFunctionList(taskConfigID,this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
-
             AppUtils.logDebug(TAG, "list og list functions=" + list.toString())
             if (!list.isNullOrEmpty()) {
                 val taskfunction: Spinner = findViewById(R.id.taskfunction)
                 setSpinner(list, taskfunction)
-//                for (i in 0 until list.size) {
-//                    if (list.get(i).id == "171" || list.get(i).id == "175" || list.get(i).id == "176") {
-//                        taskfunction_field.visibility = View.VISIBLE
-//                        label_fieldname.visibility = View.VISIBLE
-//                    } else if (list.get(i).id == "173") {
-//                        taskfunction_media.visibility = View.VISIBLE
-//                        btn_choosefile.visibility = View.VISIBLE
-//                        label_attachmedia.visibility = View.VISIBLE
-//
-//
-//                    } else if (list.get(i).id == "174") {
-//                        //pass intent to craete packactivty with task id
-//                        //change in api according to this
-//                    }
-//                }
             }
         })
     }
@@ -293,15 +280,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         val listname = ArrayList<String>()
         val listid = ArrayList<String>()
 
-
         for (i in 0 until list.size) {
             val privilegemane=list.get(i).privilegeName
             if (privilegeListName.contains(privilegemane)){
                 listname.add(list.get(i).name1!!)
                 listid.add(list.get(i).name!!)
             }
-
-
         }
 
 
