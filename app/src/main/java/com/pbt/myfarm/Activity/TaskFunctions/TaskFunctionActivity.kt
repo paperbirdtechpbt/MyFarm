@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
@@ -267,6 +268,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
 
             AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())
+//            AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(privilegeListName).toString())
+
             if (!list.isNullOrEmpty()) {
 
                 setSpinner(list, taskfunction!!)
@@ -290,28 +293,25 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     private fun setSpinner(list: List<ListTaskFunctions>, taskfunction: Spinner) {
-        val mylist=list
         val listname = ArrayList<String>()
         val listid = ArrayList<String>()
 
+        for (i in 0 until list.size) {
+            AppUtils.logError(TAG,"Privilege list=="+ privilegeListName.size+" offoine="+ privilegeListNameOffline.size)
 
-        for (i in 0 until mylist.size) {
-            val privilegemane=mylist.get(i).name
+            val privilegemane=list.get(i).privilegeName
             if (AppUtils().isInternet(this)){
                 if (privilegeListName.contains(privilegemane)){
-                    listname.add(mylist.get(i).name1!!)
-                    listid.add(mylist.get(i).name!!)
+                    listname.add(list.get(i).name1!!)
+                    listid.add(list.get(i).name!!)
                 }
             }
             else{
                 if (privilegeListNameOffline.contains(privilegemane)){
-                    listname.add(mylist.get(i).name1!!)
-                    listid.add(mylist.get(i).name!!)
+                    listname.add(list.get(i).name1!!)
+                    listid.add(list.get(i).name!!)
                 }
             }
-
-
-
 
         }
 

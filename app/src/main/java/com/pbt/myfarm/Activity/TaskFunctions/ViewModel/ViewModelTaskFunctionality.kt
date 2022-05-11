@@ -48,7 +48,9 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             listtask.add(ListTaskFunctions("0","Select"))
 
             list.forEach{
-                listtask.add(ListTaskFunctions(it.id.toString(),it.name))
+                AppUtils.logDebug(TAG,"ontaskfunction list --"+Gson().toJson(it).toString())
+
+                listtask.add(ListTaskFunctions(it.id.toString(),it.id.toString(),it.name,it.privilege))
             }
             listTaskFuntions.value = listtask
         }

@@ -23,6 +23,7 @@ import com.pbt.myfarm.AllPriviledgeListResponse
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
+import com.pbt.myfarm.Privilege
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -32,6 +33,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Response
 
@@ -50,7 +52,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         var selectedCommunityGroup = ""
         var privilegeList = ArrayList<ListPrivilege>()
         val privilegeListName = ArrayList<String>()
+        val privilegeListNameID = ArrayList<String>()
         val privilegeListNameOffline = ArrayList<String>()
+        val privilegeListNameOfflineID = ArrayList<String>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,6 +86,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             if (selectedroldid != "0") {
                 ApiClient.client.create(ApiInterFace::class.java)
                     .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+
             }
         }
 //        if (!AppUtils().isInternet(this)){
@@ -90,6 +95,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             AppUtils.logDebug(TAG,"getAll Privilege"+list.toString())
             list.forEach{
                 privilegeListNameOffline.add(it.name.toString())
+                privilegeListNameOfflineID.add(it.id.toString())
             }
             setdata(privilegeListNameOffline)
 //        }
@@ -254,10 +260,18 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 AllPriviledgeListResponse::class.java
             )
             privilegeListName.clear()
+            privilegeListNameID.clear()
             privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
             for (i in 0 until privilegeList.size) {
+                val privilege= Privilege(privilegeList.get(i).id.toDouble().toInt(),privilegeList.get(i).privilege)
+
+                val db=DbHelper(this,null)
+                db.addPrivilege(privilege)
+
                 privilegeListName.add(privilegeList.get(i).privilege)
+                privilegeListNameID.add(privilegeList.get(i).id)
             }
+
             setdata(privilegeListName)
 
         }

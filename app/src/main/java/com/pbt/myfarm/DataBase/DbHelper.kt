@@ -16,8 +16,14 @@ import com.google.gson.Gson
 import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Event.*
 import com.pbt.myfarm.Activity.Event.Data
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameID
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOfflineID
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
+import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
@@ -5504,7 +5510,10 @@ fun collectDataCreate(pack: CollectData) {
     }
 
     @SuppressLint("Range")
-    fun getTaskFunctionList(updateTaskId: String): ArrayList<TaskConfigFunction> {
+    fun getTaskFunctionList(
+        updateTaskId: String,
+
+    ): ArrayList<TaskConfigFunction> {
 
         val query = "SELECT * FROM $TABLE_task_config_functions " +
                 "Where $COL_task_config_functions_task_config_id='$updateTaskId'"
@@ -5538,20 +5547,43 @@ fun collectDataCreate(pack: CollectData) {
                         cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name))
                     var functionnames: String? =
                         cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description))
+                    val privilegeid: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_privilege))
+                    var privilegename:String=""
+
+                   if (AppUtils().isInternet(context)){
+                       for (i in 0 until  privilegeListNameID.size){
+                           if (privilegeListNameID.get(i)==privilegeid){
+                               privilegename= privilegeListName.get(i)
+                           }
+                       }
+                   }
+                    else{
+                        AppUtils.logDebug(TAG,"priilegelist"+ privilegeListNameOfflineID.toString())
+//                       for (i in 0 until privilegeListNameOfflineID.size){
+//                           if (privilegeListNameOfflineID.get(i)==privilegeid){
+//                               privilegename=privilegeListNameOffline.get(i)
+//                           }
+//                       }
+                    }
+
 
                     if (functionnames.isNullOrEmpty()) {
                         functionnames = getFieldNameFromListChoice(functionId.toString())
                     }
-                    val packconfig = TaskConfigFunction(name = functionId,
-                        name1 = functionnames,
+                    AppUtils.logDebug(TAG, "getTaskFunctionList" + privilegename.toString())
 
+                    val packconfig = TaskConfigFunction(
+                        null, null, null,
+                        functionnames, functionId?.toInt(),
+                        null, null, functionnames, privilegename,
+                        taskconfigId?.toInt()
                     )
 
                     upCommingPackCONFIGList.add(packconfig)
 
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
         } catch (e: Exception) {
             AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
         }
