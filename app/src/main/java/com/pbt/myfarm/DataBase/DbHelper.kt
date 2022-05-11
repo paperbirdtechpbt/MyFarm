@@ -15,11 +15,18 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Event.Data
+import com.pbt.myfarm.Activity.Home.MainActivity
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameID
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOfflineID
+import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Graph.ListCharts
 import com.pbt.myfarm.Activity.Graph.ListLines
 import com.pbt.myfarm.Activity.Graph.ListPoints
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
+import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
@@ -539,6 +546,7 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -3030,7 +3038,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     "$COL_tasks_SERVERid=?",
                     arrayOf(task.id.toString())
                 )
-                db.close()
+                // db.close()
                 if (result >= 0) {
                     Toast.makeText(context, "update TAskSuccessfully", Toast.LENGTH_SHORT).show()
                     isSuccessFull = true
@@ -5705,7 +5713,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val query = "SELECT * FROM $TABLE_task_config_functions " + "Where $COL_task_config_functions_task_config_id='$taskConfigID'"
 
-        AppUtils.logError(TAG, "getPersonList Query" + query)
+        AppUtils.logError(TAG, "getTaskFunctionList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<TaskConfigFunction>()
         val db = this.readableDatabase
@@ -5734,6 +5742,26 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name))
                     var functionnames: String? =
                         cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description))
+                    val privilegeid: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_privilege))
+                    var privilegename:String=""
+
+                   if (AppUtils().isInternet(context)){
+                       for (i in 0 until  privilegeListNameID.size){
+                           if (privilegeListNameID.get(i)==privilegeid){
+                               privilegename= privilegeListName.get(i)
+                           }
+                       }
+                   }
+                    else{
+                        AppUtils.logDebug(TAG,"priilegelist"+ privilegeListNameOfflineID.toString())
+//                       for (i in 0 until privilegeListNameOfflineID.size){
+//                           if (privilegeListNameOfflineID.get(i)==privilegeid){
+//                               privilegename=privilegeListNameOffline.get(i)
+//                           }
+//                       }
+                    }
+
 
                     if (functionnames.isNullOrEmpty()) {
                         functionnames = getFieldNameFromListChoice(functionId.toString())
@@ -5741,7 +5769,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val packconfig = TaskConfigFunction(
                         null, null, null,
                         functionnames, functionId?.toInt(),
-                        null, null, functionnames, null,
+                        null, null, functionnames, privilegename,
                         taskconfigId?.toInt()
                     )
 
