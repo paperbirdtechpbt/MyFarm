@@ -666,6 +666,7 @@ data class TaskConfigFunction(
     val last_changed_by: Int?=null,
     val last_changed_date: String?=null,
     val name: String?=null,
+    val name1: String?=null,
     val privilege: Int?=null,
     val task_config_id: Int?=null
 )

@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         var privilegeList = ArrayList<ListPrivilege>()
         val privilegeListName = ArrayList<String>()
         val privilegeListNameOffline = ArrayList<String>()
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,9 +76,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (AppUtils().isInternet(this)) {
             initViewModel()
         }
-
     }
-
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)){
             if (selectedroldid != "0") {
@@ -87,7 +84,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                     .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
             }
         }
-
 //        if (!AppUtils().isInternet(this)){
             val db=DbHelper(this,null)
           val  list=  db.getAllPrivilege()
@@ -95,11 +91,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             list.forEach{
                 privilegeListNameOffline.add(it.name.toString())
             }
-
             setdata(privilegeListNameOffline)
 //        }
-
-
     }
 
     private fun initViewModel() {
@@ -185,12 +178,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun checkOfflineDataToSync() {
-        var userID = MySharedPreference.getUser(this)?.id.toString()
+        val userID = MySharedPreference.getUser(this)?.id.toString()
         val db = DbHelper(this, null)
 
         val collectData = db.getCollectDataToBeSend(userID)
         val events = db.getEventsTobeSend(userID)
-        var packnew = db.getPacksToBeSend(userID)
+        val packnew = db.getPacksToBeSend(userID)
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
         val taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
         val task = db.getTasksToBeSend(userID)

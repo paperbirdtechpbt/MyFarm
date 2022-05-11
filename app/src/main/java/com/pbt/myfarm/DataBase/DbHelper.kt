@@ -5509,7 +5509,7 @@ fun collectDataCreate(pack: CollectData) {
         val query = "SELECT * FROM $TABLE_task_config_functions " +
                 "Where $COL_task_config_functions_task_config_id='$updateTaskId'"
 
-        AppUtils.logError(TAG, "getPersonList Query" + query)
+        AppUtils.logError(TAG, "getTaskFunctionList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<TaskConfigFunction>()
         val db = this.readableDatabase
@@ -5542,11 +5542,9 @@ fun collectDataCreate(pack: CollectData) {
                     if (functionnames.isNullOrEmpty()) {
                         functionnames = getFieldNameFromListChoice(functionId.toString())
                     }
-                    val packconfig = TaskConfigFunction(
-                        null, null, null,
-                        functionnames, functionId?.toInt(),
-                        null, null, functionnames, null,
-                        taskconfigId?.toInt()
+                    val packconfig = TaskConfigFunction(name = functionId,
+                        name1 = functionnames,
+
                     )
 
                     upCommingPackCONFIGList.add(packconfig)

@@ -90,11 +90,15 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         ExpNameKey.clear()
         ExpAmtArrayKey.clear()
 
+
         if (updateTaskBoolen) {
+
             updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
             AppUtils.logDebug(TAG, " true updateTaskList" + updateTaskList.toString())
 
-        } else {
+        }
+
+        else {
 
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
             AppUtils.logDebug(TAG, "false updateTaskList" + configtype.toString())
@@ -215,7 +219,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         })
 
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
+
         setCommunityGroup(communitGroup)
+
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
@@ -262,7 +268,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 } else {
                     //Store Task Offline In Database
                     viewmodel?.desciption = field_desciption.text.toString()
-                    var success =
+                    val success =
                         viewmodel?.createTaskOffline(this, configtype, false, updateTaskList)
                     if (success == true) {
                         finish()
@@ -278,7 +284,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
                             successObject.toString() + "\n" + configtype?.name_prefix.toString()
                 )
-            } else {
+            }
+            else {
                 if (AppUtils().isInternet(this)) {
                     btn_create_task.visibility = View.GONE
 
@@ -311,7 +318,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
 
     }
-
 
     private fun setCommunityGroup(communitGroup: Spinner) {
         Handler(Looper.getMainLooper()).postDelayed({

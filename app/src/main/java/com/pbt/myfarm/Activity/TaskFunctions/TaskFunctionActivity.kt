@@ -49,7 +49,6 @@ import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -80,6 +79,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var fileVideo: File? = null
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
+    var taskfunction: Spinner?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,13 +90,13 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         progress_circularlabel = findViewById(R.id.progress_circular_label)
 
         edAttachMedia = findViewById(R.id.taskfunction_media)
-
+         taskfunction = findViewById(R.id.taskfunction)
 
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
-            initViewModel(updateTaskID?.id.toString())
+            initViewModel(updateTaskID?.id.toString(),updateTaskID?.task_config_id.toString())
             checkAndRequestPermissions()
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
@@ -257,19 +257,19 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
     }
 
-    private fun initViewModel(updateTaskID: String) {
+    private fun initViewModel(updateTaskID: String, updateTaskconfigId: String) {
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
-        viewmodel?.onTaskFunctionList(this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
+        viewmodel?.onTaskFunctionList(this, updateTaskID, MySharedPreference.getUser(application)?.id.toString(),updateTaskconfigId)
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
 
-            AppUtils.logDebug(TAG, "list og list functions=" + list.toString())
+            AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())
             if (!list.isNullOrEmpty()) {
-                val taskfunction: Spinner = findViewById(R.id.taskfunction)
-                setSpinner(list, taskfunction)
+
+                setSpinner(list, taskfunction!!)
 //                for (i in 0 until list.size) {
 //                    if (list.get(i).id == "171" || list.get(i).id == "175" || list.get(i).id == "176") {
 //                        taskfunction_field.visibility = View.VISIBLE
@@ -290,16 +290,27 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     private fun setSpinner(list: List<ListTaskFunctions>, taskfunction: Spinner) {
+        val mylist=list
         val listname = ArrayList<String>()
         val listid = ArrayList<String>()
 
 
-        for (i in 0 until list.size) {
-            val privilegemane=list.get(i).privilegeName
-            if (privilegeListName.contains(privilegemane)){
-                listname.add(list.get(i).name1!!)
-                listid.add(list.get(i).name!!)
+        for (i in 0 until mylist.size) {
+            val privilegemane=mylist.get(i).name
+            if (AppUtils().isInternet(this)){
+                if (privilegeListName.contains(privilegemane)){
+                    listname.add(mylist.get(i).name1!!)
+                    listid.add(mylist.get(i).name!!)
+                }
             }
+            else{
+                if (privilegeListNameOffline.contains(privilegemane)){
+                    listname.add(mylist.get(i).name1!!)
+                    listid.add(mylist.get(i).name!!)
+                }
+            }
+
+
 
 
         }
