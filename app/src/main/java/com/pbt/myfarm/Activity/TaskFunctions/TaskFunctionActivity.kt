@@ -261,13 +261,13 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
     }
 
-    private fun initViewModel(updateTaskID: String, updateTaskconfigId: String) {
+    private fun initViewModel(taskConfigID : String,updateTaskID: String) {
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
-        viewmodel?.onTaskFunctionList(this, updateTaskID, MySharedPreference.getUser(application)?.id.toString(),updateTaskconfigId)
+        viewmodel?.onTaskFunctionList(taskConfigID,this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
 
             AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())

@@ -757,7 +757,7 @@ class AppConstant {
         const val COL_task_objects_LASTCHANGEDDATE = "task_objects_lastchnagedDATE"
 
 
-        const val TABLE_privileges = "privileges"
+        const val TABLE_privileges = "table_privileges"
         const val COL_privileges_SERVERID = "privileges_serverid"
         const val COL_privileges_PRIMARYID = "privileges_primary"
         const val COL_privileges_NAME = "privileges_name"

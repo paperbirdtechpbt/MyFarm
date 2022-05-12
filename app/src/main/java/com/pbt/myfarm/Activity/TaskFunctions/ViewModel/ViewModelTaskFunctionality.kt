@@ -29,7 +29,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     }
 
 
-    fun onTaskFunctionList(context: Context, updateTaskId: String, userID: String, updateTaskconfigId: String) {
+    fun onTaskFunctionList(taskConfigID : String,context: Context, updateTaskId: String, userID: String) {
 
         Log.d("Apicall","Param updateTsk : $updateTaskId  UserID $userID ")
 
@@ -42,7 +42,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         }
         else{
             val db=DbHelper(context,null)
-            val list=     db.getTaskFunctionList(updateTaskconfigId)
+            val list=     db.getTaskFunctionList(taskConfigID)
             AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
             val listtask=ArrayList<ListTaskFunctions>()
             listtask.add(ListTaskFunctions("0","Select"))

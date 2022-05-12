@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         recyclerview_main.setLayoutManager(mLayoutManager)
 
         val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
-        callPrivilegeAPI(roleID)
+
 
         if (chechpermission()) {
             startService(Intent(this, MyFarmService::class.java))
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (AppUtils().isInternet(this)) {
             initViewModel()
         }
-
+        callPrivilegeAPI(roleID)
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {

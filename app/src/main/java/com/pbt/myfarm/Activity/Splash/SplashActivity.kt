@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.pbt.myfarm.Activity.Home.MainActivity
 
@@ -21,18 +22,15 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         supportActionBar?.hide()
 
-        val checkuser=MySharedPreference.getStringValue(this,CONST_SHARED_PREF_USERNAME,null)
-//        if (checkuser!=null){
-//            startService(Intent(this,MyFarmService::class.java))
-//        }
+        val checkuser=MySharedPreference.getStringValue(this,CONST_SHARED_PREF_USERNAME,"")
 
+        Log.d("Splash","$checkuser : ${checkuser.isNullOrEmpty()}")
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if (checkuser==null){
+            if (checkuser.isNullOrEmpty()){
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
-            }
-            else{
+            } else{
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }

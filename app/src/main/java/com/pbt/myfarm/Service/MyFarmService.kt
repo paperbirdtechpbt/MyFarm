@@ -288,13 +288,14 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                     }
                                 }
                             }
-//                            GlobalScope.launch {
-//                                if (it.Data.privileges.isNotEmpty()) {
-//                                    for (pack in it.Data.privileges) {
-//                                        db.addPrivilege(pack)
-//                                    }
-//                                }
-//                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.privileges.isNotEmpty()) {
+                                    for (pack in it.Data.privileges) {
+                                        db.addPrivilege(pack)
+                                    }
+                                }
+                            }
 
 
                             GlobalScope.launch {

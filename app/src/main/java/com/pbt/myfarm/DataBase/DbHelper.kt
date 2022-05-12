@@ -3476,8 +3476,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 val values = ContentValues()
                 values.put(COL_privileges_SERVERID, viewtask.id)
                 values.put(COL_privileges_NAME, viewtask.name)
-
-
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_privileges, null, values)
                 // db.close()
@@ -5711,56 +5709,68 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getTaskFunctionList(taskConfigID: String): ArrayList<TaskConfigFunction> {
 
-        val query = "SELECT * FROM $TABLE_task_config_functions " + "Where $COL_task_config_functions_task_config_id='$taskConfigID'"
-
-        AppUtils.logError(TAG, "getTaskFunctionList Query" + query)
-
+//        val query = "SELECT * FROM $TABLE_task_config_functions " + "Where $COL_task_config_functions_task_config_id='$taskConfigID'"
+//
+//        AppUtils.logError(TAG, "getTaskFunctionList Query" + query)
+//
         val upCommingPackCONFIGList = ArrayList<TaskConfigFunction>()
+//        val db = this.readableDatabase
+//
+//
+////        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
+//
+//        val cursor: Cursor?
+//        try {
+//            cursor = db.rawQuery(query, null)
+//        } catch (e: Exception) {
+//            AppUtils.logError(TAG, e.message!!)
+//            db.execSQL(query)
+//            return ArrayList()
+//        }
+
+        val query = "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
         val db = this.readableDatabase
-
-
-//        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
 
         val cursor: Cursor?
         try {
+            AppUtils.logError(TAG, "Query getTaskFunctionList $query")
             cursor = db.rawQuery(query, null)
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-            db.execSQL(query)
-            return ArrayList()
-        }
-        try {
             if (cursor.moveToFirst()) {
                 do {
 
-                    val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_SERVERKEY))
-                    val taskconfigId: String? = cursor.getString(
-                        cursor.getColumnIndex(COL_task_config_functions_task_config_id)
-                    )
-                    val functionId: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name))
-                    var functionnames: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description))
-                    val privilegeid: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_task_config_functions_privilege))
-                    var privilegename:String=""
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_SERVERKEY))
+                    Log.d("#102030"," ID  $id")
+                    val taskconfigId: Int = cursor.getInt(cursor.getColumnIndex(COL_task_config_functions_task_config_id))
+                    Log.d("#102030"," taskconfigId  $taskconfigId")
+                    val functionId: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name)).toString()
+                    Log.d("#102030"," functionId  $functionId")
+                    var functionnames: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description)).toString()
+                    Log.d("#102030"," functionnames  $functionnames")
+                    val privilegeid: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_privilege)).toString()
+                    Log.d("#102030"," privilegeid  $privilegeid")
+                    var privilegename:String = " "
+                    if(cursor.getColumnIndex("privilegename") != null)
+                     privilegename = cursor.getString(cursor.getColumnIndex("privilegename"))
 
-                   if (AppUtils().isInternet(context)){
-                       for (i in 0 until  privilegeListNameID.size){
-                           if (privilegeListNameID.get(i)==privilegeid){
-                               privilegename= privilegeListName.get(i)
-                           }
-                       }
-                   }
-                    else{
-                        AppUtils.logDebug(TAG,"priilegelist"+ privilegeListNameOfflineID.toString())
-//                       for (i in 0 until privilegeListNameOfflineID.size){
-//                           if (privilegeListNameOfflineID.get(i)==privilegeid){
-//                               privilegename=privilegeListNameOffline.get(i)
-//                           }
-//                       }
-                    }
+                    Log.d("#102030"," privilegename  $privilegename")
+
+//                    var privilegename:String=""
+
+//                    if (AppUtils().isInternet(context)){
+//                        for (i in 0 until  privilegeListNameID.size){
+//                            if (privilegeListNameID.get(i)==privilegeid){
+//                                privilegename= privilegeListName.get(i)
+//                            }
+//                        }
+//                    }
+//                    else{
+//                        AppUtils.logDebug(TAG,"priilegelist"+ privilegeListNameOfflineID.toString())
+////                       for (i in 0 until privilegeListNameOfflineID.size){
+////                           if (privilegeListNameOfflineID.get(i)==privilegeid){
+////                               privilegename=privilegeListNameOffline.get(i)
+////                           }
+////                       }
+//                    }
 
 
                     if (functionnames.isNullOrEmpty()) {
@@ -5775,15 +5785,15 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                     upCommingPackCONFIGList.add(packconfig)
 
+
+
                 } while (cursor.moveToNext())
             }
-            AppUtils.logDebug(TAG, "upCommingPackCONFIGList" + upCommingPackCONFIGList.toString())
         } catch (e: Exception) {
-            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
+            Log.d("#102030"," Exception  ${e.message} ${e.stackTrace[0].lineNumber}")
+            return ArrayList()
         }
-        // close db connection
-        // db.close()
-        // return notes list
+        Log.d("#102030"," privilegeid  ${Gson().toJson(upCommingPackCONFIGList)}")
         return upCommingPackCONFIGList
     }
 
