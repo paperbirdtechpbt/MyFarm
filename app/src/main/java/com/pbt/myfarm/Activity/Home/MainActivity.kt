@@ -82,12 +82,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
         callPrivilegeAPI(roleID)
     }
-
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
                 ApiClient.client.create(ApiInterFace::class.java)
                     .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+
             }
         }
 
@@ -99,7 +99,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 privilegeListNameOffline.add(it.name.toString())
                 privilegeListNameOfflineID.add(it.id.toString())
             }
-
             setdata(privilegeListNameOffline)
         }
 

@@ -8,6 +8,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -159,6 +160,11 @@ class CreateTaskAdapter(
             holder.labeldate.visibility = View.GONE
             holder.mysppinner.visibility = View.GONE
             holder.labelSpinner.visibility = View.GONE
+
+            if (field_id=="155"){
+                holder.name.inputType= InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+
+            }
 
             Handler(Looper.getMainLooper()).postDelayed({
                 if (updateTaskIdBoolean) {

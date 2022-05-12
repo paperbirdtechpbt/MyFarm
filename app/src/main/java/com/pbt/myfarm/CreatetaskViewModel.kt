@@ -216,9 +216,17 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         val packConfigField = ArrayList<ConfigFieldList>()
         if (list.size >= 1) {
 
-            for (i in 0 until taskConfigList.size) {
-                ExpAmtArray.add("0")
-                ExpName.add("0")
+//            for (i in 0 until taskConfigList.size) {
+//                ExpAmtArray.add("0")
+//                ExpName.add("0")
+//                ExpNameKey.add("f_id")
+//                ExpAmtArrayKey.add("f_value")
+//
+//            }
+            for (i in list.indices) {
+                val item=list.get(i)
+                ExpAmtArray.add(" ")
+                ExpName.add(item.field_name!!)
                 ExpNameKey.add("f_id")
                 ExpAmtArrayKey.add("f_value")
 

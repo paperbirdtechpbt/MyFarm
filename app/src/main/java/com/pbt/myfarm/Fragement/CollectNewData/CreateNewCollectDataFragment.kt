@@ -101,7 +101,7 @@ class CreateNewCollectDataFragment : Fragment(), Callback<ResponseCollectAcitivi
         val name = String
 
         fun newInstance(name: String): CreateNewCollectDataFragment {
-            val fragment = CreateNewCollectDataFragment()
+            val fragment = com.pbt.myfarm.Fragement.CollectNewData.CreateNewCollectDataFragment()
 
             val bundle = Bundle().apply {
                 putString("ARG_NAME", name)

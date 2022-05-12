@@ -107,26 +107,23 @@ class DashBoardEventActivity : AppCompatActivity() {
 
     private fun setCalender(eventList: ArrayList<Event>) {
         val events: MutableList<EventDay> = ArrayList()
+        try {
+            for (i in 0 until eventList.size) {
 
-        for (i in 0 until eventList.size) {
+                val item = eventList[i]
 
-            val item = eventList[i]
+                val sdf = SimpleDateFormat("yyyy-MM-dd")
+                val calendar: Calendar = Calendar.getInstance()
+                val todaysdate = sdf.format(calendar.time)
 
-            val sdf = SimpleDateFormat("yyyy-MM-dd")
-            val calendar: Calendar = Calendar.getInstance()
-            val todaysdate = sdf.format(calendar.time)
+                AppUtils.logError(TAG, "============"+item.exp_start_date.toString() )
 
-            AppUtils.logError(TAG, "============"+item.exp_start_date.toString() )
-
-            if (item.exp_start_date!=null) {
-                val expstartdate = item.exp_start_date
-                val actualstartdate = item.actual_start_date
-                val actualenddate = item.actual_end_date
-                val expenddate = item.exp_end_date
-                if (todaysdate == expstartdate && actualstartdate == null) {
-
-                    val startdate = sdf.parse(expstartdate)
-                    val enddate = sdf.parse(expenddate)
+                if (item.exp_start_date!=null) {
+                    val expstartdate = item.exp_start_date
+                    val actualstartdate = item.actual_start_date
+                    val actualenddate = item.actual_end_date
+                    val expenddate = item.exp_end_date
+                    if (todaysdate == expstartdate && actualstartdate == null) {
 
 
 //                    if (expenddate != null && expstartdate != null) {
@@ -160,18 +157,18 @@ class DashBoardEventActivity : AppCompatActivity() {
 //                            )
 //                        }
 //                    }
-                    calendar.setTime(sdf.parse(item.exp_start_date))
+                        calendar.setTime(sdf.parse(item.exp_start_date))
 
-                    events.add(
-                        EventDay(
-                            calendar,
-                            R.drawable.ic_baseline_event_grey,
-                            Color.parseColor("#228B22")
+                        events.add(
+                            EventDay(
+                                calendar,
+                                R.drawable.ic_baseline_event_grey,
+                                Color.parseColor("#228B22")
+                            )
                         )
-                    )
 
-                }
-                else if (sdf.parse(todaysdate) > sdf.parse(expstartdate) && actualstartdate == null) {
+                    }
+                    else if (sdf.parse(todaysdate) > sdf.parse(expstartdate) && actualstartdate == null) {
 
 
 
@@ -206,17 +203,17 @@ class DashBoardEventActivity : AppCompatActivity() {
 //                            )
 //                        }
 //                    }
-                    calendar.setTime(sdf.parse(item.exp_start_date))
+                        calendar.setTime(sdf.parse(item.exp_start_date))
 
-                    events.add(
-                        EventDay(
-                            calendar,
-                            R.drawable.ic_baseline_event_red,
-                            Color.parseColor("#228B22")
+                        events.add(
+                            EventDay(
+                                calendar,
+                                R.drawable.ic_baseline_event_red,
+                                Color.parseColor("#228B22")
+                            )
                         )
-                    )
-                }
-                else if (sdf.parse(todaysdate) < sdf.parse(expstartdate) && actualstartdate == null) {
+                    }
+                    else if (sdf.parse(todaysdate) < sdf.parse(expstartdate) && actualstartdate == null) {
 
 
 //
@@ -249,16 +246,16 @@ class DashBoardEventActivity : AppCompatActivity() {
 //                            )
 //                        }
 //                    }
-                    calendar.setTime(sdf.parse(item.exp_start_date))
+                        calendar.setTime(sdf.parse(item.exp_start_date))
 
-                    events.add(
-                        EventDay(
-                            calendar,
-                            R.drawable.ic_baseline_event_blue,
-                            Color.parseColor("#228B22")
+                        events.add(
+                            EventDay(
+                                calendar,
+                                R.drawable.ic_baseline_event_blue,
+                                Color.parseColor("#228B22")
+                            )
                         )
-                    )
-                } else if (actualstartdate != null) {
+                    } else if (actualstartdate != null) {
 
 
 //
@@ -291,17 +288,17 @@ class DashBoardEventActivity : AppCompatActivity() {
 //                            )
 //                        }
 //                    }
-                    calendar.setTime(sdf.parse(item.exp_start_date))
+                        calendar.setTime(sdf.parse(item.exp_start_date))
 
-                    events.add(
-                        EventDay(
-                            calendar,
-                            R.drawable.ic_baseline_event_green,
-                            Color.parseColor("#228B22")
+                        events.add(
+                            EventDay(
+                                calendar,
+                                R.drawable.ic_baseline_event_green,
+                                Color.parseColor("#228B22")
+                            )
                         )
-                    )
-                }
-                else if (actualenddate != null) {
+                    }
+                    else if (actualenddate != null) {
 
 
 
@@ -335,49 +332,55 @@ class DashBoardEventActivity : AppCompatActivity() {
 //                            )
 //                        }
 //                    }
-                    calendar.setTime(sdf.parse(item.exp_start_date))
+                        calendar.setTime(sdf.parse(item.exp_start_date))
 
-                    events.add(
-                        EventDay(
-                            calendar,
-                            R.drawable.ic_baseline_event_grey,
-                            Color.parseColor("#228B22")
+                        events.add(
+                            EventDay(
+                                calendar,
+                                R.drawable.ic_baseline_event_grey,
+                                Color.parseColor("#228B22")
+                            )
                         )
-                    )
+                    }
+
+
                 }
-
-
             }
+
+            val calendarView: com.applandeo.materialcalendarview.CalendarView =
+                findViewById<View>(R.id.calendarView) as com.applandeo.materialcalendarview.CalendarView
+
+
+            calendarView.setEvents(events)
+
+            calendarView.setOnDayClickListener(object : OnDayClickListener {
+                override fun onDayClick(eventDay: EventDay) {
+                    val clickedDayCalendar = eventDay.calendar
+
+                    events.clear()
+                    events.add(EventDay(clickedDayCalendar))
+                    val clickdata=  getFormattedDate(eventDay.calendar.time)
+                    val evnts=ArrayList<Event>()
+
+                    for(i in 0 until eventList.size){
+                        if("$clickdata"==eventList.get(i).exp_start_date || "$clickdata"==eventList.get(i).actual_start_date){
+                            evnts.add(eventList.get(i))
+                        }
+                    }
+                    val adapter=DashboardEventAdapter(this@DashBoardEventActivity,evnts)
+                    recyclerview_events?.layoutManager = LinearLayoutManager(this@DashBoardEventActivity)
+                    recyclerview_events.adapter = adapter
+
+                    AppUtils.logDebug(TAG, "onDayClick evnts ${evnts}")
+                    AppUtils.logDebug(TAG, "onDayClick ${clickdata}")
+                }
+            })
+        }
+        catch (e:Exception){
+            AppUtils.logError(TAG,"${e.message}+ ${e.stackTrace.get(0).lineNumber}")
         }
 
-        val calendarView: com.applandeo.materialcalendarview.CalendarView =
-            findViewById<View>(R.id.calendarView) as com.applandeo.materialcalendarview.CalendarView
 
-
-        calendarView.setEvents(events)
-
-        calendarView.setOnDayClickListener(object : OnDayClickListener {
-            override fun onDayClick(eventDay: EventDay) {
-                val clickedDayCalendar = eventDay.calendar
-
-                events.clear()
-                events.add(EventDay(clickedDayCalendar))
-                val clickdata=  getFormattedDate(eventDay.calendar.time)
-                val evnts=ArrayList<Event>()
-
-                for(i in 0 until eventList.size){
-                    if("$clickdata"==eventList.get(i).exp_start_date || "$clickdata"==eventList.get(i).actual_start_date){
-                        evnts.add(eventList.get(i))
-                    }
-                }
-                val adapter=DashboardEventAdapter(this@DashBoardEventActivity,evnts)
-                recyclerview_events?.layoutManager = LinearLayoutManager(this@DashBoardEventActivity)
-                recyclerview_events.adapter = adapter
-
-                AppUtils.logDebug(TAG, "onDayClick evnts ${evnts}")
-                AppUtils.logDebug(TAG, "onDayClick ${clickdata}")
-            }
-        })
     }
 
     private fun setTeamASpinner(teamlist: List<Team>?) {

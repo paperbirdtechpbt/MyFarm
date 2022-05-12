@@ -549,6 +549,7 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -1243,9 +1244,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db?.execSQL("DROP TABLE IF EXISTS " + CONST_USERS_TABLE)
         onCreate(db)
     }
-
-
-
 
     @SuppressLint("Range")
     fun getLastValue_pack_new(configid: String): String {
@@ -1946,7 +1944,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
-
     fun changeTaskObjectStatus() {
         try {
             val db = this.writableDatabase
@@ -3570,6 +3567,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 val values = ContentValues()
                 values.put(COL_privileges_SERVERID, viewtask.id)
                 values.put(COL_privileges_NAME, viewtask.name)
+
+
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_privileges, null, values)
                 // db.close()
@@ -4778,6 +4777,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         } else {
             query =
                 "SELECT * FROM $TABLE_task_config_fields Where $COL_task_config_fields_task_config_id ='$configId' "
+
+
         }
         AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
@@ -6539,7 +6540,5 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
     }
-
-
 }
 

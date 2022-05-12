@@ -92,27 +92,28 @@ class EditEventActivity : AppCompatActivity(), retrofit2.Callback<ResposneUpdate
                         ).enqueue(this)
                     }
                     else{
-
+                        ApiClient.client.create(ApiInterFace::class.java).updateEvent(
+                            MySharedPreference.getUser(this)?.id.toString(),
+                            editEventID,
+                            ed_event_name.text.toString(),
+                            ed_event_desc.text.toString(),
+                            idtype,
+                            ed_event_expstartdt.text.toString(),
+                            ed_event_expenddt.text.toString(),
+                            ed_event_expDuration.text.toString(),
+                            ed_event_startdt.text.toString(),
+                            ed_event_enddt.text.toString(),
+                            ed_event_Duration.text.toString(),
+                            idcommunity,
+                            idstatus,
+                            idresponsible,
+                            idteam,
+                            idclosed
+                        ).enqueue(this)
                     }
-                    ApiClient.client.create(ApiInterFace::class.java).updateEvent(
-                        MySharedPreference.getUser(this)?.id.toString(),
-                        editEventID,
-                        ed_event_name.text.toString(),
-                        ed_event_desc.text.toString(),
-                        idtype,
-                        ed_event_expstartdt.text.toString(),
-                        ed_event_expenddt.text.toString(),
-                        ed_event_expDuration.text.toString(),
-                        ed_event_startdt.text.toString(),
-                        ed_event_enddt.text.toString(),
-                        ed_event_Duration.text.toString(),
-                        idcommunity,
-                        idstatus,
-                        idresponsible,
-                        idteam,
-                        idclosed
-                    ).enqueue(this)
-                } else {
+
+                }
+                else {
 
                     val db = DbHelper(this, null)
 

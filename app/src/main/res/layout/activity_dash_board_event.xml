@@ -5,74 +5,77 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.DashBoardEvent.DashBoardEventActivity">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Responsible"
-        app:layout_constraintBottom_toTopOf="@id/spinner_responsible"
-        app:layout_constraintStart_toStartOf="@id/spinner_responsible"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Responsible"
+            app:layout_constraintBottom_toTopOf="@id/spinner_responsible"
+            app:layout_constraintStart_toStartOf="@id/spinner_responsible" />
 
         <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Team"
-        app:layout_constraintBottom_toTopOf="@id/spinner_responsibleTeam"
-        app:layout_constraintStart_toStartOf="@id/spinner_responsibleTeam"/>
-    <Spinner
-        android:id="@+id/spinner_responsible"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/design_edittext"
-        style="@style/Edittext"/>
-    <Spinner
-        android:id="@+id/spinner_responsibleTeam"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@id/spinner_responsible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:background="@drawable/design_edittext"
-        style="@style/Edittext"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Team"
+            app:layout_constraintBottom_toTopOf="@id/spinner_responsibleTeam"
+            app:layout_constraintStart_toStartOf="@id/spinner_responsibleTeam" />
 
-    <com.applandeo.materialcalendarview.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:visibility="visible"
-        app:headerColor="@color/red"
-        android:layout_marginTop="15dp"
-        app:layout_constraintBottom_toTopOf="@id/recyclerview_events"
-        app:layout_constraintHeight_percent="0.35"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_responsibleTeam"
-        app:selectionColor="@color/green"
-        tools:ignore="MissingConstraints" />
+        <Spinner
+            android:id="@+id/spinner_responsible"
+            style="@style/Edittext"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/design_edittext"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-<!--<Button-->
-<!--    android:id="@+id/btn_select_month"-->
-<!--    android:layout_width="wrap_content"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:text="Month"-->
-<!--    app:layout_constraintLeft_toLeftOf="parent"-->
-<!--    app:layout_constraintRight_toRightOf="parent"-->
-<!--    app:layout_constraintBottom_toTopOf="@id/recyclerview_events"-->
-<!--    app:layout_constraintBottom_toBottomOf="parent"/>-->
+        <Spinner
+            android:id="@+id/spinner_responsibleTeam"
+            style="@style/Edittext"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/design_edittext"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_responsible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_events"
-        android:layout_width="match_parent"
-        android:visibility="visible"
-        android:layout_height="0dp"
-        tools:listitem="@layout/item_event_list"
-        app:layout_constraintTop_toBottomOf="@id/calendarView"/>
+        <com.applandeo.materialcalendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="370dp"
+            android:layout_marginTop="15dp"
+            android:visibility="visible"
+            app:headerColor="@color/red"
+            app:layout_constraintBottom_toTopOf="@id/recyclerview_events"
+            app:layout_constraintHeight_percent="0.35"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_responsibleTeam"
+            app:selectionColor="@color/green"
+            tools:ignore="MissingConstraints" />
+
+        <!--<Button-->
+        <!--    android:id="@+id/btn_select_month"-->
+        <!--    android:layout_width="wrap_content"-->
+        <!--    android:layout_height="wrap_content"-->
+        <!--    android:text="Month"-->
+        <!--    app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--    app:layout_constraintRight_toRightOf="parent"-->
+        <!--    app:layout_constraintBottom_toTopOf="@id/recyclerview_events"-->
+        <!--    app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_events"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintTop_toBottomOf="@id/calendarView"
+            tools:listitem="@layout/item_event_list" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
