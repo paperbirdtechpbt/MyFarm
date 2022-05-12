@@ -339,7 +339,7 @@ fun uploadFile(
 
     @FormUrlEncoded
     @POST("api/getAllDatalist")
-    fun offLineSync(@Field("user_id") userId: String) :Call<OffLineSyncModel>
+    fun offLineSync(@Field("user_id") userId: String,@Field("RoleId") roleID: String) :Call<OffLineSyncModel>
 
     @FormUrlEncoded
 

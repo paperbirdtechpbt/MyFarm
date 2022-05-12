@@ -629,33 +629,33 @@ class AppConstant {
 
         //ravi -offline---------table-----lists
 
-        const val TABLE_lists = "lists"
-        const val COL_lists_PRIMARYKEY = "lists_Primary"
-        const val COL_lists_SERVERID = "lists_serverid"
-        const val COL_lists_NAME = "lists_name"
-        const val COL_lists_COM_GROUP_ID = "lists_community_group_id"
-        const val COL_lists_DESC = "lists_description"
-        const val COL_lists_COM_GROUP = "lists_communitygroup"
-        const val COL_lists_CREATED_BY = "lists_created_by"
-        const val COL_lists_UPDATED_BY = "lists_updated_by"
-        const val COL_lists_DELETED_BY = "lists_deleted_by"
-        const val COL_lists_CREATED_AT = "lists_created_at"
-        const val COL_lists_UPDATED_AT = "lists_updated_at"
-        const val COL_lists_DELETED_AT = "lists_deleted_at"
+        const val TABLE_LISTS = "lists"
+        const val COL_LISTS_PRIMARYKEY = "lists_Primary"
+        const val COL_LISTS_ID = "lists_serverid"
+        const val COL_LISTS_NAME = "lists_name"
+        const val COL_LISTS_COM_GROUP_ID = "lists_community_group_id"
+        const val COL_LISTS_DESC = "lists_description"
+        const val COL_LISTS_COM_GROUP = "lists_communitygroup"
+        const val COL_LISTS_CREATED_BY = "lists_created_by"
+        const val COL_LISTS_UPDATED_BY = "lists_updated_by"
+        const val COL_LISTS_DELETED_BY = "lists_deleted_by"
+        const val COL_LISTS_CREATED_AT = "lists_created_at"
+        const val COL_LISTS_UPDATED_AT = "lists_updated_at"
+        const val COL_LISTS_DELETED_AT = "lists_deleted_at"
 
         //ravi -offline---------table-----list_choices
 
         const val TABLE_LIST_CHOICES = "list_choices"
         const val COL_list_choices_PRIMARYKEY = "list_choices_Primary"
-        const val COL_list_choices_SERVERID = "list_choices_serverid"
+        const val COL_LIST_CHOICES_ID = "list_choices_serverid"
         const val COL_LIST_CHOICES_LISTS_ID = "list_choices_lists_id"
-        const val COL_list_choices_CHOICE = "list_choices_choice"
+        const val COL_LIST_CHOICES_CHOICE = "list_choices_choice"
         const val COL_LIST_CHOICES_NAME = "list_choices_name"
-        const val COL_list_choices_CHOICE_COM_GROUP = "list_choices_choice_communitygroup"
-        const val COL_list_choices_COM_GROUP_ID = "list_choices_community_group_id"
-        const val COL_list_choices_CREATED_AT = "list_choices_created_at"
-        const val COL_list_choices_UPDATED_AT = "list_choices_updated_at"
-        const val COL_list_choices_DELETED_AT = "list_choices_deleted_at"
+        const val COL_LIST_CHOICES_COM_GROUP = "list_choices_choice_communitygroup"
+        const val COL_LIST_CHOICES_COM_GROUP_ID = "list_choices_community_group_id"
+        const val COL_LIST_CHOICES_CREATED_AT = "list_choices_created_at"
+        const val COL_LIST_CHOICES_UPDATED_AT = "list_choices_updated_at"
+        const val COL_LIST_CHOICES_DELETED_AT = "list_choices_deleted_at"
 
         //ravi -offline---------table-----sensors
 
@@ -764,7 +764,16 @@ class AppConstant {
 
 
         const val CON_PACK_ID = "id"
+        const val COL_UPDATED_AT = "updated_at"
+        const val COL_UPDATED_BY = "updated_by"
+        const val COL_CREATED_AT = "created_at"
+        const val COL_CREATED_BY = "created_by"
 
+        const val TABLE_ROLE_PRIVILEGES  = "role_privileges"
+        const val COL_ROLE_PRIVILEGES_LOCAL_ID = "lid"
+        const val COL_ROLE_PRIVILEGES_ID = "id"
+        const val COL_ROLE_PRIVILEGES_ROLE_ID = "role_id"
+        const val COL_ROLE_PRIVILEGES_PRIVILEGE = "privilege"
 
     }
 }

@@ -30,9 +30,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
-import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
@@ -66,39 +64,51 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var selectedFunctionId = 0
     var selectedFunctionFieldId = 0
     var body: MultipartBody.Part? = null
-//    var requestbody: RequestBody? = null
+
+    //    var requestbody: RequestBody? = null
     var edAttachMedia: EditText? = null
     val TAG: String = "TaskFunctionActivity"
     private val CAMERA_REQUEST = 1888
     private val GELARY_REQUEST = 1088
     private val MY_CAMERA_PERMISSION_CODE = 1001
     var manager: DownloadManager? = null
-//    var filePart: MultipartBody.Part? = null
+
+    //    var filePart: MultipartBody.Part? = null
     private val VIDEO_CAPTURE = 101
     var recordedVideoPath: String = ""
-//    var recordedVideoName: String = ""
+
+    //    var recordedVideoName: String = ""
     var fileVideo: File? = null
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
-    var taskfunction: Spinner?=null
+    var taskfunction: Spinner? = null
+
+    var db: DbHelper? = null
+
+    val listLocalPrivilegesName = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_function)
+
+        db = DbHelper(this, null)
+        db?.getAllRolePrivilegesName()?.let {
+            listLocalPrivilegesName.addAll(it)
+        }
 
         spinner = findViewById(R.id.taskfunction_field)
         progress_circular = findViewById(R.id.progress_circular)
         progress_circularlabel = findViewById(R.id.progress_circular_label)
 
         edAttachMedia = findViewById(R.id.taskfunction_media)
-         taskfunction = findViewById(R.id.taskfunction)
+        taskfunction = findViewById(R.id.taskfunction)
 
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
             updateTaskID?.let {
-                initViewModel(it.task_config_id.toString(),it.id.toString())
+                initViewModel(it.task_config_id.toString(), it.id.toString())
             }
 
             checkAndRequestPermissions()
@@ -146,6 +156,14 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             }
         }
         btn_execute.setOnClickListener {
+
+            val mTaskID = updateTaskID?.id.toString();
+            val mFunctionID =  selectedFunctionId.toString()
+            val mUserID =  MySharedPreference.getUser(this)?.id.toString()
+            val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toInt().toString()
+            val mFieldID = selectedFunctionFieldId.toString()
+
+
             if (selectedFunctionId == 172 || selectedFunctionId == 168) {
                 Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
             } else {
@@ -176,14 +194,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                                 it
                             )
                         }
-                    val taskID = paramRequestTextBody(updateTaskID?.id.toString())
-                    val functionID = paramRequestTextBody(selectedFunctionId.toString())
-                    val userID =
-                        paramRequestTextBody(MySharedPreference.getUser(this)?.id.toString())
-                    val fieldID = paramRequestTextBody(selectedFunctionFieldId.toString())
+                    val taskID = paramRequestTextBody(mTaskID)
+                    val functionID = paramRequestTextBody(mFunctionID)
+                    val userID = paramRequestTextBody(mUserID)
+                    val fieldID = paramRequestTextBody(mFieldID)
 
-                    val apiInterFace =
-                        service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
+                    val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
 
                     apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
                         override fun onResponse(
@@ -237,7 +253,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
                     })
                 } else {
-
+//                    val db = DbHelper(this, null)
+//                    viewmodel?.apply {
+//                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
+//                    }
                     val db = DbHelper(this, null)
 //                    db.checkIftaskStart(updateTaskID)
                     val taskobject = com.pbt.myfarm.TaskObject(
@@ -245,13 +264,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         function = selectedFunctionId.toString(),
                     )
 
-                 val isSuucess=   db.addTaskObjectOffline(taskobject, "1")
-                    if (isSuucess){
-                        progressbar_taskexecute.visibility=View.GONE
+                    val isSuucess = db.addTaskObjectOffline(taskobject, "1")
+                    if (isSuucess) {
+                        progressbar_taskexecute.visibility = View.GONE
                         Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
-                    }
-                    else{
-                        progressbar_taskexecute.visibility=View.GONE
+                    } else {
+                        progressbar_taskexecute.visibility = View.GONE
 
                         Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
 
@@ -261,13 +279,19 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
     }
 
-    private fun initViewModel(taskConfigID : String,updateTaskID: String) {
+
+    private fun initViewModel(taskConfigID: String, updateTaskID: String) {
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
-        viewmodel?.onTaskFunctionList(taskConfigID,this, updateTaskID, MySharedPreference.getUser(application)?.id.toString())
+        viewmodel?.onTaskFunctionList(
+            taskConfigID,
+            this,
+            updateTaskID,
+            MySharedPreference.getUser(application)?.id.toString()
+        )
         viewmodel?.listTaskFuntions?.observe(this, Observer { list ->
 
             AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())
@@ -296,33 +320,37 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     private fun setSpinner(list: List<ListTaskFunctions>, taskfunction: Spinner) {
-        val listname = ArrayList<String>()
-        val listid = ArrayList<String>()
 
-        for (i in 0 until list.size) {
-            AppUtils.logError(TAG,"Privilege list=="+ privilegeListName.size+" offoine="+ privilegeListNameOffline.size)
+        val listName = ArrayList<String>()
+        val listID = ArrayList<String>()
 
-            val privilegemane=list.get(i).privilegeName
-            if (AppUtils().isInternet(this)){
-                if (privilegeListName.contains(privilegemane)){
-                    listname.add(list.get(i).name1!!)
-                    listid.add(list.get(i).name!!)
+        list.forEach {
+
+            val privilegeName = it.privilegeName
+
+            if (AppUtils().isInternet(this)) {
+                if (privilegeListName.contains(privilegeName)) {
+                    listName.add(it.name1!!)
+                    listID.add(it.name!!)
+                }
+            } else {
+                if (!privilegeName.isNullOrEmpty()) {
+                    if (listLocalPrivilegesName.contains(privilegeName)) {
+                        listName.add(it.name1!!)
+                        listID.add(it.name!!)
+                    }
+
+                } else {
+                    listName.add(it.name!!)
+                    listID.add(it.id!!)
                 }
             }
-            else{
-                if (privilegeListNameOffline.contains(privilegemane)){
-                    listname.add(list.get(i).name1!!)
-                    listid.add(list.get(i).name!!)
-                }
-            }
-
         }
 
-
-        val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listname)
+        val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listName)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction.setAdapter(dd)
-        setListner(taskfunction, listid, listname)
+        setListner(taskfunction, listID, listName)
 
 
     }
@@ -336,9 +364,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-                selectedFunctionId = listid.get(position).toDouble().toInt()
+                selectedFunctionId = listid[position].toDouble().toInt()
 
-AppUtils.logDebug(TAG,"SelectedFunctionId"+selectedFunctionId.toString())
                 if (selectedFunctionId == 0) {
                     label_filename.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE
@@ -395,7 +422,8 @@ AppUtils.logDebug(TAG,"SelectedFunctionId"+selectedFunctionId.toString())
                         label_filename.visibility = View.GONE
                     } else if (item == "174" || item == "175") {
 
-                        val intent = Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
+                        val intent =
+                            Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
                         startActivity(intent)
 
                         label_filename.visibility = View.GONE
@@ -814,7 +842,7 @@ AppUtils.logDebug(TAG,"SelectedFunctionId"+selectedFunctionId.toString())
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-                if (AppUtils().isInternet(this@TaskFunctionActivity)){
+                if (AppUtils().isInternet(this@TaskFunctionActivity)) {
                     if (privilegeListName.contains("CanOverideEditTask")) {
 
                         selectedFunctionFieldId = function.get(position).id!!.toInt()
@@ -823,10 +851,8 @@ AppUtils.logDebug(TAG,"SelectedFunctionId"+selectedFunctionId.toString())
                             "onitem Select lIstner" + selectedFunctionFieldId.toString()
                         )
                     }
-                }
-                else{
-                    if (privilegeListNameOffline.contains("CanOverideEditTask")) {
-
+                } else {
+                    if (listLocalPrivilegesName.contains("CanOverideEditTask")) {
                         selectedFunctionFieldId = function.get(position).id!!.toInt()
                         AppUtils.logDebug(
                             TAG,

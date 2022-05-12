@@ -12,6 +12,7 @@ import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.ModelClass.SendDataMasterList
 import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.TaskConfig
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -25,6 +26,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
     val TAG = "MyFarmService"
     var userID: String? = null
+    var roleID: String? = null
     var tasklist = ArrayList<com.pbt.myfarm.ModelClass.Task>()
     var packlist = ArrayList<com.pbt.myfarm.ModelClass.PacksNew>()
     var eventlist = ArrayList<com.pbt.myfarm.ModelClass.Event>()
@@ -38,10 +40,11 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         Log.d(TAG, " Service run ${System.currentTimeMillis()}")
 
         userID = MySharedPreference.getUser(this)?.id.toString()
+        roleID = MySharedPreference.getStringValue(this, AppConstant.CONST_PREF_ROLE_ID, "0")
 
         GlobalScope.launch {
             sendDataMastersApi(userID!!)
-            syncOfflineData(userID!!)
+            syncOfflineData(userID!!,roleID!!)
             getEventTypeListAndOtherList(userID!!)
         }
 
@@ -97,10 +100,10 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun syncOfflineData(userID: String) {
+    private fun syncOfflineData(userID: String,roleID : String) {
 
         val service = ApiClient.getClient()!!.create(ApiInterFace::class.java)
-        val apiInterFace = service.offLineSync(userID)
+        val apiInterFace = service.offLineSync(userID,roleID)
 
         apiInterFace.enqueue(object : Callback<OffLineSyncModel> {
 
@@ -206,7 +209,6 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                 if (it.Data.collect_data.isNotEmpty()) {
                                     for (pack in it.Data.collect_data) {
                                         db.collectDataCreate(pack)
-                                        Log.d("LocalDataInsert"," Serverice insert Data  ${pack.id}")
                                     }
                                 }
                                 db.close()
@@ -297,6 +299,14 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                                 }
                             }
 
+                            GlobalScope.launch {
+
+                                if (it.Data.role_privileges.isNotEmpty()) {
+                                    for (privileges in it.Data.role_privileges) {
+                                        db.insertRolPrivileges(privileges)
+                                    }
+                                }
+                            }
 
                             GlobalScope.launch {
                                 if (it.Data.task_objects.isNotEmpty()) {

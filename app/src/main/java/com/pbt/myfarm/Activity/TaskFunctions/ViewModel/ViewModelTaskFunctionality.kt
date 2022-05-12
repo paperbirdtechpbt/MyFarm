@@ -15,10 +15,10 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
 import retrofit2.Call
 import retrofit2.Response
-import kotlin.collections.ArrayList
 
 
-class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity), retrofit2.Callback<HttpResponse> {
+class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
+    retrofit2.Callback<HttpResponse> {
 
     val TAG = "ViewModelTaskFunctionality"
     var context: Context? = null
@@ -29,30 +29,29 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     }
 
 
-    fun onTaskFunctionList(taskConfigID : String,context: Context, updateTaskId: String, userID: String) {
+    fun onTaskFunctionList(
+        taskConfigID: String,
+        context: Context,
+        updateTaskId: String,
+        userID: String
+    ) {
 
-        Log.d("Apicall","Param updateTsk : $updateTaskId  UserID $userID ")
+        Log.d("Apicall", "Param updateTsk : $updateTaskId  UserID $userID ")
 
-        if (AppUtils().isInternet(context)){
-                    ApiClient.client.create(ApiInterFace::class.java)
-            .taskFunctionList(
-               userID,
-                updateTaskId
-            ).enqueue(this)
-        }
-        else{
-            val db=DbHelper(context,null)
-            val list=     db.getTaskFunctionList(taskConfigID)
-            AppUtils.logDebug(TAG,"ontaskfunction list --"+list.toString())
-            val listtask=ArrayList<ListTaskFunctions>()
-            listtask.add(ListTaskFunctions("0","Select"))
-
-            list.forEach{
-                AppUtils.logDebug(TAG,"ontaskfunction list --"+Gson().toJson(it).toString())
-
-                listtask.add(ListTaskFunctions(it.id.toString(),it.id.toString(),it.name,it.privilege))
+        if (AppUtils().isInternet(context)) {
+            ApiClient.client.create(ApiInterFace::class.java)
+                .taskFunctionList(
+                    userID,
+                    updateTaskId
+                ).enqueue(this)
+        } else {
+            val db = DbHelper(context, null)
+            val taskFunctionList = ArrayList<ListTaskFunctions>()
+            taskFunctionList.add(ListTaskFunctions("0", "Select"))
+            db.getTaskFunctionList(taskConfigID).let {
+                taskFunctionList.addAll(it)
             }
-            listTaskFuntions.value = listtask
+            listTaskFuntions.value = taskFunctionList
         }
     }
 
@@ -61,7 +60,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         response: Response<HttpResponse>
     ) {
         if (response.body()?.error == false) {
-            if(response.body() != null){
+            if (response.body() != null) {
                 val response: HttpResponse =
                     Gson().fromJson(Gson().toJson(response.body()), HttpResponse::class.java)
                 if (response != null) {
@@ -80,5 +79,11 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     }
 
     override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+    }
+
+
+    fun executeTask(mTaskID: String, mFunctionID: String, mUserID: String, mFieldID: String, db : DbHelper,mTimeZoneId :String) {
+         val choices = db.getListChoiceQuery(mTimeZoneId)
+        val slite  = choices.name
     }
 }

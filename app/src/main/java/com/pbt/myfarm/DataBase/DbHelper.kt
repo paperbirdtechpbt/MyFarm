@@ -15,18 +15,12 @@ import android.widget.Toast
 import com.google.gson.Gson
 import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Event.Data
-import com.pbt.myfarm.Activity.Home.MainActivity
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameID
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOfflineID
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Graph.ListCharts
 import com.pbt.myfarm.Activity.Graph.ListLines
 import com.pbt.myfarm.Activity.Graph.ListPoints
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
-import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
+import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
@@ -38,6 +32,8 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_PACK_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_RESULE_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_VALUE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHARTS_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_NAME
@@ -58,6 +54,12 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_LAST_CHANGED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_LAST_CHANGED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_NEW_DLETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_PRIVILEGE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_ROLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_UPDATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activities_COMMUNITYGROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activities_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activities_CREATED_BY
@@ -243,26 +245,26 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_OBJECTCLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_ORDINATE_TITLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_TITLE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CHOICE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CHOICE_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_COM_GROUP_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CHOICE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_DELETED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_COM_GROUP_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_DELETED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_DESC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_lists_UPDATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_PRIMARY_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_SERVER_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_collect_activity_id
@@ -509,6 +511,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_GRAPH_CHARTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LIST_CHOICES
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACKCONFIG
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_ROLE_PRIVILEGES
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activities
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results_unit
@@ -522,7 +525,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_events
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_objects
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_points
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_lists
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LISTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_collect_activity
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_config_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_fields
@@ -546,7 +549,6 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -1178,34 +1180,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         //ravi -offline---------table-----lists
 
-        val lists = ("CREATE TABLE " + TABLE_lists + " ("
-                + COL_lists_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_lists_SERVERID + " TEXT," +
-                COL_lists_NAME + " TEXT," +
-                COL_lists_COM_GROUP_ID + " TEXT," +
-                COL_lists_DESC + " TEXT," +
-                COL_lists_COM_GROUP + " TEXT," +
-                COL_lists_CREATED_BY + " TEXT," +
-                COL_lists_UPDATED_BY + " TEXT," +
-                COL_lists_DELETED_BY + " TEXT," +
-                COL_lists_CREATED_AT + " TEXT," +
-                COL_lists_UPDATED_AT + " TEXT," +
-                COL_lists_DELETED_AT + " TEXT" + ")")
+        val lists = ("CREATE TABLE " + TABLE_LISTS + " ("
+                + COL_LISTS_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
+                COL_LISTS_ID + " TEXT," +
+                COL_LISTS_NAME + " TEXT," +
+                COL_LISTS_COM_GROUP_ID + " TEXT," +
+                COL_LISTS_DESC + " TEXT," +
+                COL_LISTS_COM_GROUP + " TEXT," +
+                COL_LISTS_CREATED_BY + " TEXT," +
+                COL_LISTS_UPDATED_BY + " TEXT," +
+                COL_LISTS_DELETED_BY + " TEXT," +
+                COL_LISTS_CREATED_AT + " TEXT," +
+                COL_LISTS_UPDATED_AT + " TEXT," +
+                COL_LISTS_DELETED_AT + " TEXT" + ")")
         db?.execSQL(lists)
 
         //ravi -offline---------table-----list_choices
 
         val list_choices = ("CREATE TABLE " + TABLE_LIST_CHOICES + " ("
                 + COL_list_choices_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_list_choices_SERVERID + " TEXT," +
+                COL_LIST_CHOICES_ID + " TEXT," +
                 COL_LIST_CHOICES_LISTS_ID + " TEXT," +
-                COL_list_choices_CHOICE + " TEXT," +
+                COL_LIST_CHOICES_CHOICE + " TEXT," +
                 COL_LIST_CHOICES_NAME + " TEXT," +
-                COL_list_choices_CHOICE_COM_GROUP + " TEXT," +
-                COL_list_choices_COM_GROUP_ID + " TEXT," +
-                COL_list_choices_CREATED_AT + " TEXT," +
-                COL_list_choices_UPDATED_AT + " TEXT," +
-                COL_list_choices_DELETED_AT + " TEXT" + ")")
+                COL_LIST_CHOICES_COM_GROUP + " TEXT," +
+                COL_LIST_CHOICES_COM_GROUP_ID + " TEXT," +
+                COL_LIST_CHOICES_CREATED_AT + " TEXT," +
+                COL_LIST_CHOICES_UPDATED_AT + " TEXT," +
+                COL_LIST_CHOICES_DELETED_AT + " TEXT" + ")")
         db?.execSQL(list_choices)
 
         //ravi -offline---------table-----team
@@ -1231,12 +1233,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_team_DELETED_AT + " TEXT" + ")")
         db?.execSQL(team)
 
+        val createTableRolePrivilege = "CREATE TABLE $TABLE_ROLE_PRIVILEGES ( $COL_ROLE_PRIVILEGES_LOCAL_ID  INTEGER PRIMARY KEY, $COL_ROLE_PRIVILEGES_ID  TEXT , $COL_ROLE_PRIVILEGES_PRIVILEGE  TEXT , $COL_ROLE_PRIVILEGES_ROLE_ID  TEXT, $COL_CREATED_AT  TEXT,$COL_CREATED_BY  TEXT, $COL_UPDATED_AT  TEXT, $COL_UPDATED_BY  TEXT )"
+        Log.d(TAG," Create Table RolePrivileges $createTableRolePrivilege")
+        db?.execSQL(createTableRolePrivilege)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         db?.execSQL("DROP TABLE IF EXISTS " + CONST_USERS_TABLE)
         onCreate(db)
     }
+
+
+
 
     @SuppressLint("Range")
     fun getLastValue_pack_new(configid: String): String {
@@ -1478,6 +1487,91 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return isSuccessFull
     }
 
+    //role_privileges data insert
+    fun insertRolPrivileges(rolePrivilege: RolePrivilege) {
+
+        try {
+            val db = this.writableDatabase
+            val i = checkEntry(rolePrivilege.id, TABLE_ROLE_PRIVILEGES, COL_ROLE_PRIVILEGES_ID)
+            Log.d(TAG, "RolePrivileges Row exist  $i ${rolePrivilege.id}")
+            if (i == 0) {
+                val values = ContentValues()
+                values.put(COL_ROLE_PRIVILEGES_ID, rolePrivilege.id)
+                values.put(COL_ROLE_PRIVILEGES_ROLE_ID, rolePrivilege.role_id)
+                values.put(COL_ROLE_PRIVILEGES_PRIVILEGE, rolePrivilege.privilege)
+                values.put(COL_UPDATED_BY, rolePrivilege.updated_by)
+                values.put(COL_UPDATED_AT, rolePrivilege.updated_at)
+                values.put(COL_CREATED_AT, rolePrivilege.created_at)
+                values.put(COL_CREATED_BY, rolePrivilege.created_by)
+                if(db.isOpen){
+                    val result = db.insert(TABLE_ROLE_PRIVILEGES, null, values)
+
+                    if (result >= 0)
+                        Log.d(TAG, "RolePrivileges Row inserted ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                    else
+                        Log.d(TAG, "RolePrivileges Row not insert ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                }
+            }
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "Role rolePrivilege Exception ${e.message} ${rolePrivilege.id} ${rolePrivilege.privilege}")
+        }
+
+    }
+
+
+    //role_privileges get data
+     fun getAllRolePrivileges() : ArrayList<RolePrivilege> {
+        val listAllPrivileges =  ArrayList<RolePrivilege>()
+        val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(selectRolePrivileges, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    val rolePrivilege = RolePrivilege(getColumnString(
+                        cursor,COL_CREATED_AT),
+                        getColumnString(cursor,COL_CREATED_BY).toInt(),
+                        "",
+                        "",
+                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ID).toInt(),
+                        getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE),
+                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ROLE_ID).toInt(),
+                        getColumnString(cursor,COL_UPDATED_AT),
+                        getColumnString(cursor,COL_CREATED_BY).toInt()
+                    )
+                    listAllPrivileges.add(rolePrivilege)
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+             return listAllPrivileges;
+            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+
+       return listAllPrivileges;
+    }
+
+    fun getAllRolePrivilegesName() : ArrayList<String> {
+
+        val listAllPrivileges =  ArrayList<String>()
+        val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(selectRolePrivileges, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    listAllPrivileges.add( getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE))
+                } while (cursor.moveToNext())
+            }
+        } catch (e: Exception) {
+            return listAllPrivileges;
+            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+
+        return listAllPrivileges;
+    }
 
     fun addNewPackOffline(pack: PacksNew, status: String): Boolean {
 
@@ -2669,25 +2763,25 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun listsCreate(pack: Lists) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_lists, COL_lists_SERVERID)
+            val i = checkEntry(pack.id, TABLE_LISTS, COL_LISTS_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_lists_SERVERID, pack.id)
-                values.put(COL_lists_NAME, pack.name)
-                values.put(COL_lists_COM_GROUP_ID, pack.community_group_id)
-                values.put(COL_lists_DESC, pack.description)
-                values.put(COL_lists_COM_GROUP, pack.communitygroup)
-                values.put(COL_lists_CREATED_BY, pack.created_by)
-                values.put(COL_lists_UPDATED_BY, pack.updated_by)
-                values.put(COL_lists_DELETED_BY, pack.deleted_by)
-                values.put(COL_lists_CREATED_AT, pack.created_at)
-                values.put(COL_lists_UPDATED_AT, pack.updated_at)
-                values.put(COL_lists_DELETED_AT, pack.deleted_at)
+                values.put(COL_LISTS_ID, pack.id)
+                values.put(COL_LISTS_NAME, pack.name)
+                values.put(COL_LISTS_COM_GROUP_ID, pack.community_group_id)
+                values.put(COL_LISTS_DESC, pack.description)
+                values.put(COL_LISTS_COM_GROUP, pack.communitygroup)
+                values.put(COL_LISTS_CREATED_BY, pack.created_by)
+                values.put(COL_LISTS_UPDATED_BY, pack.updated_by)
+                values.put(COL_LISTS_DELETED_BY, pack.deleted_by)
+                values.put(COL_LISTS_CREATED_AT, pack.created_at)
+                values.put(COL_LISTS_UPDATED_AT, pack.updated_at)
+                values.put(COL_LISTS_DELETED_AT, pack.deleted_at)
 
 
                 val db = this.writableDatabase
-                db.insert(TABLE_lists, null, values)
+                db.insert(TABLE_LISTS, null, values)
                 // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -2705,24 +2799,24 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun listChoicesCreate(pack: Choices) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_LIST_CHOICES, COL_list_choices_SERVERID)
+            val i = checkEntry(pack.id, TABLE_LIST_CHOICES, COL_LIST_CHOICES_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_list_choices_SERVERID, pack.id)
+                values.put(COL_LIST_CHOICES_ID, pack.id)
                 values.put(COL_LIST_CHOICES_LISTS_ID, pack.lists_id)
-                values.put(COL_list_choices_CHOICE, pack.choice)
+                values.put(COL_LIST_CHOICES_CHOICE, pack.choice)
                 values.put(COL_LIST_CHOICES_NAME, pack.name)
-                values.put(COL_list_choices_CHOICE_COM_GROUP, pack.choice_communitygroup)
-                values.put(COL_list_choices_COM_GROUP_ID, pack.community_group_id)
-                values.put(COL_list_choices_CREATED_AT, pack.created_at)
-                values.put(COL_list_choices_UPDATED_AT, pack.updated_at)
-                values.put(COL_list_choices_DELETED_AT, pack.deleted_at)
+                values.put(COL_LIST_CHOICES_COM_GROUP, pack.choice_communitygroup)
+                values.put(COL_LIST_CHOICES_COM_GROUP_ID, pack.community_group_id)
+                values.put(COL_LIST_CHOICES_CREATED_AT, pack.created_at)
+                values.put(COL_LIST_CHOICES_UPDATED_AT, pack.updated_at)
+                values.put(COL_LIST_CHOICES_DELETED_AT, pack.deleted_at)
 
 
                 val db = this.writableDatabase
                 db.insert(TABLE_LIST_CHOICES, null, values)
-                db.close()
+//                db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
 //            } else {
@@ -4682,7 +4776,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         " AND $TABLE_task_fields.$COL_task_fields_TASKID='$taskid'"
 
         } else {
-            query = "SELECT * FROM $TABLE_task_config_fields Where $COL_task_config_fields_task_config_id ='$configId' "
+            query =
+                "SELECT * FROM $TABLE_task_config_fields Where $COL_task_config_fields_task_config_id ='$configId' "
         }
         AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
@@ -4982,7 +5077,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         try {
 
             // ================== new data
-            val chartTableQuery = "SELECT * FROM $TABLE_GRAPH_CHARTS Where $COL_GRAPH_CHARTS_ID= $graphID LIMIT 1"
+            val chartTableQuery =
+                "SELECT * FROM $TABLE_GRAPH_CHARTS Where $COL_GRAPH_CHARTS_ID= $graphID LIMIT 1"
             val cursorGraphChart = db.rawQuery(chartTableQuery, null)
             if (cursorGraphChart.moveToFirst()) {
                 do {
@@ -4997,7 +5093,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
             // ================== new data
-            val queryListChoices = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_list_choices_SERVERID = $objectClass LIMIT 1"
+            val queryListChoices =
+                "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_LIST_CHOICES_ID = $objectClass LIMIT 1"
             val cursorListChoices = db.rawQuery(queryListChoices, null)
             if (cursorListChoices.moveToFirst()) {
                 do {
@@ -5328,23 +5425,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 do {
 
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_SERVERID))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_ID))
                     val listID: String? =
                         cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_LISTS_ID))
                     val choice: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_CHOICE))
                     val name: String? =
                         cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_NAME))
                     val choiceComGroup: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CHOICE_COM_GROUP))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_COM_GROUP))
                     val comGroupId: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_COM_GROUP_ID))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_COM_GROUP_ID))
                     val createdAt: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_CREATED_AT))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_CREATED_AT))
                     val updatedAt: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_UPDATED_AT))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_UPDATED_AT))
                     val deletedAt: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_list_choices_DELETED_AT))
+                        cursor.getString(cursor.getColumnIndex(COL_LIST_CHOICES_DELETED_AT))
 
 
                     val packconfig = Choices(
@@ -5371,7 +5468,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getListChoiceSingleValue(listId: String): String {
         var chartname: String? = null
 
-        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_list_choices_SERVERID ='$listId' "
+        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_LIST_CHOICES_ID ='$listId' "
 
         AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
 
@@ -5460,7 +5557,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getFieldNameFromListChoice(id: String): String {
 
-        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_list_choices_SERVERID ='$id' "
+        val query = "SELECT * FROM $TABLE_LIST_CHOICES Where $COL_LIST_CHOICES_ID ='$id' "
 
         AppUtils.logError(TAG, "getFieldNameFromListChoice Query " + query)
 
@@ -5707,27 +5804,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     @SuppressLint("Range")
-    fun getTaskFunctionList(taskConfigID: String): ArrayList<TaskConfigFunction> {
+    fun getTaskFunctionList(taskConfigID: String): ArrayList<ListTaskFunctions> {
 
-//        val query = "SELECT * FROM $TABLE_task_config_functions " + "Where $COL_task_config_functions_task_config_id='$taskConfigID'"
-//
-//        AppUtils.logError(TAG, "getTaskFunctionList Query" + query)
-//
-        val upCommingPackCONFIGList = ArrayList<TaskConfigFunction>()
-//        val db = this.readableDatabase
-//
-//
-////        val query = "SELECT  * FROM ${TABLE_collect_data}   Where ${COL_collect_data_pack_id}  = '$selectedPackid'"
-//
-//        val cursor: Cursor?
-//        try {
-//            cursor = db.rawQuery(query, null)
-//        } catch (e: Exception) {
-//            AppUtils.logError(TAG, e.message!!)
-//            db.execSQL(query)
-//            return ArrayList()
-//        }
-
+        val privilegesList = ArrayList<ListTaskFunctions>()
         val query = "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
         val db = this.readableDatabase
 
@@ -5738,63 +5817,43 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             if (cursor.moveToFirst()) {
                 do {
 
-                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_SERVERKEY))
-                    Log.d("#102030"," ID  $id")
-                    val taskconfigId: Int = cursor.getInt(cursor.getColumnIndex(COL_task_config_functions_task_config_id))
-                    Log.d("#102030"," taskconfigId  $taskconfigId")
-                    val functionId: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_task_name)).toString()
-                    Log.d("#102030"," functionId  $functionId")
-                    var functionnames: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_description)).toString()
-                    Log.d("#102030"," functionnames  $functionnames")
-                    val privilegeid: String = cursor.getString(cursor.getColumnIndex(COL_task_config_functions_privilege)).toString()
-                    Log.d("#102030"," privilegeid  $privilegeid")
-                    var privilegename:String = " "
-                    if(cursor.getColumnIndex("privilegename") != null)
-                     privilegename = cursor.getString(cursor.getColumnIndex("privilegename"))
+                    val id: String? = getColumnString(cursor,COL_task_config_functions_SERVERKEY)
+                    Log.d("#102030", " ID  $id")
+                    Log.d("#102030", " name1  ${getColumnString(cursor,"name1")}")
 
-                    Log.d("#102030"," privilegename  $privilegename")
+                    val taskconfigId: Int =  getColumnString(cursor,COL_task_config_functions_task_config_id).toInt()
+                    Log.d("#102030", " taskconfigId  $taskconfigId")
 
-//                    var privilegename:String=""
+                    val functionNameId: String =  getColumnString(cursor,COL_task_config_functions_task_name)
+                    Log.d("#102030", " functionId  $functionNameId")
 
-//                    if (AppUtils().isInternet(context)){
-//                        for (i in 0 until  privilegeListNameID.size){
-//                            if (privilegeListNameID.get(i)==privilegeid){
-//                                privilegename= privilegeListName.get(i)
-//                            }
-//                        }
-//                    }
-//                    else{
-//                        AppUtils.logDebug(TAG,"priilegelist"+ privilegeListNameOfflineID.toString())
-////                       for (i in 0 until privilegeListNameOfflineID.size){
-////                           if (privilegeListNameOfflineID.get(i)==privilegeid){
-////                               privilegename=privilegeListNameOffline.get(i)
-////                           }
-////                       }
-//                    }
+                    val name1: String = getColumnString(cursor,"name1")
+                    Log.d("#102030", " name1  $name1")
 
+                    var functionnames: String =  getColumnString(cursor,COL_task_config_functions_description)
+                    Log.d("#102030", " functionnames  $functionnames")
 
-                    if (functionnames.isNullOrEmpty()) {
-                        functionnames = getFieldNameFromListChoice(functionId.toString())
-                    }
-                    val packconfig = TaskConfigFunction(
-                        null, null, null,
-                        functionnames, functionId?.toInt(),
-                        null, null, functionnames, privilegename,
-                        taskconfigId?.toInt()
-                    )
+                    val privilegeid: String =  getColumnString(cursor,COL_task_config_functions_privilege)
+                    Log.d("#102030", " privilegeid  $privilegeid")
+                    var privilegename: String = " "
 
-                    upCommingPackCONFIGList.add(packconfig)
+                    if (cursor.getColumnIndex("privilegename") != null)
+                        privilegename = cursor.getString(cursor.getColumnIndex("privilegename"))
+                    Log.d("#102030", " privilegename  $privilegename")
 
+                    val  taskFunction = ListTaskFunctions(id,functionNameId,name1,privilegename)
+
+                    privilegesList.add(taskFunction)
 
 
                 } while (cursor.moveToNext())
             }
         } catch (e: Exception) {
-            Log.d("#102030"," Exception  ${e.message} ${e.stackTrace[0].lineNumber}")
+            Log.d("#102030", " Exception  ${e.message} ${e.stackTrace[0].lineNumber}")
             return ArrayList()
         }
-        Log.d("#102030"," privilegeid  ${Gson().toJson(upCommingPackCONFIGList)}")
-        return upCommingPackCONFIGList
+        Log.d("#102030", " privilegeid  ${Gson().toJson(privilegesList)}")
+        return privilegesList
     }
 
 
@@ -6317,7 +6376,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_graph_chart_points)
         db.execSQL("delete from " + TABLE_GRAPH_CHARTS)
         db.execSQL("delete from " + TABLE_LIST_CHOICES)
-        db.execSQL("delete from " + TABLE_lists)
+        db.execSQL("delete from " + TABLE_LISTS)
         db.execSQL("delete from " + TABLE_pack_collect_activity)
         db.execSQL("delete from " + TABLE_pack_config_fields)
         db.execSQL("delete from " + TABLE_pack_fields)
@@ -6337,60 +6396,78 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
-//    fun checkIftaskStart(updateTaskID: Task?,functiodID:String):Boolean {
-//        val isTaskstarted=false
-//
-//        val query = "SELECT * FROM $TABLE_task_objects WHERE $COL_task_objects_TASKID=$updateTaskID" +
-//                "and $COL_task_objects_CONTAINER like :functiodID"
-//        AppUtils.logDebug(TAG, "getCollectActivityResult QUERY   " + query.toString())
-//
-//        val upCommingPackCONFIGList = ArrayList<CollectActivityResult>()
-//        val db = this.readableDatabase
-//
-//        val cursor: Cursor?
-//        try {
-//            cursor = db.rawQuery(query, null)
-//        } catch (e: Exception) {
-//            AppUtils.logError(TAG, e.message!!)
-//            db.execSQL(query)
-//            return ArrayList()
-//        }
-//        try {
-//            if (cursor.moveToFirst()) {
-//                do {
-//
-//                    val id: String? =
-//                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_SERVERID))
-//                    val name: String? = cursor.getString(
-//                        cursor.getColumnIndex(COL_collect_activity_results_RESULTNAME)
-//                    )
-//                    val listid: String? =
-//                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_LISTID))
-//                    val unitId: String? =
-//                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_UNITID))
-//                    val typeid: String? =
-//                        cursor.getString(cursor.getColumnIndex(COL_collect_activity_results_TYPEID))
-//
-//                    val packconfig = CollectActivityResult(
-//                        id = id?.toInt(), result_name = name,
-//                        type_id = typeid, unit_id = unitId, list_id = listid
-//                    )
-//
-//
-//                    upCommingPackCONFIGList.add(packconfig)
-//                } while (cursor.moveToNext())
-//            }
-//        } catch (e: Exception) {
-//            AppUtils.logError(TAG, "exceptopn for c0llectdata" + e.toString())
-//        }
-//        // close db connection
-//        // db.close()
-//        // return notes list
-//        return upCommingPackCONFIGList
-//
-//
-//    }
+    //get lists table where query
+    fun getLists() : Lists{
 
+        var lists = Lists()
+
+        val selectRolePrivileges = "SELECT  * FROM $TABLE_LISTS where $COL_LISTS_NAME  = 'SYS_UTC_TIMEZONE' LIMIT 1 "
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(selectRolePrivileges, null)
+            if (cursor.moveToFirst()) {
+                do {
+
+                    lists = Lists(
+                        getColumnString(cursor, COL_LISTS_COM_GROUP_ID),
+                        getColumnString(cursor, COL_LISTS_COM_GROUP),
+                        getColumnString(cursor, COL_LISTS_CREATED_AT),
+                        getColumnString(cursor, COL_LISTS_CREATED_BY).toInt(),
+                        getColumnString(cursor, COL_LISTS_DELETED_AT),
+                        getColumnString(cursor, COL_LISTS_DELETED_BY),
+                        getColumnString(cursor, COL_LISTS_DESC),
+                        getColumnString(cursor, COL_LISTS_ID).toInt(),
+                        getColumnString(cursor, COL_LISTS_NAME),
+                        getColumnString(cursor, COL_LISTS_UPDATED_AT),
+                        getColumnString(cursor, COL_LISTS_UPDATED_BY).toInt()
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            return lists;
+            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+        return lists;
+    }
+
+    fun getListChoiceQuery(timeZoneID :String) : Choices {
+
+        var choices = Choices()
+
+        val lists = getLists()
+        val listID = lists.id
+
+        val selectRolePrivileges = "select * from $TABLE_LIST_CHOICES where $COL_LIST_CHOICES_LISTS_ID = $listID and $COL_LIST_CHOICES_LISTS_ID is not null and $COL_LIST_CHOICES_ID = $timeZoneID and $COL_LIST_CHOICES_DELETED_AT is null limit 1"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(selectRolePrivileges, null)
+            if (cursor.moveToFirst()) {
+                do {
+
+                    choices = Choices(
+                        getColumnString(cursor, COL_LIST_CHOICES_CHOICE),
+                        getColumnString(cursor, COL_LIST_CHOICES_COM_GROUP),
+                        getColumnString(cursor, COL_LIST_CHOICES_COM_GROUP_ID),
+                        getColumnString(cursor, COL_LIST_CHOICES_CREATED_AT),
+                        getColumnString(cursor, COL_LIST_CHOICES_DELETED_AT),
+                        getColumnString(cursor, COL_LIST_CHOICES_ID).toInt(),
+                        getColumnString(cursor, COL_LIST_CHOICES_LISTS_ID).toInt(),
+                        getColumnString(cursor, COL_LIST_CHOICES_NAME),
+                        getColumnString(cursor, COL_LIST_CHOICES_UPDATED_AT),
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+        return choices;
+    }
 
     class DownloadFileFromURL(var filename: String?) :
         AsyncTask<String?, String?, String?>() {
@@ -6462,5 +6539,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
 
     }
+
+
 }
 
