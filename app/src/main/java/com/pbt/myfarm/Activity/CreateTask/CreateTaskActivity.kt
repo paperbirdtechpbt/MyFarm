@@ -21,6 +21,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.selectedComunityGroupTask
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
@@ -131,7 +132,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         if (updateTaskList != null) {
             btn_create_task.setText("Update Task")
-
         }
 
         if (configtype == null) {
@@ -140,7 +140,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             field_desciption.setText(updateTaskList?.description)
 //            btn_create_task.visibility=View.GONE
 //            btn_update_task.visibility=View.VISIBLE
-        } else {
+        }
+        else {
             field_prefix.setText(configtype?.name)
             field_desciption.setText(configtype?.description)
         }
@@ -152,10 +153,10 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 this,
                 true, updateTaskList
             )
-
 //            updateTaskBoolen=false
 
-        } else {
+        }
+        else {
             viewmodel?.onConfigFieldListFalse(this, configtype)
         }
 
@@ -164,6 +165,11 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             if (!list.isNullOrEmpty()) {
                 createtaskProgressbar.visibility = View.GONE
+            }
+            else{
+                createtaskProgressbar.visibility = View.GONE
+                layout_ProgressBar.visibility = View.GONE
+
             }
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
@@ -219,8 +225,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         })
 
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
-
         setCommunityGroup(communitGroup)
+
+
 
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -313,6 +320,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             }
 
             layout_ProgressBar.visibility = View.VISIBLE
+            createtaskProgressbar.visibility = View.VISIBLE
 
         }
 
@@ -324,7 +332,14 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, groupArray!!)
             dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communitGroup.setAdapter(dd)
+
+            if (selectedComunityGroupTask!=0){
+                communitGroup.setSelection(selectedComunityGroupTask-1)
+
+            }
         }, 1500)
+
+
 
     }
 
@@ -339,12 +354,14 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 finish()
                 btn_create_task.visibility = View.VISIBLE
                 layout_ProgressBar.visibility = View.GONE
+                createtaskProgressbar.visibility = View.GONE
 
             } else {
                 Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
 
                 btn_create_task.visibility = View.VISIBLE
                 layout_ProgressBar.visibility = View.GONE
+                createtaskProgressbar.visibility = View.GONE
             }
 
         } catch (e: Exception) {
@@ -365,6 +382,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         btn_create_task.visibility = View.VISIBLE
         layout_ProgressBar.visibility = View.GONE
+        createtaskProgressbar.visibility = View.GONE
     }
 
 

@@ -48,7 +48,7 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
 
     override fun onResume() {
         super.onResume()
-        progressbar_collectpack.visibility = View.VISIBLE
+//        progressbar_collectpack.visibility = View.VISIBLE
 
         initViewModel()
 
@@ -72,6 +72,7 @@ class CollectDataFragement : Fragment(), retrofit2.Callback<ResponseCollectAciti
         viewmodel =
             ViewModelProvider(this).get(CollectDataViewModel::class.java)
         viewmodel?.progressBar = progressbar_collectpack
+        viewmodel?.layout_nodata = layout_nodata
         viewmodel?.onCollectDataList(requireContext())
 
 

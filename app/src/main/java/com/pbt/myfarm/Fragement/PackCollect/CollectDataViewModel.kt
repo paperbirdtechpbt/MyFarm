@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -29,6 +30,7 @@ class CollectDataViewModel (val activity: Application
 
     val context: Context =activity
     var progressBar:ProgressBar?=null
+    var layout_nodata:ConstraintLayout?=null
     var collectdatalist = MutableLiveData<List<CollectData>>()
     init{
         collectdatalist = MutableLiveData<List<CollectData >>()
@@ -47,9 +49,16 @@ class CollectDataViewModel (val activity: Application
             val  collectlist = db.getAllCollectData(packList?.id.toString())
             if (collectlist.isNotEmpty()){
                 progressBar?.visibility= View.GONE
+                layout_nodata?.visibility=View.GONE
 
                 collectdatalist.value=collectlist
         }
+            else{
+                layout_nodata?.visibility=View.VISIBLE
+                progressBar?.visibility= View.GONE
+
+
+            }
         }
     }
 

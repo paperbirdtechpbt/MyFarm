@@ -2254,6 +2254,7 @@ fun collectDataCreate(pack: CollectData) {
             values.put(COL_collect_data_SENSORID, pack.sensor_id)
             values.put(COL_collect_data_DURATION, pack.duration)
             values.put(COL_collect_data_SERVERID, pack.serverid)
+            values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
 
             val db = this.writableDatabase
 
@@ -4690,7 +4691,7 @@ fun collectDataCreate(pack: CollectData) {
 
 
         }
-        AppUtils.logError(TAG, "getPackConfigFieldList Query" + query)
+        AppUtils.logError(TAG, "getTaskConfigFieldList Query" + query)
 
         val upCommingPackCONFIGList = ArrayList<TaskConfigField>()
         val db = this.readableDatabase
@@ -5834,6 +5835,7 @@ fun collectDataCreate(pack: CollectData) {
         val query = "SELECT  * FROM  $TABLE_task_configs"
         val upCommingPackCONFIGList = ArrayList<TaskConfig>()
         val db = this.readableDatabase
+
         AppUtils.logError(TAG, "my query " + query)
 
         val cursor: Cursor?

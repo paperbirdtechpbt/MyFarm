@@ -57,6 +57,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         val TAG = "ViewTaskActivity"
         var mytasklist: Task? = null
         var updateTaskBoolen = false
+        var selectedComunityGroupTask:Int=0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,6 +115,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     showAlertDailog(taskname, position, mytasklist!!)
                 } else {
                     updateTaskBoolen = true
+                    selectedComunityGroupTask= list.com_group!!
                     val intent = Intent(this, CreateTaskActivity::class.java)
                     intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
