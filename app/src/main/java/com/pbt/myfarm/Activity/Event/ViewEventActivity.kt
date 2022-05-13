@@ -116,9 +116,13 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
                     } else {
                         val db = DbHelper(this, null)
                         val success = db.deleteEvent(eventid)
+                        if (success){
+                            startActivity(Intent(this,ViewEventActivity::class.java))
+                            this.finish()
+                        }
 
                     }
-                    initViewModel()
+
 
 
                     Toast.makeText(this, "Deleted ", Toast.LENGTH_SHORT).show()
@@ -133,19 +137,19 @@ class ViewEventActivity : AppCompatActivity(), retrofit2.Callback<ResponseEventL
             progressViewEvent
             Toast.makeText(this, "Delted Succesfully", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, ViewEventActivity::class.java))
-            finish()
+            this.finish()
         } else {
-            progressViewEvent
+
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onFailure(call: Call<ResponseEventList>, t: Throwable) {
         try {
-            progressViewEvent
+
             AppUtils.logError(TAG, t.message.toString())
         } catch (e: Exception) {
-            progressViewEvent
+
             AppUtils.logError(TAG, e.message.toString())
 
         }

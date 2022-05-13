@@ -20,7 +20,6 @@ import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.ModelClass.ViewTaskModelClass
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -32,13 +31,11 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.ViewTaskViewModel
 import com.pbt.myfarm.databinding.ActivityViewTaskBinding
-import kotlinx.android.synthetic.main.activity_pack.*
 import kotlinx.android.synthetic.main.activity_view_task.*
 import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
-import kotlinx.android.synthetic.main.itemlist_viewtask.view.*
 import retrofit2.Call
 import retrofit2.Response
 import java.util.*
@@ -120,11 +117,14 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
+                    AppUtils.logDebug(TAG,"mytasklist?.id=${mytasklist?.id}"+"mytasklist=$mytasklist")
                     startActivity(intent)
                     finish()
                 }
             }
             recyclerview_viewtask.adapter = adapter
+            recyclerview_viewtask.itemAnimator?.setChangeDuration(0)
+
             if (eventlistt.isNullOrEmpty()) {
                 layout_nodatavailable.visibility = View.VISIBLE
             } else {
@@ -149,10 +149,14 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                     else{
                     val db=DbHelper(this,null)
 
-                    db.deleteTaskNew(mytasklist.id!!.toString())
-//                        adapter?.notifyItemRemoved(position)
+                   val issucess= db.deleteTaskNew(mytasklist.id!!.toString())
+                        if (issucess){
+                            startActivity(Intent(this,ViewTaskActivity::class.java))
+                            this.finish()
+                        }
+
                     }
-                    initViewModel()
+
 
 
                     Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
@@ -168,7 +172,8 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         try {
             if (response.body()?.error == false) {
                 Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
-                initViewModel()
+                startActivity(Intent(this,ViewTaskActivity::class.java))
+                this.finish()
             } else {
                 Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
             }

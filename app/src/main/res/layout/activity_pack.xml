@@ -40,7 +40,7 @@ android:visibility="gone"
             <TextView
                 android:id="@+id/tasklistSize"
                 android:layout_width="wrap_content"
-                android:text="Total Tasks-"
+                android:text="Total Packs-"
                 android:textColor="@color/green"
                 android:textStyle="bold"
                 android:layout_height="wrap_content"

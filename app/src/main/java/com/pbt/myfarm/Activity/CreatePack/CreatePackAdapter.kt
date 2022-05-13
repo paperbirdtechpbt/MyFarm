@@ -22,8 +22,10 @@ import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.selectedcom_Group_companian
 import com.pbt.myfarm.HttpResponse.*
+import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigName
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
+import com.pbt.myfarm.PackViewModel.Companion.packCommunityList
 import com.pbt.myfarm.PackViewModel.Companion.packconfigobject
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
@@ -509,10 +511,6 @@ class CreatePackAdapter(
     ) {
         if (boolean) {
 
-
-//            Handler(Looper.getMainLooper()).postDelayed({
-
-//
             if (AppUtils().isInternet(context)) {
                 nameprefix.setText(packconfigobject!!.name_prefix)
                 packname.setText(packconfigobject!!.name)
@@ -521,14 +519,18 @@ class CreatePackAdapter(
                 packname.setText(labelPackConfigName)
             }
 
-
-            val aa =
-                ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
+            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communityGroup.setAdapter(aa)
 
             if (!selectedcom_Group_companian.isNullOrEmpty()){
-                communityGroup.setSelection(selectedcom_Group_companian?.toDouble()?.toInt()!!-1)
+                for (i in packCommunityList.indices){
+                    val item= packCommunityList.get(i)
+                    if (selectedcom_Group_companian!!.toDouble().toInt()==item.id.toDouble().toInt()){
+                        communityGroup.setSelection(i)
+                    }
+                }
+
             }
 
             boolean = false

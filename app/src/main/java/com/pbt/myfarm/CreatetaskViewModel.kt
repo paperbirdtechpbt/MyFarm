@@ -336,7 +336,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                             )
 
                         }
-                        AppUtils.logDebug(TAG, " packfieldList" + packfieldList.toString())
 
                         packConfigField.add(
                             ConfigFieldList(
@@ -367,7 +366,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
 
             }
-            AppUtils.logDebug(TAG, "config fieldList" + packConfigField.toString())
+            AppUtils.logDebug(TAG, "config fieldList" + Gson().toJson(packConfigField).toString())
         }
         configlist.value = packConfigField
     }

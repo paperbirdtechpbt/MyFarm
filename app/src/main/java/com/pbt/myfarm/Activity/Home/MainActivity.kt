@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -33,6 +34,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_task_function.*
 import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Response
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
         callPrivilegeAPI(roleID)
     }
+
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
         }
 
-        if (!AppUtils().isInternet(this)) {
+//        if (!AppUtils().isInternet(this)) {
             val db = DbHelper(this, null)
             val list = db.getAllPrivilege()
             AppUtils.logDebug(TAG, "getAll Privilege" + list.toString())
@@ -100,13 +103,16 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 privilegeListNameOfflineID.add(it.id.toString())
             }
             setdata(privilegeListNameOffline)
-        }
+//        }
 
 
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(application)).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+        ).get(MainActivityViewModel::class.java)
         AppUtils().isServiceRunning(this, MyFarmService::class.java)
     }
 
@@ -120,6 +126,20 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
         if (!roleID.equals("0"))
             callPrivilegeAPI(roleID)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!AppUtils().isInternet(this)) {
+            val db = DbHelper(this, null)
+            val list = db.getAllPrivilege()
+            AppUtils.logDebug(TAG, "getAll Privilege" + list.toString())
+            list.forEach {
+                privilegeListNameOffline.add(it.name.toString())
+                privilegeListNameOfflineID.add(it.id.toString())
+            }
+            setdata(privilegeListNameOffline)
+        }
     }
 
     private fun setdata(privilegeList: ArrayList<String>) {
@@ -147,7 +167,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
                 setadapter(data)
             }
-        } else {
+        }
+        else {
             data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
 
             if (privilegeListNameOffline.contains("Pack")) {
@@ -272,9 +293,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             privilegeListNameID.clear()
             privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
             for (i in 0 until privilegeList.size) {
-                val privilege= Privilege(privilegeList.get(i).id.toDouble().toInt(),privilegeList.get(i).privilege)
+                val privilege = Privilege(
+                    privilegeList.get(i).id.toDouble().toInt(),
+                    privilegeList.get(i).privilege
+                )
 
-                val db=DbHelper(this,null)
+                val db = DbHelper(this, null)
                 db.addPrivilege(privilege)
 
                 privilegeListName.add(privilegeList.get(i).privilege)

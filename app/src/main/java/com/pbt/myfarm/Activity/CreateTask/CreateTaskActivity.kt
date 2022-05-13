@@ -95,14 +95,12 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         if (updateTaskBoolen) {
 
             updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
-            AppUtils.logDebug(TAG, " true updateTaskList" + updateTaskList.toString())
 
         }
 
         else {
 
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
-            AppUtils.logDebug(TAG, "false updateTaskList" + configtype.toString())
 
         }
         if (updateTaskList == null) {
@@ -146,6 +144,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         }
         binding?.viewModel = viewmodel
         viewmodel?.progressbar = createtaskProgressbar
+        AppUtils.logDebug(TAG,"updateTaskBoolen=="+updateTaskBoolen)
         if (updateTaskBoolen) {
 
             viewmodel?.onConfigFieldList(
@@ -154,6 +153,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             )
 
         } else {
+
             viewmodel?.onConfigFieldListFalse(this, configtype)
         }
 
@@ -171,6 +171,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
             recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
+
             adapter = CreateTaskAdapter(this, config, updateTaskBoolen) { list, name ->
                 while (list.contains("0")) {
                     list.remove("0")
@@ -187,7 +188,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                     jsonObject.put(ExpNameKey.get(i), name.get(i))
 
                     successObject.put(jsonObject)
-                    AppUtils.logDebug(TAG, successObject.toString())
 
                     if (!AppUtils().isInternet(this)) {
                         val db = DbHelper(this, null)
@@ -280,12 +280,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 }
 
                 btn_create_task.visibility = View.GONE
-                AppUtils.logDebug(
-                    TAG, "upfateTaskboolean False" + configtype?.id.toString() + "\n" + prefix +
-                            "\n" + selectedCommunityGroup + "\n" + userId.toString() + "\n" +
 
-                            successObject.toString() + "\n" + configtype?.name_prefix.toString()
-                )
             }
             else {
                 if (AppUtils().isInternet(this)) {
@@ -329,7 +324,14 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             communitGroup.setAdapter(dd)
 
             if (selectedComunityGroupTask!=0){
-                communitGroup.setSelection(selectedComunityGroupTask-1)
+                for (i in groupArrayId!!.indices){
+                    val item=groupArrayId!!.get(i).toDouble().toInt()
+                    if (selectedComunityGroupTask== item){
+                        communitGroup.setSelection(i)
+
+                    }
+
+                }
 
             }
         }, 1500)
@@ -365,13 +367,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
-        try {
+
             AppUtils.logDebug(TAG, "failure" + t.message)
 
-        } catch (e: Exception) {
-            AppUtils.logDebug(TAG, "failure" + e.message)
-
-        }
 
         btn_create_task.visibility = View.VISIBLE
         layout_ProgressBar.visibility = View.GONE

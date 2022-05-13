@@ -21,6 +21,7 @@ import com.pbt.myfarm.Activity.Graph.ListPoints
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
@@ -1234,8 +1235,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_team_DELETED_AT + " TEXT" + ")")
         db?.execSQL(team)
 
-        val createTableRolePrivilege = "CREATE TABLE $TABLE_ROLE_PRIVILEGES ( $COL_ROLE_PRIVILEGES_LOCAL_ID  INTEGER PRIMARY KEY, $COL_ROLE_PRIVILEGES_ID  TEXT , $COL_ROLE_PRIVILEGES_PRIVILEGE  TEXT , $COL_ROLE_PRIVILEGES_ROLE_ID  TEXT, $COL_CREATED_AT  TEXT,$COL_CREATED_BY  TEXT, $COL_UPDATED_AT  TEXT, $COL_UPDATED_BY  TEXT )"
-        Log.d(TAG," Create Table RolePrivileges $createTableRolePrivilege")
+        val createTableRolePrivilege =
+            "CREATE TABLE $TABLE_ROLE_PRIVILEGES ( $COL_ROLE_PRIVILEGES_LOCAL_ID  INTEGER PRIMARY KEY, $COL_ROLE_PRIVILEGES_ID  TEXT , $COL_ROLE_PRIVILEGES_PRIVILEGE  TEXT , $COL_ROLE_PRIVILEGES_ROLE_ID  TEXT, $COL_CREATED_AT  TEXT,$COL_CREATED_BY  TEXT, $COL_UPDATED_AT  TEXT, $COL_UPDATED_BY  TEXT )"
+        Log.d(TAG, " Create Table RolePrivileges $createTableRolePrivilege")
         db?.execSQL(createTableRolePrivilege)
 
     }
@@ -1477,7 +1479,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
                 }
+            } else {
+
+                val values = ContentValues()
+                values.put(COL_ID, pack.id)
+                values.put(COL_PACK_NAME, pack.name)
+                values.put(COL_PACK_CONFIG_ID, pack.pack_config_id)
+                values.put(COL_PACK_CREATED_BY, pack.created_by)
+                values.put(COL_PACK_NEW_DLETED_AT, pack.deleted_at)
+                values.put(COL_PACK_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_PACK_DESC, pack.description)
+                values.put(COL_PACK_GROUP, pack.com_group)
+                values.put(COL_PACKNEW_Status, "0")
+                values.put(COL_PACK_IS_ACTIVE, pack.is_active)
+                values.put(COL_PACK_CREATED_DATE, pack.created_date)
+                values.put(COL_PACK_LAST_CHANGED_DATE, pack.last_changed_date)
+
+                val db = this.writableDatabase
+                val result =
+                    db.update(TABLE_CREAT_PACK, values, "$COL_ID=?", arrayOf(pack.id.toString()))
             }
+
 
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1501,25 +1523,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 values.put(COL_UPDATED_AT, rolePrivilege.updated_at)
                 values.put(COL_CREATED_AT, rolePrivilege.created_at)
                 values.put(COL_CREATED_BY, rolePrivilege.created_by)
-                if(db.isOpen){
+                if (db.isOpen) {
                     val result = db.insert(TABLE_ROLE_PRIVILEGES, null, values)
 
                     if (result >= 0)
-                        Log.d(TAG, "RolePrivileges Row inserted ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                        Log.d(
+                            TAG,
+                            "RolePrivileges Row inserted ${rolePrivilege.id} ${rolePrivilege.privilege}"
+                        )
                     else
-                        Log.d(TAG, "RolePrivileges Row not insert ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                        Log.d(
+                            TAG,
+                            "RolePrivileges Row not insert ${rolePrivilege.id} ${rolePrivilege.privilege}"
+                        )
                 }
             }
         } catch (e: Exception) {
-            AppUtils.logError(TAG, "Role rolePrivilege Exception ${e.message} ${rolePrivilege.id} ${rolePrivilege.privilege}")
+            AppUtils.logError(
+                TAG,
+                "Role rolePrivilege Exception ${e.message} ${rolePrivilege.id} ${rolePrivilege.privilege}"
+            )
         }
 
     }
 
 
     //role_privileges get data
-     fun getAllRolePrivileges() : ArrayList<RolePrivilege> {
-        val listAllPrivileges =  ArrayList<RolePrivilege>()
+    fun getAllRolePrivileges(): ArrayList<RolePrivilege> {
+        val listAllPrivileges = ArrayList<RolePrivilege>()
         val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
 
         try {
@@ -1527,16 +1558,18 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val cursor = db.rawQuery(selectRolePrivileges, null)
             if (cursor.moveToFirst()) {
                 do {
-                    val rolePrivilege = RolePrivilege(getColumnString(
-                        cursor,COL_CREATED_AT),
-                        getColumnString(cursor,COL_CREATED_BY).toInt(),
+                    val rolePrivilege = RolePrivilege(
+                        getColumnString(
+                            cursor, COL_CREATED_AT
+                        ),
+                        getColumnString(cursor, COL_CREATED_BY).toInt(),
                         "",
                         "",
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ID).toInt(),
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE),
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ROLE_ID).toInt(),
-                        getColumnString(cursor,COL_UPDATED_AT),
-                        getColumnString(cursor,COL_CREATED_BY).toInt()
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_ID).toInt(),
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_PRIVILEGE),
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_ROLE_ID).toInt(),
+                        getColumnString(cursor, COL_UPDATED_AT),
+                        getColumnString(cursor, COL_CREATED_BY).toInt()
                     )
                     listAllPrivileges.add(rolePrivilege)
 
@@ -1544,28 +1577,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
         } catch (e: Exception) {
-             return listAllPrivileges;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            return listAllPrivileges;
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
 
-       return listAllPrivileges;
+        return listAllPrivileges;
     }
 
-    fun getAllRolePrivilegesName() : ArrayList<String> {
+    fun getAllRolePrivilegesName(): ArrayList<String> {
 
-        val listAllPrivileges =  ArrayList<String>()
+        val listAllPrivileges = ArrayList<String>()
         val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
         try {
             val db = this.writableDatabase
             val cursor = db.rawQuery(selectRolePrivileges, null)
             if (cursor.moveToFirst()) {
                 do {
-                    listAllPrivileges.add( getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE))
+                    listAllPrivileges.add(getColumnString(cursor, COL_ROLE_PRIVILEGES_PRIVILEGE))
                 } while (cursor.moveToNext())
             }
         } catch (e: Exception) {
             return listAllPrivileges;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
 
         return listAllPrivileges;
@@ -1944,6 +1983,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
+
     fun changeTaskObjectStatus() {
         try {
             val db = this.writableDatabase
@@ -1994,6 +2034,29 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
 //            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_pack_configs_SERVER_ID, pack.id)
+                values.put(COL_pack_configs_NAME, pack.name)
+                values.put(COL_pack_configs_DESCIPTION, pack.description)
+                values.put(COL_pack_configs_TYPE, pack.type)
+                values.put(COL_pack_configs_CLASS, pack.mclass)
+                values.put(COL_pack_configs_COMGROUP, pack.com_group)
+                values.put(COL_pack_configs_NAMEPREFIX, pack.name_prefix)
+                values.put(COL_pack_configs_COLLECTACTIVITY_ID, pack.collect_activity_id)
+                values.put(COL_pack_configs_GRAPHCHCHART_ID, pack.graph_chart_id)
+                values.put(COL_pack_configs_CREATEDBY, pack.created_by)
+                values.put(COL_pack_configs_CREATED_DATE, pack.created_date)
+                values.put(COL_pack_configs_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_pack_configs_LAST_CHNAGED_DATE, pack.last_changed_date)
+                values.put(COL_pack_configs_DELETED_AT, pack.deleted_at)
+
+
+                val db = this.writableDatabase
+                db.update(TABLE_PACKCONFIG,values,"$COL_pack_configs_SERVER_ID=?", arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2105,13 +2168,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_collect_activity, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_pack_collect_activity_SERVER_ID, pack.id)
+                values.put(COL_pack_collect_activity_collect_activity_id, pack.collect_activity_id)
+                values.put(COL_pack_collect_activity_pack_id, pack.pack_id)
+
+                val db = this.writableDatabase
+                db.update(TABLE_pack_collect_activity, values,"$COL_pack_collect_activity_SERVER_ID=?",
+                    arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2135,13 +2204,18 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_fields, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+                val values = ContentValues()
+                values.put(COL_pack_fields_pack_id, pack.pack_id)
+                values.put(COL_pack_fields_value, pack.value)
+                values.put(COL_pack_fields_SERVERID, pack.id)
+                values.put(COL_pack_fields_field_id, pack.field_id)
+
+                val db = this.writableDatabase
+                db.update(TABLE_pack_fields, values,"$COL_pack_fields_SERVERID=?", arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2174,13 +2248,30 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_pack_config_fields, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_pack_config_fields_SERVER_ID, pack.id)
+                values.put(COL_pack_config_fields_pack_config_id, pack.pack_config_id)
+                values.put(COL_pack_config_fields_field_name, pack.field_name)
+                values.put(COL_pack_config_fields_field_description, pack.field_description)
+                values.put(COL_pack_config_fields_field_type, pack.field_type)
+                values.put(COL_pack_config_fields_default_value, pack.default_value)
+                values.put(COL_pack_config_fields_created_by, pack.created_by)
+                values.put(COL_pack_config_fields_last_changed_by, pack.last_changed_by)
+                values.put(COL_pack_config_fields_last_changed_date, pack.last_changed_date)
+                values.put(COL_pack_config_fields_created_date, pack.created_by)
+                values.put(COL_pack_config_fields_editable, pack.editable)
+                values.put(COL_pack_config_fields_list, pack.list)
+                values.put(COL_pack_config_fields_deleted_at, pack.deleted_at)
+
+
+                val db = this.writableDatabase
+                db.update(TABLE_pack_config_fields, values,"$COL_pack_config_fields_SERVER_ID=?",
+                    arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2255,16 +2346,32 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val result = db.insert(TABLE_collect_data, null, values)
 
-                if (result >= 0) {
-                    Log.d("LocalDataInsert", " Data  insert ==>> ${pack.id}")
-                } else {
-                    Log.d("LocalDataInsert", " Data not isert ${pack.id}")
-                }
-            } else {
-                Log.d("LocalDataInsert", " Table Store data Already  exsit ${pack.id}")
-            }
-//        // // db.close()
 
+            } else {
+
+                val values = ContentValues()
+                values.put(COL_COLLECT_DATA_ID, pack.id)
+                values.put(COL_COLLECT_DATA_PACK_ID, pack.pack_id)
+                values.put(COL_collect_data_STATUS, "0")
+                values.put(COL_collect_data_ResulId, pack.result_id)
+                values.put(COL_COLLECT_DATA_RESULE_CLASS, pack.result_class)
+                values.put(COL_collect_data_CollectActivityId, pack.collect_activity_id)
+                values.put(COL_COLLECT_DATA_VALUE, pack.new_value)
+                values.put(COL_collect_data_UNITID, pack.unit_id)
+                values.put(COL_collect_data_SENSORID, pack.sensor_id)
+                values.put(COL_COLLECT_DATA_DURATION, pack.duration)
+                values.put(COL_collect_data_UPDATED_BY, pack.created_by)
+                values.put(COL_collect_data_DELETED_BY, pack.deleted_by)
+                values.put(COL_COLLECT_DATA_CREATED_AT, pack.created_at)
+                values.put(COL_collect_data_UPDATED_AT, pack.updated_at)
+                values.put(COL_collect_data_DELETED_AT, pack.deleted_at)
+
+
+                val result = db.update(TABLE_collect_data, values,"$COL_COLLECT_DATA_ID=?", arrayOf(pack.id.toString()))
+
+
+            }
+//
 
         } catch (e: Exception) {
             Log.d("LocalDataInsert", " Exception ${e.message} ${pack.id}  ")
@@ -2417,13 +2524,25 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_collect_activities, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_collect_activities_SERVERID, pack.id)
+                values.put(COL_collect_activities_NAME, pack.name)
+                values.put(COL_collect_activities_COMMUNITYGROUP, pack.communitygroup)
+                values.put(COL_collect_activities_CREATED_BY, pack.created_by)
+                values.put(COL_collect_activities_UPDATED_BY, pack.updated_by)
+                values.put(COL_collect_activities_DELTED_BY, pack.deleted_by)
+                values.put(COL_collect_activities_CREATED_AT, pack.created_at)
+                values.put(COL_collect_activities_UPDATED_AT, pack.updated_at)
+                values.put(COL_collect_activities_DELTED_AT, pack.deleted_at)
+
+                val db = this.writableDatabase
+                db.update(TABLE_collect_activities, values,"$COL_collect_activities_SERVERID=?",
+                    arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2461,13 +2580,32 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_collect_activity_results, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_collect_activity_results_SERVERID, pack.id)
+                values.put(
+                    COL_collect_activity_results_COLLECT_ACTIVITY_ID,
+                    pack.collect_activity_id
+                )
+                values.put(COL_collect_activity_results_RESULTNAME, pack.result_name)
+                values.put(COL_collect_activity_results_UNITID, pack.unit_id)
+                values.put(COL_collect_activity_results_TYPEID, pack.type_id)
+                values.put(COL_collect_activity_results_LISTID, pack.list_id)
+                values.put(COL_collect_activity_results_RESULTCLASS, pack.result_class)
+                values.put(COL_collect_activity_results_CREATEDBY, pack.created_by)
+                values.put(COL_collect_activity_results_UPDATEDBY, pack.updated_by)
+                values.put(COL_COLLECT_ACTIVITY_RESULTS_DELETED_BY, pack.deleted_by)
+                values.put(COL_collect_activity_results_CREATEDAT, pack.created_at)
+                values.put(COL_collect_activity_results_UPDATEDAT, pack.updated_at)
+                values.put(COL_collect_activity_results_DELETEAT, pack.deleted_at)
+
+                val db = this.writableDatabase
+                db.update(TABLE_collect_activity_results, values,"$COL_collect_activity_results_SERVERID=?",
+                    arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2547,13 +2685,42 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_people, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+
+                val values = ContentValues()
+                values.put(COL_people_SERVERID, pack.id)
+                values.put(COL_people_FNAME, pack.fname)
+                values.put(COL_people_LNAME, pack.lname)
+                values.put(COL_people_EMAIl, pack.email)
+                values.put(COL_people_CONTACT, pack.contact)
+                values.put(COL_people_BIRTHPLACE, pack.birth_place)
+                values.put(COL_people_DOB, pack.dob)
+                values.put(COL_people_PHOTO, pack.photo)
+                values.put(COL_people_ADDRESS, pack.address)
+                values.put(COL_people_CITIZENSHIP, pack.citizenship)
+                values.put(COL_people_CERTIFICAITON, pack.certification)
+                values.put(COL_people_IS_IN_COOP, pack.is_in_coop)
+                values.put(COL_people_LASTCERFICATION_DATE, pack.last_certification_date)
+                values.put(COL_people_IS_KAKAOMUNDO, pack.is_kakaomundo)
+                values.put(COL_people_KAKAOMUNDO_CENTER, pack.kakaomundo_center)
+                values.put(COL_people_USERID, pack.user_id)
+                values.put(COL_people_COMMUNITY_GROUP, pack.communitygroup)
+                values.put(COL_people_PERSON_CLASS, pack.person_class)
+                values.put(COL_people_PERSON_TYPE, pack.person_type)
+                values.put(COL_people_DEWSCIPTION, pack.description)
+                values.put(COL_people_CREATED_BY, pack.created_by)
+                values.put(COL_people_UPDATED_BY, pack.updated_by)
+                values.put(COL_people_UPDATED_AT, pack.updated_at)
+                values.put(COL_people_CREATED_AT, pack.created_at)
+                values.put(COL_people_DELETED_BY, pack.deleted_by)
+                values.put(COL_people_DELETED_AT, pack.deleted_at)
+
+                val db = this.writableDatabase
+                db.update(TABLE_people, values,"$COL_people_SERVERID=?", arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2590,13 +2757,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_container, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+                val values = ContentValues()
+                values.put(COL_container_SERVERID, pack.id)
+                values.put(COL_container_NAME, pack.name)
+                values.put(COL_container_DESCIPTION, pack.description)
+                values.put(COL_container_COM_GROUP, pack.com_group)
+                values.put(COL_container_TYPE, pack.type)
+                values.put(COL_container_STATUS, pack.status)
+                values.put(COL_container_MAX_CAPACITY, pack.max_capacity)
+                values.put(COL_container_CAPACITY_UNITS, pack.capacity_units)
+                values.put(COL_container_ZONE, pack.zone)
+                values.put(COL_container_CLASS, pack.`class`)
+                values.put(COL_container_NOTIFICATION_LEVEL, pack.notification_level)
+                values.put(COL_container_PARENT_CONTAINER, pack.parent_container)
+                values.put(COL_container_DELETED_AT, pack.deleted_at)
+                values.put(COL_container_CREATED_DATE, pack.created_date)
+                values.put(COL_container_CREATED_BY, pack.created_by)
+                values.put(COL_container_CREATED_DATE_UTC, pack.created_date_utc)
+                values.put(COL_container_LAST_CHANGED_DATE, pack.last_changed_date)
+                values.put(COL_container_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_container_LAST_CHANGED_UTC, pack.last_changed_utc)
+
+                val db = this.writableDatabase
+                db.update(TABLE_container, values,"$COL_container_SERVERID=?", arrayOf( pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2702,14 +2889,30 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_configs, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
             }
+            else{
+                    val values = ContentValues()
+                    values.put(COL_task_configs_SERVERID, pack.id)
+                    values.put(COL_task_configs_NAME, pack.name)
+                    values.put(COL_task_configs_DESCIPTION, pack.description)
+                    values.put(COL_task_configs_TYPE, pack.type)
+                    values.put(COL_task_configs_CLASS, pack.nclass)
+                    values.put(COL_task_configs_COM_GROUP, pack.com_group)
+                    values.put(COL_task_configs_NAME_PREFIX, pack.name_prefix)
+                    values.put(COL_task_configs_RECORD_EVENT, pack.record_event)
+                    values.put(COL_task_configs_REPORTABLE, pack.reportable)
+                    values.put(COL_task_configs_CREATED_BY, pack.created_by)
+                    values.put(COL_task_configs_CREATED_DATE, pack.created_date)
+                    values.put(COL_task_configs_LAST_CHANGED_BY, pack.last_changed_by)
+                    values.put(COL_task_configs_LAST_CHANGED_DATE, pack.last_changed_date)
+                    values.put(COL_task_configs__LAST_DELETED_AT, pack.deleted_at)
+
+
+                    val db = this.writableDatabase
+                    db.update(TABLE_task_configs, values,"$COL_task_configs_SERVERID=?", arrayOf(pack.id.toString()))
+
+                          }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -2741,13 +2944,29 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_config_fields, null, values)
-                // // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-//            }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_task_config_fields_SERVERID, pack.id)
+                values.put(COL_task_config_fields_task_config_id, pack.task_config_id)
+                values.put(COL_task_config_fields_field_name, pack.field_name)
+                values.put(COL_task_config_fields_field_description, pack.field_description)
+                values.put(COL_task_config_fields_editable, pack.editable)
+                values.put(COL_task_config_fields_field_type, pack.field_type)
+                values.put(COL_task_config_fields_list, pack.list)
+                values.put(COL_task_config_fields_created_by, pack.created_by)
+                values.put(COL_task_config_fields_created_date, pack.created_date)
+                values.put(COL_task_config_fields_last_changed_by, pack.last_changed_by)
+                values.put(COL_task_config_fields_last_changed_date, pack.last_changed_date)
+                values.put(COL_task_config_fields_deleted_at, pack.deleted_at)
+
+
+                val db = this.writableDatabase
+                db.update(TABLE_task_config_fields, values,"$COL_task_config_fields_SERVERID=?",
+                    arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -2895,13 +3114,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_task_config_functions, null, values)
-                // // // db.close()
-                if (result >= 0) {
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
 
-                }
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_task_config_functions_SERVERKEY, pack.id)
+                values.put(COL_task_config_functions_task_config_id, pack.task_config_id)
+                values.put(COL_task_config_functions_task_name, pack.name)
+                values.put(COL_task_config_functions_description, pack.description)
+                values.put(COL_task_config_functions_privilege, pack.privilege)
+                values.put(COL_task_config_functions_created_by, pack.created_by)
+                values.put(COL_task_config_functions_created_date, pack.created_date)
+                values.put(COL_task_config_functions_last_changed_by, pack.last_changed_by)
+                values.put(COL_task_config_functions_deleted_at, pack.deleted_at)
+                values.put(COL_task_config_functions_last_changed_date, pack.last_changed_date)
+
+
+                val db = this.writableDatabase
+                val result = db.update(TABLE_task_config_functions, values,"$COL_task_config_functions_SERVERKEY=?",
+                arrayOf(pack.id.toString()))
+
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -3078,16 +3311,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 val result = db.insert(TABLE_tasks, null, values)
-                // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
-//
-//
-//            } else {
-//                Toast.makeText(context, "Failed to add task", Toast.LENGTH_SHORT).show()
-//
-//            }
+
+            } else {
+                val values = ContentValues()
+
+                values.put(COL_tasks_SERVERid, task.id)
+                values.put(COL_tasks_NAME, task.name)
+                values.put(COL_tasks_DESC, task.description)
+                values.put(COL_tasks_GROUP, task.com_group)
+                values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
+                values.put(COL_tasks_TASKFUNC, task.task_func)
+                values.put(COL_tasks_STATUS, "0")
+                values.put(COL_tasks_STARTED_LATE, task.started_late)
+                values.put(COL_tasks_ENDED_LATE, task.ended_late)
+                values.put(COL_tasks_CREATED_BY, task.created_by)
+                values.put(COL_tasks_CREATED_DATE, task.created_date)
+                values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
+                values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
+                values.put(COL_tasks_DELTED_AT, task.deleted_at)
+
+
+                val db = this.writableDatabase
+                val result = db.update(
+                    TABLE_tasks, values, "$COL_tasks_SERVERid=?",
+                    arrayOf(task.id.toString())
+                )
             }
+
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }
@@ -3178,15 +3428,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_fields, null, values)
-                // db.close()
-//            if (result >= 0) {
-//                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
+
+            }
+            else{
+
+                val values = ContentValues()
+                values.put(COL_task_fields_SERVERID, task.id)
+                values.put(COL_task_fields_TASKID, task.task_id)
+                values.put(COL_task_fields_FIELDID, task.field_id)
+                values.put(COL_task_fields_VALUE, task.value)
+                values.put(COL_task_fields_STATUS, "0")
 
 
-//            } else {
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                val db = this.writableDatabase
+                db.update(TABLE_task_fields , values,"$COL_task_fields_SERVERID=?", arrayOf(task.id.toString()))
 
-//            }
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -3588,10 +3844,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getAllPrivilege(): ArrayList<Privilege> {
 
-
         val upCommingPackList = ArrayList<Privilege>()
         val db = this.readableDatabase
-        val query = "Select * from $TABLE_privileges"
+        val query = "Select * from $TABLE_ROLE_PRIVILEGES"
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
@@ -3604,9 +3859,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         if (cursor.moveToFirst()) {
             do {
 
-                val id: String? = cursor.getString(cursor.getColumnIndex(COL_privileges_SERVERID))
+                val id: String? = cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_ID))
                 val name: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_privileges_NAME))
+                    cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_PRIVILEGE))
 
                 val packsNew = Privilege(id = id?.toInt(), name = name)
 
@@ -5808,7 +6063,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getTaskFunctionList(taskConfigID: String): ArrayList<ListTaskFunctions> {
 
         val privilegesList = ArrayList<ListTaskFunctions>()
-        val query = "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
+        val query =
+            "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
         val db = this.readableDatabase
 
         val cursor: Cursor?
@@ -5818,23 +6074,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             if (cursor.moveToFirst()) {
                 do {
 
-                    val id: String? = getColumnString(cursor,COL_task_config_functions_SERVERKEY)
+                    val id: String? = getColumnString(cursor, COL_task_config_functions_SERVERKEY)
                     Log.d("#102030", " ID  $id")
-                    Log.d("#102030", " name1  ${getColumnString(cursor,"name1")}")
+                    Log.d("#102030", " name1  ${getColumnString(cursor, "name1")}")
 
-                    val taskconfigId: Int =  getColumnString(cursor,COL_task_config_functions_task_config_id).toInt()
+                    val taskconfigId: Int =
+                        getColumnString(cursor, COL_task_config_functions_task_config_id).toInt()
                     Log.d("#102030", " taskconfigId  $taskconfigId")
 
-                    val functionNameId: String =  getColumnString(cursor,COL_task_config_functions_task_name)
+                    val functionNameId: String =
+                        getColumnString(cursor, COL_task_config_functions_task_name)
                     Log.d("#102030", " functionId  $functionNameId")
 
-                    val name1: String = getColumnString(cursor,"name1")
+                    val name1: String = getColumnString(cursor, "name1")
                     Log.d("#102030", " name1  $name1")
 
-                    var functionnames: String =  getColumnString(cursor,COL_task_config_functions_description)
+                    var functionnames: String =
+                        getColumnString(cursor, COL_task_config_functions_description)
                     Log.d("#102030", " functionnames  $functionnames")
 
-                    val privilegeid: String =  getColumnString(cursor,COL_task_config_functions_privilege)
+                    val privilegeid: String =
+                        getColumnString(cursor, COL_task_config_functions_privilege)
                     Log.d("#102030", " privilegeid  $privilegeid")
                     var privilegename: String = " "
 
@@ -5842,7 +6102,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         privilegename = cursor.getString(cursor.getColumnIndex("privilegename"))
                     Log.d("#102030", " privilegename  $privilegename")
 
-                    val  taskFunction = ListTaskFunctions(id,functionNameId,name1,privilegename)
+                    val taskFunction = ListTaskFunctions(id, functionNameId, name1, privilegename)
 
                     privilegesList.add(taskFunction)
 
@@ -5908,7 +6168,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     @SuppressLint("SimpleDateFormat")
 
-    fun deletePackNew(packid: String) {
+    fun deletePackNew(packid: String): Boolean {
+        var isSuccess = false
         val db = this.writableDatabase
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val currentDate = sdf.format(Date())
@@ -5920,18 +6181,22 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 //            val succ = db.delete(TABLE_CREAT_PACK, "$COL_LOCAL_ID=?", arrayOf(packid))
             val result = db.update(TABLE_CREAT_PACK, contentValues, "$COL_ID=?", arrayOf(packid))
             if (result >= 0) {
+                isSuccess = true
                 Toast.makeText(context, "Deleted SuccesFully", Toast.LENGTH_LONG).show()
             } else {
+                isSuccess = false
                 AppUtils.logDebug(TAG, "Failed to Update")
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
+        return isSuccess
         // db.close()
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun deleteTaskNew(taskId: String) {
+    fun deleteTaskNew(taskId: String): Boolean {
+        var isSuccess = false
         val db = this.writableDatabase
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         val currentDate = sdf.format(Date())
@@ -5944,18 +6209,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val result =
                 db.update(TABLE_tasks, contentValues, "$COL_tasks_SERVERid=?", arrayOf(taskId))
             if (result >= 0) {
+                isSuccess = true
                 Toast.makeText(context, "Deleted SuccesFully", Toast.LENGTH_LONG).show()
             } else {
+                isSuccess = false
                 AppUtils.logDebug(TAG, "Failed to Update")
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
+        return isSuccess
         // db.close()
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun deleteEvent(eventid: String): Int {
+    fun deleteEvent(eventid: String): Boolean {
+        var isSuccess = false
+
         var result = 0
         val db = this.writableDatabase
 
@@ -5971,15 +6241,17 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             result =
                 db.update(TABLE_events, contentValues, "$COL_events_SERVERID=?", arrayOf(eventid))
             if (result >= 0) {
+                isSuccess = true
                 Toast.makeText(context, "Deleted SuccesFully", Toast.LENGTH_LONG).show()
             } else {
+                isSuccess = false
                 AppUtils.logDebug(TAG, "Failed to Update")
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.toString())
         }
         // db.close()
-        return result
+        return isSuccess
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -6392,17 +6664,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_tasks)
         db.execSQL("delete from " + TABLE_team)
         db.execSQL("delete from " + TABLE_units)
+        db.execSQL("delete from " + TABLE_ROLE_PRIVILEGES)
 
 //    db.execSQL("delete from "+ TABLE_NAME)
 
     }
 
     //get lists table where query
-    fun getLists() : Lists{
+    fun getLists(): Lists {
 
         var lists = Lists()
 
-        val selectRolePrivileges = "SELECT  * FROM $TABLE_LISTS where $COL_LISTS_NAME  = 'SYS_UTC_TIMEZONE' LIMIT 1 "
+        val selectRolePrivileges =
+            "SELECT  * FROM $TABLE_LISTS where $COL_LISTS_NAME  = 'SYS_UTC_TIMEZONE' LIMIT 1 "
 
         try {
             val db = this.writableDatabase
@@ -6429,19 +6703,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         } catch (e: Exception) {
             return lists;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
         return lists;
     }
 
-    fun getListChoiceQuery(timeZoneID :String) : Choices {
+    fun getListChoiceQuery(timeZoneID: String): Choices {
 
         var choices = Choices()
 
         val lists = getLists()
         val listID = lists.id
 
-        val selectRolePrivileges = "select * from $TABLE_LIST_CHOICES where $COL_LIST_CHOICES_LISTS_ID = $listID and $COL_LIST_CHOICES_LISTS_ID is not null and $COL_LIST_CHOICES_ID = $timeZoneID and $COL_LIST_CHOICES_DELETED_AT is null limit 1"
+        val selectRolePrivileges =
+            "select * from $TABLE_LIST_CHOICES where $COL_LIST_CHOICES_LISTS_ID = $listID and $COL_LIST_CHOICES_LISTS_ID is not null and $COL_LIST_CHOICES_ID = $timeZoneID and $COL_LIST_CHOICES_DELETED_AT is null limit 1"
 
         try {
             val db = this.writableDatabase
@@ -6465,7 +6743,10 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
         } catch (e: Exception) {
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
         return choices;
     }
