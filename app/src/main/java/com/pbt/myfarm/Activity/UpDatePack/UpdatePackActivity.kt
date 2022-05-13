@@ -41,9 +41,12 @@ class UpdatePackActivity : AppCompatActivity() {
 
         val extras = intent.extras
 
-//        if (extras != null) {
-//            positionnn = extras.getString("fragment")!!.toInt()
-//        }
+        if (extras != null ) {
+            extras.getString("fragment")?.let {
+                positionnn = extras.getString("fragment")!!.toInt()
+            }
+
+        }
 
         if (!extras?.getString(CON_PACK_ID).isNullOrEmpty()) {
             packID = extras?.getString(CON_PACK_ID) ?: ""

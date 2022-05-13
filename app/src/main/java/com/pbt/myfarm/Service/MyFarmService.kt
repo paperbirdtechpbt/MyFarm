@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import androidx.annotation.Nullable
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigViewModel
 import com.pbt.myfarm.DataBase.DbHelper
@@ -36,7 +37,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     val db = DbHelper(this, null)
 
     @OptIn(DelicateCoroutinesApi::class)
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(@Nullable intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, " Service run ${System.currentTimeMillis()}")
 
         userID = MySharedPreference.getUser(this)?.id.toString()

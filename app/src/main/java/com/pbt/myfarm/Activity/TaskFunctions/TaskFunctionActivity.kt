@@ -160,7 +160,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             val mTaskID = updateTaskID?.id.toString();
             val mFunctionID =  selectedFunctionId.toString()
             val mUserID =  MySharedPreference.getUser(this)?.id.toString()
-            val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toInt().toString()
+            val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
             val mFieldID = selectedFunctionFieldId.toString()
 
 

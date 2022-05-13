@@ -47,8 +47,8 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
     var isPasswordShow: ObservableBoolean? = null
 
     init {
-        email = ObservableField("pbt@admin.com")
-        password = ObservableField("pbtadmin")
+        email = ObservableField("")
+        password = ObservableField("")
         userLogin = MutableLiveData<HttpResponse>()
         isPasswordShow = ObservableBoolean(false)
     }
