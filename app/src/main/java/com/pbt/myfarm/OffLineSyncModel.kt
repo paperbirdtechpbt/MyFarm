@@ -690,7 +690,7 @@ data class TaskConfig(
 data class TaskField(
     val field_id: String?=null,
     val id: Int?=null,
-    val task_id: Int?=null,
+    var task_id: Int?=null,
     val value: String?=null
 )
 

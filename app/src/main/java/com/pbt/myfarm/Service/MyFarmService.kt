@@ -13,6 +13,7 @@ import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.ModelClass.SendDataMasterList
 import com.pbt.myfarm.OffLineSyncModel
 import com.pbt.myfarm.TaskConfig
+import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -32,7 +33,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     var packlist = ArrayList<com.pbt.myfarm.ModelClass.PacksNew>()
     var eventlist = ArrayList<com.pbt.myfarm.ModelClass.Event>()
     var collecrDataList = ArrayList<com.pbt.myfarm.ModelClass.CollectData>()
-    var taskobjectt = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
+    var taskobjectt = ArrayList<TaskObject>()
 
     val db = DbHelper(this, null)
 
@@ -73,7 +74,6 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
 
-        var taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
         val taskObject = db.getTaskObject()
         taskobjectt = taskObject
 
@@ -169,7 +169,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                         GlobalScope.launch {
                             if (it.Data.tasks.isNotEmpty()) {
                                 for (pack in it.Data.tasks) {
-                                    db.tasksCreate(pack)
+                                    db.insertTasks(pack)
                                 }
                             }
                         }
@@ -177,7 +177,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
                             if (it.Data.task_fields.isNotEmpty()) {
                                 for (pack in it.Data.task_fields) {
-                                    db.task_fields_create(pack)
+                                    db.insertTaskField(pack)
                                 }
                             }
                         }

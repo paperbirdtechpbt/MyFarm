@@ -1,5 +1,7 @@
 package com.pbt.myfarm.ModelClass
 
+import com.pbt.myfarm.TaskObject
+
 data class SendDataMasterList(
     var collect_data: List<CollectData>,
     var events: List<Event>,

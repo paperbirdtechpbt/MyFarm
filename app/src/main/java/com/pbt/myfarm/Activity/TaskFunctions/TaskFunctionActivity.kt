@@ -252,28 +252,29 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         }
 
                     })
-                } else {
-//                    val db = DbHelper(this, null)
-//                    viewmodel?.apply {
-//                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
-//                    }
+                }
+                else {
                     val db = DbHelper(this, null)
-//                    db.checkIftaskStart(updateTaskID)
-                    val taskobject = com.pbt.myfarm.TaskObject(
-                        task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
-                        function = selectedFunctionId.toString(),
-                    )
-
-                    val isSuucess = db.addTaskObjectOffline(taskobject, "1")
-                    if (isSuucess) {
-                        progressbar_taskexecute.visibility = View.GONE
-                        Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
-                    } else {
-                        progressbar_taskexecute.visibility = View.GONE
-
-                        Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
-
+                    viewmodel?.apply {
+                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
                     }
+//                    val db = DbHelper(this, null)
+////                    db.checkIftaskStart(updateTaskID)
+//                    val taskobject = com.pbt.myfarm.TaskObject(
+//                        task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
+//                        function = selectedFunctionId.toString(),
+//                    )
+//
+//                    val isSuucess = db.addTaskObjectOffline(taskobject, "1")
+//                    if (isSuucess) {
+//                        progressbar_taskexecute.visibility = View.GONE
+//                        Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
+//                    } else {
+//                        progressbar_taskexecute.visibility = View.GONE
+//
+//                        Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
+//
+//                    }
                 }
             }
         }

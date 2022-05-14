@@ -34,15 +34,38 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_RESULE_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_VALUE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_DELETED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHARTS_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_REFF_CLTL_POINT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_RESULT_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LAST_CHANGE_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LAST_CHANGE_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_PRIMARYKEY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CHOICE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_LISTS_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_UPDATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_LOCAL_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACKNEW_Status
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIG_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CREATED_BY
@@ -58,6 +81,38 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_LOCAL_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_PRIVILEGE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_ROLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_DESC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_ENDED_LATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_LAST_CHANGED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_LAST_CHANGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_CONTAINER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_FUNCTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_NO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_ORIGIN
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_TASK_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_OBJECTS_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_SERVER_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_STARTED_LATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_TASK_CONFIG_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASKS_TASK_FUNCTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASK_FIELDS_FIELD_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASK_FIELDS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASK_FIELDS_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASK_FIELDS_TASK_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_TASK_FIELDS_VALUE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_UPDATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_UPDATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_collect_activities_COMMUNITYGROUP
@@ -109,26 +164,26 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_UPDATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_UPDATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_CAPACITY_UNITS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_CREATED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_CREATED_DATE_UTC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_DESCIPTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_LAST_CHANGED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_LAST_CHANGED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_LAST_CHANGED_UTC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_MAX_CAPACITY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_NOTIFICATION_LEVEL
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_PARENT_CONTAINER
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_STATUS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_TYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_ZONE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CAPACITY_UNITS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE_UTC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DESCRIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_UTC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_MAX_CAPACITY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NOTIFICATION_LEVEL
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_PARENT_CONTAINER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ZONE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_UTC
@@ -245,26 +300,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_OBJECTCLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_ORDINATE_TITLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_graph_charts_TITLE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CHOICE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_COM_GROUP_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_DELETED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_list_choices_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LIST_CHOICES_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_COM_GROUP_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DELETED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_DESC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_LISTS_UPDATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_PRIMARY_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_SERVER_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_collect_activity_collect_activity_id
@@ -304,33 +340,33 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_field_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_pack_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_value
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_ADDRESS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_BIRTHPLACE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_CERTIFICAITON
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_CITIZENSHIP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_COMMUNITY_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_CONTACT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_DELETED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_DEWSCIPTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_DOB
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_EMAIl
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_FNAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_IS_IN_COOP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_IS_KAKAOMUNDO
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_KAKAOMUNDO_CENTER
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_LASTCERFICATION_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_LNAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_PERSON_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_PERSON_TYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_PHOTO
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_UPDATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_people_USERID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ADDRESS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_BIRTH_PLACE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CERTIFICAITON
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CITIZENSHIP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_COMMUNITY_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CONTACT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DESCRIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DOB
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_EMAIl
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_FNAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_IN_COOP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_KAKAOMUNDO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_KAKAOMUNDO_CENTER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LASTCERFICATION_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LNAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PHOTO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_USERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_PRIMARYID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_SERVERID
@@ -395,40 +431,13 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_REPORTABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs_TYPE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_configs__LAST_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_FIELDID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_PRIMARY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_STATUS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_TASKID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_fields_VALUE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_LINK
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_LOCAL_FILE_PATH
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_PRIMARYID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_media_files_TASKID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_CONTAINER
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_FUNCTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_LASTCHANGEDDATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_PRIMARYID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_SERVERID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_STATUS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_TASKID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DELTED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DESC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_ENDED_LATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_LASTCHANGED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_LAST_CHANGED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_PRIMARYKEY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_SERVERid
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STARTED_LATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_STATUS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASKFUNC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_TASK_CONFIGID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_ADDRESS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_COMGROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_team_CONTACT
@@ -509,15 +518,19 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_GRAPH_CHARTS
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LISTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LIST_CHOICES
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACKCONFIG
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_ROLE_PRIVILEGES
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_TASKS
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_TASKS_OBJECTS
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_TASK_FIELDS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activities
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results_unit
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_data
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_community_groups
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_container
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CONTAINER
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_container_object
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_eventStatus
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_eventType
@@ -525,20 +538,16 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_events
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_objects
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_points
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LISTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_collect_activity
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_config_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_fields
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_people
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PEOPLE
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_privileges
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_sensors
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_functions
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_configs
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_media_files
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_objects
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_tasks
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_team
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_units
 import com.pbt.myfarm.Util.AppUtils
@@ -549,7 +558,6 @@ import java.io.InputStream
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -636,16 +644,59 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         // ravi -offline table ---taskobjects
 
 
-        val task_objects = ("CREATE TABLE " + TABLE_task_objects + " ("
-                + COL_task_objects_PRIMARYID + " INTEGER PRIMARY KEY, " +
-                COL_task_objects_SERVERID + " TEXT," +
-                COL_task_objects_TASKID + " TEXT," +
-                COL_task_objects_FUNCTION + " TEXT," +
-                COL_task_objects_CONTAINER + " TEXT," +
-                COL_task_objects_STATUS + " TEXT," +
-                COL_task_objects_LASTCHANGEDDATE + " TEXT " + ")")
+//        val task_objects = ("CREATE TABLE " + TABLE_TASKS_OBJECTS + " ("
+//                + COL_TASKS_OBJECTS_LOCAL_ID + " INTEGER PRIMARY KEY, " +
+//                COL_TASKS_OBJECTS_ID + " TEXT," +
+//                COL_TASKS_OBJECTS_TASK_ID + " TEXT," +
+//                COL_TASKS_OBJECTS_FUNCTION + " TEXT," +
+//                COL_TASKS_OBJECTS_CONTAINER + " TEXT," +
+//                COL_TASKS_OBJECTS_STATUS + " TEXT," +
+//                COL_TASKS_OBJECTS_LAST_CHANGED_DATE + " TEXT " + ")")
 
-        db?.execSQL(task_objects)
+        //teble task_object create
+
+//        val `class`: String?=null,
+//        val deleted_at: String?=null,
+//        val function: String?=null,
+//        val id: Int?=null,
+//        val last_changed_by: Int?=null,
+//        val last_changed_date: String?=null,
+//        val name: String?=null,
+//        val no: String?=null,
+//        val origin: String?=null,
+//        val task_id: Int?=null,
+//        val type: String?=null,
+//        val container: String?=null,
+//        val status: String?=null,
+
+//        "$COL_TASKS_OBJECTS_FUNCTION TEXT," +
+//                "$COL_TASKS_OBJECTS_NO TEXT, " +
+
+        try {
+
+            val createTaskObject = "CREATE TABLE $TABLE_TASKS_OBJECTS ( " +
+                    "$COL_TASKS_OBJECTS_LOCAL_ID INTEGER PRIMARY KEY," +
+                    "$COL_TASKS_OBJECTS_ID TEXT," +
+                    "$COL_TASKS_OBJECTS_TASK_ID TEXT," +
+                    "$COL_TASKS_OBJECTS_FUNCTION TEXT," +
+                    "$COL_TASKS_OBJECTS_NAME TEXT, " +
+                    "$COL_TASKS_OBJECTS_TYPE TEXT," +
+                    "$COL_TASKS_OBJECTS_CLASS TEXT," +
+                    "$COL_TASKS_OBJECTS_ORIGIN TEXT," +
+                    "$COL_TASKS_OBJECTS_CONTAINER TEXT," +
+                    "$COL_LAST_CHANGE_BY TEXT," +
+                    "$COL_LAST_CHANGE_DATE TEXT," +
+                    "$COL_DELETED_AT TEXT ," +
+                    "$COL_TASKS_OBJECTS_NO TEXT," +
+                    "$COL_LOCAL_STATUS TEXT )"
+
+            db?.execSQL(createTaskObject)
+        } catch (e: Exception) {
+            Log.e(
+                TAG,
+                " Create Table Task_object Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
+        }
 
         //ravi -offline---------table-----EventType
 
@@ -659,12 +710,13 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // ravi -offline table ---EventStatus
 
-        val privileges = ("CREATE TABLE " + TABLE_privileges + " ("
-                + COL_privileges_PRIMARYID + " INTEGER PRIMARY KEY, " +
-                COL_privileges_SERVERID + " TEXT," +
-                COL_privileges_NAME + " TEXT " + ")")
-
-        db?.execSQL(privileges)
+        try {
+            val privileges =
+                "CREATE TABLE $TABLE_privileges ( $COL_privileges_PRIMARYID INTEGER PRIMARY KEY, $COL_privileges_SERVERID   TEXT,$COL_privileges_NAME )"
+            db?.execSQL(privileges)
+        } catch (e: java.lang.Exception) {
+            Log.d(TAG, "Exception $TABLE_privileges ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
 
         val eventStatus = ("CREATE TABLE " + TABLE_eventStatus + " ("
                 + COL_eventStatus_PRIMARYID + " INTEGER PRIMARY KEY, " +
@@ -809,68 +861,69 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         // ravi -offline table ---people
 
-        val people = ("CREATE TABLE " + TABLE_people + " ("
-                + COL_people_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_people_SERVERID + " TEXT," +
-                COL_people_FNAME + " TEXT," +
-                COL_people_LNAME + " TEXT," +
-                COL_people_EMAIl + " TEXT," +
-                COL_people_CONTACT + " TEXT," +
-                COL_people_BIRTHPLACE + " TEXT," +
-                COL_people_DOB + " TEXT," +
-                COL_people_PHOTO + " TEXT," +
-                COL_people_ADDRESS + " TEXT," +
-                COL_people_CITIZENSHIP + " TEXT," +
-                COL_people_CERTIFICAITON + " TEXT," +
-                COL_people_IS_IN_COOP + " TEXT," +
-                COL_people_LASTCERFICATION_DATE + " TEXT," +
-                COL_people_IS_KAKAOMUNDO + " TEXT," +
-                COL_people_KAKAOMUNDO_CENTER + " TEXT," +
-                COL_people_USERID + " TEXT," +
-                COL_people_COMMUNITY_GROUP + " TEXT," +
-                COL_people_PERSON_CLASS + " TEXT," +
-                COL_people_PERSON_TYPE + " TEXT," +
-                COL_people_DEWSCIPTION + " TEXT," +
-                COL_people_CREATED_BY + " TEXT," +
-                COL_people_UPDATED_BY + " TEXT," +
-                COL_people_UPDATED_AT + " TEXT," +
-                COL_people_CREATED_AT + " TEXT," +
-                COL_people_DELETED_BY + " TEXT," +
-                COL_people_DELETED_AT + " TEXT " + ")")
+        val people = ("CREATE TABLE " + TABLE_PEOPLE + " ("
+                + COL_PEOPLE_LOCAL_ID + " INTEGER PRIMARY KEY, " +
+                COL_PEOPLE_ID + " TEXT," +
+                COL_PEOPLE_FNAME + " TEXT," +
+                COL_PEOPLE_LNAME + " TEXT," +
+                COL_PEOPLE_EMAIl + " TEXT," +
+                COL_PEOPLE_CONTACT + " TEXT," +
+                COL_PEOPLE_BIRTH_PLACE + " TEXT," +
+                COL_PEOPLE_DOB + " TEXT," +
+                COL_PEOPLE_PHOTO + " TEXT," +
+                COL_PEOPLE_ADDRESS + " TEXT," +
+                COL_PEOPLE_CITIZENSHIP + " TEXT," +
+                COL_PEOPLE_CERTIFICAITON + " TEXT," +
+                COL_PEOPLE_IS_IN_COOP + " TEXT," +
+                COL_PEOPLE_LASTCERFICATION_DATE + " TEXT," +
+                COL_PEOPLE_IS_KAKAOMUNDO + " TEXT," +
+                COL_PEOPLE_KAKAOMUNDO_CENTER + " TEXT," +
+                COL_PEOPLE_USERID + " TEXT," +
+                COL_PEOPLE_COMMUNITY_GROUP + " TEXT," +
+                COL_PEOPLE_PERSON_CLASS + " TEXT," +
+                COL_PEOPLE_PERSON_TYPE + " TEXT," +
+                COL_PEOPLE_DESCRIPTION + " TEXT," +
+                COL_PEOPLE_CREATED_BY + " TEXT," +
+                COL_PEOPLE_UPDATED_BY + " TEXT," +
+                COL_PEOPLE_UPDATED_AT + " TEXT," +
+                COL_PEOPLE_CREATED_AT + " TEXT," +
+                COL_PEOPLE_DELETED_BY + " TEXT," +
+                COL_PEOPLE_DELETED_AT + " TEXT " + ")")
         db?.execSQL(people)
         //--------------//
 
 
 //ravi- offline ---------table------task-------//
 
-        val tasks = ("CREATE TABLE " + TABLE_tasks + " ("
-                + COL_tasks_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_tasks_SERVERid + " TEXT," +
-                COL_tasks_NAME + " TEXT," +
-                COL_tasks_DESC + " TEXT," +
-                COL_tasks_GROUP + " TEXT," +
-                COL_tasks_TASK_CONFIGID + " TEXT," +
-                COL_tasks_TASKFUNC + " TEXT," +
-                COL_tasks_STATUS + " TEXT," +
-                COL_tasks_STARTED_LATE + " TEXT," +
-                COL_tasks_ENDED_LATE + " TEXT," +
-                COL_tasks_CREATED_BY + " TEXT," +
-                COL_tasks_CREATED_DATE + " TEXT," +
-                COL_tasks_LAST_CHANGED_BY + " TEXT," +
-                COL_tasks_LASTCHANGED_DATE + " TEXT," +
-                COL_tasks_DELTED_AT + " TEXT" + ")")
+        val tasks = ("CREATE TABLE " + TABLE_TASKS + " ("
+                + COL_TASKS_LOCAL_ID + " INTEGER PRIMARY KEY, " +
+                COL_TASKS_ID + " TEXT," +
+                COL_TASKS_NAME + " TEXT," +
+                COL_TASKS_DESC + " TEXT," +
+                COL_TASKS_GROUP + " TEXT," +
+                COL_TASKS_TASK_CONFIG_ID + " TEXT," +
+                COL_TASKS_TASK_FUNCTION + " TEXT," +
+                COL_TASKS_STATUS + " TEXT," +
+                COL_TASKS_SERVER_STATUS + " TEXT," +
+                COL_TASKS_STARTED_LATE + " TEXT," +
+                COL_TASKS_ENDED_LATE + " TEXT," +
+                COL_TASKS_CREATED_BY + " TEXT," +
+                COL_TASKS_CREATED_DATE + " TEXT," +
+                COL_TASKS_LAST_CHANGED_BY + " TEXT," +
+                COL_TASKS_LAST_CHANGED_DATE + " TEXT," +
+                COL_TASKS_DELETED_AT + " TEXT" + ")")
         db?.execSQL(tasks)
 
 
         //ravi -offline---------table-----task_fields
 
-        val task_fields = ("CREATE TABLE " + TABLE_task_fields + " ("
+        val task_fields = ("CREATE TABLE " + TABLE_TASK_FIELDS + " ("
                 + COL_task_fields_PRIMARY + " INTEGER PRIMARY KEY, " +
-                COL_task_fields_SERVERID + " TEXT," +
-                COL_task_fields_STATUS + " TEXT," +
-                COL_task_fields_TASKID + " TEXT," +
-                COL_task_fields_FIELDID + " TEXT," +
-                COL_task_fields_VALUE + " TEXT" + ")")
+                COL_TASK_FIELDS_ID + " TEXT," +
+                COL_TASK_FIELDS_STATUS + " TEXT," +
+                COL_TASK_FIELDS_TASK_ID + " TEXT," +
+                COL_TASK_FIELDS_FIELD_ID + " TEXT," +
+                COL_TASK_FIELDS_VALUE + " TEXT" + ")")
         db?.execSQL(task_fields)
 
         //ravi -offline---------table-----task_configs
@@ -971,27 +1024,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         //ravi -offline---------table-----container
 
-        val container = ("CREATE TABLE " + TABLE_container + " ("
-                + COL_container_PRIMARYKEY + " INTEGER PRIMARY KEY, " +
-                COL_container_SERVERID + " TEXT," +
-                COL_container_NAME + " TEXT," +
-                COL_container_DESCIPTION + " TEXT," +
-                COL_container_COM_GROUP + " TEXT," +
-                COL_container_TYPE + " TEXT," +
-                COL_container_STATUS + " TEXT," +
-                COL_container_MAX_CAPACITY + " TEXT," +
-                COL_container_CAPACITY_UNITS + " TEXT," +
-                COL_container_ZONE + " TEXT," +
-                COL_container_CLASS + " TEXT," +
-                COL_container_NOTIFICATION_LEVEL + " TEXT," +
-                COL_container_PARENT_CONTAINER + " TEXT," +
-                COL_container_DELETED_AT + " TEXT," +
-                COL_container_CREATED_DATE + " TEXT," +
-                COL_container_CREATED_BY + " TEXT," +
-                COL_container_CREATED_DATE_UTC + " TEXT," +
-                COL_container_LAST_CHANGED_DATE + " TEXT," +
-                COL_container_LAST_CHANGED_BY + " TEXT," +
-                COL_container_LAST_CHANGED_UTC + " TEXT" + ")")
+        val container = ("CREATE TABLE " + TABLE_CONTAINER + " ("
+                + COL_CONTAINER_LOCAL_ID + " INTEGER PRIMARY KEY, " +
+                COL_CONTAINER_ID + " TEXT," +
+                COL_CONTAINER_NAME + " TEXT," +
+                COL_CONTAINER_DESCRIPTION + " TEXT," +
+                COL_CONTAINER_COM_GROUP + " TEXT," +
+                COL_CONTAINER_TYPE + " TEXT," +
+                COL_CONTAINER_STATUS + " TEXT," +
+                COL_CONTAINER_MAX_CAPACITY + " TEXT," +
+                COL_CONTAINER_CAPACITY_UNITS + " TEXT," +
+                COL_CONTAINER_ZONE + " TEXT," +
+                COL_CONTAINER_CLASS + " TEXT," +
+                COL_CONTAINER_NOTIFICATION_LEVEL + " TEXT," +
+                COL_CONTAINER_PARENT_CONTAINER + " TEXT," +
+                COL_CONTAINER_DELETED_AT + " TEXT," +
+                COL_CONTAINER_CREATED_DATE + " TEXT," +
+                COL_CONTAINER_CREATED_BY + " TEXT," +
+                COL_CONTAINER_CREATED_DATE_UTC + " TEXT," +
+                COL_CONTAINER_LAST_CHANGED_DATE + " TEXT," +
+                COL_CONTAINER_LAST_CHANGED_BY + " TEXT," +
+                COL_CONTAINER_LAST_CHANGED_UTC + " TEXT" + ")")
         db?.execSQL(container)
         //ravi -offline---------table-----sensors
 
@@ -1234,8 +1287,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_team_DELETED_AT + " TEXT" + ")")
         db?.execSQL(team)
 
-        val createTableRolePrivilege = "CREATE TABLE $TABLE_ROLE_PRIVILEGES ( $COL_ROLE_PRIVILEGES_LOCAL_ID  INTEGER PRIMARY KEY, $COL_ROLE_PRIVILEGES_ID  TEXT , $COL_ROLE_PRIVILEGES_PRIVILEGE  TEXT , $COL_ROLE_PRIVILEGES_ROLE_ID  TEXT, $COL_CREATED_AT  TEXT,$COL_CREATED_BY  TEXT, $COL_UPDATED_AT  TEXT, $COL_UPDATED_BY  TEXT )"
-        Log.d(TAG," Create Table RolePrivileges $createTableRolePrivilege")
+        val createTableRolePrivilege =
+            "CREATE TABLE $TABLE_ROLE_PRIVILEGES ( $COL_ROLE_PRIVILEGES_LOCAL_ID  INTEGER PRIMARY KEY, $COL_ROLE_PRIVILEGES_ID  TEXT , $COL_ROLE_PRIVILEGES_PRIVILEGE  TEXT , $COL_ROLE_PRIVILEGES_ROLE_ID  TEXT, $COL_CREATED_AT  TEXT,$COL_CREATED_BY  TEXT, $COL_UPDATED_AT  TEXT, $COL_UPDATED_BY  TEXT )"
+        Log.d(TAG, " Create Table RolePrivileges $createTableRolePrivilege")
         db?.execSQL(createTableRolePrivilege)
 
     }
@@ -1310,7 +1364,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val list: ArrayList<PackCommunityList> = ArrayList()
         val db = this.readableDatabase
 
-        val selectQuery = "SELECT  * FROM $TABLE_tasks WHERE $COL_tasks_TASK_CONFIGID =$configid "
+        val selectQuery = "SELECT  * FROM $TABLE_TASKS WHERE $COL_TASKS_TASK_CONFIG_ID =$configid "
 
         val cursor: Cursor?
         try {
@@ -1325,7 +1379,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             do {
                 val result = cursor.getInt(0)
 //                AppUtils.logDebug(TAG, "resultt" + result)
-                myid = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
+                myid = cursor.getString(cursor.getColumnIndex(COL_TASKS_NAME))
             } while (cursor.moveToNext())
         }
         return myid
@@ -1366,7 +1420,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var myid: String? = null
         val db = this.readableDatabase
 
-        val selectQuery = "SELECT  * FROM $TABLE_tasks"
+        val selectQuery = "SELECT  * FROM $TABLE_TASKS"
 
         val cursor: Cursor?
         try {
@@ -1381,7 +1435,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             do {
                 val result = cursor.getInt(0)
 //                AppUtils.logDebug(TAG, "resultt" + result)
-                myid = cursor.getString(cursor.getColumnIndex(COL_tasks_SERVERid))
+                myid = cursor.getString(cursor.getColumnIndex(COL_TASKS_ID))
             } while (cursor.moveToNext())
         }
         return myid.toString()
@@ -1422,7 +1476,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var myid = ""
         val db = this.readableDatabase
 
-        val selectQuery = "SELECT  * FROM $TABLE_tasks WHERE $COL_tasks_TASK_CONFIGID =$configid "
+        val selectQuery = "SELECT  * FROM $TABLE_TASKS WHERE $COL_TASKS_TASK_CONFIG_ID =$configid "
 
         val cursor: Cursor?
         try {
@@ -1437,7 +1491,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             do {
                 val result = cursor.getInt(0)
 //                AppUtils.logDebug(TAG, "resultt" + result)
-                myid = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
+                myid = cursor.getString(cursor.getColumnIndex(COL_TASKS_NAME))
             } while (cursor.moveToNext())
         }
         return myid
@@ -1501,25 +1555,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 values.put(COL_UPDATED_AT, rolePrivilege.updated_at)
                 values.put(COL_CREATED_AT, rolePrivilege.created_at)
                 values.put(COL_CREATED_BY, rolePrivilege.created_by)
-                if(db.isOpen){
+                if (db.isOpen) {
                     val result = db.insert(TABLE_ROLE_PRIVILEGES, null, values)
 
                     if (result >= 0)
-                        Log.d(TAG, "RolePrivileges Row inserted ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                        Log.d(
+                            TAG,
+                            "RolePrivileges Row inserted ${rolePrivilege.id} ${rolePrivilege.privilege}"
+                        )
                     else
-                        Log.d(TAG, "RolePrivileges Row not insert ${rolePrivilege.id} ${rolePrivilege.privilege}")
+                        Log.d(
+                            TAG,
+                            "RolePrivileges Row not insert ${rolePrivilege.id} ${rolePrivilege.privilege}"
+                        )
                 }
             }
         } catch (e: Exception) {
-            AppUtils.logError(TAG, "Role rolePrivilege Exception ${e.message} ${rolePrivilege.id} ${rolePrivilege.privilege}")
+            AppUtils.logError(
+                TAG,
+                "Role rolePrivilege Exception ${e.message} ${rolePrivilege.id} ${rolePrivilege.privilege}"
+            )
         }
 
     }
 
 
     //role_privileges get data
-     fun getAllRolePrivileges() : ArrayList<RolePrivilege> {
-        val listAllPrivileges =  ArrayList<RolePrivilege>()
+    fun getAllRolePrivileges(): ArrayList<RolePrivilege> {
+        val listAllPrivileges = ArrayList<RolePrivilege>()
         val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
 
         try {
@@ -1527,16 +1590,18 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             val cursor = db.rawQuery(selectRolePrivileges, null)
             if (cursor.moveToFirst()) {
                 do {
-                    val rolePrivilege = RolePrivilege(getColumnString(
-                        cursor,COL_CREATED_AT),
-                        getColumnString(cursor,COL_CREATED_BY).toInt(),
+                    val rolePrivilege = RolePrivilege(
+                        getColumnString(
+                            cursor, COL_CREATED_AT
+                        ),
+                        getColumnString(cursor, COL_CREATED_BY).toInt(),
                         "",
                         "",
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ID).toInt(),
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE),
-                        getColumnString(cursor,COL_ROLE_PRIVILEGES_ROLE_ID).toInt(),
-                        getColumnString(cursor,COL_UPDATED_AT),
-                        getColumnString(cursor,COL_CREATED_BY).toInt()
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_ID).toInt(),
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_PRIVILEGE),
+                        getColumnString(cursor, COL_ROLE_PRIVILEGES_ROLE_ID).toInt(),
+                        getColumnString(cursor, COL_UPDATED_AT),
+                        getColumnString(cursor, COL_CREATED_BY).toInt()
                     )
                     listAllPrivileges.add(rolePrivilege)
 
@@ -1544,28 +1609,34 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
         } catch (e: Exception) {
-             return listAllPrivileges;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            return listAllPrivileges;
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
 
-       return listAllPrivileges;
+        return listAllPrivileges;
     }
 
-    fun getAllRolePrivilegesName() : ArrayList<String> {
+    fun getAllRolePrivilegesName(): ArrayList<String> {
 
-        val listAllPrivileges =  ArrayList<String>()
+        val listAllPrivileges = ArrayList<String>()
         val selectRolePrivileges = "SELECT  * FROM $TABLE_ROLE_PRIVILEGES"
         try {
             val db = this.writableDatabase
             val cursor = db.rawQuery(selectRolePrivileges, null)
             if (cursor.moveToFirst()) {
                 do {
-                    listAllPrivileges.add( getColumnString(cursor,COL_ROLE_PRIVILEGES_PRIVILEGE))
+                    listAllPrivileges.add(getColumnString(cursor, COL_ROLE_PRIVILEGES_PRIVILEGE))
                 } while (cursor.moveToNext())
             }
         } catch (e: Exception) {
             return listAllPrivileges;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
 
         return listAllPrivileges;
@@ -1616,29 +1687,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var isAdded = false
         try {
 
-            val i = checkEntry(pack.id, TABLE_task_objects, COL_task_objects_SERVERID)
+            val i = checkEntry(pack.id, TABLE_TASKS_OBJECTS, COL_TASKS_OBJECTS_ID)
             if (i < 1) {
 
-                val values = ContentValues()
-                values.put(COL_task_objects_TASKID, pack.task_id)
-                values.put(COL_task_objects_FUNCTION, pack.function)
-                values.put(COL_task_objects_CONTAINER, pack.container)
-                values.put(COL_task_objects_STATUS, status)
-                values.put(COL_task_objects_LASTCHANGEDDATE, pack.last_changed_date)
-
-
                 val db = this.writableDatabase
-                val result = db.insert(TABLE_task_objects, null, values)
-                // // db.close()
+                val values = ContentValues()
+                values.put(COL_TASKS_OBJECTS_ID, pack.id)
+                values.put(COL_TASKS_OBJECTS_TASK_ID, pack.task_id)
+                values.put(COL_TASKS_OBJECTS_FUNCTION, pack.function)
+                values.put(COL_TASKS_OBJECTS_NAME, pack.name)
+                values.put(COL_TASKS_OBJECTS_TYPE, pack.type)
+                values.put(COL_TASKS_OBJECTS_CLASS, pack.`class`)
+                values.put(COL_TASKS_OBJECTS_ORIGIN, pack.origin)
+                values.put(COL_TASKS_OBJECTS_CONTAINER, pack.container)
+                values.put(COL_LAST_CHANGE_BY, pack.last_changed_by)
+                values.put(COL_LAST_CHANGE_DATE, pack.last_changed_date)
+                values.put(COL_DELETED_AT, pack.deleted_at)
+                values.put(COL_TASKS_OBJECTS_NO, pack.no)
+                values.put(COL_LOCAL_STATUS, pack.status)
 
-                if (result >= 0) {
-                    isAdded = true
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                } else {
-                    isAdded = false
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
-                }
+                val result = db.insert(TABLE_TASKS_OBJECTS, null, values)
+                isAdded = result >= 0
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
@@ -1646,82 +1715,48 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return isAdded
     }
 
-    fun addTaskObjectOffline(pack: TaskObject, status: String): Boolean {
-        var isAdded = false
-        try {
-
-            val values = ContentValues()
-            values.put(COL_task_objects_TASKID, pack.task_id)
-            values.put(COL_task_objects_FUNCTION, pack.function)
-            values.put(COL_task_objects_CONTAINER, pack.container)
-            values.put(COL_task_objects_STATUS, status)
-            values.put(COL_task_objects_LASTCHANGEDDATE, pack.last_changed_date)
-
-
-            val db = this.writableDatabase
-            val result = db.insert(TABLE_task_objects, null, values)
-            // // db.close()
-
-            if (result >= 0) {
-                isAdded = true
-//                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-            } else {
-                isAdded = false
-//                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
-            }
-
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-        }
-        return isAdded
-    }
 
     @SuppressLint("Range")
-    fun getTaskObject(): ArrayList<com.pbt.myfarm.ModelClass.TaskObject> {
+    fun getTaskObject(): ArrayList<TaskObject> {
 
-
-        val upCommingPackList = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
-        val db = this.readableDatabase
-        val query = "Select * from $TABLE_task_objects Where $COL_task_objects_STATUS In(1,2)"
-        val cursor: Cursor?
+        val upCommingPackList = ArrayList<TaskObject>()
         try {
-            cursor = db.rawQuery(query, null)
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-            db.execSQL(query)
-            return ArrayList()
+            val db = this.readableDatabase
+            val query = "Select * from $TABLE_TASKS_OBJECTS Where $COL_TASKS_OBJECTS_STATUS In(1,2)"
+            val cursor: Cursor?
+            try {
+                cursor = db.rawQuery(query, null)
+            } catch (e: Exception) {
+                AppUtils.logError(TAG, e.message!!)
+                db.execSQL(query)
+                return ArrayList()
+            }
+
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val taskObject = TaskObject(
+                        getColumnString(cursor, COL_TASKS_OBJECTS_CLASS),
+                        getColumnString(cursor, COL_DELETED_AT),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_FUNCTION),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_ID).toInt(),
+                        getColumnString(cursor, COL_LAST_CHANGE_BY).toInt(),
+                        getColumnString(cursor, COL_LAST_CHANGE_DATE),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_NAME),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_NO),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_ORIGIN),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_TASK_ID).toInt(),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_TYPE),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_CONTAINER),
+                        getColumnString(cursor, COL_LOCAL_STATUS),
+                    )
+                    upCommingPackList.add(taskObject)
+
+                } while (cursor.moveToNext())
+            }
+        } catch (e: java.lang.Exception) {
+            Log.e(TAG, "Update Task Exception ${e.message} ${e.stackTrace[0].lineNumber}")
         }
-
-        if (cursor.moveToFirst()) {
-            do {
-
-                val taskId: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_objects_TASKID))
-                val functionId: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_objects_FUNCTION))
-                val container: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_objects_CONTAINER))
-
-                val status: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_objects_STATUS))
-                val lastChangedDate: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_objects_LASTCHANGEDDATE))
-
-
-                val packsNew = com.pbt.myfarm.ModelClass.TaskObject(
-                    container, lastChangedDate, status?.toInt(), functionId, taskId
-
-                )
-                upCommingPackList.add(packsNew)
-
-
-            } while (cursor.moveToNext())
-        }
-
-        // close db connection
-        // // db.close()
-        // return notes list
         return upCommingPackList
     }
 
@@ -1735,9 +1770,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         var checkDataSaved = false
         try {
 
-//            val i=checkEntry(pack.id,TABLE_CREAT_PACK,COL_ID)
-//            if (i<1){
 
+            val db = this.writableDatabase
 
             val values = ContentValues()
             values.put(COL_pack_fields_pack_id, lastValueOfPacknew)
@@ -1749,8 +1783,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 values.put(COL_pack_fields_STATUS, "1")
             }
 
-            val db = this.writableDatabase
-
             if (isUpdate) {
                 val result = db.update(
                     TABLE_pack_fields,
@@ -1758,25 +1790,10 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     "$COL_pack_fields_pack_id=? AND $COL_pack_fields_field_id=?",
                     arrayOf(lastValueOfPacknew, fieldid)
                 )
-                // // db.close()
-                if (result >= 0) {
-//                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                    checkDataSaved = true
-                } else {
-//                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-                    checkDataSaved = false
-                }
+                checkDataSaved = result >= 0
             } else {
                 val result = db.insert(TABLE_pack_fields, null, values)
-                // // db.close()
-                if (result >= 0) {
-//                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
-                    checkDataSaved = true
-                } else {
-//                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-                    checkDataSaved = false
-                }
-
+                checkDataSaved = result >= 0
             }
 
 
@@ -1800,11 +1817,11 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             if (desciption.isNotEmpty()) {
                 val values = ContentValues()
-                values.put(COL_tasks_DESC, desciption)
+                values.put(COL_TASKS_DESC, desciption)
                 val result = db.update(
-                    TABLE_tasks,
+                    TABLE_TASKS,
                     values,
-                    "$COL_tasks_SERVERid=?",
+                    "$COL_TASKS_ID=?",
                     arrayOf(lastValueOfPacknew)
                 )
 
@@ -1815,28 +1832,28 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             val values1 = ContentValues()
 
-            values.put(COL_task_fields_TASKID, lastValueOfPacknew)
-            values.put(COL_task_fields_VALUE, fieldname)
-            values.put(COL_task_fields_FIELDID, fieldid)
+            values.put(COL_TASK_FIELDS_TASK_ID, lastValueOfPacknew)
+            values.put(COL_TASK_FIELDS_VALUE, fieldname)
+            values.put(COL_TASK_FIELDS_FIELD_ID, fieldid)
             if (isUpdate) {
-                values.put(COL_task_fields_STATUS, "2")
-                values1.put(COL_tasks_STATUS, "2")
+                values.put(COL_TASK_FIELDS_STATUS, "2")
+                values1.put(COL_TASKS_STATUS, "2")
             } else {
-                values.put(COL_task_fields_STATUS, "1")
+                values.put(COL_TASK_FIELDS_STATUS, "1")
             }
 
             if (isUpdate) {
 
                 val result = db.update(
-                    TABLE_task_fields,
+                    TABLE_TASK_FIELDS,
                     values,
-                    "$COL_task_fields_TASKID=? AND $COL_task_fields_FIELDID=?",
+                    "$COL_TASK_FIELDS_TASK_ID=? AND $COL_TASK_FIELDS_FIELD_ID=?",
                     arrayOf(lastValueOfPacknew, fieldid)
                 )
                 db.update(
-                    TABLE_tasks,
+                    TABLE_TASKS,
                     values1,
-                    " $COL_tasks_SERVERid=?",
+                    " $COL_TASKS_ID=?",
                     arrayOf(lastValueOfPacknew)
                 )
                 // // db.close()
@@ -1848,7 +1865,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     checkDataSaved = false
                 }
             } else {
-                val result = db.insert(TABLE_task_fields, null, values)
+                val result = db.insert(TABLE_TASK_FIELDS, null, values)
                 // // db.close()
                 if (result >= 0) {
 //                    Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -1872,12 +1889,12 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             val values = ContentValues()
 
-            values.put(COL_tasks_STATUS, "0")
+            values.put(COL_TASKS_STATUS, "0")
 
             db.update(
-                TABLE_tasks,
+                TABLE_TASKS,
                 values,
-                " $COL_tasks_NAME=? And $COL_tasks_TASK_CONFIGID=?",
+                " $COL_TASKS_NAME=? And $COL_TASKS_TASK_CONFIG_ID=?",
                 arrayOf(taskname, taskconfigid)
             )
             // // db.close()
@@ -1944,16 +1961,17 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, e.message!!)
         }
     }
+
     fun changeTaskObjectStatus() {
         try {
             val db = this.writableDatabase
 
             val values = ContentValues()
 
-            values.put(COL_task_objects_STATUS, "0")
+            values.put(COL_TASKS_OBJECTS_STATUS, "0")
 
 
-            db.update(TABLE_task_objects, values, " $COL_task_objects_STATUS=?", arrayOf("1"))
+            db.update(TABLE_TASKS_OBJECTS, values, " $COL_TASKS_OBJECTS_STATUS=?", arrayOf("1"))
             // // db.close()
 
         } catch (e: Exception) {
@@ -2513,40 +2531,40 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun peopleCreate(pack: People) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_people, COL_people_SERVERID)
+            val i = checkEntry(pack.id, TABLE_PEOPLE, COL_PEOPLE_ID)
             if (i < 1) {
 
 
                 val values = ContentValues()
-                values.put(COL_people_SERVERID, pack.id)
-                values.put(COL_people_FNAME, pack.fname)
-                values.put(COL_people_LNAME, pack.lname)
-                values.put(COL_people_EMAIl, pack.email)
-                values.put(COL_people_CONTACT, pack.contact)
-                values.put(COL_people_BIRTHPLACE, pack.birth_place)
-                values.put(COL_people_DOB, pack.dob)
-                values.put(COL_people_PHOTO, pack.photo)
-                values.put(COL_people_ADDRESS, pack.address)
-                values.put(COL_people_CITIZENSHIP, pack.citizenship)
-                values.put(COL_people_CERTIFICAITON, pack.certification)
-                values.put(COL_people_IS_IN_COOP, pack.is_in_coop)
-                values.put(COL_people_LASTCERFICATION_DATE, pack.last_certification_date)
-                values.put(COL_people_IS_KAKAOMUNDO, pack.is_kakaomundo)
-                values.put(COL_people_KAKAOMUNDO_CENTER, pack.kakaomundo_center)
-                values.put(COL_people_USERID, pack.user_id)
-                values.put(COL_people_COMMUNITY_GROUP, pack.communitygroup)
-                values.put(COL_people_PERSON_CLASS, pack.person_class)
-                values.put(COL_people_PERSON_TYPE, pack.person_type)
-                values.put(COL_people_DEWSCIPTION, pack.description)
-                values.put(COL_people_CREATED_BY, pack.created_by)
-                values.put(COL_people_UPDATED_BY, pack.updated_by)
-                values.put(COL_people_UPDATED_AT, pack.updated_at)
-                values.put(COL_people_CREATED_AT, pack.created_at)
-                values.put(COL_people_DELETED_BY, pack.deleted_by)
-                values.put(COL_people_DELETED_AT, pack.deleted_at)
+                values.put(COL_PEOPLE_ID, pack.id)
+                values.put(COL_PEOPLE_FNAME, pack.fname)
+                values.put(COL_PEOPLE_LNAME, pack.lname)
+                values.put(COL_PEOPLE_EMAIl, pack.email)
+                values.put(COL_PEOPLE_CONTACT, pack.contact)
+                values.put(COL_PEOPLE_BIRTH_PLACE, pack.birth_place)
+                values.put(COL_PEOPLE_DOB, pack.dob)
+                values.put(COL_PEOPLE_PHOTO, pack.photo)
+                values.put(COL_PEOPLE_ADDRESS, pack.address)
+                values.put(COL_PEOPLE_CITIZENSHIP, pack.citizenship)
+                values.put(COL_PEOPLE_CERTIFICAITON, pack.certification)
+                values.put(COL_PEOPLE_IS_IN_COOP, pack.is_in_coop)
+                values.put(COL_PEOPLE_LASTCERFICATION_DATE, pack.last_certification_date)
+                values.put(COL_PEOPLE_IS_KAKAOMUNDO, pack.is_kakaomundo)
+                values.put(COL_PEOPLE_KAKAOMUNDO_CENTER, pack.kakaomundo_center)
+                values.put(COL_PEOPLE_USERID, pack.user_id)
+                values.put(COL_PEOPLE_COMMUNITY_GROUP, pack.communitygroup)
+                values.put(COL_PEOPLE_PERSON_CLASS, pack.person_class)
+                values.put(COL_PEOPLE_PERSON_TYPE, pack.person_type)
+                values.put(COL_PEOPLE_DESCRIPTION, pack.description)
+                values.put(COL_PEOPLE_CREATED_BY, pack.created_by)
+                values.put(COL_PEOPLE_UPDATED_BY, pack.updated_by)
+                values.put(COL_PEOPLE_UPDATED_AT, pack.updated_at)
+                values.put(COL_PEOPLE_CREATED_AT, pack.created_at)
+                values.put(COL_PEOPLE_DELETED_BY, pack.deleted_by)
+                values.put(COL_PEOPLE_DELETED_AT, pack.deleted_at)
 
                 val db = this.writableDatabase
-                db.insert(TABLE_people, null, values)
+                db.insert(TABLE_PEOPLE, null, values)
                 // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -2565,31 +2583,31 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun containerCreate(pack: Container) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_container, COL_container_SERVERID)
+            val i = checkEntry(pack.id, TABLE_CONTAINER, COL_CONTAINER_ID)
             if (i < 1) {
                 val values = ContentValues()
-                values.put(COL_container_SERVERID, pack.id)
-                values.put(COL_container_NAME, pack.name)
-                values.put(COL_container_DESCIPTION, pack.description)
-                values.put(COL_container_COM_GROUP, pack.com_group)
-                values.put(COL_container_TYPE, pack.type)
-                values.put(COL_container_STATUS, pack.status)
-                values.put(COL_container_MAX_CAPACITY, pack.max_capacity)
-                values.put(COL_container_CAPACITY_UNITS, pack.capacity_units)
-                values.put(COL_container_ZONE, pack.zone)
-                values.put(COL_container_CLASS, pack.`class`)
-                values.put(COL_container_NOTIFICATION_LEVEL, pack.notification_level)
-                values.put(COL_container_PARENT_CONTAINER, pack.parent_container)
-                values.put(COL_container_DELETED_AT, pack.deleted_at)
-                values.put(COL_container_CREATED_DATE, pack.created_date)
-                values.put(COL_container_CREATED_BY, pack.created_by)
-                values.put(COL_container_CREATED_DATE_UTC, pack.created_date_utc)
-                values.put(COL_container_LAST_CHANGED_DATE, pack.last_changed_date)
-                values.put(COL_container_LAST_CHANGED_BY, pack.last_changed_by)
-                values.put(COL_container_LAST_CHANGED_UTC, pack.last_changed_utc)
+                values.put(COL_CONTAINER_ID, pack.id)
+                values.put(COL_CONTAINER_NAME, pack.name)
+                values.put(COL_CONTAINER_DESCRIPTION, pack.description)
+                values.put(COL_CONTAINER_COM_GROUP, pack.com_group)
+                values.put(COL_CONTAINER_TYPE, pack.type)
+                values.put(COL_CONTAINER_STATUS, pack.status)
+                values.put(COL_CONTAINER_MAX_CAPACITY, pack.max_capacity)
+                values.put(COL_CONTAINER_CAPACITY_UNITS, pack.capacity_units)
+                values.put(COL_CONTAINER_ZONE, pack.zone)
+                values.put(COL_CONTAINER_CLASS, pack.`class`)
+                values.put(COL_CONTAINER_NOTIFICATION_LEVEL, pack.notification_level)
+                values.put(COL_CONTAINER_PARENT_CONTAINER, pack.parent_container)
+                values.put(COL_CONTAINER_DELETED_AT, pack.deleted_at)
+                values.put(COL_CONTAINER_CREATED_DATE, pack.created_date)
+                values.put(COL_CONTAINER_CREATED_BY, pack.created_by)
+                values.put(COL_CONTAINER_CREATED_DATE_UTC, pack.created_date_utc)
+                values.put(COL_CONTAINER_LAST_CHANGED_DATE, pack.last_changed_date)
+                values.put(COL_CONTAINER_LAST_CHANGED_BY, pack.last_changed_by)
+                values.put(COL_CONTAINER_LAST_CHANGED_UTC, pack.last_changed_utc)
 
                 val db = this.writableDatabase
-                db.insert(TABLE_container, null, values)
+                db.insert(TABLE_CONTAINER, null, values)
                 // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3052,32 +3070,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     //ravi offline -----insert---table-----tasks//
 
-    fun tasksCreate(task: Task) {
+    fun insertTasks(task: Task) {
 
         try {
-            val i = checkEntry(task.id, TABLE_tasks, COL_tasks_SERVERid)
+            val i = checkEntry(task.id, TABLE_TASKS, COL_TASKS_ID)
             if (i < 1) {
 
                 val values = ContentValues()
 
-                values.put(COL_tasks_SERVERid, task.id)
-                values.put(COL_tasks_NAME, task.name)
-                values.put(COL_tasks_DESC, task.description)
-                values.put(COL_tasks_GROUP, task.com_group)
-                values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
-                values.put(COL_tasks_TASKFUNC, task.task_func)
-                values.put(COL_tasks_STATUS, "0")
-                values.put(COL_tasks_STARTED_LATE, task.started_late)
-                values.put(COL_tasks_ENDED_LATE, task.ended_late)
-                values.put(COL_tasks_CREATED_BY, task.created_by)
-                values.put(COL_tasks_CREATED_DATE, task.created_date)
-                values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
-                values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
-                values.put(COL_tasks_DELTED_AT, task.deleted_at)
+                values.put(COL_TASKS_ID, task.id)
+                values.put(COL_TASKS_NAME, task.name)
+                values.put(COL_TASKS_DESC, task.description)
+                values.put(COL_TASKS_GROUP, task.com_group)
+                values.put(COL_TASKS_TASK_CONFIG_ID, task.task_config_id)
+                values.put(COL_TASKS_TASK_FUNCTION, task.task_func)
+                values.put(COL_TASKS_STATUS, "0")
+                values.put(COL_TASKS_SERVER_STATUS, task.status)
+                values.put(COL_TASKS_STARTED_LATE, task.started_late)
+                values.put(COL_TASKS_ENDED_LATE, task.ended_late)
+                values.put(COL_TASKS_CREATED_BY, task.created_by)
+                values.put(COL_TASKS_CREATED_DATE, task.created_date)
+                values.put(COL_TASKS_LAST_CHANGED_DATE, task.last_changed_date)
+                values.put(COL_TASKS_LAST_CHANGED_BY, task.last_changed_by)
+                values.put(COL_TASKS_DELETED_AT, task.deleted_at)
 
 
                 val db = this.writableDatabase
-                val result = db.insert(TABLE_tasks, null, values)
+                val result = db.insert(TABLE_TASKS, null, values)
                 // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3100,33 +3119,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
         try {
-            val i = checkEntry(task.id, TABLE_tasks, COL_tasks_SERVERid)
+            val i = checkEntry(task.id, TABLE_TASKS, COL_TASKS_ID)
 
 
             val values = ContentValues()
 
-            values.put(COL_tasks_SERVERid, task.id)
-            values.put(COL_tasks_NAME, task.name)
-            values.put(COL_tasks_DESC, task.description)
-            values.put(COL_tasks_GROUP, task.com_group)
-            values.put(COL_tasks_TASK_CONFIGID, task.task_config_id)
-            values.put(COL_tasks_TASKFUNC, task.task_func)
-            values.put(COL_tasks_STATUS, task.status)
-            values.put(COL_tasks_STARTED_LATE, task.started_late)
-            values.put(COL_tasks_ENDED_LATE, task.ended_late)
-            values.put(COL_tasks_CREATED_BY, task.created_by)
-            values.put(COL_tasks_CREATED_DATE, task.created_date)
-            values.put(COL_tasks_LASTCHANGED_DATE, task.last_changed_date)
-            values.put(COL_tasks_LAST_CHANGED_BY, task.last_changed_by)
-            values.put(COL_tasks_DELTED_AT, task.deleted_at)
+            values.put(COL_TASKS_ID, task.id)
+            values.put(COL_TASKS_NAME, task.name)
+            values.put(COL_TASKS_DESC, task.description)
+            values.put(COL_TASKS_GROUP, task.com_group)
+            values.put(COL_TASKS_TASK_CONFIG_ID, task.task_config_id)
+            values.put(COL_TASKS_TASK_FUNCTION, task.task_func)
+            values.put(COL_TASKS_STATUS, task.status)
+            values.put(COL_TASKS_STARTED_LATE, task.started_late)
+            values.put(COL_TASKS_ENDED_LATE, task.ended_late)
+            values.put(COL_TASKS_CREATED_BY, task.created_by)
+            values.put(COL_TASKS_CREATED_DATE, task.created_date)
+            values.put(COL_TASKS_LAST_CHANGED_DATE, task.last_changed_date)
+            values.put(COL_TASKS_LAST_CHANGED_BY, task.last_changed_by)
+            values.put(COL_TASKS_DELETED_AT, task.deleted_at)
 
 
             val db = this.writableDatabase
             if (isUpdate) {
                 val result = db.update(
-                    TABLE_tasks,
+                    TABLE_TASKS,
                     values,
-                    "$COL_tasks_SERVERid=?",
+                    "$COL_TASKS_ID=?",
                     arrayOf(task.id.toString())
                 )
                 // db.close()
@@ -3140,7 +3159,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 }
             } else {
-                val result = db.insert(TABLE_tasks, null, values)
+                val result = db.insert(TABLE_TASKS, null, values)
                 // db.close()
                 if (result >= 0) {
                     Toast.makeText(context, "Added TAskSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3162,22 +3181,19 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     //offline--ravi -------insert---table------task_field
-    fun task_fields_create(task: TaskField) {
+    fun insertTaskField(task: TaskField) {
 
         try {
-            val i = checkEntry(task.id, TABLE_task_fields, COL_task_fields_SERVERID)
+            val i = checkEntry(task.id, TABLE_TASK_FIELDS, COL_TASK_FIELDS_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_task_fields_SERVERID, task.id)
-                values.put(COL_task_fields_TASKID, task.task_id)
-                values.put(COL_task_fields_FIELDID, task.field_id)
-                values.put(COL_task_fields_VALUE, task.value)
-                values.put(COL_task_fields_STATUS, "0")
-
-
+                values.put(COL_TASK_FIELDS_TASK_ID, task.task_id)
+                values.put(COL_TASK_FIELDS_FIELD_ID, task.field_id)
+                values.put(COL_TASK_FIELDS_VALUE, task.value)
+                values.put(COL_TASK_FIELDS_STATUS, "1")
                 val db = this.writableDatabase
-                db.insert(TABLE_task_fields, null, values)
+                db.insert(TABLE_TASK_FIELDS, null, values)
                 // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added TaskFieldSuccessfully", Toast.LENGTH_SHORT).show()
@@ -3194,6 +3210,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
     }
+
+    fun insertNewTaskField(task: TaskField) {
+        try {
+            val values = ContentValues()
+            values.put(COL_TASK_FIELDS_ID, task.id)
+            values.put(COL_TASK_FIELDS_FIELD_ID, task.field_id)
+            values.put(COL_TASK_FIELDS_VALUE, task.value)
+            values.put(COL_TASK_FIELDS_STATUS, "1")
+            val db = this.writableDatabase
+            db.insert(TABLE_TASK_FIELDS, null, values)
+        }catch (e:Exception){
+            Log.e(TAG, " insertNewTaskField Task Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+    }
+
 
     //offline--ravi -------insert---table------graph_charts
     fun graphChartsCreate(task: GraphChart) {
@@ -3852,7 +3883,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val upCommingPackList = ArrayList<com.pbt.myfarm.ModelClass.Task>()
         var db = this.readableDatabase
-        val query = "Select * from $TABLE_tasks Where $COL_tasks_STATUS In(1,2,3)"
+        val query = "Select * from $TABLE_TASKS Where $COL_TASKS_STATUS In(1,2,3)"
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
@@ -3865,36 +3896,38 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         if (cursor.moveToFirst()) {
             do {
 
-                val name: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
-                val id: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_SERVERid))
-                val desc: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_DESC))
+                val name: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_NAME))
+                val id: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_ID))
+                val desc: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_DESC))
                 val comGroup: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_GROUP))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_GROUP))
                 val configId: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_TASK_CONFIGID))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_TASK_CONFIG_ID))
 
-                val taskFunc: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_TASKFUNC))
-                val status: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_STATUS))
+                val taskFunc: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_TASK_FUNCTION))
+                val status: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_STATUS))
 
                 val startedLate: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_STARTED_LATE))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_STARTED_LATE))
                 val endedLate: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_ENDED_LATE))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_ENDED_LATE))
                 val createdBy: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_CREATED_BY))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_CREATED_BY))
                 val createdDate: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_CREATED_DATE))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_CREATED_DATE))
                 val lastchangedBy: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_LAST_CHANGED_BY))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_LAST_CHANGED_BY))
                 val lastChnagedDate: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_LASTCHANGED_DATE))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_LAST_CHANGED_DATE))
                 val deletedAt: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_DELTED_AT))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_DELETED_AT))
 
 
                 val taskfields = ArrayList<com.pbt.myfarm.ModelClass.TaskFieldX>()
 
-                val query = "Select * from $TABLE_task_fields Where $COL_task_fields_TASKID = '$id'"
+                val query =
+                    "Select * from $TABLE_TASK_FIELDS Where $COL_TASK_FIELDS_TASK_ID = '$id'"
                 val db2 = this.readableDatabase
                 val cursor2: Cursor?
                 try {
@@ -3908,9 +3941,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     do {
 
                         val fieldid: String? =
-                            cursor2.getString(cursor2.getColumnIndex(COL_task_fields_FIELDID))
+                            cursor2.getString(cursor2.getColumnIndex(COL_TASK_FIELDS_FIELD_ID))
                         val fieldvalue: String =
-                            cursor2.getString(cursor2.getColumnIndex(COL_task_fields_VALUE))
+                            cursor2.getString(cursor2.getColumnIndex(COL_TASK_FIELDS_VALUE))
 
 
                         taskfields.add(
@@ -4050,7 +4083,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val upCommingPackList = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
         var db = this.readableDatabase
-        val query = "Select * from $TABLE_task_fields Where $COL_task_fields_STATUS In(1,2,3)"
+        val query = "Select * from $TABLE_TASK_FIELDS Where $COL_TASK_FIELDS_STATUS In(1,2,3)"
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
@@ -4065,14 +4098,14 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                 val task_id: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_fields_TASKID))
+                    cursor.getString(cursor.getColumnIndex(COL_TASK_FIELDS_TASK_ID))
                 val field_id: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_fields_FIELDID))
+                    cursor.getString(cursor.getColumnIndex(COL_TASK_FIELDS_FIELD_ID))
 //                    var task_function: String? = cursor.getString(cursor.getColumnIndex(COL_task_fields_FIELDID))
                 val value: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_fields_VALUE))
+                    cursor.getString(cursor.getColumnIndex(COL_TASK_FIELDS_VALUE))
                 val status: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_task_fields_STATUS))
+                    cursor.getString(cursor.getColumnIndex(COL_TASK_FIELDS_STATUS))
 
                 var taskfunction: String? = null
 
@@ -4768,11 +4801,11 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         if (isUpdate) {
             query =
-                "SELECT $TABLE_task_config_fields.*, $TABLE_task_fields.${COL_task_fields_VALUE}" +
-                        " From $TABLE_task_config_fields LEFT JOIN $TABLE_task_fields on " +
-                        "$TABLE_task_config_fields.${COL_task_config_fields_field_name} = $TABLE_task_fields.${COL_task_fields_FIELDID} " +
+                "SELECT $TABLE_task_config_fields.*, $TABLE_TASK_FIELDS.${COL_TASK_FIELDS_VALUE}" +
+                        " From $TABLE_task_config_fields LEFT JOIN $TABLE_TASK_FIELDS on " +
+                        "$TABLE_task_config_fields.${COL_task_config_fields_field_name} = $TABLE_TASK_FIELDS.${COL_TASK_FIELDS_FIELD_ID} " +
                         "WHERE $COL_task_config_fields_task_config_id ='$configId'" +
-                        " AND $TABLE_task_fields.$COL_task_fields_TASKID='$taskid'"
+                        " AND $TABLE_TASK_FIELDS.$COL_TASK_FIELDS_TASK_ID='$taskid'"
 
         } else {
             query =
@@ -4835,7 +4868,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                     if (isUpdate) {
                         val fvalue: String? =
-                            cursor.getString(cursor.getColumnIndex(COL_task_fields_VALUE))
+                            cursor.getString(cursor.getColumnIndex(COL_TASK_FIELDS_VALUE))
 
                         packconfig = TaskConfigField(
                             createdBy?.toInt(),
@@ -5597,7 +5630,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getPersonList(): ArrayList<People> {
 
-        val query = "SELECT * FROM $TABLE_people"
+        val query = "SELECT * FROM $TABLE_PEOPLE"
 
         AppUtils.logError(TAG, "getPersonList Query" + query)
 
@@ -5620,9 +5653,9 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 do {
 
 
-                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_people_SERVERID))
-                    val lname: String? = cursor.getString(cursor.getColumnIndex(COL_people_FNAME))
-                    val fname: String? = cursor.getString(cursor.getColumnIndex(COL_people_LNAME))
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_PEOPLE_ID))
+                    val lname: String? = cursor.getString(cursor.getColumnIndex(COL_PEOPLE_FNAME))
+                    val fname: String? = cursor.getString(cursor.getColumnIndex(COL_PEOPLE_LNAME))
 
 
                     val packconfig = People(
@@ -5654,7 +5687,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     @SuppressLint("Range")
     fun getContainerList(): ArrayList<Container> {
 
-        val query = "SELECT * FROM $TABLE_container"
+        val query = "SELECT * FROM $TABLE_CONTAINER"
 
         AppUtils.logError(TAG, "getPersonList Query" + query)
 
@@ -5678,8 +5711,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_container_SERVERID))
-                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_container_NAME))
+                        cursor.getString(cursor.getColumnIndex(COL_CONTAINER_ID))
+                    val name: String? = cursor.getString(cursor.getColumnIndex(COL_CONTAINER_NAME))
 
 
                     val packconfig = Container(id = id?.toInt(), name = name)
@@ -5808,7 +5841,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getTaskFunctionList(taskConfigID: String): ArrayList<ListTaskFunctions> {
 
         val privilegesList = ArrayList<ListTaskFunctions>()
-        val query = "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
+        val query =
+            "SELECT task_config_functions.*, list_choices.list_choices_name as name1, table_privileges.privileges_name as privilegename, list_choices.list_choices_serverid as listid from task_config_functions left join list_choices on list_choices.list_choices_serverid = task_config_functions.task_config_functions_task_name left join table_privileges on table_privileges.privileges_serverid = task_config_functions.task_config_functions_privilege where task_config_functions.task_config_functions_task_config_id = $taskConfigID "
         val db = this.readableDatabase
 
         val cursor: Cursor?
@@ -5818,23 +5852,27 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             if (cursor.moveToFirst()) {
                 do {
 
-                    val id: String? = getColumnString(cursor,COL_task_config_functions_SERVERKEY)
+                    val id: String? = getColumnString(cursor, COL_task_config_functions_SERVERKEY)
                     Log.d("#102030", " ID  $id")
-                    Log.d("#102030", " name1  ${getColumnString(cursor,"name1")}")
+                    Log.d("#102030", " name1  ${getColumnString(cursor, "name1")}")
 
-                    val taskconfigId: Int =  getColumnString(cursor,COL_task_config_functions_task_config_id).toInt()
+                    val taskconfigId: Int =
+                        getColumnString(cursor, COL_task_config_functions_task_config_id).toInt()
                     Log.d("#102030", " taskconfigId  $taskconfigId")
 
-                    val functionNameId: String =  getColumnString(cursor,COL_task_config_functions_task_name)
+                    val functionNameId: String =
+                        getColumnString(cursor, COL_task_config_functions_task_name)
                     Log.d("#102030", " functionId  $functionNameId")
 
-                    val name1: String = getColumnString(cursor,"name1")
+                    val name1: String = getColumnString(cursor, "name1")
                     Log.d("#102030", " name1  $name1")
 
-                    var functionnames: String =  getColumnString(cursor,COL_task_config_functions_description)
+                    var functionnames: String =
+                        getColumnString(cursor, COL_task_config_functions_description)
                     Log.d("#102030", " functionnames  $functionnames")
 
-                    val privilegeid: String =  getColumnString(cursor,COL_task_config_functions_privilege)
+                    val privilegeid: String =
+                        getColumnString(cursor, COL_task_config_functions_privilege)
                     Log.d("#102030", " privilegeid  $privilegeid")
                     var privilegename: String = " "
 
@@ -5842,7 +5880,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         privilegename = cursor.getString(cursor.getColumnIndex("privilegename"))
                     Log.d("#102030", " privilegename  $privilegename")
 
-                    val  taskFunction = ListTaskFunctions(id,functionNameId,name1,privilegename)
+                    val taskFunction = ListTaskFunctions(id, functionNameId, name1, privilegename)
 
                     privilegesList.add(taskFunction)
 
@@ -5937,12 +5975,12 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val currentDate = sdf.format(Date())
 
         val contentValues = ContentValues()
-        contentValues.put(COL_tasks_STATUS, "3")
-        contentValues.put(COL_tasks_DELTED_AT, currentDate)
+        contentValues.put(COL_TASKS_STATUS, "3")
+        contentValues.put(COL_TASKS_DELETED_AT, currentDate)
         try {
 //            val succ = db.delete(TABLE_CREAT_PACK, "$COL_LOCAL_ID=?", arrayOf(packid))
             val result =
-                db.update(TABLE_tasks, contentValues, "$COL_tasks_SERVERid=?", arrayOf(taskId))
+                db.update(TABLE_TASKS, contentValues, "$COL_TASKS_ID=?", arrayOf(taskId))
             if (result >= 0) {
                 Toast.makeText(context, "Deleted SuccesFully", Toast.LENGTH_LONG).show()
             } else {
@@ -6022,14 +6060,14 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val db = this.readableDatabase
 //        val query = "Select $TABLE_tasks.*," +
 //                " $TABLE_task_configs.$ from $TABLE_tasks"
-        val query = "SELECT $TABLE_tasks.*, " +
+        val query = "SELECT $TABLE_TASKS.*, " +
                 " $TABLE_task_configs.$COL_task_configs_NAME, " +
                 " $TABLE_task_configs.$COL_task_configs_DESCIPTION, " +
                 " $TABLE_task_configs.$COL_task_configs_NAME_PREFIX " +
-                " FROM  $TABLE_tasks " +
+                " FROM  $TABLE_TASKS " +
                 " INNER JOIN $TABLE_task_configs  ON " +
-                " $TABLE_tasks.$COL_tasks_TASK_CONFIGID = $TABLE_task_configs.$COL_task_configs_SERVERID " +
-                "Where $COL_tasks_STATUS In(0,1,2)"
+                " $TABLE_TASKS.$COL_TASKS_TASK_CONFIG_ID = $TABLE_task_configs.$COL_task_configs_SERVERID " +
+                "Where $COL_TASKS_STATUS In(0,1,2)"
 
         AppUtils.logError(TAG, "my query " + query)
         val cursor: Cursor?
@@ -6044,14 +6082,15 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         if (cursor.moveToFirst()) {
             do {
 
-                val id: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_SERVERid))
-                val name: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
-                val description: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_DESC))
-                val comGroup: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_GROUP))
+                val id: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_ID))
+                val name: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_NAME))
+                val description: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_DESC))
+                val comGroup: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_GROUP))
                 val taskconfigId: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_tasks_TASK_CONFIGID))
-                val taskFunc: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_TASKFUNC))
-                val status: String? = cursor.getString(cursor.getColumnIndex(COL_tasks_STATUS))
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_TASK_CONFIG_ID))
+                val taskFunc: String? =
+                    cursor.getString(cursor.getColumnIndex(COL_TASKS_TASK_FUNCTION))
+                val status: String? = cursor.getString(cursor.getColumnIndex(COL_TASKS_STATUS))
 
                 val taskConfigName: String? =
                     cursor.getString(cursor.getColumnIndex(COL_task_configs_NAME))
@@ -6367,7 +6406,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_collect_activity_results_unit)
         db.execSQL("delete from " + TABLE_collect_data)
         db.execSQL("delete from " + TABLE_community_groups)
-        db.execSQL("delete from " + TABLE_container)
+        db.execSQL("delete from " + TABLE_CONTAINER)
         db.execSQL("delete from " + TABLE_container_object)
         db.execSQL("delete from " + TABLE_eventStatus)
         db.execSQL("delete from " + TABLE_eventType)
@@ -6381,15 +6420,15 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_pack_collect_activity)
         db.execSQL("delete from " + TABLE_pack_config_fields)
         db.execSQL("delete from " + TABLE_pack_fields)
-        db.execSQL("delete from " + TABLE_people)
+        db.execSQL("delete from " + TABLE_PEOPLE)
         db.execSQL("delete from " + TABLE_sensors)
         db.execSQL("delete from " + TABLE_task_config_fields)
         db.execSQL("delete from " + TABLE_task_config_functions)
         db.execSQL("delete from " + TABLE_task_configs)
-        db.execSQL("delete from " + TABLE_task_fields)
+        db.execSQL("delete from " + TABLE_TASK_FIELDS)
         db.execSQL("delete from " + TABLE_task_media_files)
-        db.execSQL("delete from " + TABLE_task_objects)
-        db.execSQL("delete from " + TABLE_tasks)
+        db.execSQL("delete from " + TABLE_TASKS_OBJECTS)
+        db.execSQL("delete from " + TABLE_TASKS)
         db.execSQL("delete from " + TABLE_team)
         db.execSQL("delete from " + TABLE_units)
 
@@ -6398,11 +6437,12 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     //get lists table where query
-    fun getLists() : Lists{
+    fun getLists(): Lists {
 
         var lists = Lists()
 
-        val selectRolePrivileges = "SELECT  * FROM $TABLE_LISTS where $COL_LISTS_NAME  = 'SYS_UTC_TIMEZONE' LIMIT 1 "
+        val selectRolePrivileges =
+            "SELECT  * FROM $TABLE_LISTS where $COL_LISTS_NAME  = 'SYS_UTC_TIMEZONE' LIMIT 1 "
 
         try {
             val db = this.writableDatabase
@@ -6429,19 +6469,24 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         } catch (e: Exception) {
             return lists;
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get Lists  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
         return lists;
     }
 
-    fun getListChoiceQuery(timeZoneID :String) : Choices {
+    //get list choice Specific data
+    fun getListChoiceQuery(timeZoneID: String): Choices {
 
         var choices = Choices()
 
         val lists = getLists()
         val listID = lists.id
 
-        val selectRolePrivileges = "select * from $TABLE_LIST_CHOICES where $COL_LIST_CHOICES_LISTS_ID = $listID and $COL_LIST_CHOICES_LISTS_ID is not null and $COL_LIST_CHOICES_ID = $timeZoneID and $COL_LIST_CHOICES_DELETED_AT is null limit 1"
+        val selectRolePrivileges =
+            "select * from $TABLE_LIST_CHOICES where $COL_LIST_CHOICES_LISTS_ID = $listID and $COL_LIST_CHOICES_LISTS_ID is not null and $COL_LIST_CHOICES_ID = $timeZoneID and $COL_LIST_CHOICES_DELETED_AT is null limit 1"
 
         try {
             val db = this.writableDatabase
@@ -6465,9 +6510,224 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             }
 
         } catch (e: Exception) {
-            AppUtils.logError(TAG, "Get Role rolePrivilege  Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+            AppUtils.logError(
+                TAG,
+                "Get ListChoice  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
         }
         return choices;
+    }
+
+    //get TaskFeild specific data
+    fun getTaskField(taskID: String, fieldID: String): TaskField? {
+
+        var taskField: TaskField? = null
+
+        val query =
+            "select * from $TABLE_TASK_FIELDS where $COL_TASK_FIELDS_TASK_ID = $taskID and $COL_TASK_FIELDS_FIELD_ID = $fieldID limit 1"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+
+                    taskField = TaskField(
+                        getColumnString(cursor, COL_TASK_FIELDS_FIELD_ID),
+                        getColumnString(cursor, COL_TASK_FIELDS_ID).toInt(),
+                        getColumnString(cursor, COL_TASK_FIELDS_TASK_ID).toInt(),
+                        getColumnString(cursor, COL_TASK_FIELDS_VALUE)
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            AppUtils.logError(
+                TAG,
+                " TaskField Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
+        }
+        return taskField;
+    }
+
+    //get TaskField function specific data
+    fun getTaskObject(taskID :String,fieldID: String,name: String) : TaskObject? {
+
+        var taskObject : TaskObject ? = null
+        val query = "SELECT * FROM $TABLE_TASKS_OBJECTS WHERE $COL_TASK_FIELDS_TASK_ID = $taskID AND $COL_TASKS_OBJECTS_FUNCTION = '$name'  AND $COL_TASKS_OBJECTS_NO = $fieldID LIMIT 1"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+
+                     taskObject = TaskObject(
+                        getColumnString(cursor, COL_TASKS_OBJECTS_CLASS),
+                        getColumnString(cursor, COL_DELETED_AT),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_FUNCTION),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_ID).toInt(),
+                        getColumnString(cursor, COL_LAST_CHANGE_BY).toInt(),
+                        getColumnString(cursor, COL_LAST_CHANGE_DATE),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_NAME),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_NO),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_ORIGIN),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_TASK_ID).toInt(),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_TYPE),
+                        getColumnString(cursor, COL_TASKS_OBJECTS_CONTAINER),
+                        getColumnString(cursor, COL_LOCAL_STATUS),
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, " TaskField Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+        return taskObject;
+    }
+
+    //get container  specific data
+    fun getContainer(fieldID: String) : Container? {
+
+        var container : Container ? = null
+        val query = "SELECT * FROM $TABLE_CONTAINER WHERE $COL_CONTAINER_ID = $fieldID LIMIT 1"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    container = Container(
+                        getColumnString(cursor, COL_CONTAINER_CAPACITY_UNITS).toInt(),
+                        getColumnString(cursor, COL_CONTAINER_CLASS),
+                        getColumnString(cursor, COL_CONTAINER_COM_GROUP),
+                        getColumnString(cursor, COL_CONTAINER_CREATED_BY).toInt(),
+                        getColumnString(cursor, COL_CONTAINER_CREATED_DATE),
+                        getColumnString(cursor, COL_CONTAINER_CREATED_DATE_UTC),
+                        getColumnString(cursor, COL_CONTAINER_DELETED_AT),
+                        getColumnString(cursor, COL_CONTAINER_DESCRIPTION),
+                        getColumnString(cursor, COL_CONTAINER_ID).toInt(),
+                        getColumnString(cursor, COL_CONTAINER_LAST_CHANGED_BY).toInt(),
+                        getColumnString(cursor, COL_CONTAINER_LAST_CHANGED_DATE),
+                        getColumnString(cursor, COL_CONTAINER_LAST_CHANGED_UTC),
+                        getColumnString(cursor, COL_CONTAINER_MAX_CAPACITY).toInt(),
+                        getColumnString(cursor, COL_CONTAINER_NAME),
+                        getColumnString(cursor, COL_CONTAINER_NOTIFICATION_LEVEL),
+                        getColumnString(cursor, COL_CONTAINER_PARENT_CONTAINER),
+                        getColumnString(cursor, COL_CONTAINER_STATUS),
+                        getColumnString(cursor, COL_CONTAINER_TYPE),
+                        getColumnString(cursor, COL_CONTAINER_ZONE),
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, " getContainer Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+        return container;
+    }
+
+    fun insertNewTaskObject(taskObject : TaskObject) {
+            try {
+                    val db = this.writableDatabase
+                    val values = ContentValues()
+                    values.put(COL_TASKS_OBJECTS_ID, taskObject.id)
+                    values.put(COL_TASKS_OBJECTS_TASK_ID, taskObject.task_id)
+                    values.put(COL_TASKS_OBJECTS_FUNCTION, taskObject.function)
+                    values.put(COL_TASKS_OBJECTS_NAME, taskObject.name)
+                    values.put(COL_TASKS_OBJECTS_TYPE, taskObject.type)
+                    values.put(COL_TASKS_OBJECTS_CLASS, taskObject.`class`)
+                    values.put(COL_TASKS_OBJECTS_ORIGIN, taskObject.origin)
+                    values.put(COL_TASKS_OBJECTS_CONTAINER, taskObject.container)
+                    values.put(COL_LAST_CHANGE_BY, taskObject.last_changed_by)
+                    values.put(COL_LAST_CHANGE_DATE, taskObject.last_changed_date)
+                    values.put(COL_DELETED_AT, taskObject.deleted_at)
+                    values.put(COL_TASKS_OBJECTS_NO, taskObject.no)
+                    values.put(COL_LOCAL_STATUS, taskObject.status)
+
+                    val result = db.insert(TABLE_TASKS_OBJECTS, null, values)
+            } catch (e: Exception) {
+                AppUtils.logError(TAG, e.message!!)
+            }
+
+    }
+
+    fun updateTask(taskID: String, start: Boolean) {
+        try {
+            val collName = if (start) COL_TASKS_STARTED_LATE else COL_TASKS_ENDED_LATE
+            val db = this.writableDatabase
+            val query =
+                "update $TABLE_TASKS set $collName = true, $COL_TASKS_STATUS = 2 where $COL_TASKS_ID = $taskID and $COL_TASKS_DELETED_AT is null"
+            db.execSQL(query)
+        } catch (e: Exception) {
+            Log.d(TAG, "Update Task Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+
+    }
+
+    fun updateTaskStatus(taskID: String, status: String) {
+        try {
+            val db = this.writableDatabase
+            val query =
+                "update $TABLE_TASKS  set $COL_TASKS_SERVER_STATUS = '$status' where $COL_TASKS_ID = $taskID and $COL_TASKS_DELETED_AT is null "
+            Log.d("SQLQuery", " ==>> $query")
+            db.execSQL(query)
+        } catch (e: Exception) {
+            Log.d(TAG, "Update Task Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+
+    }
+
+    //get container  specific data
+    fun getPerson(fieldID: String) : People? {
+
+        var people : People ? = null
+        val query = "SELECT * FROM $TABLE_PEOPLE WHERE $COL_PEOPLE_ID = $fieldID LIMIT 1"
+
+        try {
+            val db = this.writableDatabase
+            val cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    people = People(
+                        getColumnString(cursor, COL_PEOPLE_ADDRESS),
+                        getColumnString(cursor, COL_PEOPLE_BIRTH_PLACE),
+                        getColumnString(cursor, COL_PEOPLE_CERTIFICAITON),
+                        getColumnString(cursor, COL_PEOPLE_CITIZENSHIP),
+                        getColumnString(cursor, COL_PEOPLE_COMMUNITY_GROUP),
+                        getColumnString(cursor, COL_PEOPLE_CONTACT),
+                        getColumnString(cursor, COL_PEOPLE_CREATED_AT),
+                        getColumnString(cursor, COL_PEOPLE_CREATED_BY).toInt(),
+                        getColumnString(cursor, COL_PEOPLE_DELETED_AT),
+                        getColumnString(cursor, COL_PEOPLE_DELETED_BY),
+                        getColumnString(cursor, COL_PEOPLE_DESCRIPTION),
+                        getColumnString(cursor, COL_PEOPLE_DOB),
+                        getColumnString(cursor, COL_PEOPLE_EMAIl),
+                        getColumnString(cursor, COL_PEOPLE_FNAME),
+                        getColumnString(cursor, COL_PEOPLE_ID).toInt(),
+                        getColumnString(cursor, COL_PEOPLE_IS_IN_COOP).toInt(),
+                        getColumnString(cursor, COL_PEOPLE_IS_KAKAOMUNDO).toInt(),
+                        getColumnString(cursor, COL_PEOPLE_KAKAOMUNDO_CENTER),
+                        getColumnString(cursor, COL_PEOPLE_LASTCERFICATION_DATE),
+                        getColumnString(cursor, COL_PEOPLE_LNAME),
+                        getColumnString(cursor, COL_PEOPLE_PERSON_CLASS),
+                        getColumnString(cursor, COL_PEOPLE_PERSON_TYPE),
+                        getColumnString(cursor, COL_PEOPLE_PHOTO),
+                        getColumnString(cursor, COL_PEOPLE_UPDATED_AT),
+                        getColumnString(cursor, COL_PEOPLE_UPDATED_BY).toInt(),
+                        getColumnString(cursor, COL_PEOPLE_USERID)
+                    )
+
+                } while (cursor.moveToNext())
+            }
+
+        } catch (e: Exception) {
+            AppUtils.logError(TAG, " getContainer Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
+        return people;
     }
 
     class DownloadFileFromURL(var filename: String?) :

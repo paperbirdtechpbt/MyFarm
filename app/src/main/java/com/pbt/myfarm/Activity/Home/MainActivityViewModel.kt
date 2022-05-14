@@ -18,6 +18,7 @@ import com.pbt.myfarm.ModelClass.SendDataMasterList
 import com.pbt.myfarm.PackConfig
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
@@ -57,7 +58,7 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
 
-        val taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
+        val taskobject = ArrayList<TaskObject>()
 
         val task = db.getTasksToBeSend(userID)
         val tasklist = task
