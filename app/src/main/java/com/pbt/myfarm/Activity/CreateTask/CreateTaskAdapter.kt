@@ -78,6 +78,8 @@ class CreateTaskAdapter(
 
 
         val getrow: Any = this.list.get(positionn)
+        AppUtils.logDebug(TAG,"VALUES  for is nULL  ${this.list.get(positionn)}")
+
         val t: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val fieldtype = t["field_type"].toString()
         val field_id = t["field_id"].toString()
@@ -88,8 +90,9 @@ class CreateTaskAdapter(
 
         val row: Any = this.list.get(positionn)
 
-        val d: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
+        val d: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
+
 //        if (valued!=null){
 //
 //
@@ -216,11 +219,14 @@ class CreateTaskAdapter(
             holder.labelSpinner.setText(namee)
             Handler(Looper.getMainLooper()).postDelayed({
                 if (updateTaskIdBoolean) {
-                    if (valued == "null") {
+                    if (valued.isNullOrEmpty()) {
+
                         holder.name.setText("")
                     } else {
                         for (i in 0 until fieldListid!!.size) {
+                            AppUtils.logDebug(TAG,"VALUES FOR SET SLECT#E ITEM =$valued.0 == $fieldListid.get(i)")
                             if (valued+".0" == fieldListid.get(i)) {
+                                AppUtils.logDebug(TAG,"VALUES FOR SET SLECT#E ITEM =$valued")
                                 holder.mysppinner.setSelection(i)
 
                             }
@@ -531,8 +537,8 @@ class CreateTaskAdapter(
                 ).show()
             }
             else{
-                val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute ->
-                    settime="$hourOfDay:$minute"
+                val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute  ->
+                    settime="T$hourOfDay:$minute"
                     AppUtils.logDebug(TAG,"settime"+settime)
 //                    txtTime.setText("$hourOfDay:$minute")
                     updateLabel(holder.date,settime)
@@ -567,7 +573,7 @@ class CreateTaskAdapter(
             date.setText(dateFormat.format(myCalendar.time))
         }
         else{
-            date.setText(dateFormat.format(myCalendar.time)+" "+time)
+            date.setText(dateFormat.format(myCalendar.time)+time)
 
         }
     }

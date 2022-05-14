@@ -196,5 +196,10 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        initViewModel()
+    }
+
 
 }

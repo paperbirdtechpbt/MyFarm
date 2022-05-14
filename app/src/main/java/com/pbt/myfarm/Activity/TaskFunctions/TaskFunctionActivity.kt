@@ -207,6 +207,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             response: Response<ResponseTaskExecution>
                         ) {
                             AppUtils.logDebug(TAG, response.body().toString())
+                            val message=response.body()?.msg.toString()
                             if (response.body()?.error == false) {
                                 progress_circular?.visibility = View.GONE
                                 progress_circularlabel?.visibility = View.GONE
@@ -214,7 +215,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                                 btn_execute.visibility = View.VISIBLE
                                 Toast.makeText(
                                     this@TaskFunctionActivity,
-                                    response.body()!!.msg,
+                                    message,
                                     Toast.LENGTH_SHORT
                                 ).show()
                                 finish()
@@ -226,7 +227,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                                 btn_execute.visibility = View.VISIBLE
                                 Toast.makeText(
                                     this@TaskFunctionActivity,
-                                    response.body()!!.msg,
+                                    message,
                                     Toast.LENGTH_SHORT
                                 ).show()
 

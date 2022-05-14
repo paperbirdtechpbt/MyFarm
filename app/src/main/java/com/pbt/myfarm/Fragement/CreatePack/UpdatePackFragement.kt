@@ -163,6 +163,7 @@ class UpdatePackFragement : Fragment(), retrofit2.Callback<testresponse> {
                             fieldModel.add(FieldModel(name.get(i), list.get(i)))
                             addPackValue(list.get(i), name.get(i), packList1?.id.toString(), true)
                         }
+                        AppUtils.logDebug(TAG,"list and name==>"+Gson().toJson(list+"\n"+name).toString())
                     }
 
                 }

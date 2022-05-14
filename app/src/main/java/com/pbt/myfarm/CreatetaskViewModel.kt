@@ -156,15 +156,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         }
 
 
-//        val list = db.getTaskConfigFieldList(updateTaskList?.task_config_id.toString())
-//        AppUtils.logDebug(TAG,"task Field List"+list.toString())
-//        var configfieldList=ArrayList<ConfigFieldList>()
-//       list.forEach{
-//            configfieldList.add(
-//                ConfigFieldList(
-//                    it.editable!!, it.field_description!!, it.id.toString(),ArrayList(),
-//            "","",""))
-//        }
 
     }
 

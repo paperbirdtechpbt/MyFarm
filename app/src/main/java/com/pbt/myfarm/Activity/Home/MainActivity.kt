@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 //        if (!AppUtils().isInternet(this)) {
             val db = DbHelper(this, null)
             val list = db.getAllPrivilege()
-            AppUtils.logDebug(TAG, "getAll Privilege" + list.toString())
             list.forEach {
                 privilegeListNameOffline.add(it.name.toString())
                 privilegeListNameOfflineID.add(it.id.toString())
@@ -133,7 +132,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (!AppUtils().isInternet(this)) {
             val db = DbHelper(this, null)
             val list = db.getAllPrivilege()
-            AppUtils.logDebug(TAG, "getAll Privilege" + list.toString())
             list.forEach {
                 privilegeListNameOffline.add(it.name.toString())
                 privilegeListNameOfflineID.add(it.id.toString())

@@ -172,6 +172,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
             recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
 
+            AppUtils.logDebug(TAG,"list size for taskcreate==${list}")
+
             adapter = CreateTaskAdapter(this, config, updateTaskBoolen) { list, name ->
                 while (list.contains("0")) {
                     list.remove("0")
@@ -313,8 +315,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             createtaskProgressbar.visibility = View.VISIBLE
 
         }
-
-
     }
 
     private fun setCommunityGroup(communitGroup: Spinner) {
@@ -322,6 +322,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, groupArray!!)
             dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communitGroup.setAdapter(dd)
+            AppUtils.logDebug(TAG,"list of comunitygroup for createtask=${groupArray}")
+
 
             if (selectedComunityGroupTask!=0){
                 for (i in groupArrayId!!.indices){

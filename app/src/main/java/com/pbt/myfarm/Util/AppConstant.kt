@@ -137,8 +137,6 @@ class AppConstant {
         const val COL_PACK_CREATED_BY = "Created_at"
         const val COL_PACK_LAST_CHANGED_BY = "Updated_at"
         const val COL_PACK_NEW_DLETED_AT = "Deleted_at"
-
-
         const val COL_PACK_IS_ACTIVE = "pack_new_is_Active"
         const val COL_PACK_CREATED_DATE = "pack_new_isActive"
         const val COL_PACK_LAST_CHANGED_DATE = "pack_new_last_changed_Date"
@@ -339,10 +337,8 @@ class AppConstant {
         const val COL_task_config_functions_privilege = "task_config_functions_privilege"
         const val COL_task_config_functions_created_by = "task_config_functions_created_by"
         const val COL_task_config_functions_created_date = "task_config_functions_created_date"
-        const val COL_task_config_functions_last_changed_by =
-            "task_config_functions_last_changed_by"
-        const val COL_task_config_functions_last_changed_date =
-            "task_config_functions_last_changed_date"
+        const val COL_task_config_functions_last_changed_by = "task_config_functions_last_changed_by"
+        const val COL_task_config_functions_last_changed_date = "task_config_functions_last_changed_date"
         const val COL_task_config_functions_deleted_at = "task_config_functions_deleted_at"
 
 
@@ -367,6 +363,7 @@ class AppConstant {
         const val COL_COLLECT_DATA_CREATED_AT = "collectData_created_at"
         const val COL_collect_data_UPDATED_AT = "collectData_updated_at"
         const val COL_collect_data_DELETED_AT = "collectData_deleted_at"
+
         //ravi offline----table---community_groups
 
         const val TABLE_community_groups = "community_groups"
