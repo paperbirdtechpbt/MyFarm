@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
@@ -17,19 +18,20 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
-
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.HttpResponse.Field
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
-import java.lang.Exception
+import kotlinx.android.synthetic.main.activity_create_task.*
+import kotlinx.android.synthetic.main.itemcongiffeildlist.view.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.Int as In
 
 
@@ -83,25 +85,15 @@ class CreateTaskAdapter(
         val fieldtype = t["field_type"].toString()
         val field_id = t["field_id"].toString()
         val namee = t["field_description"].toString()
+        val editable = t["editable"].toString().toDouble().toInt()
 //        val value = t["field_value"].toString()
         val field: ArrayList<Field> = t["field_list"] as ArrayList<Field>
 
 
-        val row: Any = this.list.get(positionn)
+//        val row: Any = this.list.get(positionn)
 
         val d: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
-
-//        if (valued!=null){
-//
-//
-//                ExpAmtArray[positionn]=field_id
-//                ExpName[positionn]=valued
-//                AppUtils.logError(TAG, "myarray"+ExpName+ ExpAmtArray)
-//
-//
-//        }
-
 
         val l = list.size
         val f = fieldId!!.size
@@ -140,6 +132,7 @@ class CreateTaskAdapter(
             holder.mysppinner.visibility = View.GONE
             holder.labelSpinner.visibility = View.GONE
 
+            checkFoucusable(holder.itemView.field_expectedDate, null, editable)
 
 
             Handler(Looper.getMainLooper()).postDelayed({
@@ -177,6 +170,8 @@ class CreateTaskAdapter(
                     }
                 }
             }, 1500)
+            checkFoucusable(holder.itemView.field_name, null, editable)
+
 
 
             holder.labelname.setText(namee)
@@ -205,6 +200,8 @@ class CreateTaskAdapter(
                     }
                 }
             }, 500)
+            checkFoucusable(null,holder.itemView.field_spinner, editable)
+
 
 
         } else if (fieldtype == "Table") {
@@ -236,6 +233,10 @@ class CreateTaskAdapter(
                     }
                 }
             }, 500)
+            checkFoucusable(null,holder.itemView.field_spinner, editable)
+
+
+
         } else if (fieldtype == "DateTime") {
             holder.name.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -257,6 +258,12 @@ class CreateTaskAdapter(
                 }
             }, 1000)
             holder.labeldate.setText(namee)
+            checkFoucusable(holder.itemView.field_expectedDate,null, editable)
+
+
+
+
+
         } else if (fieldtype == "Text") {
 
             holder.date.visibility = View.GONE
@@ -278,11 +285,10 @@ class CreateTaskAdapter(
 
 
             holder.labelname.setText(namee)
+            checkFoucusable(holder.itemView.field_name,null, editable)
+
 
         }
-
-
-
 
         holder.mysppinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -516,6 +522,7 @@ class CreateTaskAdapter(
             }
         })
         holder.date.setOnClickListener {
+
             var settime = ""
 
             val c = Calendar.getInstance()
@@ -564,6 +571,75 @@ class CreateTaskAdapter(
 
     }
 
+    private fun checkFoucusable(myview: EditText?, spinner: Spinner?, iseditable: In) {
+        if (AppUtils().isInternet(context)) {
+            if (!privilegeListName.contains("CanOverideEditTask")) {
+                if (iseditable == 0) {
+
+                        if (spinner == null) {
+                            myview?.isEnabled = false
+                            myview?.isFocusable = false
+                            myview?.setBackgroundTintList(
+                                ColorStateList.valueOf(
+                                    context.resources.getColor(
+                                        R.color.grey
+                                    )
+                                )
+                            )
+
+                        } else {
+                            spinner.isEnabled = false
+                            spinner.isFocusable = false
+                            spinner.setBackgroundTintList(
+                                ColorStateList.valueOf(
+                                    context.resources.getColor(
+                                        R.color.grey
+                                    )
+                                )
+                            )
+                        }
+
+
+                }
+            }
+
+
+        } else {
+            if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
+                if (iseditable == 0) {
+
+                        if (spinner == null) {
+                            myview?.isEnabled = false
+                            myview?.isFocusable = false
+                            myview?.setBackgroundTintList(
+                                ColorStateList.valueOf(
+                                    context.resources.getColor(
+                                        R.color.grey
+                                    )
+                                )
+                            )
+
+                        } else {
+//                            spinner?.isEnabled = false
+//                            spinner?.isFocusable = false
+                            spinner.isClickable = false
+                            spinner.setBackgroundTintList(
+                                ColorStateList.valueOf(
+                                    context.resources.getColor(
+                                        R.color.grey
+                                    )
+                                )
+                            )
+                        }
+
+                }
+            }
+
+
+        }
+
+    }
+
 
     private fun updateLabel(date: EditText, time: String) {
         val myFormat = "yyyy-MM-dd"
@@ -584,6 +660,9 @@ class CreateTaskAdapter(
 
     override fun getItemCount(): In {
         return list.size
+    }
+    override fun getItemViewType(position: In): In {
+        return position
     }
 
 

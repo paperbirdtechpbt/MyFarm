@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.TaskObject
+import com.pbt.myfarm.Util.AppUtils
 
 class ViewTaskObjectViewModel (val activity: Application) : AndroidViewModel(activity){
 
@@ -20,10 +21,6 @@ class ViewTaskObjectViewModel (val activity: Application) : AndroidViewModel(act
     }
 
     fun getObjectsList(context: Context, list: com.pbt.myfarm.Task?) {
-        val db=DbHelper(context,null)
-//getting list from local table
-        val objectsList=db.getViewTaskObjectList(list?.id.toString())
-        mylist.value=objectsList
 
     }
 

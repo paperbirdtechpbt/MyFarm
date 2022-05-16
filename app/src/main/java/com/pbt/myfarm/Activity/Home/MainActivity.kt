@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     val data = ArrayList<EventList>()
     var viewModel: MainActivityViewModel? = null
     val TAG = "MainActivity"
+    var roleID:String?=null
 
     companion object {
         var ExpAmtArray = ArrayList<String>()
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
-        val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+         roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
 
 
         if (chechpermission()) {
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
         }
 
-//        if (!AppUtils().isInternet(this)) {
+        if (!AppUtils().isInternet(this)) {
             val db = DbHelper(this, null)
             val list = db.getAllPrivilege()
             list.forEach {
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 privilegeListNameOfflineID.add(it.id.toString())
             }
             setdata(privilegeListNameOffline)
-//        }
+        }
 
 
     }
@@ -130,6 +131,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     override fun onResume() {
         super.onResume()
         if (!AppUtils().isInternet(this)) {
+            privilegeListNameOffline.clear()
+            privilegeListNameOfflineID.clear()
             val db = DbHelper(this, null)
             val list = db.getAllPrivilege()
             list.forEach {
@@ -138,7 +141,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             setdata(privilegeListNameOffline)
         }
-    }
+        if (AppUtils().isInternet(this)) {
+           callPrivilegeAPI(roleID)
+        }    }
 
     private fun setdata(privilegeList: ArrayList<String>) {
         data.clear()

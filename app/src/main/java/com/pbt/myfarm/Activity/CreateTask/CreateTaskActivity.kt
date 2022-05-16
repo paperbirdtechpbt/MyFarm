@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.CreateTask
 
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +19,8 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
@@ -38,6 +41,7 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityCreateTaskBinding
 import kotlinx.android.synthetic.main.activity_create_task.*
+import kotlinx.android.synthetic.main.itemcongiffeildlist.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -142,8 +146,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             field_prefix.setText(updateTaskList?.taskConfigName)
             field_desciption.setText(updateTaskList?.description)
-//            btn_create_task.visibility=View.GONE
-//            btn_update_task.visibility=View.VISIBLE
+
         }
         else {
             field_prefix.setText(configtype?.name)
@@ -232,6 +235,26 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
         setCommunityGroup(communitGroup)
+        if (updateTaskBoolen){
+            if (AppUtils().isInternet(this)){
+                if (!privilegeListName.contains("CanOverideEditTask")){
+                    field_communitygroup.isEnabled=false
+                    field_communitygroup.isFocusable=false
+                    field_communitygroup.setBackgroundTintList( ColorStateList.valueOf( this.resources.getColor(R.color.grey)) )
+                }
+
+            }
+            else{
+                if (!privilegeListNameOffline.contains("CanOverideEditTask")){
+                    field_communitygroup.isEnabled=false
+                    field_communitygroup.isFocusable=false
+                    field_communitygroup.setBackgroundTintList( ColorStateList.valueOf( this.resources.getColor(R.color.grey)) )
+
+
+                }
+            }
+
+        }
 
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(

@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.ViewTaskObject
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskAdapter
@@ -18,7 +19,6 @@ import java.util.ArrayList
 class ViewTaskObjectActivity : AppCompatActivity() {
     private var adapter: AdapterViewTaskObjects? = null
     var db: DbHelper? = null
-    var viewtaskObjectList: ArrayList<TasklistDataModel>? = null
     var viewmodel: ViewTaskObjectViewModel? = null
      var  updateTasklist:Task?=null
 
@@ -41,6 +41,7 @@ class ViewTaskObjectActivity : AppCompatActivity() {
           if (!list.isNullOrEmpty())  {
               adapter = AdapterViewTaskObjects(this, list)
               recyclerview_ViewtaskObject.adapter = adapter
+              progressbar_viewobjectactivity.visibility= View.GONE
           }
             else{
               Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show()
