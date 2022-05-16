@@ -11,10 +11,10 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.pbt.myfarm.BuildConfig
-import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE
-import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE_T
-import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATS
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATS_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATS_T
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATS_YYYY_MM_DD_HH_MM_SS
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -139,11 +139,11 @@ class AppUtils {
 //        val timestamp = Timestamp(parsedDate.time).
 
         try {
-            val sdf = SimpleDateFormat(DATE_TIME_FORMATE)
+            val sdf = SimpleDateFormat(DATE_TIME_FORMATS)
             val date = sdf.parse(strDate)
             return date.time
         }catch (e: Exception){
-            val sdf = SimpleDateFormat(DATE_TIME_FORMATE_DATE)
+            val sdf = SimpleDateFormat(DATE_TIME_FORMATS_DATE)
             val date = sdf.parse(strDate)
             return date.time
         }
@@ -152,7 +152,7 @@ class AppUtils {
 
 
     fun timeStampCovertToDateTime(timeStamp : Long) : String {
-        val sdf = SimpleDateFormat(DATE_TIME_FORMATE_T)
+        val sdf = SimpleDateFormat(DATE_TIME_FORMATS_T)
         val tz = TimeZone.getDefault()
         val now = Date()
         val offsetFromUtc = tz.getOffset(now.time)
@@ -161,7 +161,7 @@ class AppUtils {
     }
 
     fun systemDateTime() :String{
-        val dateFormat = SimpleDateFormat(DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS)
+        val dateFormat = SimpleDateFormat(DATE_TIME_FORMATS_YYYY_MM_DD_HH_MM_SS)
         val cal = Calendar.getInstance()
         return dateFormat.format(cal.time)
     }

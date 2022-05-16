@@ -32,8 +32,29 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_PACK_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_RESULE_CLASS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_COLLECT_DATA_VALUE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CAPACITY_UNITS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_COM_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE_UTC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DESCRIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_UTC
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_MAX_CAPACITY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NOTIFICATION_LEVEL
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_PARENT_CONTAINER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ZONE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_CREATED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_DELETED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHARTS_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_GRAPH_CHART_OBJECT_ID
@@ -77,6 +98,33 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_LAST_CHANGED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_LAST_CHANGED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_NEW_DLETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ADDRESS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_BIRTH_PLACE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CERTIFICAITON
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CITIZENSHIP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_COMMUNITY_GROUP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CONTACT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DESCRIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DOB
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_EMAIl
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_FNAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_IN_COOP
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_KAKAOMUNDO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_KAKAOMUNDO_CENTER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LASTCERFICATION_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LNAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LOCAL_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PHOTO
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_AT
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_BY
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_USERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_LOCAL_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_ROLE_PRIVILEGES_PRIVILEGE
@@ -164,26 +212,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_PRIMARYKEY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_UPDATED_AT
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_community_groups_UPDATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CAPACITY_UNITS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_COM_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_CREATED_DATE_UTC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_DESCRIPTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LAST_CHANGED_UTC
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_MAX_CAPACITY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_NOTIFICATION_LEVEL
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_PARENT_CONTAINER
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_LOCAL_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_STATUS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_TYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_CONTAINER_ZONE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_container_object_ADDED_UTC
@@ -319,54 +347,22 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_last_cha
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_last_changed_date
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_list
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_config_fields_pack_config_id
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_COLLECTACTIVITY_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_COMGROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CREATEDBY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_CREATED_DATE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_CLASS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_COM_GROUP
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_DESCIPTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_GRAPHCHCHART_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_LAST_CHANGED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_LAST_CHNAGED_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_NAMEPREFIX
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_PRIMARY_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_SERVER_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_configs_TYPE
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_DESCRIPTION
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_GRAPHCHCHART_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_NAME_PREFIX
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_PACK_CONFIGS_TYPE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_PRIMARY_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_field_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_pack_id
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_pack_fields_value
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ADDRESS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_BIRTH_PLACE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CERTIFICAITON
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CITIZENSHIP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_COMMUNITY_GROUP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CONTACT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_CREATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DELETED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DESCRIPTION
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_DOB
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_EMAIl
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_FNAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_IN_COOP
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_IS_KAKAOMUNDO
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_KAKAOMUNDO_CENTER
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LASTCERFICATION_DATE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LNAME
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_CLASS
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PERSON_TYPE
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_PHOTO
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_LOCAL_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_AT
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_UPDATED_BY
-import com.pbt.myfarm.Util.AppConstant.Companion.COL_PEOPLE_USERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_PRIMARYID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_privileges_SERVERID
@@ -516,11 +512,13 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERPASS
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERROLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USERS_TABLE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_USER_ID
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CONTAINER
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CREAT_PACK
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_GRAPH_CHARTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LISTS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_LIST_CHOICES
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACKCONFIG
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PACK_CONFIGS
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PEOPLE
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_ROLE_PRIVILEGES
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_TASKS
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_TASKS_OBJECTS
@@ -530,7 +528,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_activity_results_unit
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_collect_data
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_community_groups
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_CONTAINER
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_container_object
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_eventStatus
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_eventType
@@ -541,7 +538,6 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_graph_chart_points
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_collect_activity
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_config_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_pack_fields
-import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_PEOPLE
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_privileges
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_sensors
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_config_fields
@@ -610,27 +606,14 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db?.execSQL(userPackTable)
 
 
-//ravi- offline table -------pack_configs------------------------------------->
+        //-------pack_configs------------------------------------->
 
-        val pack_configs = ("CREATE TABLE " + TABLE_PACKCONFIG + " ("
-                + COL_pack_configs_PRIMARY_ID + " INTEGER PRIMARY KEY, " +
-                COL_pack_configs_SERVER_ID + " TEXT," +
-                COL_pack_configs_NAME + " TEXT," +
-                COL_pack_configs_DESCIPTION + " TEXT," +
-                COL_pack_configs_TYPE + " TEXT," +
-                COL_pack_configs_CLASS + " TEXT," +
-                COL_pack_configs_COMGROUP + " TEXT," +
-                COL_pack_configs_NAMEPREFIX + " TEXT," +
-                COL_pack_configs_COLLECTACTIVITY_ID + " TEXT," +
-                COL_pack_configs_GRAPHCHCHART_ID + " TEXT," +
-                COL_pack_configs_CREATEDBY + " TEXT," +
-                COL_pack_configs_CREATED_DATE + " TEXT," +
-                COL_pack_configs_LAST_CHANGED_BY + " TEXT," +
-                COL_pack_configs_LAST_CHNAGED_DATE + " TEXT," +
-                COL_pack_configs_DELETED_AT + " TEXT " + ")")
-
-        db?.execSQL(pack_configs)
-        //   <----------------------------------------------------------->
+        try {
+            val packConfigs = "CREATE TABLE  $TABLE_PACK_CONFIGS ( $COL_LOCAL_ID INTEGER PRIMARY KEY,$COL_PACK_CONFIGS_ID TEXT,$COL_PACK_CONFIGS_NAME TEXT,$COL_PACK_CONFIGS_DESCRIPTION TEXT,$COL_PACK_CONFIGS_TYPE TEXT,$COL_PACK_CONFIGS_CLASS TEXT,$COL_PACK_CONFIGS_COM_GROUP TEXT,$COL_PACK_CONFIGS_NAME_PREFIX TEXT,$COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID TEXT,$COL_PACK_CONFIGS_GRAPHCHCHART_ID TEXT,$COL_CREATED_BY TEXT,$COL_CREATED_DATE TEXT,$COL_LAST_CHANGE_BY TEXT,$COL_LAST_CHANGE_DATE TEXT,$COL_LOCAL_STATUS TEXT,$COL_DELETED_AT TEXT )"
+            db?.execSQL(packConfigs)
+        }catch (e:java.lang.Exception){
+            Log.d(TAG, "Create Table packConfigs Exception ${e.message} ${e.stackTrace[0].lineNumber}")
+        }
         // ravi -offline table ---pack_collect_activity
 
         val pack_collect_activity = ("CREATE TABLE " + TABLE_pack_collect_activity + " ("
@@ -640,37 +623,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_pack_collect_activity_pack_id + " TEXT " + ")")
 
         db?.execSQL(pack_collect_activity)
-
-        // ravi -offline table ---taskobjects
-
-
-//        val task_objects = ("CREATE TABLE " + TABLE_TASKS_OBJECTS + " ("
-//                + COL_TASKS_OBJECTS_LOCAL_ID + " INTEGER PRIMARY KEY, " +
-//                COL_TASKS_OBJECTS_ID + " TEXT," +
-//                COL_TASKS_OBJECTS_TASK_ID + " TEXT," +
-//                COL_TASKS_OBJECTS_FUNCTION + " TEXT," +
-//                COL_TASKS_OBJECTS_CONTAINER + " TEXT," +
-//                COL_TASKS_OBJECTS_STATUS + " TEXT," +
-//                COL_TASKS_OBJECTS_LAST_CHANGED_DATE + " TEXT " + ")")
-
-        //teble task_object create
-
-//        val `class`: String?=null,
-//        val deleted_at: String?=null,
-//        val function: String?=null,
-//        val id: Int?=null,
-//        val last_changed_by: Int?=null,
-//        val last_changed_date: String?=null,
-//        val name: String?=null,
-//        val no: String?=null,
-//        val origin: String?=null,
-//        val task_id: Int?=null,
-//        val type: String?=null,
-//        val container: String?=null,
-//        val status: String?=null,
-
-//        "$COL_TASKS_OBJECTS_FUNCTION TEXT," +
-//                "$COL_TASKS_OBJECTS_NO TEXT, " +
 
         try {
 
@@ -692,14 +644,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
             db?.execSQL(createTaskObject)
         } catch (e: Exception) {
-            Log.e(
-                TAG,
-                " Create Table Task_object Exception ${e.message} ${e.stackTrace[0].lineNumber}"
-            )
+            Log.e(TAG, " Create Table Task_object Exception ${e.message} ${e.stackTrace[0].lineNumber}")
         }
-
-        //ravi -offline---------table-----EventType
-
 
         val eventType = ("CREATE TABLE " + TABLE_eventType + " ("
                 + COL_eventType_PRIMARYID + " INTEGER PRIMARY KEY, " +
@@ -1545,7 +1491,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         try {
             val db = this.writableDatabase
             val i = checkEntry(rolePrivilege.id, TABLE_ROLE_PRIVILEGES, COL_ROLE_PRIVILEGES_ID)
-            Log.d(TAG, "RolePrivileges Row exist  $i ${rolePrivilege.id}")
             if (i == 0) {
                 val values = ContentValues()
                 values.put(COL_ROLE_PRIVILEGES_ID, rolePrivilege.id)
@@ -1983,28 +1928,28 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun pack_configscreate(pack: PackConfig) {
 
         try {
-            val i = checkEntry(pack.id, TABLE_PACKCONFIG, COL_pack_configs_SERVER_ID)
+            val i = checkEntry(pack.id, TABLE_PACK_CONFIGS, COL_PACK_CONFIGS_ID)
             if (i < 1) {
 
                 val values = ContentValues()
-                values.put(COL_pack_configs_SERVER_ID, pack.id)
-                values.put(COL_pack_configs_NAME, pack.name)
-                values.put(COL_pack_configs_DESCIPTION, pack.description)
-                values.put(COL_pack_configs_TYPE, pack.type)
-                values.put(COL_pack_configs_CLASS, pack.mclass)
-                values.put(COL_pack_configs_COMGROUP, pack.com_group)
-                values.put(COL_pack_configs_NAMEPREFIX, pack.name_prefix)
-                values.put(COL_pack_configs_COLLECTACTIVITY_ID, pack.collect_activity_id)
-                values.put(COL_pack_configs_GRAPHCHCHART_ID, pack.graph_chart_id)
-                values.put(COL_pack_configs_CREATEDBY, pack.created_by)
-                values.put(COL_pack_configs_CREATED_DATE, pack.created_date)
-                values.put(COL_pack_configs_LAST_CHANGED_BY, pack.last_changed_by)
-                values.put(COL_pack_configs_LAST_CHNAGED_DATE, pack.last_changed_date)
-                values.put(COL_pack_configs_DELETED_AT, pack.deleted_at)
+                values.put(COL_PACK_CONFIGS_ID, pack.id)
+                values.put(COL_PACK_CONFIGS_NAME, pack.name)
+                values.put(COL_PACK_CONFIGS_DESCRIPTION, pack.description)
+                values.put(COL_PACK_CONFIGS_TYPE, pack.type)
+                values.put(COL_PACK_CONFIGS_CLASS, pack.mclass)
+                values.put(COL_PACK_CONFIGS_COM_GROUP, pack.com_group)
+                values.put(COL_PACK_CONFIGS_NAME_PREFIX, pack.name_prefix)
+                values.put(COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID, pack.collect_activity_id)
+                values.put(COL_PACK_CONFIGS_GRAPHCHCHART_ID, pack.graph_chart_id)
+                values.put(COL_CREATED_BY, pack.created_by)
+                values.put(COL_CREATED_DATE, pack.created_date)
+                values.put(COL_LAST_CHANGE_BY, pack.last_changed_by)
+                values.put(COL_LAST_CHANGE_DATE, pack.last_changed_date)
+                values.put(COL_DELETED_AT, pack.deleted_at)
 
 
                 val db = this.writableDatabase
-                db.insert(TABLE_PACKCONFIG, null, values)
+                db.insert(TABLE_PACK_CONFIGS, null, values)
                 // // db.close()
 //            if (result >= 0) {
 //                Toast.makeText(context, "Added PackSuccessfully", Toast.LENGTH_SHORT).show()
@@ -2032,7 +1977,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                 val values = ContentValues()
-                AppUtils.logDebug(TAG, "Local Path of imahe" + localFilePath.toString())
 
                 values.put(COL_task_media_files_SERVERID, pack.id)
                 values.put(COL_task_media_files_TASKID, pack.task_id)
@@ -2047,7 +1991,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
                 val db = this.writableDatabase
                 db.insert(TABLE_task_media_files, null, values)
-                // // db.close()
 
             }
         } catch (e: Exception) {
@@ -4138,7 +4081,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
         val upCommingPackCONFIGList = ArrayList<PackConfig>()
         val db = this.readableDatabase
-        val query = "Select * from $TABLE_PACKCONFIG"
+        val query = "Select * from $TABLE_PACK_CONFIGS"
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
@@ -4151,33 +4094,33 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             if (cursor.moveToFirst()) {
                 do {
                     val name: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_NAME))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_NAME))
                     val id: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_SERVER_ID))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_ID))
                     val desciption: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_DESCIPTION))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_DESCRIPTION))
                     val packConfigType: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_TYPE))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_TYPE))
                     val packConfigClass: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_CLASS))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_CLASS))
                     val comgroup: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_COMGROUP))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_COM_GROUP))
                     val nameprefix: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_NAMEPREFIX))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_NAME_PREFIX))
                     val collectactivityid: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID))
                     val graphchartid: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_GRAPHCHCHART_ID))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_GRAPHCHCHART_ID))
                     val createdBY: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATEDBY))
+                        cursor.getString(cursor.getColumnIndex(COL_CREATED_BY))
                     val createdDate: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_CREATED_DATE))
+                        cursor.getString(cursor.getColumnIndex(COL_CREATED_DATE))
                     val lastChangedBy: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHANGED_BY))
+                        cursor.getString(cursor.getColumnIndex(COL_LAST_CHANGE_BY))
                     val lastChnagedDate: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_LAST_CHNAGED_DATE))
+                        cursor.getString(cursor.getColumnIndex(COL_LAST_CHANGE_DATE))
                     val deletedAt: String? =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_DELETED_AT))
+                        cursor.getString(cursor.getColumnIndex(COL_DELETED_AT))
 
                     val packconfig = PackConfig(
                         packConfigClass!!.toInt(), collectactivityid,
@@ -4185,21 +4128,12 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                         desciption, graphchartid, id!!.toInt(), lastChangedBy, lastChnagedDate,
                         name, nameprefix, packConfigType!!.toInt(),
                     )
-//                val packconfig = PackConfig(
-//                 0,"",
-//                    0,0,"","",
-//                    "","",id,"",
-//                    "","","",0
-//                )
                     upCommingPackCONFIGList.add(packconfig)
                 } while (cursor.moveToNext())
             }
         } catch (e: Exception) {
             AppUtils.logError(TAG, "Exeption for getAllPackConfig " + e.message.toString())
         }
-        // close db connection
-        // db.close()
-        // return notes list
         return upCommingPackCONFIGList
     }
 
@@ -6245,8 +6179,8 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     fun getSinglDataFromPackConfig(selectedPackid: String): ArrayList<PackConfig> {
 
-        val query = "SELECT  * FROM ${TABLE_PACKCONFIG} " +
-                "  Where ${COL_pack_configs_SERVER_ID}  = '$selectedPackid'"
+        val query = "SELECT  * FROM ${TABLE_PACK_CONFIGS} " +
+                "  Where ${COL_PACK_CONFIGS_ID}  = '$selectedPackid'"
 
 
         val upCommingPackCONFIGList = ArrayList<PackConfig>()
@@ -6271,7 +6205,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
 
                     collectactivityId =
-                        cursor.getString(cursor.getColumnIndex(COL_pack_configs_COLLECTACTIVITY_ID))
+                        cursor.getString(cursor.getColumnIndex(COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID))
 
                     val packconfig = PackConfig(
                         collect_activity_id = collectactivityId
@@ -6400,7 +6334,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun truncateAllTables() {
         val db = this.getWritableDatabase()
         db.execSQL("delete from " + TABLE_CREAT_PACK)
-        db.execSQL("delete from " + TABLE_PACKCONFIG)
+        db.execSQL("delete from " + TABLE_PACK_CONFIGS)
         db.execSQL("delete from " + TABLE_collect_activities)
         db.execSQL("delete from " + TABLE_collect_activity_results)
         db.execSQL("delete from " + TABLE_collect_activity_results_unit)
@@ -6518,7 +6452,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return choices;
     }
 
-    //get TaskFeild specific data
+    //get TaskField specific data
     fun getTaskField(taskID: String, fieldID: String): TaskField? {
 
         var taskField: TaskField? = null
@@ -6630,6 +6564,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return container;
     }
 
+    //get container  specific data
     fun insertNewTaskObject(taskObject : TaskObject) {
             try {
                     val db = this.writableDatabase
@@ -6655,6 +6590,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
+    //update task data
     fun updateTask(taskID: String, start: Boolean) {
         try {
             val collName = if (start) COL_TASKS_STARTED_LATE else COL_TASKS_ENDED_LATE
@@ -6668,18 +6604,18 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
 
     }
 
+    //update Tasks table status
     fun updateTaskStatus(taskID: String, status: String) {
         try {
             val db = this.writableDatabase
-            val query =
-                "update $TABLE_TASKS  set $COL_TASKS_SERVER_STATUS = '$status' where $COL_TASKS_ID = $taskID and $COL_TASKS_DELETED_AT is null "
-            Log.d("SQLQuery", " ==>> $query")
+            val query = "update $TABLE_TASKS  set $COL_TASKS_SERVER_STATUS = '$status' where $COL_TASKS_ID = $taskID and $COL_TASKS_DELETED_AT is null "
             db.execSQL(query)
         } catch (e: Exception) {
             Log.d(TAG, "Update Task Exception ${e.message} ${e.stackTrace[0].lineNumber}")
         }
 
     }
+
 
     //get container  specific data
     fun getPerson(fieldID: String) : People? {
@@ -6728,6 +6664,40 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             AppUtils.logError(TAG, " getContainer Exception ${e.message} ${e.stackTrace[0].lineNumber}")
         }
         return people;
+    }
+
+    fun getAllPackConfig(fieldID: String):PackConfig {
+
+        var packsNew  = PackConfig()
+        try {
+
+            val db = this.readableDatabase
+            val query = "Select * from $TABLE_PACK_CONFIGS WHERE $COL_PACK_CONFIGS_ID = $fieldID LIMIT 1"
+            val cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+                    packsNew = PackConfig(
+                        getColumnString(cursor, COL_PACK_CONFIGS_CLASS).toInt(),
+                        getColumnString(cursor, COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID),
+                        getColumnString(cursor, COL_PACK_CONFIGS_COM_GROUP).toInt(),
+                        getColumnString(cursor, COL_CREATED_BY).toInt(),
+                        getColumnString(cursor, COL_CREATED_DATE),
+                        getColumnString(cursor, COL_DELETED_AT),
+                        getColumnString(cursor, COL_PACK_CONFIGS_DESCRIPTION),
+                        getColumnString(cursor, COL_PACK_CONFIGS_GRAPHCHCHART_ID),
+                        getColumnString(cursor, COL_PACK_CONFIGS_ID).toInt(),
+                        getColumnString(cursor, COL_LAST_CHANGE_BY),
+                        getColumnString(cursor, COL_LAST_CHANGE_DATE),
+                        getColumnString(cursor, COL_PACK_CONFIGS_NAME),
+                        getColumnString(cursor, COL_PACK_CONFIGS_NAME_PREFIX),
+                        getColumnString(cursor, COL_PACK_CONFIGS_TYPE).toInt(),
+                    )
+                } while (cursor.moveToNext())
+            }
+        } catch (e: Exception) {
+            return packsNew
+        }
+        return  packsNew
     }
 
     class DownloadFileFromURL(var filename: String?) :

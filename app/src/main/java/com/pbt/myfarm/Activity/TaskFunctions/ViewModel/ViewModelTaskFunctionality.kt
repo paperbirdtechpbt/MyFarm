@@ -16,7 +16,7 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.TaskField
 import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppConstant
-import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATS
 import com.pbt.myfarm.Util.AppUtils
 import retrofit2.Call
 import retrofit2.Response
@@ -52,7 +52,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         } else {
             val db = DbHelper(context, null)
             val taskFunctionList = ArrayList<ListTaskFunctions>()
-            taskFunctionList.add(ListTaskFunctions("0", "Select"))
+            taskFunctionList.add(ListTaskFunctions("0", "Select Task Function "))
             db.getTaskFunctionList(taskConfigID).let {
                 taskFunctionList.addAll(it)
             }
@@ -121,7 +121,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         }
 
         val currentDateTime =
-            appUtils.getCurrentDateTimeAccordingToUTC(AppConstant.DATE_TIME_FORMATE)
+            appUtils.getCurrentDateTimeAccordingToUTC(AppConstant.DATE_TIME_FORMATS)
         val newTimeStamp = appUtils.getTimeStamp(currentDateTime!!)
         val newTimeStampConvert =
             if (sign == "+") newTimeStamp + minut.toLong() else newTimeStamp - minut.toLong()
@@ -138,7 +138,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
             val taskExpStartTime =
                 taskExpStart?.value?.let { it1 -> appUtils.getTimeStamp(it1) } ?: 0
-            val dateTime = appUtils.getCurrentDateTimeAccordingToUTC(DATE_TIME_FORMATE)
+            val dateTime = appUtils.getCurrentDateTimeAccordingToUTC(DATE_TIME_FORMATS)
             val taskStartTime = dateTime?.let { it1 -> appUtils.getTimeStamp(it1) } ?: 0
             if (taskStartTime > taskExpStartTime) {
                 db.updateTask(mTaskID, true)
@@ -168,7 +168,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
                 val taskExpStartTime =
                     taskExpEnd?.value?.let { it1 -> appUtils.getTimeStamp(it1) } ?: 0
-                val dateTime = appUtils.getCurrentDateTimeAccordingToUTC(DATE_TIME_FORMATE)
+                val dateTime = appUtils.getCurrentDateTimeAccordingToUTC(DATE_TIME_FORMATS)
                 val taskStartTime = dateTime?.let { it1 -> appUtils.getTimeStamp(it1) } ?: 0
                 if (taskStartTime > taskExpStartTime) {
                     db.updateTask(mTaskID, false)
@@ -193,6 +193,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             if (mFieldID.isEmpty() || mFieldID == "0") {
                 obj.addProperty("error", true)
                 obj.addProperty("msg", "Select container")
+                return
             }
 
             val taskStartDate = db.getTaskField(mTaskID, "134")
@@ -200,9 +201,10 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             if (taskStartDate == null) {
                 obj.addProperty("error", true)
                 obj.addProperty("msg", "Task not started yet. Please start task first")
+                return
             } else {
 
-                var taskObject = db.getTaskObject(mTaskID, mFieldID,"CONTAINER");
+                var taskObject = db.getTaskObject(mTaskID, mFieldID, "CONTAINER");
                 val container = db.getContainer(mFieldID)
                 if (taskObject == null) {
                     taskObject = TaskObject(
@@ -224,6 +226,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
                     obj.addProperty("data", Gson().toJson(taskObject))
                     obj.addProperty("error", false)
                     obj.addProperty("msg", "Inserted Successfully")
+                    return
                 }
 
             }
@@ -241,12 +244,24 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
                     obj.addProperty("msg", "Task not started yet. Please start task first")
                 } else {
 
-                    var taskObject = db.getTaskObject(mTaskID, mFieldID,"PERSON");
+                    var taskObject = db.getTaskObject(mTaskID, mFieldID, "PERSON");
                     var person = db.getPerson(mFieldID)
 
-                    if(taskObject == null){
-                        taskObject =  TaskObject(
-                            person?.person_class ?:"","","PERSON",mUserID.toInt(),0,appUtils.systemDateTime(),person?.fname ?: "" +person?.lname ,mFieldID,"ADDED",mTaskID.toInt(),person?.person_type?:"","","1"
+                    if (taskObject == null) {
+                        taskObject = TaskObject(
+                            person?.person_class ?: "",
+                            "",
+                            "PERSON",
+                            mUserID.toInt(),
+                            0,
+                            appUtils.systemDateTime(),
+                            person?.fname ?: "" + person?.lname,
+                            mFieldID,
+                            "ADDED",
+                            mTaskID.toInt(),
+                            person?.person_type ?: "",
+                            "",
+                            "1"
                         )
 
                         db.insertNewTaskObject(taskObject)
@@ -257,6 +272,60 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
                     }
                 }
             }
+        }
+        else if (mFunctionID == "175") {
+
+            if (mFieldID.isEmpty() || mFieldID == "0") {
+                obj.addProperty("error", true)
+                obj.addProperty("msg", "Select Person")
+            } else {
+                val taskStartDate = db.getTaskField(mTaskID, "134")
+
+                if (taskStartDate == null) {
+                    obj.addProperty("error", true)
+                    obj.addProperty("msg", "Task not started yet. Please start task first")
+                } else {
+                    var taskObject = db.getTaskObject(mTaskID, mFieldID, "PACK");
+                    val packConfig = db.getAllPackConfig(mFieldID)
+
+                    if (taskObject == null) {
+                        var namePrefix = packConfig.name_prefix
+                        if (namePrefix == null) {
+                            namePrefix = ""
+                        }
+
+                        var  pad = if (namePrefix.isNullOrEmpty()) {
+                            namePrefix + packConfig.name!!.padStart(4, '0')
+                        } else {
+                            packConfig.name!!.padStart(4, '0')
+                        }
+
+                        taskObject = TaskObject(
+                            packConfig.mclass.toString(),
+                            "",
+                            "PACK",
+                            0,
+                            mUserID.toInt(),
+                            appUtils.systemDateTime(),
+                            pad,
+                            mFieldID,
+                            "ADDED",
+                            mTaskID.toInt(),
+                            packConfig.type.toString(),
+                            mFieldID,
+                            "1",
+                        )
+                        db.insertNewTaskObject(taskObject)
+                        obj.addProperty("error", false)
+                        obj.addProperty("data", Gson().toJson(taskObject))
+                        obj.addProperty("msg", "Inserted Successfully")
+
+                    }
+                }
+            }
+        }
+        else if (mFunctionID == "175"){
+
         }
     }
 }

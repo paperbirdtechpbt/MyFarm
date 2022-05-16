@@ -127,7 +127,6 @@ class AppConstant {
 
         //TABLE
         const val TABLE_CREAT_PACK = "packs_new"
-        const val COL_LOCAL_ID = "packnewprimarykey"
         const val COL_ID = "packnew_serverid"
         const val COL_PACK_DESC = "packnewdesc"
         const val COL_PACK_CONFIG_ID = "packnewid"
@@ -190,42 +189,19 @@ class AppConstant {
         const val colctactyrslt_unit_collectactiivtid = "collect_activity_result_id"
         const val colctactyrslt_unit_unitid = "unit_id"
 
-        //pack_config_fields
-
-        const val COL_SERVER_ID = "packconfig_server_id"
-        const val COL_PACKCONFIGPRIMARY_ID = "packconfig_primary_id"
-        const val TABLE_PACK_CONFIG_FIELDS = "pack_config_fields"
-        const val COL_PACKCONFIG_ID = "packconfigid"
-        const val COL_FIELD_NAME = "field_name"
-        const val COL_field_description = "field_description"
-        const val COL_field_type = "field_type"
-        const val COL_list = "list"
-        const val COL_default_value = "default_value"
-        const val COL_created_by = "created_by"
-        const val COL_created_date = "created_date"
-        const val COL_last_changed_by = "last_changed_by"
-        const val COL_last_changed_date = "last_changed_date"
-        const val COL_eleted_at = "deleted_at"
-
         //ravi offline- table --pack_configs
-        const val TABLE_PACKCONFIG = "packconfigs"
-        const val COL_pack_configs_SERVER_ID = "pack_configs_server_id"
-        const val COL_pack_configs_PRIMARY_ID = "pack_configs_primary_id"
-        const val COL_pack_configs_NAME = "pack_configs_name"
-        const val COL_pack_configs_DESCIPTION = "pack_configs_desciption"
-        const val COL_pack_configs_TYPE = "pack_configs_type"
-        const val COL_pack_configs_CLASS = "pack_configs_class"
-        const val COL_pack_configs_COMGROUP = "pack_configs_com_group"
-        const val COL_pack_configs_NAMEPREFIX = "pack_configs_nameprefix"
-        const val COL_pack_configs_COLLECTACTIVITY_ID = "pack_configs_collectivityid"
-        const val COL_pack_configs_GRAPHCHCHART_ID = "pack_configs_graph_chart_id"
-        const val COL_pack_configs_CREATEDBY = "pack_configs_created_by"
-        const val COL_pack_configs_CREATED_DATE = "pack_configs_created_date"
-        const val COL_pack_configs_LAST_CHANGED_BY = "pack_configs_last_changed_by"
-        const val COL_pack_configs_LAST_CHNAGED_DATE = "pack_configs_last_changed_date"
+        const val TABLE_PACK_CONFIGS = "packconfigs"
+        const val COL_PACK_CONFIGS_ID = "id"
+        const val COL_PACK_CONFIGS_NAME = "name"
+        const val COL_PACK_CONFIGS_DESCRIPTION = "description"
+        const val COL_PACK_CONFIGS_TYPE = "type"
+        const val COL_PACK_CONFIGS_CLASS = "mClass"
+        const val COL_PACK_CONFIGS_COM_GROUP = "com_group"
+        const val COL_PACK_CONFIGS_NAME_PREFIX = "name_prefix"
+        const val COL_PACK_CONFIGS_COLLECT_ACTIVITY_ID = "collect_activity_id"
+        const val COL_PACK_CONFIGS_GRAPHCHCHART_ID = "graph_chart_id"
         const val COL_pack_configs_DELETED_AT = "pack_configs_deleted_at"
 
-        //ravi offline --table--pack_collect_activity----
 
         const val TABLE_pack_collect_activity = "pack_collect_activity"
         const val COL_pack_collect_activity_SERVER_ID = "pack_collect_activity_server_id"
@@ -746,16 +722,6 @@ class AppConstant {
         const val COL_eventStatus_SERVERID = "eventStatus_serverid"
         const val COL_eventStatus_NAME = "eventStatus_name"
 
-        //ravi--offline--------table-task_objects
-
-//        const val TABLE_TASKS_OBJECTS = "task_objects"
-//        const val COL_TASKS_OBJECTS_LOCAL_ID = "task_objects_primaryid"
-//        const val COL_TASKS_OBJECTS_ID = "task_objects_serverid"
-//        const val COL_TASKS_OBJECTS_TASK_ID = "task_objects_taskId"
-//        const val COL_TASKS_OBJECTS_FUNCTION = "task_objects_function"
-//        const val COL_TASKS_OBJECTS_CONTAINER = "task_objects_container"
-//        const val COL_TASKS_OBJECTS_STATUS = "task_objects_status"
-//        const val COL_TASKS_OBJECTS_LAST_CHANGED_DATE = "task_objects_lastchnagedDATE"
 
         const val TABLE_TASKS_OBJECTS = "task_objects"
         const val COL_TASKS_OBJECTS_LOCAL_ID = "local_id"
@@ -778,10 +744,13 @@ class AppConstant {
 
 
         const val CON_PACK_ID = "id"
+
+        const val COL_LOCAL_ID = "local_id"
         const val COL_UPDATED_AT = "updated_at"
         const val COL_UPDATED_BY = "updated_by"
         const val COL_CREATED_AT = "created_at"
         const val COL_CREATED_BY = "created_by"
+        const val COL_CREATED_DATE = "created_date"
         const val COL_DELETED_AT = "deleted_at"
         const val COL_DELETED_BY = "deleted_by"
         const val COL_LOCAL_STATUS = "local_status"
@@ -794,10 +763,10 @@ class AppConstant {
         const val COL_ROLE_PRIVILEGES_ROLE_ID = "role_id"
         const val COL_ROLE_PRIVILEGES_PRIVILEGE = "privilege"
 
-        const val DATE_TIME_FORMATE = "yyyy-MM-dd hh:mm"
-        const val DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd hh:mm:ss"
-        const val DATE_TIME_FORMATE_DATE = "yyyy-MM-dd"
-        const val DATE_TIME_FORMATE_T = "yyyy-MM-dd'T'hh:mm"
+        const val DATE_TIME_FORMATS = "yyyy-MM-dd hh:mm"
+        const val DATE_TIME_FORMATS_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd hh:mm:ss"
+        const val DATE_TIME_FORMATS_DATE = "yyyy-MM-dd"
+        const val DATE_TIME_FORMATS_T = "yyyy-MM-dd'T'hh:mm"
 
     }
 }
