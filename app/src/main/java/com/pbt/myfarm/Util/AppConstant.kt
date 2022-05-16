@@ -744,14 +744,23 @@ class AppConstant {
 
         //ravi--offline--------table-task_objects
 
+
         const val TABLE_task_objects = "task_objects"
         const val COL_task_objects_PRIMARYID = "task_objects_primaryid"
         const val COL_task_objects_SERVERID = "task_objects_serverid"
         const val COL_task_objects_TASKID = "task_objects_taskId"
         const val COL_task_objects_FUNCTION = "task_objects_function"
+        const val COL_TASKOBJECT_TYPE = "type"
+        const val COL_TASKOBJECT_ORIGIN = "origin"
+        const val COL_TASKOBJECT_NO = "no"
+        const val COL_TASKOBJECT_NAME = "name"
         const val COL_task_objects_CONTAINER = "task_objects_container"
         const val COL_task_objects_STATUS = "task_objects_status"
         const val COL_task_objects_LASTCHANGEDDATE = "task_objects_lastchnagedDATE"
+        const val COL_TASKOBJECT_DELETEDAT = "deleted_at"
+        const val COL_TASKOBJECT_CLASS= "class"
+        const val COL_TASKOBJECT_LASTCHANGED_BY = "last_changed_by"
+
 
 
         const val TABLE_privileges = "table_privileges"

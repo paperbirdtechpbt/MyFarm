@@ -42,13 +42,17 @@
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.18" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_event.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_task.xml" value="0.12" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_task_object.xml" value="0.15" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.11" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_create_pack_frament.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/item_config_type_list.xml" value="0.18206521739130435" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/item_event_list.xml" value="0.18206521739130435" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemcongiffeildlist.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_collectdata.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_pack.xml" value="0.1802536231884058" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewevent.xml" value="0.1802536231884058" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemviewtaskobject.xml" value="0.16" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/menu/main.xml" value="0.14074074074074075" />
       </map>
     </option>

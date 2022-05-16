@@ -23,6 +23,7 @@ import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.selectedComunityGroupTask
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
+import com.pbt.myfarm.Activity.ViewTaskObject.ViewTaskObjectActivity
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
 import com.pbt.myfarm.DataBase.DbHelper
@@ -116,6 +117,12 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         btn_taskfuntion.setOnClickListener {
             val intent = Intent(this, TaskFunctionActivity::class.java)
             intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
+            startActivity(intent)
+        }
+        btn_taskobject.setOnClickListener{
+            val intent = Intent(this,ViewTaskObjectActivity::class.java)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
+
             startActivity(intent)
         }
     }

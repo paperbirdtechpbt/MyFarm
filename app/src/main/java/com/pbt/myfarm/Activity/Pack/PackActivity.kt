@@ -89,55 +89,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     }
 
 
-    private fun setDatafromlocal() {
 
-
-        db = DbHelper(this, null)
-        val packconfig = db?.getAllPackConfig()
-        val packlist = db?.getAllPack()
-//            progressViewPack.visibility=View.GONE
-
-        val packsnew = ArrayList<PacksNew>()
-        packlist?.forEach { routes ->
-            if (packconfig!!.isNotEmpty()) {
-                for (i in 0 until packconfig.size) {
-                    if (routes.pack_config_id == packconfig.get(i).id.toString()) {
-                        val configname = packconfig.get(i).name_prefix
-                        if (configname != null) {
-                            routes.padzero = configname + routes.name!!.padStart(4, '0')
-                        } else {
-                            routes.padzero = routes.name!!.padStart(4, '0')
-                        }
-                        routes.type = " Type: "
-                        routes.labeldesciption = " Desciption: "
-                    }
-                }
-            }
-            packsnew.add(routes)
-        }
-        packsnew.removeAt(0)
-        tasklistSize.setText("Total Packs-" + packsnew.size)
-
-        adapter = AdapterViewPack(this, packsnew) { position, packname, boolean, list ->
-            packList = list
-            if (boolean) {
-                showAlertDailog(packname, position, list)
-            } else {
-
-                updatePackBoolen = true
-
-                val intent = Intent(this, UpdatePackActivity::class.java)
-                startActivity(intent)
-
-                selectedcom_Group_companian = list.com_group.toString()
-            }
-        }
-
-        recyclerview_viewtask.layoutManager = LinearLayoutManager(this)
-        recyclerview_viewtask.adapter = adapter
-
-
-    }
 
 
     private fun initViewModel() {

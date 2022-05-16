@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+<variable
+    name="viewmodel"
+    type="com.pbt.myfarm.TaskObject" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:elevation="3dp"
+        app:cardMaxElevation="3dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:minHeight="90dp"
+            app:cardCornerRadius="2dp"
+            app:cardMaxElevation="3dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_viewtask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="90dp">
+
+                <ImageView
+                    android:id="@+id/icon_reddot"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="10dp"
+                    android:alpha="0.6"
+                    android:src="@drawable/ic_reddot"
+                    app:layout_constraintBottom_toBottomOf="@id/name"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/name"
+                    app:layout_constraintTop_toTopOf="@id/name" />
+
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+
+                    android:text="@{viewmodel.name}"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/funtionname"
+                    app:layout_constraintLeft_toRightOf="@id/icon_reddot"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/icon_reddot2"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginLeft="10dp"
+
+                    android:alpha="0.6"
+                    android:src="@drawable/ic_reddot"
+                    app:layout_constraintBottom_toBottomOf="@id/funtionname"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/funtionname"
+                    app:layout_constraintTop_toTopOf="@id/funtionname" />
+
+
+                <TextView
+                    android:id="@+id/funtionname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="@{viewmodel.function}"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/icon_reddot2"
+                    app:layout_constraintTop_toBottomOf="@id/name" />
+
+                <ImageView
+                    android:id="@+id/icon_delete_viewtaskobject"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="10dp"
+                    android:alpha=".7"
+                    android:src="@drawable/ic__delete"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/icon_edit_viewtaskobject" />
+
+                <ImageView
+                    android:id="@+id/icon_edit_viewtaskobject"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_margin="10dp"
+                    android:alpha=".7"
+                    android:src="@drawable/ic__edit"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

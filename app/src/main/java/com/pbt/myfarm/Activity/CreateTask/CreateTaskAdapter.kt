@@ -58,7 +58,6 @@ class CreateTaskAdapter(
         var labelFieldSpiiner: TextView = itemView.findViewById(R.id.label_field_spinner_Grip)
         var labelSpinner: TextView = itemView.findViewById(R.id.label_field_spinner)
 
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: In): ViewHolder {
@@ -78,7 +77,7 @@ class CreateTaskAdapter(
 
 
         val getrow: Any = this.list.get(positionn)
-        AppUtils.logDebug(TAG,"VALUES  for is nULL  ${this.list.get(positionn)}")
+        AppUtils.logDebug(TAG, "VALUES  for is nULL  ${this.list.get(positionn)}")
 
         val t: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val fieldtype = t["field_type"].toString()
@@ -114,7 +113,7 @@ class CreateTaskAdapter(
 
         if (fieldtype == "Table" || fieldtype == "List") {
             fieldList?.add("Select")
-                fieldListid?.add("1")
+            fieldListid?.add("1")
 
             for (i in 0 until field.size) {
                 val row: Any = field.get(i)
@@ -154,8 +153,7 @@ class CreateTaskAdapter(
                 }
             }, 1500)
             holder.labeldate.setText(namee)
-        }
-        else if (fieldtype == "Numeric") {
+        } else if (fieldtype == "Numeric") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -164,8 +162,9 @@ class CreateTaskAdapter(
             holder.mysppinner.visibility = View.GONE
             holder.labelSpinner.visibility = View.GONE
 
-            if (field_id=="155"){
-                holder.name.inputType= InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
+            if (field_id == "155") {
+                holder.name.inputType =
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED
 
             }
 
@@ -182,7 +181,7 @@ class CreateTaskAdapter(
 
             holder.labelname.setText(namee)
 
-        } else if (fieldtype == "List" || fieldtype=="Multilist") {
+        } else if (fieldtype == "List" || fieldtype == "Multilist") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -224,9 +223,12 @@ class CreateTaskAdapter(
                         holder.name.setText("")
                     } else {
                         for (i in 0 until fieldListid!!.size) {
-                            AppUtils.logDebug(TAG,"VALUES FOR SET SLECT#E ITEM =$valued.0 == $fieldListid.get(i)")
-                            if (valued+".0" == fieldListid.get(i)) {
-                                AppUtils.logDebug(TAG,"VALUES FOR SET SLECT#E ITEM =$valued")
+                            AppUtils.logDebug(
+                                TAG,
+                                "VALUES FOR SET SLECT#E ITEM =$valued.0 == $fieldListid.get(i)"
+                            )
+                            if (valued + ".0" == fieldListid.get(i)) {
+                                AppUtils.logDebug(TAG, "VALUES FOR SET SLECT#E ITEM =$valued")
                                 holder.mysppinner.setSelection(i)
 
                             }
@@ -234,8 +236,7 @@ class CreateTaskAdapter(
                     }
                 }
             }, 500)
-        }
-        else if (fieldtype=="DateTime"){
+        } else if (fieldtype == "DateTime") {
             holder.name.visibility = View.GONE
             holder.spinner.visibility = View.GONE
             holder.labelFieldSpiiner.visibility = View.GONE
@@ -256,8 +257,7 @@ class CreateTaskAdapter(
                 }
             }, 1000)
             holder.labeldate.setText(namee)
-        }
-        else if (fieldtype == "Text") {
+        } else if (fieldtype == "Text") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -309,9 +309,8 @@ class CreateTaskAdapter(
                 try {
                     ExpName[positionn] = selectedId
                     ExpAmtArray[positionn] = selectedText
-                }
-                catch (e: Exception){
-                    AppUtils.logDebug(TAG,"Exception in itemselect"+e.message.toString())
+                } catch (e: Exception) {
+                    AppUtils.logDebug(TAG, "Exception in itemselect" + e.message.toString())
                 }
 
             }
@@ -320,14 +319,14 @@ class CreateTaskAdapter(
 
             }
         }
-                if (!valued.isEmpty()){
-                    for (i in 0 until fieldList!!.size) {
-                        if (valued == fieldListid?.get(i)) {
-                            AppUtils.logDebug(TAG,"fieldlist"+fieldListid.get(i)+valued)
-                            holder.mysppinner.setSelection(i)
-                        }
-                    }
+        if (!valued.isEmpty()) {
+            for (i in 0 until fieldList!!.size) {
+                if (valued == fieldListid?.get(i)) {
+                    AppUtils.logDebug(TAG, "fieldlist" + fieldListid.get(i) + valued)
+                    holder.mysppinner.setSelection(i)
                 }
+            }
+        }
 
 
 
@@ -517,33 +516,33 @@ class CreateTaskAdapter(
             }
         })
         holder.date.setOnClickListener {
-            var settime=""
+            var settime = ""
 
             val c = Calendar.getInstance()
-               val  mHour = c[Calendar.HOUR_OF_DAY]
-               val  mMinute = c[Calendar.MINUTE]
-               val  mSecond = c[Calendar.SECOND]
-            if (fieldtype=="Date"){
+            val mHour = c[Calendar.HOUR_OF_DAY]
+            val mMinute = c[Calendar.MINUTE]
+            val mSecond = c[Calendar.SECOND]
+            if (fieldtype == "Date") {
                 val date = DatePickerDialog.OnDateSetListener { v, year, month, day ->
 
                     myCalendar.set(Calendar.YEAR, year)
                     myCalendar.set(Calendar.MONTH, month)
                     myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                    updateLabel(holder.date,settime)
+                    updateLabel(holder.date, settime)
                 }
                 DatePickerDialog(
                     context, date, myCalendar.get(Calendar.YEAR),
                     myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)
                 ).show()
-            }
-            else{
-                val timePickerDialog = TimePickerDialog(context, OnTimeSetListener  { view, hourOfDay, minute  ->
-                    settime="T$hourOfDay:$minute"
-                    AppUtils.logDebug(TAG,"settime"+settime)
+            } else {
+                val timePickerDialog =
+                    TimePickerDialog(context, OnTimeSetListener { view, hourOfDay, minute ->
+                        settime = "T$hourOfDay:$minute"
+                        AppUtils.logDebug(TAG, "settime" + settime)
 //                    txtTime.setText("$hourOfDay:$minute")
-                    updateLabel(holder.date,settime)
+                        updateLabel(holder.date, settime)
 
-                }, mHour, mMinute, false)
+                    }, mHour, mMinute, false)
 
                 timePickerDialog.show()
 
@@ -552,7 +551,7 @@ class CreateTaskAdapter(
                     myCalendar.set(Calendar.YEAR, year)
                     myCalendar.set(Calendar.MONTH, month)
                     myCalendar.set(Calendar.DAY_OF_MONTH, day)
-                    updateLabel(holder.date,settime)
+                    updateLabel(holder.date, settime)
                 }
                 DatePickerDialog(
                     context, date, myCalendar.get(Calendar.YEAR),
@@ -566,14 +565,13 @@ class CreateTaskAdapter(
     }
 
 
-    private fun updateLabel(date: EditText,time:String) {
+    private fun updateLabel(date: EditText, time: String) {
         val myFormat = "yyyy-MM-dd"
         val dateFormat = SimpleDateFormat(myFormat, Locale.US)
-        if (time.isEmpty()){
+        if (time.isEmpty()) {
             date.setText(dateFormat.format(myCalendar.time))
-        }
-        else{
-            date.setText(dateFormat.format(myCalendar.time)+time)
+        } else {
+            date.setText(dateFormat.format(myCalendar.time) + time)
 
         }
     }

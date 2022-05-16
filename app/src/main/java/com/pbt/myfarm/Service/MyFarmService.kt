@@ -76,8 +76,8 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         val taskField = ArrayList<com.pbt.myfarm.ModelClass.TaskField>()
 
         var taskobject = ArrayList<com.pbt.myfarm.ModelClass.TaskObject>()
-        val taskObject = db.getTaskObject()
-        taskobjectt = taskObject
+//        val taskObject = db.getTaskObject()
+//        taskobjectt = taskObject
 
 
         val task = db.getTasksToBeSend(userID)
@@ -86,7 +86,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         AppUtils.logError(TAG,"Packs To Send==>"+Gson().toJson(task).toString())
 
 
-        senddata = SendDataMasterList(collectData, evnet, packnew, taskField, taskObject, task)
+        senddata = SendDataMasterList(collectData, evnet, packnew, taskField, taskobject, task)
 
 
         ApiClient.client.create(ApiInterFace::class.java).postJson(
