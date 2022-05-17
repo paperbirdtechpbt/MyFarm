@@ -51,6 +51,7 @@ import kotlin.collections.ArrayList
 
 
 class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
+
     val myCalendar: Calendar = Calendar.getInstance()
     var viewmodel: CreatetaskViewModel? = null
     var binding: ActivityCreateTaskBinding? = null
@@ -152,12 +153,11 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         binding?.viewModel = viewmodel
         viewmodel?.progressbar = createtaskProgressbar
 
-            AppUtils.logDebug(TAG, "updateTaskBoolen==" + updateTaskBoolen)
+        AppUtils.logDebug(TAG, "updateTaskBoolen==" + updateTaskBoolen)
 
         if (updateTaskBoolen) {
             viewmodel?.onConfigFieldList(this, true, updateTaskList)
-        }
-        else {
+        } else {
             viewmodel?.onConfigFieldListFalse(this, configtype)
         }
 
@@ -228,7 +228,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
         setCommunityGroup(communitGroup)
 
-        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup,this)
+        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup, this)
 
 
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -320,7 +320,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         }
     }
-
 
 
     private fun setCommunityGroup(communitGroup: Spinner) {

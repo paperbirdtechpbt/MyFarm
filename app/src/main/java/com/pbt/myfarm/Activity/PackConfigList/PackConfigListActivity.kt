@@ -13,6 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigViewModel
@@ -94,6 +95,7 @@ class PackConfigListActivity : AppCompatActivity() {
 
         viewModell?.onConfigTypeRequest(this)
         viewModell?.configlist?.observe(this, Observer { configtype ->
+            AppUtils.logDebug(TAG,"configtypoelist"+ Gson().toJson(configtype).toString())
             select_packconfiglist.layoutManager= LinearLayoutManager(this)
 
             adapter = AdapterPackSelectconfigType(this, configtype!!) { position, taskname ,list->

@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -60,8 +61,9 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
     ) {
 
         if (response.body()?.error==false){
-
             try{
+                AppUtils.logDebug(TAG," try select packconfiglist eerrofalse ")
+
                 configlist.value = emptyList()
                 val baseList : PackConfigResponse =  Gson().fromJson(
                     Gson().toJson(response.body()),
@@ -72,12 +74,19 @@ class SelectPackConfigViewModel(var activity: Application): AndroidViewModel(act
 
                 }
                 configlist.value = upCommingTripList
+                AppUtils.logDebug(TAG,"configtypoelist"+ Gson().toJson(configlist).toString())
+
 
             }
             catch (e:Exception){
+                AppUtils.logDebug(TAG," catch select packconfiglist eerrofalse ")
+
                 AppUtils.logDebug(TAG,e.message.toString())
             }
 
+        }
+        else{
+            Toast.makeText(activity, "${Gson().toJson(response?.body())}", Toast.LENGTH_SHORT).show()
         }
 
 
