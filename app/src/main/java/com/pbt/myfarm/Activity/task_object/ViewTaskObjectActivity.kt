@@ -33,6 +33,8 @@ class ViewTaskObjectActivity : AppCompatActivity() {
         recyclerViewTaskObject.adapter = adapter
 
         recyclersViewVisible(recyclerViewTaskObject,false)
+        conNoData(false)
+        progressBar(true)
 
         viewModel = ViewModelProvider(
             this,
@@ -46,6 +48,10 @@ class ViewTaskObjectActivity : AppCompatActivity() {
             model.getObjectsList(updateTaskList!!.id.toString())
 
             model.taskObjectList.observe(this) { taskObjectList ->
+
+                progressBar(false)
+                Log.d("##1234650","List Size ==>> ${taskObjectList.size}")
+
                 if (!taskObjectList.isNullOrEmpty()) {
 
                     recyclersViewVisible(recyclerViewTaskObject,true)
@@ -61,7 +67,8 @@ class ViewTaskObjectActivity : AppCompatActivity() {
                     }
 
                 } else {
-                    Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show()
+                    progressBar(false)
+                    conNoData(true)
                 }
             }
 
@@ -80,7 +87,12 @@ class ViewTaskObjectActivity : AppCompatActivity() {
                 adapter?.apply {
                     items.removeAt(removeIndex)
                     this.notifyDataSetChanged()
+
+                    if(items.isNullOrEmpty())
+                    conNoData(true)
                 }
+
+
             }
         }
     }
@@ -90,6 +102,20 @@ class ViewTaskObjectActivity : AppCompatActivity() {
             recyclerView.visibility = View.VISIBLE
         else
             recyclerView.visibility = View.GONE
+    }
+
+    private fun conNoData( isVisible : Boolean){
+        if(isVisible)
+            conNoData.visibility = View.VISIBLE
+        else
+            conNoData.visibility = View.GONE
+    }
+
+    private fun progressBar( isVisible : Boolean){
+        if(isVisible)
+            progressBar.visibility = View.VISIBLE
+        else
+            progressBar.visibility = View.GONE
     }
 
 }

@@ -55,6 +55,8 @@ class ViewTaskObjectViewModel (val activity: Application) : AndroidViewModel(act
 
         if(response.isSuccessful && response.body()?.data?.task_objects?.isNullOrEmpty() == false) {
             taskObjectList.postValue(response.body()?.data?.task_objects)
+        }else{
+            taskObjectList.postValue(emptyList())
         }
     }
 
