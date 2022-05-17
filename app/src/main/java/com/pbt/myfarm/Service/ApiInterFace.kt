@@ -97,6 +97,18 @@ interface ApiInterFace {
     ):Call<PackFieldResponse>
 
    @FormUrlEncoded
+    @POST("api/storePack")
+   fun storePackwithTaskid(
+        @Field("config_type") config_type: String,
+        @Field("description") description: String,
+        @Field("community_group") community_group: String,
+        @Field("user_id") user_id: String,
+        @Field("field_array") field_array:String,
+        @Field("name_prefix") name_prefix: String,
+        @Field("task_id") task_id: String,
+    ):Call<PackFieldResponse>
+
+   @FormUrlEncoded
     @POST("api/deleteTask")
    fun deleteTask(
         @Field("id") id: String,

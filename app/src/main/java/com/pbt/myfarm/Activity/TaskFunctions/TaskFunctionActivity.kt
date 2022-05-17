@@ -42,6 +42,7 @@ import com.pbt.myfarm.Service.ResponseTaskExecution
 import com.pbt.myfarm.Task
 import com.pbt.myfarm.TaskMediaFile
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKLIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestTextBody
 import com.pbt.myfarm.Util.MySharedPreference
@@ -425,6 +426,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
                         val intent =
                             Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
+                        intent.putExtra(CONST_TASKFUNCTION_TASKLIST,updateTaskID)
                         startActivity(intent)
 
                         label_filename.visibility = View.GONE
