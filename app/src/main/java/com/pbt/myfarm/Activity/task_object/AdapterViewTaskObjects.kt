@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.databinding.ItemviewtaskobjectBinding
 
-class AdapterViewTaskObjects(private val context: Context, private val items: List<TaskObject>) :
+class AdapterViewTaskObjects(private val context: Context, val items: ArrayList<TaskObject>) :
     RecyclerView.Adapter<AdapterViewTaskObjects.ViewHolder>() {
+
 
     var editItemClick: ((TaskObject) -> Unit)? = null
     var deleteItemClick: ((TaskObject) -> Unit)? = null
@@ -45,4 +46,6 @@ class AdapterViewTaskObjects(private val context: Context, private val items: Li
             }
         }
     }
+
+
 }

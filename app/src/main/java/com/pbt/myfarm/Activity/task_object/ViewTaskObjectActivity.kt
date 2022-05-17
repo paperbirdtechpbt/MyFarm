@@ -1,11 +1,12 @@
 package com.pbt.myfarm.Activity.task_object
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Task
 import com.pbt.myfarm.TaskObject
@@ -31,6 +32,8 @@ class ViewTaskObjectActivity : AppCompatActivity() {
         adapter = AdapterViewTaskObjects(this, listTaskObject)
         recyclerViewTaskObject.adapter = adapter
 
+        recyclersViewVisible(recyclerViewTaskObject,false)
+
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
@@ -44,9 +47,11 @@ class ViewTaskObjectActivity : AppCompatActivity() {
 
             model.taskObjectList.observe(this) { taskObjectList ->
                 if (!taskObjectList.isNullOrEmpty()) {
+
+                    recyclersViewVisible(recyclerViewTaskObject,true)
+
                     listTaskObject.addAll(taskObjectList)
 
-                    Log.d("##1234650", " observer List Item  ==>> " + taskObjectList.size)
                     adapter!!.notifyDataSetChanged()
 
                     adapter?.editItemClick = {
@@ -62,40 +67,29 @@ class ViewTaskObjectActivity : AppCompatActivity() {
 
             model.deleteHttpResponse.observe(this) {
 
-                val mArrayList: MutableList<TaskObject> = mutableListOf()
-
-                mArrayList.addAll(model.taskObjectList.value!!)
-
-                Log.d("##1234650","List Size ${mArrayList.size}")
-
                 var removeIndex = 0;
 
-                for ((count, item) in mArrayList.withIndex()) {
-                    if (model.deleteID.value == item.id.toString()) {
-                        removeIndex = count
-                        Log.d("##1234650", "List Size ${item.id}")
+                adapter?.apply {
+                    for ((count, item) in items.withIndex()) {
+                        if (model.deleteID.value == item.id.toString()) {
+                            removeIndex = count
+                        }
                     }
                 }
 
-                val removeArray = mArrayList.toMutableList().apply {
-                    removeAt(removeIndex)
+                adapter?.apply {
+                    items.removeAt(removeIndex)
+                    this.notifyDataSetChanged()
                 }
-
-                adapter.apply {
-                    this?.notifyItemChanged(removeIndex)
-                }
-
-                adapter!!.notifyDataSetChanged()
-
-//                adapter!!.notifyItemRangeChanged(removeIndex, mArrayList.size);
-//                model.taskObjectList.postValue(removeArray)
-
-
-
-                Log.d("##1234650","List Size ${removeArray.size}")
-
-//                model.taskObjectList.postValue(removArray)
             }
         }
     }
+
+    private fun recyclersViewVisible(recyclerView: RecyclerView, isVisible : Boolean){
+        if(isVisible)
+            recyclerView.visibility = View.VISIBLE
+        else
+            recyclerView.visibility = View.GONE
+    }
+
 }
