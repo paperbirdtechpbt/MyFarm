@@ -24,6 +24,8 @@ class ViewTaskObjectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_view_task_object)
 
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+
         initViewModel()
     }
 

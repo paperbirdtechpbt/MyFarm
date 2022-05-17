@@ -43,7 +43,13 @@
         tools:targetApi="n">
         <activity
             android:name=".Activity.task_object.ViewTaskObjectActivity"
-            android:exported="false" />
+            android:exported="true">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.TaskFunctions.TaskFunctionActivity" />
+
+        </activity>
         <activity android:name=".Activity.Event.EditEventActivity" />
         <activity
             android:name=".Activity.Event.ViewEventActivity"
