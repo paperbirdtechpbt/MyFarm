@@ -572,9 +572,10 @@ class CreateTaskAdapter(
     }
 
     private fun checkFoucusable(myview: EditText?, spinner: Spinner?, iseditable: In) {
-        if (AppUtils().isInternet(context)) {
-            if (!privilegeListName.contains("CanOverideEditTask")) {
-                if (iseditable == 0) {
+        if(updateTaskIdBoolean){
+            if (AppUtils().isInternet(context)) {
+                if (!privilegeListName.contains("CanOverideEditTask")) {
+                    if (iseditable == 0) {
 
                         if (spinner == null) {
                             myview?.isEnabled = false
@@ -600,13 +601,13 @@ class CreateTaskAdapter(
                         }
 
 
+                    }
                 }
-            }
 
 
-        } else {
-            if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
-                if (iseditable == 0) {
+            } else {
+                if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
+                    if (iseditable == 0) {
 
                         if (spinner == null) {
                             myview?.isEnabled = false
@@ -632,11 +633,11 @@ class CreateTaskAdapter(
                             )
                         }
 
+                    }
                 }
             }
-
-
         }
+
 
     }
 

@@ -69,12 +69,14 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
          roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
 
+        chechpermission()
 
-//        if (chechpermission()) {
-//            startService(Intent(this, MyFarmService::class.java))
-//        } else {
-//            Toast.makeText(this, "Permission Mandatory", Toast.LENGTH_SHORT).show()
-//        }
+
+
+
+        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
+            startService(Intent(this, MyFarmService::class.java))
+        }
         val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
         label_username_main.setText(MySharedPreference.getUser(this)?.name)

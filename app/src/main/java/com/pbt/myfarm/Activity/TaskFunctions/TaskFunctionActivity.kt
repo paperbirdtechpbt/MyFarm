@@ -83,8 +83,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
     var taskfunction: Spinner? = null
+private     val CAMERA_PERMISSION_CODE = 100
+private     val STORAGE_PERMISSION_CODE  = 101
+
 
     var db: DbHelper? = null
+
 
     val listLocalPrivilegesName = ArrayList<String>()
 
@@ -112,174 +116,179 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 initViewModel(it.task_config_id.toString(), it.id.toString())
             }
 
-            checkAndRequestPermissions()
         }
         recycler_viewMedia?.layoutManager = LinearLayoutManager(this)
         recycler_viewMedia?.visibility = View.GONE
         label_filename?.visibility = View.GONE
 
-
+        chechpermission()
 
         btn_choosefile.setOnClickListener {
-
-            if (checkAndRequestPermissions()) {
-                val options = arrayOf<CharSequence>(
-                    "Take Photo",
-                    "Choose from Gallery",
-                    "Capture Video",
-                    "Cancel"
-                )
+            chechpermission()
+//mypermission()
+           val options = arrayOf<CharSequence>(
+               "Take Photo",
+               "Choose from Gallery",
+               "Capture Video",
+               "Cancel"
+           )
 //        val options = arrayOf<CharSequence>("Take Photo")
-                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder.setTitle("Choose your profile picture")
-                builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-                    if (options[item] == "Take Photo") {
-                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        setResult(CAMERA_REQUEST, cameraIntent)
-                        resultLauncher.launch(cameraIntent)
-                    } else if (options[item] == "Choose from Gallery") {
+           val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+           builder.setTitle("Choose your profile picture")
+           builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+               if (options[item] == "Take Photo") {
+                   val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                   setResult(CAMERA_REQUEST, cameraIntent)
+                   resultLauncher.launch(cameraIntent)
+               } else if (options[item] == "Choose from Gallery") {
 
-                        val pickPhoto = Intent()
-                        pickPhoto.setType("*/*")
-                        pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-                        setResult(GELARY_REQUEST, pickPhoto)
-                        gallaryLauncher.launch(pickPhoto)
+                   val pickPhoto = Intent()
+                   pickPhoto.setType("*/*")
+                   pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
+                   setResult(GELARY_REQUEST, pickPhoto)
+                   gallaryLauncher.launch(pickPhoto)
 
-                    } else if (options[item] == "Capture Video") {
+               } else if (options[item] == "Capture Video") {
 
-                        openCameraToCaptureVideo()
+                   openCameraToCaptureVideo()
 
-                    } else if (options[item] == "Cancel") {
-                        dialog.dismiss()
-                    }
-                })
-                builder.show()
-            }
+               } else if (options[item] == "Cancel") {
+                   dialog.dismiss()
+               }
+           })
+           builder.show()
+
+
+
         }
         btn_execute.setOnClickListener {
 
-            val mTaskID = updateTaskID?.id.toString();
-            val mFunctionID =  selectedFunctionId.toString()
-            val mUserID =  MySharedPreference.getUser(this)?.id.toString()
-            val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
-            val mFieldID = selectedFunctionFieldId.toString()
+                val mTaskID = updateTaskID?.id.toString();
+                val mFunctionID =  selectedFunctionId.toString()
+                val mUserID =  MySharedPreference.getUser(this)?.id.toString()
+                val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
+                val mFieldID = selectedFunctionFieldId.toString()
 
 
-            if (selectedFunctionId == 172 || selectedFunctionId == 168) {
-                Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
-            } else {
-                if (selectedFunctionId == 173) {
-
-                    progress_circular?.visibility = View.VISIBLE
-                    progress_circularlabel?.visibility = View.VISIBLE
+                if (selectedFunctionId == 172 || selectedFunctionId == 168) {
+                    Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
                 } else {
-                    progressbar_taskexecute?.visibility = View.VISIBLE
-                }
+                    if (selectedFunctionId == 173) {
 
-                btn_execute.visibility = View.GONE
+                        progress_circular?.visibility = View.VISIBLE
+                        progress_circularlabel?.visibility = View.VISIBLE
+                    } else {
+                        progressbar_taskexecute?.visibility = View.VISIBLE
+                    }
 
-                if (AppUtils().isInternet(this)) {
+                    btn_execute.visibility = View.GONE
 
-                    val service = ApiClient.client.create(ApiInterFace::class.java)
+                    if (AppUtils().isInternet(this)) {
 
-                    val body = if (fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
-                        fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
-                    else
-                        fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
+                        val service = ApiClient.client.create(ApiInterFace::class.java)
 
-                    val dataVideo: MultipartBody.Part? =
-                        body?.let {
-                            MultipartBody.Part.createFormData(
-                                "file",
-                                fileVideo!!.name,
-                                it
-                            )
-                        }
-                    val taskID = paramRequestTextBody(mTaskID)
-                    val functionID = paramRequestTextBody(mFunctionID)
-                    val userID = paramRequestTextBody(mUserID)
-                    val fieldID = paramRequestTextBody(mFieldID)
+                        val body = if (fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
+                            fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
+                        else
+                            fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
 
-                    val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
-
-                    apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
-                        override fun onResponse(
-                            call: Call<ResponseTaskExecution>,
-                            response: Response<ResponseTaskExecution>
-                        ) {
-                            AppUtils.logDebug(TAG, response.body().toString())
-                            val message=response.body()?.msg.toString()
-                            if (response.body()?.error == false) {
-                                progress_circular?.visibility = View.GONE
-                                progress_circularlabel?.visibility = View.GONE
-                                progressbar_taskexecute?.visibility = View.GONE
-                                btn_execute.visibility = View.VISIBLE
-                                Toast.makeText(
-                                    this@TaskFunctionActivity,
-                                    message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                finish()
-                            } else {
-                                progress_circular?.visibility = View.GONE
-                                progress_circularlabel?.visibility = View.GONE
-                                progressbar_taskexecute?.visibility = View.GONE
-
-                                btn_execute.visibility = View.VISIBLE
-                                Toast.makeText(
-                                    this@TaskFunctionActivity,
-                                    message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
+                        val dataVideo: MultipartBody.Part? =
+                            body?.let {
+                                MultipartBody.Part.createFormData(
+                                    "file",
+                                    fileVideo!!.name,
+                                    it
+                                )
                             }
-                        }
+                        val taskID = paramRequestTextBody(mTaskID)
+                        val functionID = paramRequestTextBody(mFunctionID)
+                        val userID = paramRequestTextBody(mUserID)
+                        val fieldID = paramRequestTextBody(mFieldID)
 
-                        //
-                        override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
-                            try {
-                                progress_circular?.visibility = View.GONE
-                                progress_circularlabel?.visibility = View.GONE
-                                btn_execute.visibility = View.VISIBLE
-                                AppUtils.logError(TAG, t.message.toString())
-                            } catch (e: Exception) {
-                                progress_circular?.visibility = View.GONE
-                                progress_circularlabel?.visibility = View.GONE
-                                btn_execute.visibility = View.VISIBLE
-                                AppUtils.logError(TAG, t.message.toString())
+                        AppUtils.logDebug(TAG,"taskID $taskID, functionID $functionID userID $userID fieldID $fieldID")
+                        val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
 
+                        apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
+                            override fun onResponse(
+                                call: Call<ResponseTaskExecution>,
+                                response: Response<ResponseTaskExecution>
+                            ) {
+                                AppUtils.logDebug(TAG, response.body().toString())
+                                val message=response.body()?.msg.toString()
+                                if (response.body()?.error == false) {
+                                    progress_circular?.visibility = View.GONE
+                                    progress_circularlabel?.visibility = View.GONE
+                                    progressbar_taskexecute?.visibility = View.GONE
+                                    btn_execute.visibility = View.VISIBLE
+                                    Toast.makeText(
+                                        this@TaskFunctionActivity,
+                                        message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    finish()
+                                } else {
+                                    progress_circular?.visibility = View.GONE
+                                    progress_circularlabel?.visibility = View.GONE
+                                    progressbar_taskexecute?.visibility = View.GONE
+
+                                    btn_execute.visibility = View.VISIBLE
+                                    Toast.makeText(
+                                        this@TaskFunctionActivity,
+                                        message,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                }
                             }
-                            Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT)
-                                .show()
-                        }
 
-                    })
-                } else {
+                            //
+                            override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
+                                try {
+                                    progress_circular?.visibility = View.GONE
+                                    progress_circularlabel?.visibility = View.GONE
+                                    btn_execute.visibility = View.VISIBLE
+                                    AppUtils.logError(TAG, t.message.toString())
+                                } catch (e: Exception) {
+                                    progress_circular?.visibility = View.GONE
+                                    progress_circularlabel?.visibility = View.GONE
+                                    btn_execute.visibility = View.VISIBLE
+                                    AppUtils.logError(TAG, t.message.toString())
+
+                                }
+                                Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
+                        })
+                    } else {
 //                    val db = DbHelper(this, null)
 //                    viewmodel?.apply {
 //                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
 //                    }
-                    val db = DbHelper(this, null)
+                        val db = DbHelper(this, null)
 //                    db.checkIftaskStart(updateTaskID)
-                    val taskobject = com.pbt.myfarm.TaskObject(
-                        task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
-                        function = selectedFunctionId.toString(),
-                    )
+                        val taskobject = com.pbt.myfarm.TaskObject(
+                            task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
+                            function = selectedFunctionId.toString(),
+                        )
 
-                    val isSuucess = db.addTaskObjectOffline(taskobject, "1")
-                    if (isSuucess) {
-                        progressbar_taskexecute.visibility = View.GONE
-                        Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
-                    } else {
-                        progressbar_taskexecute.visibility = View.GONE
+                        val isSuucess = db.addTaskObjectOffline(taskobject, "1")
+                        if (isSuucess) {
+                            progressbar_taskexecute.visibility = View.GONE
+                            Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
+                        } else {
+                            progressbar_taskexecute.visibility = View.GONE
 
-                        Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
 
+                        }
                     }
                 }
+
             }
-        }
+
     }
+
 
 
     private fun initViewModel(taskConfigID: String, updateTaskID: String) {
@@ -298,25 +307,30 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
             AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())
 //            AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(privilegeListName).toString())
+            val functionlist=ArrayList<ListTaskFunctions>()
 
             if (!list.isNullOrEmpty()) {
 
-                setSpinner(list, taskfunction!!)
-//                for (i in 0 until list.size) {
-//                    if (list.get(i).id == "171" || list.get(i).id == "175" || list.get(i).id == "176") {
-//                        taskfunction_field.visibility = View.VISIBLE
-//                        label_fieldname.visibility = View.VISIBLE
-//                    } else if (list.get(i).id == "173") {
-//                        taskfunction_media.visibility = View.VISIBLE
-//                        btn_choosefile.visibility = View.VISIBLE
-//                        label_attachmedia.visibility = View.VISIBLE
-//
-//
-//                    } else if (list.get(i).id == "174") {
-//                        //pass intent to craete packactivty with task id
-//                        //change in api according to this
-//                    }
-//                }
+                AppUtils.logDebug(TAG,"-=-=-=-=-==-=-=-$privilegeListName")
+                for (i in list.indices){
+                    val item=list.get(i).name1
+
+                      if (item!!.contains("CREATE_PACK") || item!!.contains("ADD_PACK")){
+                          if (!privilegeListName.contains("Pack") && !privilegeListName.contains("InsertPack") ){
+//asda
+                      }
+                          else{
+                              functionlist.add(list.get(i))
+
+                          }
+                    }
+                    else{
+                          functionlist.add(list.get(i))
+                    }
+                }
+
+                setSpinner(functionlist, taskfunction!!)
+
             }
         })
     }
@@ -422,7 +436,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_attachmedia.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
                         label_filename.visibility = View.GONE
-                    } else if (item == "174" || item == "175") {
+                    }
+                    else if (item == "174" ) {
 
                         val intent =
                             Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
@@ -437,6 +452,20 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
+                    }
+
+                    else if ( item == "175" ) {
+
+                        taskfunction_media.visibility = View.GONE
+                        btn_choosefile.visibility = View.GONE
+                        label_attachmedia.visibility = View.GONE
+                        label_filename.visibility = View.GONE
+                        recycler_viewMedia.visibility = View.GONE
+                        label_filename.visibility = View.GONE
+                        taskfunction_field.visibility = View.VISIBLE
+                        label_fieldname.visibility = View.VISIBLE
+
+                        callApi("175")
                     }
                 }
             }
@@ -461,7 +490,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     MySharedPreference.getUser(this)?.id.toString(),
                     updateTaskID?.id.toString(), selectedFunctionId
                 ).enqueue(this)
-        } else {
+        }
+        else {
             AppUtils.logDebug(TAG, "callapi====" + selectedFunctionId)
             val db = DbHelper(this, null)
 
@@ -841,28 +871,20 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         taskfunctionField: Spinner?,
         function: ArrayList<ListFunctionFieldlist>
     ) {
-        taskfunction_field?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        taskfunctionField?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-                if (AppUtils().isInternet(this@TaskFunctionActivity)) {
-                    if (privilegeListName.contains("CanOverideEditTask")) {
+
 
                         selectedFunctionFieldId = function.get(position).id!!.toInt()
                         AppUtils.logDebug(
                             TAG,
                             "onitem Select lIstner" + selectedFunctionFieldId.toString()
                         )
-                    }
-                } else {
-                    if (listLocalPrivilegesName.contains("CanOverideEditTask")) {
-                        selectedFunctionFieldId = function.get(position).id!!.toInt()
-                        AppUtils.logDebug(
-                            TAG,
-                            "onitem Select lIstner" + selectedFunctionFieldId.toString()
-                        )
-                    }
-                }
+
+
+
 
             }
 
@@ -894,56 +916,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     }
 
-    private fun checkAndRequestPermissions(): Boolean {
-        val permissionSendMessage = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-        val locationPermission =
-            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        val listPermissionsNeeded: MutableList<String> = java.util.ArrayList()
-        if (locationPermission != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-        if (permissionSendMessage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(
-                this,
-                listPermissionsNeeded.toTypedArray(),
-                1212
-            )
-            return false
-        }
-        return true
-    }
 
-    //
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            MY_CAMERA_PERMISSION_CODE -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
-                        android.Manifest.permission.CAMERA
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestPermissions(
-                        arrayOf(
-                            android.Manifest.permission.CAMERA,
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            android.Manifest.permission.READ_EXTERNAL_STORAGE
-                        ), 100
-                    )
-
-                }
-                return
-            }
-        }
-    }
 
     fun downloadFile(url: String, name: String) {
         manager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
@@ -966,4 +939,33 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         progress_circular?.setProgressCompat(percentage, true)
         progress_circular_label.setText(percentage.toString() + "%")
     }
-}
+    private fun chechpermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
+                android.Manifest.permission.READ_CONTACTS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(
+                    android.Manifest.permission.CAMERA,
+                    android.Manifest.permission.INTERNET,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                ), 100
+            )
+
+        }
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+
+    }
+
+
+
+    }
+
+
+
