@@ -48,6 +48,8 @@ class AppConstant {
         const val CONST_PACK_UPDATE_LIST = "packupdatelist"
         const val CONST_TASKFUNCTION_TASKID = "taskfunction"
         const val CONST_TASKFUNCTION_TASKLIST = "tasklistforpack"
+        const val CONST_TASKFUNCTION_OBJECT = "task_object"
+        const val CONST_SELECTED_TASK_FUNCTION = "tasklistforpack"
         const val CONT_PACK = "packlist"
 
         //TABLE newpack

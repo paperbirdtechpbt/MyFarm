@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="400dp"
+    android:layout_width="350dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
 
@@ -9,6 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/btnCancel"
         android:drawableLeft="@drawable/ic_cancel"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,10 +22,10 @@
         android:text="Task Function"
         android:textColor="#807D7D"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/edit_taskfunction"
-        app:layout_constraintStart_toStartOf="@id/edit_taskfunction" />
+        app:layout_constraintBottom_toTopOf="@id/spinnerTaskFunction"
+        app:layout_constraintStart_toStartOf="@id/spinnerTaskFunction" />
     <Spinner
-        android:id="@+id/edit_taskfunction"
+        android:id="@+id/spinnerTaskFunction"
         style="@style/Edittext"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -33,23 +34,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/label_taskfuncitonfield"
+        android:id="@+id/txtLableAddPerson"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Person"
         android:textColor="#807D7D"
+        android:visibility="gone"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@id/edit_taskfunction_field"
-        app:layout_constraintStart_toStartOf="@id/edit_taskfunction_field" />
+        app:layout_constraintBottom_toTopOf="@id/spinnerTaskField"
+        app:layout_constraintStart_toStartOf="@id/spinnerTaskField" />
 
     <Spinner
-        android:id="@+id/edit_taskfunction_field"
+        android:id="@+id/spinnerTaskField"
         style="@style/Edittext"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="40dp"
+        android:visibility="gone"
         android:background="@drawable/design_edittext"
-        app:layout_constraintTop_toBottomOf="@id/edit_taskfunction" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerTaskFunction" />
 
     <Button
         android:id="@+id/btn_updateTaskViewObject"
@@ -57,12 +60,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Update TaskFuntion"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:text="Update Task Funtion"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_taskfunction_field" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerTaskField" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,9 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ResponseTaskExecution
 import com.pbt.myfarm.Task
 import com.pbt.myfarm.TaskMediaFile
+import com.pbt.myfarm.TaskObject
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SELECTED_TASK_FUNCTION
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_OBJECT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKLIST
 import com.pbt.myfarm.Util.AppUtils
@@ -84,9 +87,14 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var progress_circularlabel: TextView? = null
     var taskfunction: Spinner? = null
 
+    var selectedFunctionName = ""
+    var selectedFunctionNo = ""
+
     var db: DbHelper? = null
 
     val listLocalPrivilegesName = ArrayList<String>()
+
+    var taskObject : TaskObject ? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +115,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
+
+            if(intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT) != null){
+                taskObject = taskObject ?:  intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT)
+                selectedFunctionName = taskObject?.function ?: ""
+                selectedFunctionNo = taskObject?.no ?: ""
+            }
 
             updateTaskID?.let {
                 initViewModel(it.task_config_id.toString(), it.id.toString())
@@ -352,6 +366,24 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, listName)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction.setAdapter(dd)
+
+        var selectedID = ""
+        if(selectedFunctionName == "PERSON") {
+            selectedID = "171"
+        }else if(selectedFunctionName == "PACK") {
+            selectedID = "175"
+        }else if(selectedFunctionName == "CONTAINER") {
+            selectedID = "176"
+        }
+
+        if(!selectedFunctionName.isEmpty()){
+            for ((count, item) in listID.withIndex()) {
+                if(item == selectedID) {
+                    taskfunction.setSelection(count)
+                }
+            }
+        }
+
         setListner(taskfunction, listID, listName)
 
 
@@ -482,6 +514,15 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, personListName)
                 dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 taskfunction_field.setAdapter(dd)
+
+                if(!selectedFunctionNo.isEmpty()){
+                    for ((count, item) in personListId.withIndex()) {
+                        if(item == selectedFunctionNo) {
+                            taskfunction_field.setSelection(count)
+                        }
+                    }
+                }
+
             } else if (selectedFunctionId == "176") {
                 val containerlist = db.getContainerList()
                 val containerlistId = ArrayList<String>()
@@ -827,12 +868,22 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     private fun setAdapterField(function: ArrayList<ListFunctionFieldlist>) {
         val functionname = ArrayList<String>()
+        val functionid = ArrayList<String>()
         for (i in 0 until function.size) {
             functionname.add(function.get(i).name.toString())
+            functionid.add(function.get(i).id.toString())
         }
         val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, functionname)
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction_field.setAdapter(dd)
+
+        if(!selectedFunctionNo.isEmpty()){
+            for ((count, item) in functionid.withIndex()) {
+                if(item == selectedFunctionNo) {
+                    taskfunction_field.setSelection(count)
+                }
+            }
+        }
 
         setFieldListner(taskfunction_field, function)
     }

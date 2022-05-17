@@ -714,7 +714,7 @@ data class TaskMediaFile(
 )
 
 
-
+@Parcelize
 data class TaskObject(
     val `class`: String?=null,
     val deleted_at: String?=null,
@@ -729,7 +729,8 @@ data class TaskObject(
     val type: String?=null,
     val container: String?=null,
     var status: String?=null,
-)
+):Parcelable
+
 @Parcelize
 data class Task(
     val com_group: Int?=null,
