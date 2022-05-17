@@ -63,6 +63,17 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_task)
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
+
+        initViewModel()
+
+        btn_create_task.setOnClickListener {
+            startActivity(Intent(this, SelectConfigTypeActivity::class.java))
+
+        }
+    }
+
+    private fun initViewModel() {
         if (AppUtils().isInternet(this)){
             if (privilegeListName.contains("InsertTask")){
                 binding?.btnCreateTask?.visibility=View.VISIBLE
@@ -74,15 +85,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             }
         }
 
-        initViewModel()
-
-        btn_create_task.setOnClickListener {
-            startActivity(Intent(this, SelectConfigTypeActivity::class.java))
-
-        }
-    }
-
-    private fun initViewModel() {
         viewModell = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
@@ -105,12 +107,17 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             }
 
             tasklistSize.setText("Total Tasks-" + eventlistt.size)
+
             adapter = AdapterViewTask(this, eventlistt!!) { position, taskname, checkAction, list ->
+
                 mytasklist = list
+
                 if (checkAction) {
 
                     showAlertDailog(taskname, position, mytasklist!!)
-                } else {
+
+                }
+                else {
                     updateTaskBoolen = true
                     selectedComunityGroupTask= list.com_group!!
                     val intent = Intent(this, CreateTaskActivity::class.java)

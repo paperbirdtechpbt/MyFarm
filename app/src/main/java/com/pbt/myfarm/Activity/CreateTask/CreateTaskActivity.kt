@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.CreateTask
 
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +19,8 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
@@ -38,6 +41,7 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityCreateTaskBinding
 import kotlinx.android.synthetic.main.activity_create_task.*
+import kotlinx.android.synthetic.main.itemcongiffeildlist.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -97,9 +101,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
 
-        }
-
-        else {
+        } else {
 
             configtype = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
 
@@ -107,6 +109,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         if (updateTaskList == null) {
             val buttonTask: Button = findViewById(R.id.btn_taskfuntion)
             buttonTask.visibility = View.GONE
+            btn_taskobject.visibility = View.GONE
         }
 
 //        if (checkInternetConnection()) {
@@ -119,8 +122,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
             startActivity(intent)
         }
-        btn_taskobject.setOnClickListener{
-            val intent = Intent(this,ViewTaskObjectActivity::class.java)
+        btn_taskobject.setOnClickListener {
+            val intent = Intent(this, ViewTaskObjectActivity::class.java)
             intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
             startActivity(intent)
         }
@@ -141,35 +144,28 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             field_prefix.setText(updateTaskList?.taskConfigName)
             field_desciption.setText(updateTaskList?.description)
-//            btn_create_task.visibility=View.GONE
-//            btn_update_task.visibility=View.VISIBLE
-        }
-        else {
+
+        } else {
             field_prefix.setText(configtype?.name)
             field_desciption.setText(configtype?.description)
         }
         binding?.viewModel = viewmodel
         viewmodel?.progressbar = createtaskProgressbar
-        AppUtils.logDebug(TAG,"updateTaskBoolen=="+updateTaskBoolen)
+
+            AppUtils.logDebug(TAG, "updateTaskBoolen==" + updateTaskBoolen)
+
         if (updateTaskBoolen) {
-
-            viewmodel?.onConfigFieldList(
-                this,
-                true, updateTaskList
-            )
-
-        } else {
-
+            viewmodel?.onConfigFieldList(this, true, updateTaskList)
+        }
+        else {
             viewmodel?.onConfigFieldListFalse(this, configtype)
         }
-
 
         viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
 
             if (!list.isNullOrEmpty()) {
                 createtaskProgressbar.visibility = View.GONE
-            }
-            else{
+            } else {
                 createtaskProgressbar.visibility = View.GONE
                 layout_ProgressBar.visibility = View.GONE
 
@@ -178,7 +174,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 Gson().fromJson(Gson().toJson(list), ArrayList<ConfigFieldList>()::class.java)
             recycler_taskconfiglist?.layoutManager = LinearLayoutManager(this)
 
-            AppUtils.logDebug(TAG,"list size for taskcreate==${list}")
+            AppUtils.logDebug(TAG, "list size for taskcreate==${list}")
 
             adapter = CreateTaskAdapter(this, config, updateTaskBoolen) { list, name ->
                 while (list.contains("0")) {
@@ -231,6 +227,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
         setCommunityGroup(communitGroup)
+
+        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup,this)
+
 
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -289,8 +288,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
                 btn_create_task.visibility = View.GONE
 
-            }
-            else {
+            } else {
                 if (AppUtils().isInternet(this)) {
                     btn_create_task.visibility = View.GONE
 
@@ -323,18 +321,20 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         }
     }
 
+
+
     private fun setCommunityGroup(communitGroup: Spinner) {
         Handler(Looper.getMainLooper()).postDelayed({
             val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, groupArray!!)
             dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communitGroup.setAdapter(dd)
-            AppUtils.logDebug(TAG,"list of comunitygroup for createtask=${groupArray}")
+            AppUtils.logDebug(TAG, "list of comunitygroup for createtask=${groupArray}")
 
 
-            if (selectedComunityGroupTask!=0){
-                for (i in groupArrayId!!.indices){
-                    val item=groupArrayId!!.get(i).toDouble().toInt()
-                    if (selectedComunityGroupTask== item){
+            if (selectedComunityGroupTask != 0) {
+                for (i in groupArrayId!!.indices) {
+                    val item = groupArrayId!!.get(i).toDouble().toInt()
+                    if (selectedComunityGroupTask == item) {
                         communitGroup.setSelection(i)
 
                     }
@@ -376,7 +376,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
 
-            AppUtils.logDebug(TAG, "failure" + t.message)
+        AppUtils.logDebug(TAG, "failure" + t.message)
 
 
         btn_create_task.visibility = View.VISIBLE

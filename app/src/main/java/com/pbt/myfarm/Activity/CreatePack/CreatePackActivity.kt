@@ -28,6 +28,7 @@ import com.pbt.myfarm.PackViewModel.Companion.packCommunityList
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityListname
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -49,6 +50,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     val successObject = JSONArray()
     val fieldModel = ArrayList<FieldModel>()
     var db: DbHelper? = null
+    var task:Task?=null
 
 
     companion object {
@@ -93,6 +95,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         viewmodel?.progressbar = progressbar_createPackActivity
 
         packconfiglist = intent.getParcelableExtra(CONST_VIEWMODELCLASS_LIST)
+        task = intent.getParcelableExtra(AppConstant.CONST_TASKFUNCTION_TASKLIST)
         AppUtils.logError(TAG, "packConfiglist" + packconfiglist?.id.toString())
 
         viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString(),"")
@@ -181,16 +184,32 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                     }
                     else{
                         val db=DbHelper(this,null)
+                        AppUtils.logDebug(TAG,"taskid==${task.toString()}")
+                        if (task==null){
+                            ApiClient.client.create(ApiInterFace::class.java)
+                                .storePack(
+                                    packconfiglist?.id.toString(),
+                                    desciptioncompanian!!,
+                                    selectedCommunityGroup,
+                                    userId.toString(),
+                                    successObject.toString(),
+                                    packconfiglist?.name!!,
+                                ).enqueue(this)
+                        }
+                        else{
+                            ApiClient.client.create(ApiInterFace::class.java)
+                                .storePackwithTaskid(
+                                    packconfiglist?.id.toString(),
+                                    desciptioncompanian!!,
+                                    selectedCommunityGroup,
+                                    userId.toString(),
+                                    successObject.toString(),
+                                    packconfiglist?.name!!,
+                                    task?.id.toString()
+                                ).enqueue(this)
+                        }
 
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .storePack(
-                                packconfiglist?.id.toString(),
-                                desciptioncompanian!!,
-                                selectedCommunityGroup,
-                                userId.toString(),
-                                successObject.toString(),
-                                packconfiglist?.name!!
-                            ).enqueue(this)
+
                     }
                 }
                 else{
@@ -220,8 +239,8 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
             finish()
         } else {
             btn_create_pack.visibility = View.VISIBLE
-
-            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
+AppUtils.logDebug(TAG,"error true= "+Gson().toJson(response.body()?.msg).toString())
+//            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
         }
     }
 

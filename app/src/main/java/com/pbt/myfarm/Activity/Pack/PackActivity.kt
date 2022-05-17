@@ -104,14 +104,13 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
         viewModel?.packlist?.observe(this, androidx.lifecycle.Observer { packlist ->
 
-            if (!packlist.isNullOrEmpty()) {
-                progressViewPack.visibility = View.GONE
-            }
+
 
             progressbar_createPackActivity?.visibility = View.GONE
 
             tasklistSize.setText("Total Packs-" + packlist.size)
             adapter = AdapterViewPack(this, packlist!!) { position, packname, boolean, list ->
+
                 packList = list
                 AppUtils.logDebug(TAG, "packListt==" + list.toString())
                 if (boolean) {
@@ -128,6 +127,16 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             linearLayoutManager.stackFromEnd = true
             recyclerview_viewtask.setLayoutManager(linearLayoutManager)
             recyclerview_viewtask.adapter = adapter
+            if (!packlist.isNullOrEmpty()) {
+
+                progressViewPack.visibility = View.GONE
+                layout_nodatavailable.visibility=View.GONE
+
+            }
+            else{
+                progressViewPack.visibility = View.GONE
+                layout_nodatavailable.visibility=View.VISIBLE
+            }
         })
     }
 

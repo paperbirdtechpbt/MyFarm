@@ -2,8 +2,11 @@ package com.pbt.myfarm
 
 import android.app.Application
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
+import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Spinner
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -11,11 +14,13 @@ import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
 import com.pbt.myfarm.Activity.FieldLIst
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
+import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.ComunityGroup
 import com.pbt.myfarm.HttpResponse.Field
@@ -64,13 +69,76 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         startDate = ObservableField("")
         EndDate = ObservableField("")
 
-
         configlist = MutableLiveData<List<ConfigFieldList>>()
-
 
     }
 
-    fun createTaskOffline(context: Context, configtype: TaskConfig?, isUpdate: Boolean, updateTaskId: Task?
+    fun setEditableOrNot(edittext: EditText?, spinner: Spinner?, context: Context) {
+        if (ViewTaskActivity.updateTaskBoolen) {
+            if (AppUtils().isInternet(context)) {
+                if (!MainActivity.privilegeListName.contains("CanOverideEditTask")) {
+
+                    edittext?.isEnabled = false
+                    edittext?.isFocusable = false
+                    edittext?.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                            context.resources.getColor(
+                                R.color.grey
+                            )
+                        )
+                    )
+                    spinner?.isEnabled = false
+                    spinner?.isFocusable = false
+                    spinner?.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                            context.resources.getColor(
+                                R.color.grey
+                            )
+                        )
+                    )
+                }
+
+            } else {
+                if (!MainActivity.privilegeListNameOffline.contains("CanOverideEditTask")) {
+                    edittext?.isEnabled = false
+                    edittext?.isFocusable = false
+                    edittext?.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                            context.resources.getColor(
+                                R.color.grey
+                            )
+                        )
+                    )
+                    spinner?.isEnabled = false
+                    spinner?.isFocusable = false
+                    spinner?.setBackgroundTintList(
+                        ColorStateList.valueOf(
+                            context.resources.getColor(
+                                R.color.grey
+                            )
+                        )
+                    )
+
+
+                }
+            }
+
+        } else {
+            edittext?.isEnabled = false
+            edittext?.isFocusable = false
+            edittext?.setBackgroundTintList(
+                ColorStateList.valueOf(
+                    context.resources.getColor(
+                        R.color.grey
+                    )
+                )
+            )
+        }
+
+    }
+
+    fun createTaskOffline(
+        context: Context, configtype: TaskConfig?, isUpdate: Boolean, updateTaskId: Task?
     ): Boolean {
         var sucess = false
         val db = DbHelper(context, null)
@@ -78,7 +146,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         val userid = MySharedPreference.getUser(context)?.id
 
 
-        if (isUpdate){
+        if (isUpdate) {
 
 
             val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
@@ -93,15 +161,14 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                 null, null, null,
             )
 
-            sucess = db.tasksCreateOffline(packsnew,true)
-        }
-        else{
+            sucess = db.tasksCreateOffline(packsnew, true)
+        } else {
 
             val d = db.getLastValue_task_new(configtype?.id.toString())
 
             val lastValueOfPacknew = db.getLastofTask()
             val idd = lastValueOfPacknew.toInt() + 1
-            AppUtils.logDebug(TAG,"iddd="+idd.toString())
+            AppUtils.logDebug(TAG, "iddd=" + idd.toString())
 
             if (d.isEmpty()) {
 
@@ -114,7 +181,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                     null, null, null,
                 )
 
-                sucess = db.tasksCreateOffline(packsnew,false)
+                sucess = db.tasksCreateOffline(packsnew, false)
             } else {
                 val newPackname: Int = d.toInt() + 1
                 val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
@@ -129,7 +196,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                 )
 
 
-                sucess = db.tasksCreateOffline(packsnew,false)
+                sucess = db.tasksCreateOffline(packsnew, false)
 
             }
         }
@@ -154,7 +221,6 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
             setData(updateTaskList?.task_config_id.toString(), true, updateTaskList?.id.toString())
 
         }
-
 
 
     }
@@ -215,7 +281,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 //
 //            }
             for (i in list.indices) {
-                val item=list.get(i)
+                val item = list.get(i)
                 ExpAmtArray.add(" ")
                 ExpName.add(item.field_name!!)
                 ExpNameKey.add("f_id")
