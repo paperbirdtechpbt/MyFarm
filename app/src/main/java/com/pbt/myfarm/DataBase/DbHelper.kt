@@ -7015,6 +7015,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     fun truncateAllTables() {
+        try{
         val db = this.getWritableDatabase()
         db.execSQL("delete from " + TABLE_CREAT_PACK)
         db.execSQL("delete from " + TABLE_PACKCONFIG)
@@ -7049,6 +7050,13 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         db.execSQL("delete from " + TABLE_team)
         db.execSQL("delete from " + TABLE_units)
         db.execSQL("delete from " + TABLE_ROLE_PRIVILEGES)
+
+        }catch (e:Exception){
+            AppUtils.logError(
+                TAG,
+                " TruncateAllTables  Exception ${e.message} ${e.stackTrace[0].lineNumber}"
+            )
+        }
 
 //    db.execSQL("delete from "+ TABLE_NAME)
 

@@ -43,6 +43,7 @@
         tools:targetApi="n">
         <activity
             android:name=".Activity.task_object.ViewTaskObjectActivity"
+            android:label="Task Object"
             android:exported="true">
 
             <meta-data

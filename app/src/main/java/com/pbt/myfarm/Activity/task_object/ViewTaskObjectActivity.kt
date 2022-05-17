@@ -63,6 +63,7 @@ class ViewTaskObjectActivity : AppCompatActivity() {
                     adapter!!.notifyDataSetChanged()
 
                     adapter?.editItemClick = {
+                        model.showDialog("Test",this)
                     }
                     adapter?.deleteItemClick = {
                         model.deleteTaskObject(it.id.toString())
@@ -119,5 +120,8 @@ class ViewTaskObjectActivity : AppCompatActivity() {
         else
             progressBar.visibility = View.GONE
     }
+
+
+
 
 }
