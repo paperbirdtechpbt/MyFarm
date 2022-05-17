@@ -347,4 +347,12 @@ fun uploadFile(
     fun getAllprivileges(
         @Field("role_id") role_id: String) :Call<AllPriviledgeListResponse>
 
+    @FormUrlEncoded
+    @POST("api/gettaskobjects")
+    fun getTaskObject(@Field("task_id") taksID: String) :Call<BaseHttpResponse>
+
+    @FormUrlEncoded
+    @POST("api/deletetaskobjects")
+    fun deleteTaskObject(@Field("id") taksID: String) :Call<HttpResponse>
+
 }

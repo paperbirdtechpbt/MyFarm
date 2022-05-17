@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.ViewTaskObject.ViewTaskObjectActivity">
+    tools:context=".Activity.task_object.ViewTaskObjectActivity">
 
-            <androidx.recyclerview.widget.RecyclerView
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:listitem="@layout/itemviewtaskobject"
-                android:id="@+id/recyclerview_ViewtaskObject"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTaskObject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/itemviewtaskobject" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

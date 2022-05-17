@@ -10,6 +10,12 @@ data class OffLineSyncModel(
     val msg:String?=null
 )
 
+data class BaseHttpResponse(
+    val data: Data,
+    val error: Boolean,
+    val msg:String?=null
+)
+
 data class Data(
     val alert_ranges: List<AlertRange>,
     val alerts: List<Alert>,
@@ -707,6 +713,8 @@ data class TaskMediaFile(
     val filePathLocal: String?=null,
 )
 
+
+
 data class TaskObject(
     val `class`: String?=null,
     val deleted_at: String?=null,
@@ -720,7 +728,7 @@ data class TaskObject(
     val task_id: Int?=null,
     val type: String?=null,
     val container: String?=null,
-    val status: String?=null,
+    var status: String?=null,
 )
 @Parcelize
 data class Task(

@@ -4292,25 +4292,23 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         val cursor: Cursor?
         try {
             cursor = db.rawQuery(query, null)
+            if (cursor.moveToFirst()) {
+                do {
+
+                    val id: String? = cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_ID))
+                    val name: String? =
+                        cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_PRIVILEGE))
+
+                    val packsNew = Privilege(id = id?.toInt(), name = name)
+
+                    upCommingPackList.add(packsNew)
+
+
+                } while (cursor.moveToNext())
+            }
+
         } catch (e: Exception) {
-            AppUtils.logError(TAG, e.message!!)
-            db.execSQL(query)
             return ArrayList()
-        }
-
-        if (cursor.moveToFirst()) {
-            do {
-
-                val id: String? = cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_ID))
-                val name: String? =
-                    cursor.getString(cursor.getColumnIndex(COL_ROLE_PRIVILEGES_PRIVILEGE))
-
-                val packsNew = Privilege(id = id?.toInt(), name = name)
-
-                upCommingPackList.add(packsNew)
-
-
-            } while (cursor.moveToNext())
         }
 
         // db.close()

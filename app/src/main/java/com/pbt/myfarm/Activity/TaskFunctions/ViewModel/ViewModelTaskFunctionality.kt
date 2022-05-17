@@ -61,8 +61,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     ) {
         if (response.body()?.error == false) {
             if (response.body() != null) {
-                val response: HttpResponse =
-                    Gson().fromJson(Gson().toJson(response.body()), HttpResponse::class.java)
+                val response: HttpResponse = Gson().fromJson(Gson().toJson(response.body()), HttpResponse::class.java)
                 if (response != null) {
                     val baseTaskFunction: BaseTaskFunction =
                         Gson().fromJson(Gson().toJson(response.data), BaseTaskFunction::class.java)

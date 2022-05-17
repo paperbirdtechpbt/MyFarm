@@ -4,7 +4,7 @@
 
     <data>
 <variable
-    name="viewmodel"
+    name="taskObject"
     type="com.pbt.myfarm.TaskObject" />
     </data>
 
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
 
-                    android:text="@{viewmodel.name}"
+                    android:text="@{taskObject.name}"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/funtionname"
@@ -80,7 +80,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="@{viewmodel.function}"
+                    android:text="@{taskObject.function}"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -88,7 +88,7 @@
                     app:layout_constraintTop_toBottomOf="@id/name" />
 
                 <ImageView
-                    android:id="@+id/icon_delete_viewtaskobject"
+                    android:id="@+id/imgDelete"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_margin="10dp"
@@ -96,10 +96,10 @@
                     android:src="@drawable/ic__delete"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/icon_edit_viewtaskobject" />
+                    app:layout_constraintTop_toBottomOf="@id/imgEdit" />
 
                 <ImageView
-                    android:id="@+id/icon_edit_viewtaskobject"
+                    android:id="@+id/imgEdit"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_margin="10dp"
