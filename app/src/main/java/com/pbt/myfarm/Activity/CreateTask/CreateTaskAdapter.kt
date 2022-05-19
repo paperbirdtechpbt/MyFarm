@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.checkFieldStatus
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
@@ -25,6 +26,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.HttpResponse.Field
+import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
@@ -38,6 +40,7 @@ import kotlin.Int as In
 class CreateTaskAdapter(
     var context: Context, var list: List<ConfigFieldList>,
     var updateTaskIdBoolean: Boolean,
+
     var callbacks: (ArrayList<String>, ArrayList<String>) -> Unit
 ) : RecyclerView.Adapter<CreateTaskAdapter.ViewHolder>() {
     val ss = ""
@@ -572,70 +575,192 @@ class CreateTaskAdapter(
     }
 
     private fun checkFoucusable(myview: EditText?, spinner: Spinner?, iseditable: In) {
+
         if(updateTaskIdBoolean){
-            if (AppUtils().isInternet(context)) {
-                if (!privilegeListName.contains("CanOverideEditTask")) {
-                    if (iseditable == 0) {
-
-                        if (spinner == null) {
-                            myview?.isEnabled = false
-                            myview?.isFocusable = false
-                            myview?.setBackgroundTintList(
-                                ColorStateList.valueOf(
-                                    context.resources.getColor(
-                                        R.color.grey
-                                    )
-                                )
-                            )
-
-                        } else {
-                            spinner.isEnabled = false
-                            spinner.isFocusable = false
-                            spinner.setBackgroundTintList(
-                                ColorStateList.valueOf(
-                                    context.resources.getColor(
-                                        R.color.grey
-                                    )
-                                )
-                            )
-                        }
-
-
-                    }
-                }
-
-
-            } else {
-                if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
-                    if (iseditable == 0) {
-
-                        if (spinner == null) {
-                            myview?.isEnabled = false
-                            myview?.isFocusable = false
-                            myview?.setBackgroundTintList(
-                                ColorStateList.valueOf(
-                                    context.resources.getColor(
-                                        R.color.grey
-                                    )
-                                )
-                            )
-
-                        } else {
-//                            spinner?.isEnabled = false
-//                            spinner?.isFocusable = false
-                            spinner.isClickable = false
-                            spinner.setBackgroundTintList(
-                                ColorStateList.valueOf(
-                                    context.resources.getColor(
-                                        R.color.grey
-                                    )
-                                )
-                            )
-                        }
-
-                    }
-                }
+            if(checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null){
+                myview?.isEnabled = false
+                myview?.isFocusable = false
+                myview?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
+                spinner?.isEnabled = false
+                spinner?.isFocusable = false
+                spinner?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
             }
+            else{
+                if (AppUtils().isInternet(context)) {
+                    if (!privilegeListName.contains("CanOverideEditTask")) {
+                        if (iseditable == 0) {
+
+                            if (spinner == null) {
+                                myview?.isEnabled = false
+                                myview?.isFocusable = false
+                                myview?.setBackgroundTintList(
+                                    ColorStateList.valueOf(
+                                        context.resources.getColor(
+                                            R.color.grey
+                                        )
+                                    )
+                                )
+
+                            } else {
+                                spinner.isEnabled = false
+                                spinner.isFocusable = false
+                                spinner.setBackgroundTintList(
+                                    ColorStateList.valueOf(
+                                        context.resources.getColor(
+                                            R.color.grey
+                                        )
+                                    )
+                                )
+                            }
+
+
+                        }
+                        else{
+                            myview?.isEnabled = true
+                            myview?.isFocusable = true
+                            spinner?.isEnabled = true
+                            spinner?.isFocusable = true
+                        }
+                    }
+                    else{
+                        myview?.isEnabled = true
+                        myview?.isFocusable = true
+                        spinner?.isEnabled = true
+                        spinner?.isFocusable = true
+                    }
+
+
+                }
+//                else {
+//                    if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
+//                        if (iseditable == 0) {
+//
+//                            if (spinner == null) {
+//                                myview?.isEnabled = false
+//                                myview?.isFocusable = false
+//                                myview?.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//
+//                            } else {
+////                            spinner?.isEnabled = false
+////                            spinner?.isFocusable = false
+//                                spinner.isClickable = false
+//                                spinner.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//                            }
+//
+//                        }
+//                    }
+//                }
+
+//                myview?.isEnabled = true
+//                myview?.isFocusable = true
+//                myview?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+//                spinner?.isEnabled = true
+//                spinner?.isFocusable = true
+//                spinner?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+            }
+//            else{
+//                if (AppUtils().isInternet(context)) {
+//                    if (!privilegeListName.contains("CanOverideEditTask")) {
+//                        if (iseditable == 0) {
+//
+//                            if (spinner == null) {
+//                                myview?.isEnabled = false
+//                                myview?.isFocusable = false
+//                                myview?.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//
+//                            } else {
+//                                spinner.isEnabled = false
+//                                spinner.isFocusable = false
+//                                spinner.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//                            }
+//
+//
+//                        }
+//                    }
+//
+//
+//                }
+//                else {
+//                    if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
+//                        if (iseditable == 0) {
+//
+//                            if (spinner == null) {
+//                                myview?.isEnabled = false
+//                                myview?.isFocusable = false
+//                                myview?.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//
+//                            } else {
+////                            spinner?.isEnabled = false
+////                            spinner?.isFocusable = false
+//                                spinner.isClickable = false
+//                                spinner.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//                            }
+//
+//                        }
+//                    }
+//                }
+//            }
+
         }
 
 

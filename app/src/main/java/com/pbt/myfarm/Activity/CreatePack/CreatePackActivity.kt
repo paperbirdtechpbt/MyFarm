@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.*
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
 
@@ -50,7 +51,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     val successObject = JSONArray()
     val fieldModel = ArrayList<FieldModel>()
     var db: DbHelper? = null
-    var task:Task?=null
+    var task: Task? = null
 
 
     companion object {
@@ -78,13 +79,14 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         arrayIDKey!!.clear()
         arrayNameKey!!.clear()
 
-        AppUtils.logDebug(TAG,"desciption=====>>>>>>"+desciptioncompanian.toString())
+        AppUtils.logDebug(TAG, "desciption=====>>>>>>" + desciptioncompanian.toString())
 
-
+        desciptioncompanian = ""
         initViewModel()
 
 
     }
+
     private fun initViewModel() {
         viewmodel = ViewModelProvider(
             this,
@@ -98,10 +100,10 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         task = intent.getParcelableExtra(AppConstant.CONST_TASKFUNCTION_TASKLIST)
         AppUtils.logError(TAG, "packConfiglist" + packconfiglist?.id.toString())
 
-        viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString(),"")
+        viewmodel?.onConfigFieldList(this, false, packconfiglist?.id.toString(), "")
         viewmodel?.configlist?.observe(this, Observer { list ->
-            if (!list.isNullOrEmpty()){
-                progressbar_createPackActivity.visibility=View.GONE
+            if (!list.isNullOrEmpty()) {
+                progressbar_createPackActivity.visibility = View.GONE
             }
 
 //            setCommunityGroup()
@@ -115,7 +117,8 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
             adapter = CreatePackAdapter(
                 this, config, false, packCommunityList,
-                packCommunityListname) { list, name ->
+                packCommunityListname
+            ) { list, name ->
 
                 while (list.contains("0")) {
                     list.remove("0")
@@ -135,12 +138,12 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                     jsonObject.put(arrayNameKey!!.get(i), name.get(i))
 
                     successObject.put(jsonObject)
-                    
-                   val lastValueOfPacknew=db?.getLastofPackNew()
-                    val idd= lastValueOfPacknew!!.toInt()+1
+
+                    val lastValueOfPacknew = db?.getLastofPackNew()
+                    val idd = lastValueOfPacknew!!.toInt() + 1
 
 //                    addPackValue(list.get(i),name.get(i),idd.toString())
-                    db?.addPackValues(list.get(i),name.get(i),idd.toString(),false)
+                    db?.addPackValues(list.get(i), name.get(i), idd.toString(), false)
                     fieldModel.add(FieldModel(name.get(i), list.get(i)))
 
                 }
@@ -160,14 +163,14 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
         btn_create_pack.setOnClickListener {
-            if(desciptioncompanian.isNullOrEmpty()){
+            if (desciptioncompanian.isNullOrEmpty()) {
                 Toast.makeText(this, "Desription Is required", Toast.LENGTH_SHORT).show()
-            }
-            else{
+            } else {
                 btn_create_pack.visibility = View.GONE
                 adapter?.callBackss()
 
-                if (AppUtils().isInternet(this)){
+                if (AppUtils().isInternet(this)) {
+                    progressbar_createPackActivity.visibility=View.VISIBLE
                     val listdata = ArrayList<String>()
 
                     if (successObject != null) {
@@ -179,13 +182,12 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
                     if (desciptioncompanian!!.isEmpty()) {
                         Toast.makeText(this, "Desciption is Required", Toast.LENGTH_SHORT).show()
-                        btn_create_pack.visibility= View.VISIBLE
+                        btn_create_pack.visibility = View.VISIBLE
 
-                    }
-                    else{
-                        val db=DbHelper(this,null)
-                        AppUtils.logDebug(TAG,"taskid==${task.toString()}")
-                        if (task==null){
+                    } else {
+                        val db = DbHelper(this, null)
+                        AppUtils.logDebug(TAG, "taskid==${task.toString()}")
+                        if (task == null) {
                             ApiClient.client.create(ApiInterFace::class.java)
                                 .storePack(
                                     packconfiglist?.id.toString(),
@@ -195,8 +197,7 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
                                     successObject.toString(),
                                     packconfiglist?.name!!,
                                 ).enqueue(this)
-                        }
-                        else{
+                        } else {
                             ApiClient.client.create(ApiInterFace::class.java)
                                 .storePackwithTaskid(
                                     packconfiglist?.id.toString(),
@@ -211,20 +212,19 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
 
                     }
-                }
-                else{
-                    val sucess=   viewmodel?.createPackOffline(this)
-                    if (sucess == true){
+                } else {
+                    val sucess = viewmodel?.createPackOffline(this)
+                    if (sucess == true) {
                         finish()
                     }
                 }
             }
-            }
-          
+        }
+
     }
 
     private fun addPackValue(list: String, name: String, idd: String) {
-        db?.addPackValues(list,name,idd,false)
+        db?.addPackValues(list, name, idd, false)
 
     }
 
@@ -232,20 +232,23 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     override fun onResponse(call: Call<PackFieldResponse>, response: Response<PackFieldResponse>) {
         if (response.body()?.error == false) {
             btn_create_pack.visibility = View.VISIBLE
-
+            progressbar_createPackActivity.visibility=View.GONE
             Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, PackActivity::class.java)
-            startActivity(intent)
+//            val intent = Intent(this, CreateTaskActivity::class.java)
+//            startActivity(intent)
             finish()
         } else {
+            progressbar_createPackActivity.visibility=View.GONE
             btn_create_pack.visibility = View.VISIBLE
-AppUtils.logDebug(TAG,"error true= "+Gson().toJson(response.body()?.msg).toString())
+            AppUtils.logDebug(TAG, "error true= " + Gson().toJson(response.body()?.msg).toString())
 //            Toast.makeText(this, response.body()?.msg, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onFailure(call: Call<PackFieldResponse>, t: Throwable) {
         btn_create_pack.visibility = View.VISIBLE
+        progressbar_createPackActivity.visibility=View.GONE
+
         try {
             AppUtils.logDebug(TAG, "Failed to Add new pack" + t.message)
             Toast.makeText(this, t.localizedMessage, Toast.LENGTH_SHORT).show()

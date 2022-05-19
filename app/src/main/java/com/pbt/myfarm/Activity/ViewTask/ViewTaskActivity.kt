@@ -144,8 +144,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     private fun showAlertDailog(taskname: String, position: Int, mytasklist: Task) {
         AlertDialog.Builder(this)
             .setTitle("Delete")
-            .setMessage("Are you sure you want to Delete $taskname") // Specifying a listener allows you to take an action before dismissing the dialog.
-            // The dialog is automatically dismissed when a dialog button is clicked.
+            .setMessage("Are you sure you want to Delete $taskname")
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
                     if (AppUtils().isInternet(this)){
@@ -163,9 +162,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
                         }
 
                     }
-
-
-
                     Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
                 })
             .setNegativeButton(android.R.string.no, null)
@@ -200,13 +196,10 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
             AppUtils.logError(TAG, e.localizedMessage)
 
         }
-
     }
 
     override fun onResume() {
         super.onResume()
         initViewModel()
     }
-
-
 }

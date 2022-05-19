@@ -6,6 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 data class ResponseTaskExecution (
     @SerializedName("error")var error:Boolean,
-    @SerializedName("data")var data:JsonArray,
+//    @SerializedName("data")var data:JsonArray,
     @SerializedName("msg")var msg:String,
    )

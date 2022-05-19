@@ -23,6 +23,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
+import com.pbt.myfarm.Activity.ViewMediaActivity.ViewMediaActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.selectedComunityGroupTask
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
@@ -30,6 +31,7 @@ import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArray
 import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -68,12 +70,18 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
     val fieldModel = ArrayList<FieldModel>()
     var configtype: TaskConfig? = null
 
+
     companion object {
-//        var ExpAmtArray = ArrayList<String>()
-//        var ExpName = ArrayList<String>()
-//        var ExpNameKey = ArrayList<String>()
-//        var ExpAmtArrayKey = ArrayList<String>()
-//        var selectedCommunityGroup = ""
+        var taskcompainionobject: Task? = null
+        var checkFieldStatus: HttpResponse? = null
+        var taskObject: Task? = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setButtonListner()
+
+        initViewModel()
 
     }
 
@@ -86,6 +94,33 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
 //        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
 //        getSupportActionBar()?.setDisplayShowHomeEnabled(true)
+
+
+//        initViewModel()
+//        setButtonListner()
+
+//
+    }
+
+    private fun setButtonListner() {
+        btn_taskfuntion.setOnClickListener {
+            val intent = Intent(this, TaskFunctionActivity::class.java)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
+            startActivity(intent)
+        }
+        btn_taskobject.setOnClickListener {
+            val intent = Intent(this, ViewTaskObjectActivity::class.java)
+            intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
+            startActivity(intent)
+        }
+        btn_viewmedia.setOnClickListener {
+            val intent = Intent(this, ViewMediaActivity::class.java)
+            taskObject = updateTaskList
+            startActivity(intent)
+        }
+    }
+
+    private fun initViewModel() {
         ExpAmtArray = ArrayList()
         ExpName = ArrayList()
         ExpNameKey = ArrayList()
@@ -101,6 +136,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         if (updateTaskBoolen) {
 
             updateTaskList = intent.getParcelableExtra(CONST_TASK_UPDATE_LIST)
+            taskcompainionobject = updateTaskList
 
         } else {
 
@@ -111,26 +147,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             val buttonTask: Button = findViewById(R.id.btn_taskfuntion)
             buttonTask.visibility = View.GONE
             btn_taskobject.visibility = View.GONE
+            btn_viewmedia.visibility = View.GONE
         }
-
-//        if (checkInternetConnection()) {
-//            initViewModel()
-//        }
-        initViewModel()
-
-        btn_taskfuntion.setOnClickListener {
-            val intent = Intent(this, TaskFunctionActivity::class.java)
-            intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
-            startActivity(intent)
-        }
-        btn_taskobject.setOnClickListener {
-            val intent = Intent(this, ViewTaskObjectActivity::class.java)
-            intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
-            startActivity(intent)
-        }
-    }
-
-    private fun initViewModel() {
 
         viewmodel = ViewModelProvider(
             this,
@@ -156,10 +174,18 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         AppUtils.logDebug(TAG, "updateTaskBoolen==" + updateTaskBoolen)
 
         if (updateTaskBoolen) {
+            viewmodel?.onCheckStatus(this, updateTaskList?.id.toString())
+
             viewmodel?.onConfigFieldList(this, true, updateTaskList)
         } else {
             viewmodel?.onConfigFieldListFalse(this, configtype)
         }
+        viewmodel?.checkstatusObject?.observe(this, androidx.lifecycle.Observer {
+            if (it.error == false) {
+                checkFieldStatus = it
+            }
+
+        })
 
         viewmodel?.configlist?.observe(this, androidx.lifecycle.Observer { list ->
 
@@ -176,7 +202,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             AppUtils.logDebug(TAG, "list size for taskcreate==${list}")
 
-            adapter = CreateTaskAdapter(this, config, updateTaskBoolen) { list, name ->
+            adapter = CreateTaskAdapter(
+                this, config, updateTaskBoolen,
+            ) { list, name ->
                 while (list.contains("0")) {
                     list.remove("0")
                 }
@@ -235,7 +263,10 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
-                selectedCommunityGroup = groupArrayId!!.get(position)
+                if (!groupArrayId.isNullOrEmpty()) {
+                    selectedCommunityGroup = groupArrayId!!.get(position)
+                }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -244,6 +275,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         }
 
         btn_create_task.setOnClickListener {
+            layout_ProgressBar.visibility = View.VISIBLE
+            createtaskProgressbar.visibility = View.VISIBLE
 
             adapter?.callBack()
 
@@ -315,8 +348,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
             }
 
-            layout_ProgressBar.visibility = View.VISIBLE
-            createtaskProgressbar.visibility = View.VISIBLE
 
         }
     }
@@ -340,6 +371,9 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
                 }
 
+            } else {
+                communitGroup.setSelection(0)
+
             }
         }, 1500)
 
@@ -350,9 +384,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             if (response.body()?.error == false) {
                 Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
 
-                ViewTaskActivity().finish()
-                val intent = Intent(this, ViewTaskActivity::class.java)
-                startActivity(intent)
                 finish()
                 btn_create_task.visibility = View.VISIBLE
                 layout_ProgressBar.visibility = View.GONE

@@ -120,6 +120,58 @@ class AppUtils {
         }
         return false
     }
+     fun checkExtension(extension: String): String {
+         val arrayExtensionIMage = arrayListOf<String>("jpg", "png", "jpeg","JPEG","PNG","JPG")
+         val arrayExtensionVideo = arrayListOf<String>(
+             "MP4",
+             "MOV",
+             "WMV",
+             "AVI",
+             "AVCHD",
+             "MKV",
+             "mp4",
+             "mov",
+             "wmv",
+             "avi",
+             "mkv"
+         )
+         val arrayExtensionDocument = arrayListOf<String>(
+             "DOC",
+             "DOCX",
+             "HTML",
+             "ODT",
+             "PDF",
+             "XLS",
+             "XLSX",
+             "PPT",
+             "PPTX",
+             "TXT" ,
+             "doc",
+             "docx",
+             "html",
+             "odt",
+             "pdf",
+             "xls",
+             "xlsx",
+             "ppt",
+             "pptx",
+             "txt"
+         )
+
+        var filetype: String = ""
+        if (arrayExtensionIMage.contains(extension)) {
+            filetype = "image"
+        } else if (arrayExtensionVideo.contains(extension)) {
+            filetype = "video"
+        } else if (arrayExtensionDocument.contains(extension)) {
+            filetype = "file"
+        }
+         else{
+             filetype="otherDocument"
+         }
+        return filetype
+
+    }
 
 
 }

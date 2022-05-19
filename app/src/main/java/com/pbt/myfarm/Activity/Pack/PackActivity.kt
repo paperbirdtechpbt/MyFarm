@@ -3,7 +3,6 @@ package com.pbt.myfarm.Activity.Pack
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,10 +22,8 @@ import com.pbt.myfarm.PackList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_LIST_SIZE
 import com.pbt.myfarm.Util.AppConstant.Companion.CON_PACK_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SELECTED_COM_GROUP
 import com.pbt.myfarm.Util.AppUtils
 import kotlinx.android.synthetic.main.activity_create_pack.*
 import kotlinx.android.synthetic.main.activity_pack.*
@@ -65,7 +62,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 //        binding = DataBindingUtil.setContentView(this, R.layout.activity_pack)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        desciptioncompanian = " "
+//        desciptioncompanian = ""
 
         if (AppUtils().isInternet(this)) {
             if (privilegeListName.contains("InsertPack")) {
@@ -88,10 +85,6 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         }
     }
 
-
-
-
-
     private fun initViewModel() {
         viewModel = ViewModelProvider(
             this,
@@ -103,8 +96,6 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         viewModel?.onPackListRequest(this)
 
         viewModel?.packlist?.observe(this, androidx.lifecycle.Observer { packlist ->
-
-
 
             progressbar_createPackActivity?.visibility = View.GONE
 
@@ -167,7 +158,7 @@ class PackActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     override fun onResume() {
         super.onResume()
-        desciptioncompanian = ""
+//        desciptioncompanian = ""
 
         initViewModel()
     }

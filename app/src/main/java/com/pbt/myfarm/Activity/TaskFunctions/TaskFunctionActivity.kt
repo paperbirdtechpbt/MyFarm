@@ -1,6 +1,5 @@
 package com.pbt.myfarm.Activity.TaskFunctions
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -23,8 +22,6 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +31,9 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -42,8 +41,8 @@ import com.pbt.myfarm.Service.ResponseTaskExecution
 import com.pbt.myfarm.Task
 import com.pbt.myfarm.TaskMediaFile
 import com.pbt.myfarm.TaskObject
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SELECTED_TASK_FUNCTION
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_OBJECT
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_OBJECTI_ISUPDATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKLIST
 import com.pbt.myfarm.Util.AppUtils
@@ -86,19 +85,20 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
     var taskfunction: Spinner? = null
-private     val CAMERA_PERMISSION_CODE = 100
-private     val STORAGE_PERMISSION_CODE  = 101
-
+    private val CAMERA_PERMISSION_CODE = 100
+    private val STORAGE_PERMISSION_CODE = 101
+    var isTaskuntionUpdate = false
 
     var selectedFunctionName = ""
     var selectedFunctionNo = ""
 
     var db: DbHelper? = null
+    var checkStats: HttpResponse? = null
 
 
     val listLocalPrivilegesName = ArrayList<String>()
 
-    var taskObject : TaskObject ? = null
+    var taskObject: TaskObject? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,10 +118,12 @@ private     val STORAGE_PERMISSION_CODE  = 101
 
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra<Task>(CONST_TASKFUNCTION_TASKID)
+            isTaskuntionUpdate = intent.getBooleanExtra(CONST_TASKFUNCTION_OBJECTI_ISUPDATE, false)
             AppUtils.logDebug(TAG, "updateTaskId" + updateTaskID.toString())
 
-            if(intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT) != null){
-                taskObject = taskObject ?:  intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT)
+            if (intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT) != null) {
+                taskObject =
+                    taskObject ?: intent.getParcelableExtra<TaskObject>(CONST_TASKFUNCTION_OBJECT)
                 selectedFunctionName = taskObject?.function ?: ""
                 selectedFunctionNo = taskObject?.no ?: ""
             }
@@ -140,169 +142,224 @@ private     val STORAGE_PERMISSION_CODE  = 101
         btn_choosefile.setOnClickListener {
             chechpermission()
 //mypermission()
-           val options = arrayOf<CharSequence>(
-               "Take Photo",
-               "Choose from Gallery",
-               "Capture Video",
-               "Cancel"
-           )
+            val options = arrayOf<CharSequence>(
+                "Take Photo",
+                "Choose from Gallery",
+                "Capture Video",
+                "Cancel"
+            )
 //        val options = arrayOf<CharSequence>("Take Photo")
-           val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-           builder.setTitle("Choose your profile picture")
-           builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-               if (options[item] == "Take Photo") {
-                   val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                   setResult(CAMERA_REQUEST, cameraIntent)
-                   resultLauncher.launch(cameraIntent)
-               } else if (options[item] == "Choose from Gallery") {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Choose your profile picture")
+            builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+                if (options[item] == "Take Photo") {
+                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    setResult(CAMERA_REQUEST, cameraIntent)
+                    resultLauncher.launch(cameraIntent)
+                }
+//                else if (options[item] == "Choose from Gallery") {
+//
+//                    val pickPhoto = Intent()
+//                    pickPhoto.setType("*/*")
+//                    pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
+//                    setResult(GELARY_REQUEST, pickPhoto)
+//                    gallaryLauncher.launch(pickPhoto)
+//
+//                }
+                else if (options[item] == "Choose from Gallery") {
 
-                   val pickPhoto = Intent()
-                   pickPhoto.setType("*/*")
-                   pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-                   setResult(GELARY_REQUEST, pickPhoto)
-                   gallaryLauncher.launch(pickPhoto)
+                    val pickPhoto = Intent()
+                    pickPhoto.setType("*/*")
+                    pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
+                    pickPhoto.addCategory(Intent.CATEGORY_OPENABLE)
+                    pickPhoto.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    setResult(GELARY_REQUEST, pickPhoto)
+                    gallaryLauncher.launch(pickPhoto)
 
-               } else if (options[item] == "Capture Video") {
+                } else if (options[item] == "Capture Video") {
 
-                   openCameraToCaptureVideo()
+                    openCameraToCaptureVideo()
 
-               } else if (options[item] == "Cancel") {
-                   dialog.dismiss()
-               }
-           })
-           builder.show()
-
+                } else if (options[item] == "Cancel") {
+                    dialog.dismiss()
+                }
+            })
+            builder.show()
 
 
         }
         btn_execute.setOnClickListener {
+            progressbar_taskexecute.visibility = View.VISIBLE
 
-                val mTaskID = updateTaskID?.id.toString();
-                val mFunctionID =  selectedFunctionId.toString()
-                val mUserID =  MySharedPreference.getUser(this)?.id.toString()
-                val mTimeZoneId =  MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
-                val mFieldID = selectedFunctionFieldId.toString()
+            val mTaskID = updateTaskID?.id.toString();
+            val mFunctionID = selectedFunctionId.toString()
+            val mUserID = MySharedPreference.getUser(this)?.id.toString()
+            val mTimeZoneId =
+                MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
+            val mFieldID = selectedFunctionFieldId.toString()
 
 
-                if (selectedFunctionId == 172 || selectedFunctionId == 168) {
-                    Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
-                } else {
-                    if (selectedFunctionId == 173) {
+            if (selectedFunctionId == 172 || selectedFunctionId == 168) {
+                Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
+            } else if (selectedFunctionId == 174) {
+                if (checkStats?.status == "completed" || checkStats?.status == null) {
+                    if (checkStats?.status != "completed") {
+                        Toast.makeText(
+                            this@TaskFunctionActivity,
+                            "Task Not Started",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
-                        progress_circular?.visibility = View.VISIBLE
-                        progress_circularlabel?.visibility = View.VISIBLE
                     } else {
-                        progressbar_taskexecute?.visibility = View.VISIBLE
+                        Toast.makeText(
+                            this@TaskFunctionActivity,
+                            "Task is Ended",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
                     }
+                }
 
-                    btn_execute.visibility = View.GONE
+            } else {
+                if (selectedFunctionId == 173) {
+                    progressbar_taskexecute.visibility = View.GONE
 
-                    if (AppUtils().isInternet(this)) {
+                    progress_circular?.visibility = View.VISIBLE
+                    progress_circularlabel?.visibility = View.VISIBLE
+                } else {
+                    progressbar_taskexecute?.visibility = View.VISIBLE
+                }
 
-                        val service = ApiClient.client.create(ApiInterFace::class.java)
+                btn_execute.visibility = View.GONE
 
-                        val body = if (fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
-                            fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
-                        else
-                            fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
+                if (AppUtils().isInternet(this)) {
 
-                        val dataVideo: MultipartBody.Part? =
-                            body?.let {
-                                MultipartBody.Part.createFormData(
-                                    "file",
-                                    fileVideo!!.name,
-                                    it
-                                )
-                            }
-                        val taskID = paramRequestTextBody(mTaskID)
-                        val functionID = paramRequestTextBody(mFunctionID)
-                        val userID = paramRequestTextBody(mUserID)
-                        val fieldID = paramRequestTextBody(mFieldID)
+                    val service = ApiClient.client.create(ApiInterFace::class.java)
 
-                        AppUtils.logDebug(TAG,"taskID $taskID, functionID $functionID userID $userID fieldID $fieldID")
-                        val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
+                    val body = if (fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
+                        fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
+                    else
+                        fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
 
-                        apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
-                            override fun onResponse(
-                                call: Call<ResponseTaskExecution>,
-                                response: Response<ResponseTaskExecution>
-                            ) {
-                                AppUtils.logDebug(TAG, response.body().toString())
-                                val message=response.body()?.msg.toString()
-                                if (response.body()?.error == false) {
-                                    progress_circular?.visibility = View.GONE
-                                    progress_circularlabel?.visibility = View.GONE
-                                    progressbar_taskexecute?.visibility = View.GONE
-                                    btn_execute.visibility = View.VISIBLE
-                                    Toast.makeText(
-                                        this@TaskFunctionActivity,
-                                        message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    finish()
-                                } else {
-                                    progress_circular?.visibility = View.GONE
-                                    progress_circularlabel?.visibility = View.GONE
-                                    progressbar_taskexecute?.visibility = View.GONE
+                    val dataVideo: MultipartBody.Part? =
+                        body?.let {
+                            MultipartBody.Part.createFormData(
+                                "file",
+                                fileVideo!!.name,
+                                it
+                            )
+                        }
+                    val taskID = paramRequestTextBody(mTaskID)
+                    val functionID = paramRequestTextBody(mFunctionID)
+                    val userID = paramRequestTextBody(mUserID)
+                    val fieldID = paramRequestTextBody(mFieldID)
 
-                                    btn_execute.visibility = View.VISIBLE
-                                    Toast.makeText(
-                                        this@TaskFunctionActivity,
-                                        message,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                    AppUtils.logDebug(
+                        TAG,
+                        "taskID $taskID, functionID $functionID userID $userID fieldID $fieldID"
+                    )
+                    val apiInterFace =
+                        service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
 
+                    apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
+                        override fun onResponse(
+                            call: Call<ResponseTaskExecution>,
+                            response: Response<ResponseTaskExecution>
+                        ) {
+                            AppUtils.logDebug(TAG, response.body().toString())
+                            val message = response.body()?.msg.toString()
+                            if (response.body()?.error == false) {
+                                progressbar_taskexecute.visibility = View.GONE
+
+                                progress_circular?.visibility = View.GONE
+                                progress_circularlabel?.visibility = View.GONE
+                                progressbar_taskexecute?.visibility = View.GONE
+                                btn_execute.visibility = View.VISIBLE
+                                if (isTaskuntionUpdate) {
+                                    startActivity(
+                                        Intent(
+                                            this@TaskFunctionActivity,
+                                            ViewTaskObjectActivity::class.java
+                                        )
+                                    )
                                 }
+                                Toast.makeText(
+                                    this@TaskFunctionActivity,
+                                    message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+
+                                finish()
+
+
+                            } else {
+
+                                progressbar_taskexecute.visibility = View.GONE
+
+                                progress_circular?.visibility = View.GONE
+                                progress_circularlabel?.visibility = View.GONE
+                                progressbar_taskexecute?.visibility = View.GONE
+
+                                btn_execute.visibility = View.VISIBLE
+                                Toast.makeText(
+                                    this@TaskFunctionActivity,
+                                    message,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
                             }
+                        }
 
-                            //
-                            override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
-                                try {
-                                    progress_circular?.visibility = View.GONE
-                                    progress_circularlabel?.visibility = View.GONE
-                                    btn_execute.visibility = View.VISIBLE
-                                    AppUtils.logError(TAG, t.message.toString())
-                                } catch (e: Exception) {
-                                    progress_circular?.visibility = View.GONE
-                                    progress_circularlabel?.visibility = View.GONE
-                                    btn_execute.visibility = View.VISIBLE
-                                    AppUtils.logError(TAG, t.message.toString())
+                        //
+                        override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
+                            progressbar_taskexecute.visibility = View.GONE
 
-                                }
-                                Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT)
-                                    .show()
+                            try {
+                                progress_circular?.visibility = View.GONE
+                                progress_circularlabel?.visibility = View.GONE
+                                btn_execute.visibility = View.VISIBLE
+                                AppUtils.logError(TAG, t.message.toString())
+                            } catch (e: Exception) {
+                                progress_circular?.visibility = View.GONE
+                                progress_circularlabel?.visibility = View.GONE
+                                btn_execute.visibility = View.VISIBLE
+                                AppUtils.logError(TAG, t.message.toString())
+
                             }
+                            Toast.makeText(this@TaskFunctionActivity, "failed", Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
-                        })
-                    } else {
+                    })
+                } else {
 //                    val db = DbHelper(this, null)
 //                    viewmodel?.apply {
 //                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
 //                    }
-                        val db = DbHelper(this, null)
+                    val db = DbHelper(this, null)
 //                    db.checkIftaskStart(updateTaskID)
-                        val taskobject = com.pbt.myfarm.TaskObject(
-                            task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
-                            function = selectedFunctionId.toString(),
-                        )
+                    val taskobject = com.pbt.myfarm.TaskObject(
+                        task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
+                        function = selectedFunctionId.toString(),
+                    )
 
-                        val isSuucess = db.addTaskObjectOffline(taskobject, "1")
-                        if (isSuucess) {
-                            progressbar_taskexecute.visibility = View.GONE
-                            Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
-                        } else {
-                            progressbar_taskexecute.visibility = View.GONE
+                    val isSuucess = db.addTaskObjectOffline(taskobject, "1")
+                    if (isSuucess) {
+                        progressbar_taskexecute.visibility = View.GONE
+                        Toast.makeText(this, "SuccessFull", Toast.LENGTH_SHORT).show()
+                    } else {
+                        progressbar_taskexecute.visibility = View.GONE
 
-                            Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Database Error", Toast.LENGTH_SHORT).show()
 
-                        }
                     }
                 }
-
             }
 
-    }
+        }
 
+    }
 
 
     private fun initViewModel(taskConfigID: String, updateTaskID: String) {
@@ -311,6 +368,12 @@ private     val STORAGE_PERMISSION_CODE  = 101
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
+        viewmodel?.oncheckStatuApi(this, updateTaskID)
+        viewmodel?.checkstatus?.observe(this) {
+            if (it != null) {
+                checkStats = it
+            }
+        }
         viewmodel?.onTaskFunctionList(
             taskConfigID,
             this,
@@ -321,25 +384,23 @@ private     val STORAGE_PERMISSION_CODE  = 101
 
             AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(list).toString())
 //            AppUtils.logDebug(TAG, "list og list functions=" + Gson().toJson(privilegeListName).toString())
-            val functionlist=ArrayList<ListTaskFunctions>()
+            val functionlist = ArrayList<ListTaskFunctions>()
 
             if (!list.isNullOrEmpty()) {
 
-                AppUtils.logDebug(TAG,"-=-=-=-=-==-=-=-$privilegeListName")
-                for (i in list.indices){
-                    val item=list.get(i).name1
+                AppUtils.logDebug(TAG, "-=-=-=-=-==-=-=-$privilegeListName")
+                for (i in list.indices) {
+                    val item = list.get(i).name1
 
-                      if (item!!.contains("CREATE_PACK") || item!!.contains("ADD_PACK")){
-                          if (!privilegeListName.contains("Pack") && !privilegeListName.contains("InsertPack") ){
+                    if (item!!.contains("CREATE_PACK") || item!!.contains("ADD_PACK")) {
+                        if (!privilegeListName.contains("Pack") && !privilegeListName.contains("InsertPack")) {
 //asda
-                      }
-                          else{
-                              functionlist.add(list.get(i))
+                        } else {
+                            functionlist.add(list.get(i))
 
-                          }
-                    }
-                    else{
-                          functionlist.add(list.get(i))
+                        }
+                    } else {
+                        functionlist.add(list.get(i))
                     }
                 }
 
@@ -382,17 +443,17 @@ private     val STORAGE_PERMISSION_CODE  = 101
         taskfunction.setAdapter(dd)
 
         var selectedID = ""
-        if(selectedFunctionName == "PERSON") {
+        if (selectedFunctionName == "PERSON") {
             selectedID = "171"
-        }else if(selectedFunctionName == "PACK") {
+        } else if (selectedFunctionName == "PACK") {
             selectedID = "175"
-        }else if(selectedFunctionName == "CONTAINER") {
+        } else if (selectedFunctionName == "CONTAINER") {
             selectedID = "176"
         }
 
-        if(!selectedFunctionName.isEmpty()){
+        if (!selectedFunctionName.isEmpty()) {
             for ((count, item) in listID.withIndex()) {
-                if(item == selectedID) {
+                if (item == selectedID) {
                     taskfunction.setSelection(count)
                 }
             }
@@ -449,12 +510,12 @@ private     val STORAGE_PERMISSION_CODE  = 101
 
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
-                        label_filename.visibility = View.VISIBLE
+                        label_filename.visibility = View.GONE
                         taskfunction_media.visibility = View.VISIBLE
                         btn_choosefile.visibility = View.VISIBLE
                         label_attachmedia.visibility = View.VISIBLE
                         recycler_viewMedia.visibility = View.VISIBLE
-                        label_filename.visibility = View.VISIBLE
+                        label_filename.visibility = View.GONE
 
                         label_attachmedia.setText("Attach Media")
                         callApi("173")
@@ -468,13 +529,34 @@ private     val STORAGE_PERMISSION_CODE  = 101
                         label_attachmedia.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
                         label_filename.visibility = View.GONE
-                    }
-                    else if (item == "174" ) {
+                    } else if (item == "174") {
+                        if (checkStats?.status == "completed" || checkStats?.status == null) {
+                            if (checkStats?.status != "completed") {
+                                Toast.makeText(
+                                    this@TaskFunctionActivity,
+                                    "Task Not Started",
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
-                        val intent =
-                            Intent(this@TaskFunctionActivity, PackConfigListActivity::class.java)
-                        intent.putExtra(CONST_TASKFUNCTION_TASKLIST,updateTaskID)
-                        startActivity(intent)
+                            } else {
+                                Toast.makeText(
+                                    this@TaskFunctionActivity,
+                                    "Task is Ended",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                            }
+                        } else {
+                            val intent =
+                                Intent(
+                                    this@TaskFunctionActivity,
+                                    PackConfigListActivity::class.java
+                                )
+                            intent.putExtra(CONST_TASKFUNCTION_TASKLIST, updateTaskID)
+                            startActivity(intent)
+                            finish()
+
+                        }
 
                         label_filename.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
@@ -484,9 +566,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
-                    }
-
-                    else if ( item == "175" ) {
+                    } else if (item == "175") {
 
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
@@ -503,13 +583,8 @@ private     val STORAGE_PERMISSION_CODE  = 101
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-
             }
-
-
 //                callApi(selectedFunctionId.toString())
-
-
         }
     }
 
@@ -522,8 +597,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
                     MySharedPreference.getUser(this)?.id.toString(),
                     updateTaskID?.id.toString(), selectedFunctionId
                 ).enqueue(this)
-        }
-        else {
+        } else {
             AppUtils.logDebug(TAG, "callapi====" + selectedFunctionId)
             val db = DbHelper(this, null)
 
@@ -545,9 +619,9 @@ private     val STORAGE_PERMISSION_CODE  = 101
                 dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 taskfunction_field.setAdapter(dd)
 
-                if(!selectedFunctionNo.isEmpty()){
+                if (!selectedFunctionNo.isEmpty()) {
                     for ((count, item) in personListId.withIndex()) {
-                        if(item == selectedFunctionNo) {
+                        if (item == selectedFunctionNo) {
                             taskfunction_field.setSelection(count)
                         }
                     }
@@ -635,7 +709,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
                 }
 
             }
-            recycler_viewMedia.adapter = adapter
+//            recycler_viewMedia.adapter = adapter
         }
 
 
@@ -643,21 +717,29 @@ private     val STORAGE_PERMISSION_CODE  = 101
 
     var gallaryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            AppUtils.logDebug(TAG, "Camera Result ${result.resultCode}")
+            AppUtils.logDebug(TAG, "Camera Result= ${result.resultCode}")
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { it ->
                     val contentURI = result.data!!.data
+
                     recordedVideoPath = contentURI!!.path.toString()
+
+
 //                    recordedVideoPath = getRealPathFromURI(contentURI)
                     recordedVideoPath = getRealPathFromURITestt(this, contentURI)!!
                     fileVideo = File(recordedVideoPath)
+                    AppUtils.logDebug(TAG, "VideoFiule Name" + fileVideo!!.name)
                     taskfunction_media.setText(fileVideo!!.name)
-
+                    Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_SHORT).show()
 
                 }
             }
+
+
         }
 
+
+    //--------do not clear below method------------//
     fun getRealPathFromURITestt(context: Context?, contentUri: Uri?): String? {
         val out: OutputStream
         val file = File(getFilename(context))
@@ -679,6 +761,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
         }
         return null
     }
+    //==----|||||||||||||||==============//
 
     @Throws(IOException::class)
     private fun getBytes(inputStream: InputStream?): ByteArray {
@@ -907,9 +990,9 @@ private     val STORAGE_PERMISSION_CODE  = 101
         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         taskfunction_field.setAdapter(dd)
 
-        if(!selectedFunctionNo.isEmpty()){
+        if (!selectedFunctionNo.isEmpty()) {
             for ((count, item) in functionid.withIndex()) {
-                if(item == selectedFunctionNo) {
+                if (item == selectedFunctionNo) {
                     taskfunction_field.setSelection(count)
                 }
             }
@@ -928,13 +1011,11 @@ private     val STORAGE_PERMISSION_CODE  = 101
             ) {
 
 
-                        selectedFunctionFieldId = function.get(position).id!!.toInt()
-                        AppUtils.logDebug(
-                            TAG,
-                            "onitem Select lIstner" + selectedFunctionFieldId.toString()
-                        )
-
-
+                selectedFunctionFieldId = function.get(position).id!!.toInt()
+                AppUtils.logDebug(
+                    TAG,
+                    "onitem Select lIstner" + selectedFunctionFieldId.toString()
+                )
 
 
             }
@@ -945,8 +1026,8 @@ private     val STORAGE_PERMISSION_CODE  = 101
     }
 
     private fun setAdapter(function: ArrayList<ListFunctionFieldlist>) {
-        recycler_viewMedia.visibility = View.VISIBLE
-        label_filename.visibility = View.VISIBLE
+        recycler_viewMedia.visibility = View.GONE
+        label_filename.visibility = View.GONE
         AppUtils.logDebug(TAG, "In Set Adapter")
         val adapter = AdapterTaskFunction(this, function) { name, link ->
             if (checkInternetConncetion()) {
@@ -956,7 +1037,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
             }
 
         }
-        recycler_viewMedia.adapter = adapter
+//        recycler_viewMedia.adapter = adapter
     }
 
     private fun checkInternetConncetion(): Boolean {
@@ -966,7 +1047,6 @@ private     val STORAGE_PERMISSION_CODE  = 101
         return networkInfo != null && networkInfo.isConnected == true
 
     }
-
 
 
     fun downloadFile(url: String, name: String) {
@@ -990,6 +1070,7 @@ private     val STORAGE_PERMISSION_CODE  = 101
         progress_circular?.setProgressCompat(percentage, true)
         progress_circular_label.setText(percentage.toString() + "%")
     }
+
     private fun chechpermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
                 android.Manifest.permission.READ_CONTACTS
@@ -1008,15 +1089,8 @@ private     val STORAGE_PERMISSION_CODE  = 101
         return true
     }
 
-    override fun onResume() {
-        super.onResume()
 
-
-    }
-
-
-
-    }
+}
 
 
 

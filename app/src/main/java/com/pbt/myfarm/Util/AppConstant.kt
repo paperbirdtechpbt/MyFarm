@@ -13,7 +13,12 @@ class AppConstant {
         const val CONST_USERROLE = "userrole"
         const val CONST_USERPASS = "userpass"
 
-           //packid
+        //media data variables
+        const val CONST_MEDIATYPE = "mediatype"
+        const val CONST_MEDIAOBJECT= "mediaobject"
+
+
+        //packid
         val PACK_LIST_PACKID="packlistpackid"
         val CONST_SELECTED_COM_GROUP="selected_communityGroup"
 
@@ -49,6 +54,7 @@ class AppConstant {
         const val CONST_TASKFUNCTION_TASKID = "taskfunction"
         const val CONST_TASKFUNCTION_TASKLIST = "tasklistforpack"
         const val CONST_TASKFUNCTION_OBJECT = "task_object"
+        const val CONST_TASKFUNCTION_OBJECTI_ISUPDATE = "task_object_isupdate"
         const val CONST_SELECTED_TASK_FUNCTION = "tasklistforpack"
         const val CONT_PACK = "packlist"
 

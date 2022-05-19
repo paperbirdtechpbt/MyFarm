@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +25,7 @@ import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.ComunityGroup
 import com.pbt.myfarm.HttpResponse.Field
+import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.HttpResponse.TaskFieldResponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
@@ -31,6 +33,7 @@ import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,6 +53,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     val context: Context = activity
     var configlist = MutableLiveData<List<ConfigFieldList>>()
+    var checkstatusObject = MutableLiveData<HttpResponse>()
 
 
     var namePrefix: ObservableField<String>? = null
@@ -70,6 +74,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         EndDate = ObservableField("")
 
         configlist = MutableLiveData<List<ConfigFieldList>>()
+        checkstatusObject = MutableLiveData<HttpResponse>()
 
     }
 
@@ -245,6 +250,29 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
         }
 
+
+    }
+
+    fun onCheckStatus(context: Context, taskid: String) {
+        val apiClient = ApiClient.client.create(ApiInterFace::class.java)
+        val apiInterFace = apiClient.checkTaskStatus(taskid)
+        apiInterFace.enqueue(object : Callback<HttpResponse> {
+            override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
+                if (response.body()?.error == false) {
+                    val baseHttpResponse: HttpResponse =
+                        Gson().fromJson(Gson().toJson(response.body()), HttpResponse::class.java)
+                    checkstatusObject.value = baseHttpResponse
+                } else
+                    Toast.makeText(context, "${response.body()?.message}", Toast.LENGTH_SHORT)
+                        .show()
+
+            }
+
+            override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+                println(t.localizedMessage.toString())
+            }
+
+        })
 
     }
 

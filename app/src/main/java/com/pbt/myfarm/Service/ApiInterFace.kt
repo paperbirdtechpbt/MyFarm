@@ -367,4 +367,9 @@ fun uploadFile(
     @POST("api/deletetaskobjects")
     fun deleteTaskObject(@Field("id") taksID: String) :Call<HttpResponse>
 
+
+    @FormUrlEncoded
+    @POST("api/checkTaskStatus")
+    fun checkTaskStatus(@Field("id") taksID: String) :Call<HttpResponse>
+
 }

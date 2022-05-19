@@ -1,6 +1,8 @@
 package com.pbt.myfarm.Activity.TaskFunctions
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class ResponseTaskFunctionaliyt(
     @SerializedName("error") var error: Boolean,
@@ -34,12 +36,13 @@ data class FieldListTaskFunctions (
     @SerializedName("name") var name:String,
     @SerializedName("link") var link:String,
         )
+@Parcelize
 data class ListFunctionFieldlist (
     @SerializedName("id") var id:String?=null,
     @SerializedName("name") var name:String?=null,
     @SerializedName("link") var link:String?=null,
   var localPath:String?=null,
-        )
+        ):Parcelable
 
 data class ListMediaFile(
     @SerializedName("id") var id: String,

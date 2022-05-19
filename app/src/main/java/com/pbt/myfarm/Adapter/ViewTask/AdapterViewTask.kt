@@ -38,37 +38,26 @@ class AdapterViewTask(
                 if (AppUtils().isInternet(context)) {
                     if (privilegeListName.contains("EditTask")) {
                         holder.binding.iconEdit.visibility = View.VISIBLE
-//itemView.icon_edit.visibility=View.VISIBLE
                     }
                     if (privilegeListName.contains("DeleteTask")) {
                         holder.binding.iconDelete.visibility = View.VISIBLE
 
-//                    itemView.icon_delete.visibility=View.VISIBLE
                     }
                 } else {
                     if (privilegeListNameOffline.contains("EditTask")) {
                         holder.binding.iconEdit.visibility = View.VISIBLE
-//itemView.icon_edit.visibility=View.VISIBLE
                     }
                     if (privilegeListNameOffline.contains("DeleteTask")) {
                         holder.binding.iconDelete.visibility = View.VISIBLE
 
-//                    itemView.icon_delete.visibility=View.VISIBLE
                     }
                 }
 
-
-
                 itemView.icon_delete.setOnClickListener {
                     callbacks.invoke(position, name.toString(), true, item)
-
                 }
                 itemView.icon_edit.setOnClickListener {
-
                     callbacks.invoke(position, item.name!!, false, item)
-
-                    Toast.makeText(context, "Edit---${item.name}", Toast.LENGTH_SHORT).show()
-
                 }
             }
         }

@@ -14,6 +14,7 @@ import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 
@@ -23,9 +24,12 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     val TAG = "ViewModelTaskFunctionality"
     var context: Context? = null
     var listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
+    var checkstatus = MutableLiveData<HttpResponse>()
+
 
     init {
         listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
+        checkstatus = MutableLiveData<HttpResponse>()
     }
 
 
@@ -53,6 +57,22 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             }
             listTaskFuntions.value = taskFunctionList
         }
+    }
+    fun oncheckStatuApi(context: Context,taskid:String){
+        val apiInterFace=ApiClient.client.create(ApiInterFace::class.java)
+        val call=apiInterFace.checkTaskStatus(taskid)
+        call.enqueue(object :Callback<HttpResponse>{
+            override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
+                if (response.isSuccessful && response.body()?.error==false){
+                    val basresponse=Gson().fromJson<HttpResponse>(Gson().toJson(response.body()),HttpResponse::class.java)
+                    checkstatus.value=basresponse
+                }
+            }
+
+            override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+            }
+
+        })
     }
 
     override fun onResponse(
