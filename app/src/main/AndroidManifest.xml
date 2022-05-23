@@ -9,6 +9,7 @@
         </intent>
     </queries>
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -42,8 +43,13 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
         <activity
+            android:name=".Activity.QrDemoActivity.QrCodeActivity"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
             android:name=".Activity.ViewMediaActivity.PlayScreenActivity"
-            android:exported="true" >
+            android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activity.ViewMediaActivity.ViewMediaActivity" />
@@ -51,7 +57,7 @@
         <activity
             android:name=".Activity.ViewMediaActivity.ViewMediaActivity"
             android:exported="true"
-            android:label="Media"/>
+            android:label="Media" />
         <activity
             android:name=".Activity.task_object.ViewTaskObjectActivity"
             android:exported="true"

@@ -13,6 +13,7 @@ import com.pbt.myfarm.Activity.DashBoardEvent.DashBoardEventActivity
 import com.pbt.myfarm.Activity.Event.ViewEventActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeList
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.QrDemoActivity.QrCodeActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.R
@@ -54,6 +55,10 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
             else if(item.evenetName=="Event"){
                 context.startActivity(Intent(context, ViewEventActivity::class.java))
             }
+            else if(item.evenetName=="QR Demo"){
+                context.startActivity(Intent(context, QrCodeActivity::class.java))
+            }
+
             AppUtils().isServiceRunning(context, MyFarmService::class.java)
         }
 

@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import java.util.ArrayList
 
 object FilePath{
     val imageExts: ArrayList<String>
@@ -80,6 +79,9 @@ object FilePath{
                     contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                 } else if ("audio" == type) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+                else if("file"==type || "document"==type){
+                     contentUri = MediaStore.Files.getContentUri("external")
                 }
 
                 val selection = "_id=?"

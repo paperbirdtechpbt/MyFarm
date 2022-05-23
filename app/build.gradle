@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.pbt.myfarm"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 31
         versionCode 1
         versionName "1.0"
@@ -94,6 +94,12 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation 'es.voghdev.pdfviewpager:library:1.0.6'
+
+    //Qr Code Scanner
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
+
+    implementation 'com.google.zxing:core:3.2.0'
 
 
 

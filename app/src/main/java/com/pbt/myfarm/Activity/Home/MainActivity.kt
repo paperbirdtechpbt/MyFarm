@@ -166,6 +166,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 data.add(EventList("Event", R.drawable.ic_icon_list))
 
             }
+            data.add(EventList("QR Demo",R.drawable.ic_qrcode))
             if (!data.isNullOrEmpty()) {
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
                 setadapter(data)

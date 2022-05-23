@@ -1,6 +1,5 @@
 package com.pbt.myfarm.Activity.TaskFunctions
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
@@ -10,13 +9,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -27,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
+import com.google.zxing.integration.android.IntentIntegrator
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
@@ -47,11 +45,10 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKLIST
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestTextBody
+import com.pbt.myfarm.Util.FilePath
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -68,25 +65,19 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var selectedFunctionFieldId = 0
     var body: MultipartBody.Part? = null
 
-    //    var requestbody: RequestBody? = null
     var edAttachMedia: EditText? = null
     val TAG: String = "TaskFunctionActivity"
     private val CAMERA_REQUEST = 1888
     private val GELARY_REQUEST = 1088
-    private val MY_CAMERA_PERMISSION_CODE = 1001
     var manager: DownloadManager? = null
 
-    //    var filePart: MultipartBody.Part? = null
     private val VIDEO_CAPTURE = 101
     var recordedVideoPath: String = ""
 
-    //    var recordedVideoName: String = ""
     var fileVideo: File? = null
     var progress_circular: CircularProgressIndicator? = null
     var progress_circularlabel: TextView? = null
     var taskfunction: Spinner? = null
-    private val CAMERA_PERMISSION_CODE = 100
-    private val STORAGE_PERMISSION_CODE = 101
     var isTaskuntionUpdate = false
 
     var selectedFunctionName = ""
@@ -94,7 +85,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     var db: DbHelper? = null
     var checkStats: HttpResponse? = null
-
 
     val listLocalPrivilegesName = ArrayList<String>()
 
@@ -139,6 +129,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         chechpermission()
 
+
         btn_choosefile.setOnClickListener {
             chechpermission()
 //mypermission()
@@ -156,23 +147,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                     setResult(CAMERA_REQUEST, cameraIntent)
                     resultLauncher.launch(cameraIntent)
-                }
-//                else if (options[item] == "Choose from Gallery") {
-//
-//                    val pickPhoto = Intent()
-//                    pickPhoto.setType("*/*")
-//                    pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-//                    setResult(GELARY_REQUEST, pickPhoto)
-//                    gallaryLauncher.launch(pickPhoto)
-//
-//                }
-                else if (options[item] == "Choose from Gallery") {
+                } else if (options[item] == "Choose from Gallery") {
 
                     val pickPhoto = Intent()
                     pickPhoto.setType("*/*")
                     pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-                    pickPhoto.addCategory(Intent.CATEGORY_OPENABLE)
-                    pickPhoto.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     setResult(GELARY_REQUEST, pickPhoto)
                     gallaryLauncher.launch(pickPhoto)
 
@@ -368,12 +347,18 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
+        viewmodel?.codeScannerView = qr_scanner
+
+        btnScanCode.setOnClickListener{
+//            qr_scanner.visibility=View.VISIBLE
+openZingScanner()        }
         viewmodel?.oncheckStatuApi(this, updateTaskID)
         viewmodel?.checkstatus?.observe(this) {
             if (it != null) {
                 checkStats = it
             }
         }
+
         viewmodel?.onTaskFunctionList(
             taskConfigID,
             this,
@@ -408,6 +393,14 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
             }
         })
+
+    }
+
+    private fun openZingScanner() {
+        val intentIntegrator = IntentIntegrator(this)
+        intentIntegrator.setPrompt("My Farm Code Scanner")
+        intentIntegrator.setOrientationLocked(true)
+        intentIntegrator.initiateScan()
     }
 
     private fun setSpinner(list: List<ListTaskFunctions>, taskfunction: Spinner) {
@@ -687,7 +680,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
             val adapter = AdapterTaskFunction(this, function) { name, link ->
-                if (checkInternetConncetion()) {
+                if (AppUtils().isInternet(this)) {
                     downloadFile(link, name)
                 } else {
                     try {
@@ -703,41 +696,48 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             "failed to load image or other file's" + e.message.toString()
                         )
                     }
-
                     Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
-
                 }
 
             }
 //            recycler_viewMedia.adapter = adapter
         }
-
-
     }
 
     var gallaryLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             AppUtils.logDebug(TAG, "Camera Result= ${result.resultCode}")
+//            if (result.resultCode == Activity.RESULT_OK) {
+//                result.data?.let { it ->
+//                    val contentURI = result.data!!.data
+//
+//                    recordedVideoPath = contentURI!!.path.toString()
+//
+//                    recordedVideoPath = getRealPathFromURI(contentURI)
+////                    recordedVideoPath = getRealPathFromURITestt(this, contentURI)!!
+//                    recordedVideoPath = getRealPathFromURITestt(this, contentURI)!!
+//                    fileVideo = File(recordedVideoPath)
+//                    AppUtils.logDebug(TAG, "VideoFiule Name" +recordedVideoPath)
+//                    taskfunction_media.setText(fileVideo!!.name)
+//                    Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_SHORT).show()
+//
+//                }
+//            }
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { it ->
+
                     val contentURI = result.data!!.data
-
-                    recordedVideoPath = contentURI!!.path.toString()
-
-
-//                    recordedVideoPath = getRealPathFromURI(contentURI)
-                    recordedVideoPath = getRealPathFromURITestt(this, contentURI)!!
-                    fileVideo = File(recordedVideoPath)
-                    AppUtils.logDebug(TAG, "VideoFiule Name" + fileVideo!!.name)
+                    val filepathfromUri = FilePath.getPath(this, contentURI!!)
+                    fileVideo = File(filepathfromUri)
+                    AppUtils.logError(TAG, "filepathfromUri" + filepathfromUri)
+                    AppUtils.logError(TAG, "file" + fileVideo)
                     taskfunction_media.setText(fileVideo!!.name)
-                    Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_LONG).show()
 
                 }
             }
-
-
         }
-
 
     //--------do not clear below method------------//
     fun getRealPathFromURITestt(context: Context?, contentUri: Uri?): String? {
@@ -814,7 +814,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     private fun getRealPathFromURI(contentURI: Uri): String {
         val result: String?
-        val cursor: Cursor? = contentResolver.query(contentURI, null, null, null, null)
+        var cursor: Cursor? = null
+        cursor = contentResolver.query(contentURI, null, null, null, null)
         if (cursor == null) {
             result = contentURI.path
         } else {
@@ -824,45 +825,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             cursor.close()
         }
         return result.toString()
-    }
-
-    private fun buildImageBodyPart(fileName: String, bitmap: Bitmap): MultipartBody.Part {
-        val leftImageFile = convertBitmapToFile(fileName, bitmap)
-        val reqFile = leftImageFile.asRequestBody("image/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
-    }
-
-    private fun buildVideoBodyPart(fileName: String, bitmap: Bitmap): MultipartBody.Part {
-        val leftImageFile = convertBitmapToFile(fileName, bitmap)
-        val reqFile = leftImageFile.asRequestBody("video/*".toMediaTypeOrNull())
-        return MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
-    }
-
-    private fun convertBitmapToFile(fileName: String, bitmap: Bitmap): File {
-        //create a file to write bitmap data
-        val file = File(this.cacheDir, fileName)
-        file.createNewFile()
-
-        //Convert bitmap to byte array
-        val bos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos)
-        val bitMapData = bos.toByteArray()
-
-        //write the bytes in file
-        var fos: FileOutputStream? = null
-        try {
-            fos = FileOutputStream(file)
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        }
-        try {
-            fos?.write(bitMapData)
-            fos?.flush()
-            fos?.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return file
     }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
@@ -877,28 +839,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         return Uri.parse(path)
     }
 
-    @SuppressLint("Range")
-    private fun getFileName(uri: Uri): String? {
-        var result: String? = null
-        if (uri.scheme == "content") {
-            val cursor = contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor!!.close()
-            }
-        }
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result.substring(cut + 1)
-            }
-        }
-        return result
-    }
 
     private fun openCameraToCaptureVideo() {
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
@@ -906,12 +846,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             setResult(VIDEO_CAPTURE, captureVideo)
             captureVideoResult.launch(captureVideo)
         }
-    }
-
-    fun playVideoInDevicePlayer(videoPath: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(videoPath))
-        intent.setDataAndType(Uri.parse(videoPath), "video/mp4")
-        startActivity(intent)
     }
 
 
@@ -1030,7 +964,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         label_filename.visibility = View.GONE
         AppUtils.logDebug(TAG, "In Set Adapter")
         val adapter = AdapterTaskFunction(this, function) { name, link ->
-            if (checkInternetConncetion()) {
+            if (AppUtils().isInternet(this)) {
                 downloadFile(link, name)
             } else {
                 Toast.makeText(this, "No Internet Available", Toast.LENGTH_SHORT).show()
@@ -1040,13 +974,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 //        recycler_viewMedia.adapter = adapter
     }
 
-    private fun checkInternetConncetion(): Boolean {
 
-        val ConnectionManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = ConnectionManager.activeNetworkInfo
-        return networkInfo != null && networkInfo.isConnected == true
-
-    }
 
 
     fun downloadFile(url: String, name: String) {
@@ -1087,6 +1015,26 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         }
         return true
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int,  data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        // if the intentResult is null then
+        // toast a message as "cancelled"
+        if (intentResult != null) {
+            if (intentResult.contents == null) {
+                Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                // if the intentResult is not null we'll set
+                // the content and format of scan message
+                Toast.makeText(this, "${intentResult.contents}", Toast.LENGTH_LONG).show()
+//                messageText.setText(intentResult.contents)
+//                messageFormat.setText(intentResult.formatName)
+                Demo_adduser.setText(intentResult.contents)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
 
