@@ -48,7 +48,9 @@ class ViewMediaActivity : AppCompatActivity() {
 
 
             if (!list.isNullOrEmpty()) {
+
                 prgssBurreing.visibility = View.GONE
+                layout_noMedia.visibility=View.GONE
 
                 adapter = AdapterViewMedia(this, list)
                 adapter?.onitemClick = { item, filetype ->
@@ -63,7 +65,9 @@ class ViewMediaActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                prgssBurreing.visibility = View.VISIBLE
+
+                layout_noMedia.visibility=View.VISIBLE
+                prgssBurreing.visibility = View.GONE
 
             }
             recyclerview_viewMediaList.adapter = adapter

@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
+import com.iceteck.silicompressorr.SiliCompressor
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
@@ -103,6 +104,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         progress_circular = findViewById(R.id.progress_circular)
         progress_circularlabel = findViewById(R.id.progress_circular_label)
 
+
         edAttachMedia = findViewById(R.id.taskfunction_media)
         taskfunction = findViewById(R.id.taskfunction)
 
@@ -170,11 +172,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         btn_execute.setOnClickListener {
             progressbar_taskexecute.visibility = View.VISIBLE
 
-            val mTaskID = updateTaskID?.id.toString();
+            val mTaskID = updateTaskID?.id.toString()
             val mFunctionID = selectedFunctionId.toString()
             val mUserID = MySharedPreference.getUser(this)?.id.toString()
-            val mTimeZoneId =
-                MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
+//            val mTimeZoneId =
+//                MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
             val mFieldID = selectedFunctionFieldId.toString()
 
 
@@ -349,9 +351,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         viewmodel?.context = this@TaskFunctionActivity
         viewmodel?.codeScannerView = qr_scanner
 
-        btnScanCode.setOnClickListener{
+        btnScanCode.setOnClickListener {
 //            qr_scanner.visibility=View.VISIBLE
-openZingScanner()        }
+            openZingScanner()
+        }
         viewmodel?.oncheckStatuApi(this, updateTaskID)
         viewmodel?.checkstatus?.observe(this) {
             if (it != null) {
@@ -377,9 +380,9 @@ openZingScanner()        }
                 for (i in list.indices) {
                     val item = list.get(i).name1
 
-                    if (item!!.contains("CREATE_PACK") || item!!.contains("ADD_PACK")) {
+                    if (item!!.contains("CREATE_PACK") || item.contains("ADD_PACK")) {
                         if (!privilegeListName.contains("Pack") && !privilegeListName.contains("InsertPack")) {
-//asda
+
                         } else {
                             functionlist.add(list.get(i))
 
@@ -388,7 +391,6 @@ openZingScanner()        }
                         functionlist.add(list.get(i))
                     }
                 }
-
                 setSpinner(functionlist, taskfunction!!)
 
             }
@@ -775,7 +777,7 @@ openZingScanner()        }
         return byteBuffer.toByteArray()
     }
 
-    private fun getFilename(context: Context?): String? {
+    private fun getFilename(context: Context?): String {
         val mediaStorageDir = File(context!!.getExternalFilesDir(""), "patient_data")
         // Create the storage directory if it does not exist
         if (!mediaStorageDir.exists()) {
@@ -807,6 +809,7 @@ openZingScanner()        }
                 recordedVideoPath = contentURI!!.path.toString()
                 recordedVideoPath = getRealPathFromURI(contentURI)
                 fileVideo = File(recordedVideoPath)
+
                 taskfunction_media.setText(fileVideo!!.name)
 
             }
@@ -835,7 +838,7 @@ openZingScanner()        }
             inImage,
             "filename",
             null
-        );
+        )
         return Uri.parse(path)
     }
 
@@ -975,14 +978,12 @@ openZingScanner()        }
     }
 
 
-
-
     fun downloadFile(url: String, name: String) {
         manager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         val uri = Uri.parse(url)
         val request = DownloadManager.Request(uri)
 
-        request.setTitle(name);
+        request.setTitle(name)
         request.setDescription("Downloading ")
         request.setAllowedOverRoaming(false)
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
@@ -1016,28 +1017,23 @@ openZingScanner()        }
         }
         return true
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int,  data: Intent?) {
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        // if the intentResult is null then
-        // toast a message as "cancelled"
         if (intentResult != null) {
             if (intentResult.contents == null) {
                 Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
             } else {
-                // if the intentResult is not null we'll set
-                // the content and format of scan message
+
                 Toast.makeText(this, "${intentResult.contents}", Toast.LENGTH_LONG).show()
-//                messageText.setText(intentResult.contents)
-//                messageFormat.setText(intentResult.formatName)
+//
                 Demo_adduser.setText(intentResult.contents)
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
-
 }
 
 

@@ -54,6 +54,7 @@ class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
         viewmodel?.imgView = viewFullScreenImage
         viewmodel?.progressbar = progressbar_playvideo
         viewmodel?.pdflayout =pdf_layout
+        viewmodel?.playerview =playerView
 
         if (filetype == "image")
 
@@ -99,6 +100,19 @@ class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
 
     override fun onProgressUpdate(progress: Int, total: Int) {
     }
+
+
+
+
+
+    override fun onStop() {
+        super.onStop()
+           viewmodel?.releasePlayer()
+
+    }
+
+
+
 }
 
 

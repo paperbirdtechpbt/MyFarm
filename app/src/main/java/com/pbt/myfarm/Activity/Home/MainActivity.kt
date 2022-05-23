@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -34,8 +33,8 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_task_function.*
-import okhttp3.internal.notifyAll
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
 
@@ -45,7 +44,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     val data = ArrayList<EventList>()
     var viewModel: MainActivityViewModel? = null
     val TAG = "MainActivity"
-    var roleID:String?=null
+    var roleID: String? = null
 
     companion object {
         var ExpAmtArray = ArrayList<String>()
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
-         roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+        roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
 
         chechpermission()
 
@@ -82,7 +81,10 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
             startService(Intent(this, MyFarmService::class.java))
         }
-        callPrivilegeAPI(roleID)
+        GlobalScope.launch {
+            callPrivilegeAPI(roleID)
+
+        }
 
     }
 
@@ -124,8 +126,13 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     override fun onRestart() {
         super.onRestart()
         val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
-        if (!roleID.equals("0"))
-            callPrivilegeAPI(roleID)
+        if (!roleID.equals("0")) {
+            GlobalScope.launch {
+                callPrivilegeAPI(roleID)
+
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -142,8 +149,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             setdata(privilegeListNameOffline)
         }
         if (AppUtils().isInternet(this)) {
-           callPrivilegeAPI(roleID)
-        }    }
+            GlobalScope.launch {
+                callPrivilegeAPI(roleID)
+
+            }
+        }
+    }
 
     private fun setdata(privilegeList: ArrayList<String>) {
         data.clear()
@@ -166,13 +177,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 data.add(EventList("Event", R.drawable.ic_icon_list))
 
             }
-            data.add(EventList("QR Demo",R.drawable.ic_qrcode))
+            data.add(EventList("QR Demo", R.drawable.ic_qrcode))
             if (!data.isNullOrEmpty()) {
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
                 setadapter(data)
             }
-        }
-        else {
+        } else {
             data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
 
             if (privilegeListNameOffline.contains("Pack")) {
@@ -235,8 +245,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         } else {
             if (AppUtils().isInternet(this)) {
                 Toast.makeText(this, "Uploading Offline Data", Toast.LENGTH_SHORT).show()
-
-                viewModel?.sendDataMastersApi(userID, this)
+                GlobalScope.launch {
+                    viewModel?.sendDataMastersApi(userID, this@MainActivity)
+                }
             } else {
                 Toast.makeText(
                     this,

@@ -2,6 +2,7 @@ package com.pbt.myfarm.Activity.CreatePack
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.res.ColorStateList
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -14,15 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayID
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity.Companion.arrayName
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.packList
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.selectedcom_Group_companian
 import com.pbt.myfarm.HttpResponse.*
-import com.pbt.myfarm.PackViewModel
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigName
 import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityList
@@ -115,6 +116,7 @@ class CreatePackAdapter(
         val fieldtype = t["field_type"].toString()
         val field_id = t["field_id"].toString()
         val namee = t["field_name"].toString()
+        val editable = t["editable"].toString().toDouble().toInt()
 
         val field: ArrayList<PackFieldList> = t["field_list"] as ArrayList<PackFieldList>
 
@@ -182,6 +184,7 @@ class CreatePackAdapter(
             holder.name.visibility = View.VISIBLE
 
             holder.labelname.setText(namee)
+            checkFoucable(holder.name, null, editable)
             if (namee == "QUANTITY") {
                 holder.name.setInputType(InputType.TYPE_CLASS_NUMBER)
             }
@@ -189,12 +192,12 @@ class CreatePackAdapter(
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
                     holder.desciption.setText(packList?.description)
-                        desciptioncompanian=packList?.description
+                    desciptioncompanian = packList?.description
 
                     holder.name.setText("")
                 } else {
                     holder.desciption.setText(packList?.description)
-                    desciptioncompanian=packList?.description
+                    desciptioncompanian = packList?.description
                     holder.name.setText(valued)
                 }
             } else {
@@ -203,8 +206,7 @@ class CreatePackAdapter(
             }
 //            }, 3500)
 
-        }
-        else if (fieldtype == "List" || fieldtype == "Table") {
+        } else if (fieldtype == "List" || fieldtype == "Table") {
             holder.desciption.setText(packList?.description)
 
 
@@ -216,6 +218,9 @@ class CreatePackAdapter(
 
             holder.labelSpinner.visibility = View.VISIBLE
             holder.mysppinner.visibility = View.VISIBLE
+
+            checkFoucable(null, holder.mysppinner, editable)
+
 
             holder.labelSpinner.setText(namee)
             if (!valued.isEmpty()) {
@@ -240,7 +245,7 @@ class CreatePackAdapter(
 
         } else if (fieldtype == "Date") {
             holder.desciption.setText(packList?.description)
-            desciptioncompanian=packList?.description
+            desciptioncompanian = packList?.description
 
 
             holder.name.visibility = View.GONE
@@ -257,6 +262,8 @@ class CreatePackAdapter(
                 holder.labelDesciption,
                 holder.desciption
             )
+
+            checkFoucable(holder.date, null, editable)
 
             if (updateTaskIdBoolean) {
                 if (valued == "null") {
@@ -519,14 +526,17 @@ class CreatePackAdapter(
                 packname.setText(labelPackConfigName)
             }
 
-            val aa = ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
+            val aa =
+                ArrayAdapter(context, android.R.layout.simple_spinner_item, communityGroupListname)
             aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             communityGroup.setAdapter(aa)
 
-            if (!selectedcom_Group_companian.isNullOrEmpty()){
-                for (i in packCommunityList.indices){
-                    val item= packCommunityList.get(i)
-                    if (selectedcom_Group_companian!!.toDouble().toInt()==item.id.toDouble().toInt()){
+            if (!selectedcom_Group_companian.isNullOrEmpty()) {
+                for (i in packCommunityList.indices) {
+                    val item = packCommunityList.get(i)
+                    if (selectedcom_Group_companian!!.toDouble().toInt() == item.id.toDouble()
+                            .toInt()
+                    ) {
                         communityGroup.setSelection(i)
                     }
                 }
@@ -535,8 +545,11 @@ class CreatePackAdapter(
 
             boolean = false
 //            },1000)
+            checkFoucable(packname,communityGroup,0)
+            checkFoucable(nameprefix,null,0)
 
-        } else {
+        }
+        else {
             labelcommunityGroup.visibility = View.GONE
             communityGroup.visibility = View.GONE
             labelpackname.visibility = View.GONE
@@ -553,6 +566,126 @@ class CreatePackAdapter(
         callbacks.invoke(arrayID!!, arrayName!!)
     }
 
-}
+    fun checkFoucable(editext: EditText?, spinner: Spinner?, iseditable: Int) {
+        if (updateTaskIdBoolean) {
+//            if (CreateTaskActivity.checkFieldStatus?.status == "completed" || CreateTaskActivity.checkFieldStatus?.status == null) {
+//                editext?.isEnabled = false
+//                editext?.isFocusable = false
+//                editext?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+//                spinner?.isEnabled = false
+//                spinner?.isFocusable = false
+//                spinner?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+//            } else {
+                if (AppUtils().isInternet(context)) {
+//                    if (!MainActivity.privilegeListName.contains("CanOverideEditTask")) {
+                        if (iseditable == 0) {
+
+                            if (spinner == null) {
+                                editext?.isEnabled = false
+                                editext?.isFocusable = false
+                                editext?.setBackgroundTintList(
+                                    ColorStateList.valueOf(
+                                        context.resources.getColor(
+                                            R.color.grey
+                                        )
+                                    )
+                                )
+
+                            } else {
+                                spinner.isEnabled = false
+                                spinner.isFocusable = false
+                                spinner.setBackgroundTintList(
+                                    ColorStateList.valueOf(
+                                        context.resources.getColor(
+                                            R.color.grey
+                                        )
+                                    )
+                                )
+                            }
+
+
+                        } else {
+                            editext?.isEnabled = true
+                            editext?.isFocusable = true
+                            spinner?.isEnabled = true
+                            spinner?.isFocusable = true
+                        }
+//                    } else {
+//                        editext?.isEnabled = true
+//                        editext?.isFocusable = true
+//                        spinner?.isEnabled = true
+//                        spinner?.isFocusable = true
+//                    }
+
+
+                }
+//                else {
+//                    if (!privilegeListNameOffline.contains("CanOverideEditTask")) {
+//                        if (iseditable == 0) {
+//
+//                            if (spinner == null) {
+//                                myview?.isEnabled = false
+//                                myview?.isFocusable = false
+//                                myview?.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//
+//                            } else {
+////                            spinner?.isEnabled = false
+////                            spinner?.isFocusable = false
+//                                spinner.isClickable = false
+//                                spinner.setBackgroundTintList(
+//                                    ColorStateList.valueOf(
+//                                        context.resources.getColor(
+//                                            R.color.grey
+//                                        )
+//                                    )
+//                                )
+//                            }
+//
+//                        }
+//                    }
+//                }
+
+//                myview?.isEnabled = true
+//                myview?.isFocusable = true
+//                myview?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+//                spinner?.isEnabled = true
+//                spinner?.isFocusable = true
+//                spinner?.setBackgroundTintList(
+//                    ColorStateList.valueOf(
+//                        context.resources.getColor(
+//                            R.color.grey
+//                        )
+//                    )
+//                )
+            }
+
+        }
+    }
+
+
 
 

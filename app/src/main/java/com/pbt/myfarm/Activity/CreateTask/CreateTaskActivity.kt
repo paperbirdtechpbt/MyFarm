@@ -2,7 +2,6 @@ package com.pbt.myfarm.Activity.CreateTask
 
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,12 +18,9 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity
 import com.pbt.myfarm.Activity.ViewMediaActivity.ViewMediaActivity
-import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.selectedComunityGroupTask
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity.Companion.updateTaskBoolen
 import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
@@ -43,7 +39,6 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityCreateTaskBinding
 import kotlinx.android.synthetic.main.activity_create_task.*
-import kotlinx.android.synthetic.main.itemcongiffeildlist.view.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -65,7 +60,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
     //    var updateTaskList: TasklistDataModel? = null
     var updateTaskList: Task? = null
-
 
     val fieldModel = ArrayList<FieldModel>()
     var configtype: TaskConfig? = null
@@ -150,10 +144,33 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             btn_viewmedia.visibility = View.GONE
         }
 
+
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(CreatetaskViewModel::class.java)
+
+        val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
+        setCommunityGroup(communitGroup)
+
+        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup, this, field_desciption)
+
+
+        communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>, view: View, position: Int, id: Long
+            ) {
+                if (!groupArrayId.isNullOrEmpty()) {
+                    selectedCommunityGroup = groupArrayId!!.get(position)
+                }
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+
+            }
+        }
+
 
         if (updateTaskList != null) {
             btn_create_task.setText("Update Task")
@@ -253,26 +270,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             recycler_taskconfiglist.adapter = adapter
         })
 
-        val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
-        setCommunityGroup(communitGroup)
-
-        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup, this)
-
-
-        communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>, view: View, position: Int, id: Long
-            ) {
-                if (!groupArrayId.isNullOrEmpty()) {
-                    selectedCommunityGroup = groupArrayId!!.get(position)
-                }
-
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-
-            }
-        }
 
         btn_create_task.setOnClickListener {
             layout_ProgressBar.visibility = View.VISIBLE

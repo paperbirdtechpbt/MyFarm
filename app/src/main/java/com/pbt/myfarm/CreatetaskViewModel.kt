@@ -14,12 +14,15 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.internal.LinkedTreeMap
 import com.pbt.myfarm.Activity.CreatePack.CreatePackActivity
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
+import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity.Companion.checkFieldStatus
 import com.pbt.myfarm.Activity.FieldLIst
 import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArray
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
+import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
@@ -78,69 +81,67 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     }
 
-    fun setEditableOrNot(edittext: EditText?, spinner: Spinner?, context: Context) {
-        if (ViewTaskActivity.updateTaskBoolen) {
-            if (AppUtils().isInternet(context)) {
-                if (!MainActivity.privilegeListName.contains("CanOverideEditTask")) {
+    fun setEditableOrNot(
+        edittext: EditText?,
+        spinner: Spinner?,
+        context: Context,
+        description: EditText
+    ) {
 
-                    edittext?.isEnabled = false
-                    edittext?.isFocusable = false
-                    edittext?.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                            context.resources.getColor(
-                                R.color.grey
-                            )
+        if(ViewTaskActivity.updateTaskBoolen){
+            if(checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null){
+                edittext?.isEnabled = false
+                edittext?.isFocusable = false
+                edittext?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
                         )
-                    )
-                    spinner?.isEnabled = false
-                    spinner?.isFocusable = false
-                    spinner?.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                            context.resources.getColor(
-                                R.color.grey
-                            )
-                        )
-                    )
-                }
-
-            } else {
-                if (!MainActivity.privilegeListNameOffline.contains("CanOverideEditTask")) {
-                    edittext?.isEnabled = false
-                    edittext?.isFocusable = false
-                    edittext?.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                            context.resources.getColor(
-                                R.color.grey
-                            )
-                        )
-                    )
-                    spinner?.isEnabled = false
-                    spinner?.isFocusable = false
-                    spinner?.setBackgroundTintList(
-                        ColorStateList.valueOf(
-                            context.resources.getColor(
-                                R.color.grey
-                            )
-                        )
-                    )
-
-
-                }
-            }
-
-        } else {
-            edittext?.isEnabled = false
-            edittext?.isFocusable = false
-            edittext?.setBackgroundTintList(
-                ColorStateList.valueOf(
-                    context.resources.getColor(
-                        R.color.grey
                     )
                 )
-            )
-        }
+                spinner?.isEnabled = false
+                spinner?.isFocusable = false
+                spinner?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
+                description.isEnabled = false
+                description.isFocusable = false
+                description.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
+            }
+            else{
+                spinner?.isEnabled = false
+                spinner?.isFocusable = false
+                spinner?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
+                edittext?.isEnabled = false
+                edittext?.isFocusable = false
+                edittext?.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                        context.resources.getColor(
+                            R.color.grey
+                        )
+                    )
+                )
+                description.isEnabled = true
+                description.isFocusable = true
+            }
 
-    }
+    }}
 
     fun createTaskOffline(
         context: Context, configtype: TaskConfig?, isUpdate: Boolean, updateTaskId: Task?

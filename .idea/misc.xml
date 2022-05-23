@@ -3,64 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/MyFarm/app/src/main/res/layout/activity_create_pack.xml" value="0.209375" />
-        <entry key="..\:/MyFarm/app/src/main/res/layout/activity_task_function.xml" value="0.209375" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.18" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_edit_event.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_pack.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_view_event.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/activity_view_task.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/fragment_collect_new_data.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.1" />
-        <entry key="..\:/PBT/Farm/app/src/main/res/layout/itempackfeildlist.xml" value="0.15" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_cancel.xml" value="0.1385" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_loadingimage.xml" value="0.125" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_video.xml" value="0.1385" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_create_pack.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_create_task.xml" value="0.264" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_graph.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_login2.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_main.xml" value="0.13854166666666667" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_pack.xml" value="0.19882246376811594" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_play_scress.xml" value="0.136" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_task_function.xml" value="0.176" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_view_media.xml" value="0.2" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_view_task_object.xml" value="0.19882246376811594" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/custom_layout_task_object.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/edit_task_object.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/fragment_create_pack_frament.xml" value="0.21965579710144928" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/item_viewmedia.xml" value="0.2125" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/itemlist_medialist.xml" value="0.4" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/itemlist_pack.xml" value="0.1609375" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.25416666666666665" />
-        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/itemviewtaskobject.xml" value="0.176" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__dashboardevent.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__task.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_box.xml" value="0.1195" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_dashboaradicon.xml" value="0.1195" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_icon_list.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_pack.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.18" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_dash_board_event.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_edit_event.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_graph.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_login2.xml" value="0.16" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_main.xml" value="0.17391304347826086" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_pack.xml" value="0.18" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_select_config_type.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.18" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_event.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_task.xml" value="0.12" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_collect_pack_fragement.xml" value="0.11" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/fragment_create_pack_frament.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemcongiffeildlist.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_collectdata.xml" value="0.1" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_pack.xml" value="0.1802536231884058" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewevent.xml" value="0.1802536231884058" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_viewtask.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_play_scress.xml" value="0.14990942028985507" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_media.xml" value="0.14990942028985507" />
       </map>
     </option>
   </component>
