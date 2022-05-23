@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:id="@+id/label_taskfunciton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Function"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/edit_taskfunction"
+        app:layout_constraintStart_toStartOf="@id/edit_taskfunction" />
+    <Spinner
+        android:id="@+id/edit_taskfunction"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/design_edittext"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/label_taskfuncitonfield"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Person"
+        android:textColor="#807D7D"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/edit_taskfunction_field"
+        app:layout_constraintStart_toStartOf="@id/edit_taskfunction_field" />
+
+    <Spinner
+        android:id="@+id/edit_taskfunction_field"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/design_edittext"
+        app:layout_constraintTop_toBottomOf="@id/edit_taskfunction" />
+
+    <Button
+        android:id="@+id/btn_updateTaskViewObject"
+        style="@style/Edittext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update TaskFuntion"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
