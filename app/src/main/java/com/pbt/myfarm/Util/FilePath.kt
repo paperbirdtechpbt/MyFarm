@@ -66,11 +66,14 @@ object FilePath{
                 )
 
                 return getDataColumn(context, contentUri, null, null)
-            } else if (isMediaDocument(uri)) {
+            }
+            else if (isMediaDocument(uri)) {
+
 
                 val docId = DocumentsContract.getDocumentId(uri)
                 val split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val type = split[0]
+
 
                 var contentUri: Uri? = null
                 if ("image" == type) {
@@ -80,12 +83,14 @@ object FilePath{
                 } else if ("audio" == type) {
                     contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
                 }
+
                 else if("file"==type || "document"==type){
+
                      contentUri = MediaStore.Files.getContentUri("external")
                 }
+                var selection = "_id=?"
+                var selectionArgs = arrayOf(split[1])
 
-                val selection = "_id=?"
-                val selectionArgs = arrayOf(split[1])
 
                 return getDataColumn(context, contentUri, selection, selectionArgs)
             }// MediaProvider

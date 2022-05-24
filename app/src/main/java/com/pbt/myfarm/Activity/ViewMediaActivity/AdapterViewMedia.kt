@@ -1,6 +1,9 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.ThumbnailUtils
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.pbt.myfarm.Activity.TaskFunctions.ListFunctionFieldlist
 import com.pbt.myfarm.R
-import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppUtils
-import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.itemlist_medialist.view.*
 import java.io.File
 
 
@@ -43,8 +45,10 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
 
         if (type == "image") {
 
+            holder.itemView.icon_playbutton.visibility=View.GONE
             holder.imageView.visibility = View.VISIBLE
             hideViews(holder.viewfile, holder.viewvideo)
+
             Glide.with(context)
                 .load(item.link).fitCenter()
                 .placeholder(R.drawable.ic_loadingimage)
@@ -58,8 +62,16 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
 
 
         } else if (type == "video") {
+
             holder.viewvideo.visibility = View.VISIBLE
             hideViews(holder.viewfile, holder.imageView)
+
+            Glide
+                .with(context)
+                .asBitmap()
+                .load(item.link)
+                .into(holder.viewvideo)
+            holder.itemView.icon_playbutton.visibility=View.VISIBLE
 
             holder.viewvideo?.setOnClickListener{
                 onitemClick?.invoke(item,type)
@@ -68,6 +80,10 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
 
 
         } else if (type == "file") {
+
+
+
+            holder.itemView.icon_playbutton.visibility=View.GONE
             holder.viewfile.visibility = View.VISIBLE
             hideViews(holder.imageView, holder.viewvideo)
 
@@ -75,15 +91,27 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
                 onitemClick?.invoke(item,type)
 
             }
+            val f = File(item.link)
+            val extension=f.extension
+          if (extension=="pdf"||extension=="PDF"){
+              holder.viewfile.setImageResource(R.drawable.ic_pdficon)
+
+          }
+            if (extension=="txt"||extension=="TXT"){
+                holder.viewfile.setImageResource(R.drawable.ic_txticon)
+
+          }
+            if (extension=="doc"||extension=="DOC" ||extension=="docx"||extension=="DOCX"){
+                holder.viewfile.setImageResource(R.drawable.ic_doc_icon)
+
+          }
+
 
 
         } else {
             holder.imageView.visibility = View.VISIBLE
             hideViews(holder.viewfile, holder.viewvideo)
-
         }
-
-
 
     }
 
@@ -100,5 +128,6 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
     override fun getItemViewType(position: Int): Int {
         return position
     }
+
 
 }

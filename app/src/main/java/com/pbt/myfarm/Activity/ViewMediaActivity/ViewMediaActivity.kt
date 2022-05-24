@@ -50,23 +50,26 @@ class ViewMediaActivity : AppCompatActivity() {
             if (!list.isNullOrEmpty()) {
 
                 prgssBurreing.visibility = View.GONE
-                layout_noMedia.visibility=View.GONE
+                layout_noMedia.visibility = View.GONE
 
                 adapter = AdapterViewMedia(this, list)
                 adapter?.onitemClick = { item, filetype ->
 
                     if (filetype == "image" || filetype == "video") {
+
                         val intent = Intent(this, PlayScreenActivity::class.java)
                         intent.putExtra(CONST_MEDIATYPE, filetype)
                         intent.putExtra(CONST_MEDIAOBJECT, item)
                         startActivity(intent)
+
                     } else {
                         viewModel?.downloadFile(item.link, item.name, this)
                     }
                 }
-            } else {
+            }
+            else {
 
-                layout_noMedia.visibility=View.VISIBLE
+                layout_noMedia.visibility = View.VISIBLE
                 prgssBurreing.visibility = View.GONE
 
             }

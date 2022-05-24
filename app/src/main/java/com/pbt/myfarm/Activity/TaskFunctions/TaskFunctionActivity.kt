@@ -14,10 +14,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
-import com.iceteck.silicompressorr.SiliCompressor
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
@@ -91,6 +92,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     var taskObject: TaskObject? = null
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_function)
@@ -134,38 +136,48 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         btn_choosefile.setOnClickListener {
             chechpermission()
-//mypermission()
-            val options = arrayOf<CharSequence>(
-                "Take Photo",
-                "Choose from Gallery",
-                "Capture Video",
-                "Cancel"
-            )
+            if (Environment.isExternalStorageManager()) {
+
+                val options = arrayOf<CharSequence>(
+                    "Take Photo",
+                    "Choose from Gallery",
+                    "Capture Video",
+                    "Cancel"
+                )
 //        val options = arrayOf<CharSequence>("Take Photo")
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setTitle("Choose your profile picture")
-            builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-                if (options[item] == "Take Photo") {
-                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                    setResult(CAMERA_REQUEST, cameraIntent)
-                    resultLauncher.launch(cameraIntent)
-                } else if (options[item] == "Choose from Gallery") {
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setTitle("Choose your profile picture")
+                builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+                    if (options[item] == "Take Photo") {
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                        setResult(CAMERA_REQUEST, cameraIntent)
+                        resultLauncher.launch(cameraIntent)
+                    } else if (options[item] == "Choose from Gallery") {
 
-                    val pickPhoto = Intent()
-                    pickPhoto.setType("*/*")
-                    pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-                    setResult(GELARY_REQUEST, pickPhoto)
-                    gallaryLauncher.launch(pickPhoto)
+                        val pickPhoto = Intent()
+                        pickPhoto.setType("*/*")
+                        pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
+                        setResult(GELARY_REQUEST, pickPhoto)
+                        gallaryLauncher.launch(pickPhoto)
 
-                } else if (options[item] == "Capture Video") {
+                    } else if (options[item] == "Capture Video") {
 
-                    openCameraToCaptureVideo()
+                        openCameraToCaptureVideo()
 
-                } else if (options[item] == "Cancel") {
-                    dialog.dismiss()
-                }
-            })
-            builder.show()
+                    } else if (options[item] == "Cancel") {
+                        dialog.dismiss()
+                    }
+                })
+                builder.show()
+
+            } else {
+                val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                val uri = Uri.fromParts("package", packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+
+//mypermission()
 
 
         }
@@ -494,11 +506,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
                         if (selectedFunctionId == 171) {
-                            label_fieldname.setText("Add Person")
+                            label_fieldname.setText(R.string.addPerson)
 
                             callApi("171")
                         } else {
-                            label_fieldname.setText("Add Container")
+                            label_fieldname.setText(R.string.addContainer)
                             callApi("176")
                         }
                     } else if (selectedFunctionId == 173) {
@@ -647,13 +659,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 AppUtils.logDebug(TAG, "imagelist" + imageList.toString())
 
                 setImageList(imageList)
-                //attach media
-
             }
-
         }
-
-
     }
 
     private fun setImageList(imageList: ArrayList<TaskMediaFile>) {
@@ -679,7 +686,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     )
                 )
             }
-
 
             val adapter = AdapterTaskFunction(this, function) { name, link ->
                 if (AppUtils().isInternet(this)) {
@@ -727,16 +733,21 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 //            }
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let { it ->
+                    try {
+                        MediaStore.Files.getContentUri("external")
+                        val contentURI = result.data!!.data
+                        val filepathfromUri = FilePath.getPath(this, contentURI!!)
+                        fileVideo = File(filepathfromUri)
 
-                    val contentURI = result.data!!.data
-                    val filepathfromUri = FilePath.getPath(this, contentURI!!)
-                    fileVideo = File(filepathfromUri)
-                    AppUtils.logError(TAG, "filepathfromUri" + filepathfromUri)
-                    AppUtils.logError(TAG, "file" + fileVideo)
-                    taskfunction_media.setText(fileVideo!!.name)
+                        taskfunction_media.setText(fileVideo!!.name)
 
-                    Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_LONG).show()
-
+                        Toast.makeText(this, "${fileVideo!!.name}", Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        AppUtils.logError(
+                            TAG,
+                            "GalleryLauncher error " + e.localizedMessage.toString()
+                        )
+                    }
                 }
             }
         }
@@ -953,7 +964,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     TAG,
                     "onitem Select lIstner" + selectedFunctionFieldId.toString()
                 )
-
 
             }
 

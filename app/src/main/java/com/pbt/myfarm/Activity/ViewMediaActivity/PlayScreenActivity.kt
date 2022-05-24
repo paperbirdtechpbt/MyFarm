@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_play_scress.*
 import java.io.*
 
 
-class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
+class PlayScreenActivity : AppCompatActivity(), DownloadFile.Listener {
     var filetype: String? = null
     var file: ListFunctionFieldlist? = null
     var viewmodel: ViewModelPlayScreen? = null
@@ -29,7 +29,7 @@ class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
     private var pdfPagerAdapter: PDFPagerAdapter? = null
     private var url: String? = null
     private val pdfLayout: LinearLayout? = null
-    val TAG="PlayScreenActivity"
+    val TAG = "PlayScreenActivity"
     var manager: DownloadManager? = null
 
 
@@ -53,19 +53,22 @@ class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
         viewmodel?.videoView = playvideoView
         viewmodel?.imgView = viewFullScreenImage
         viewmodel?.progressbar = progressbar_playvideo
-        viewmodel?.pdflayout =pdf_layout
-        viewmodel?.playerview =playerView
+        viewmodel?.pdflayout = pdf_layout
+        viewmodel?.playerview = playerView
 
         if (filetype == "image")
+            progressbar_playvideo.visibility = View.GONE
 
-            viewmodel?.viewImage(this, file!!)
+        viewmodel?.viewImage(this, file!!)
         if (filetype == "video")
+//            progressbar_playvideo.visibility=View.VISIBLE
+
             viewmodel?.playVideo(this, file!!)
         if (filetype == "file") {
-            playvideoView.visibility= View.GONE
-            viewFullScreenImage.visibility= View.GONE
-            pdf_layout.visibility=View.VISIBLE
-            progressbar_playvideo.visibility=View.VISIBLE
+            playvideoView.visibility = View.GONE
+            viewFullScreenImage.visibility = View.GONE
+            pdf_layout.visibility = View.VISIBLE
+            progressbar_playvideo.visibility = View.VISIBLE
             remotePDFViewPager = RemotePDFViewPager(this, file?.link, this)
 
         }
@@ -85,33 +88,28 @@ class PlayScreenActivity : AppCompatActivity() , DownloadFile.Listener{
         pdfPagerAdapter = PDFPagerAdapter(this, FileUtil.extractFileNameFromURL(url))
         remotePDFViewPager!!.adapter = pdfPagerAdapter
         updateLayout()
-        progressbar_playvideo.setVisibility(View.GONE)
+
     }
 
     private fun updateLayout() {
-        pdfLayout?.addView(remotePDFViewPager,
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT)
-
+        pdfLayout?.addView(
+            remotePDFViewPager,
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
+        )
     }
 
     override fun onFailure(e: Exception?) {
-        AppUtils.logError(TAG,"on failure"+e?.message.toString())
+        AppUtils.logError(TAG, "on failure" + e?.message.toString())
     }
 
     override fun onProgressUpdate(progress: Int, total: Int) {
     }
 
-
-
-
-
     override fun onStop() {
         super.onStop()
-           viewmodel?.releasePlayer()
+        viewmodel?.releasePlayer()
 
     }
-
-
 
 }
 

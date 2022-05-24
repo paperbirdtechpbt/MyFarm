@@ -7,24 +7,25 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
+import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
-import com.pbt.myfarm.AllPriviledgeListResponse
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
-import com.pbt.myfarm.Privilege
-import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.MyFarmService
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val privilegeListNameOfflineID = ArrayList<String>()
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -86,7 +88,16 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         }
 
+        if (!Environment.isExternalStorageManager()) {
+            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+            val uri = Uri.fromParts("package", packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        }
+
+
     }
+
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {

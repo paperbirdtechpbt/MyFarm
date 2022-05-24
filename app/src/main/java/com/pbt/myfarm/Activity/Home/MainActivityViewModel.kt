@@ -7,11 +7,14 @@ import android.app.Application
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
+import com.pbt.myfarm.BuildConfig
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.ModelClass.SendDataMasterList
@@ -152,7 +155,7 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
             .setPositiveButton("Yes",
                 DialogInterface.OnClickListener { dialog, which ->
 
-                    val db=DbHelper(context,null)
+                    val db = DbHelper(context, null)
                     db.truncateAllTables()
                     MySharedPreference.clearPref(context)
                     context.startActivity(Intent(context, LoginActivity::class.java))
@@ -273,6 +276,11 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
             }
         }
+
+
+    }
+
+    fun getFileAccessPermission(context: Context) {
 
 
     }
