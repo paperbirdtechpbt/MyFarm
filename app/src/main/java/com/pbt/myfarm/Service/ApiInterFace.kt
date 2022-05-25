@@ -2,6 +2,7 @@ package com.pbt.myfarm.Service
 
 import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Event.EditEventList
+import com.pbt.myfarm.Activity.Event.ResponseScanCodeForTaskFunction
 import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
@@ -371,5 +372,13 @@ fun uploadFile(
     @FormUrlEncoded
     @POST("api/checkTaskStatus")
     fun checkTaskStatus(@Field("id") taksID: String) :Call<HttpResponse>
+
+    @FormUrlEncoded
+    @POST("api/scancodefortaskfunction")
+    fun scanCodeTaskFunction(
+        @Field("scan_code") scan_code: String,
+        @Field("func_id") func_id: String,
+        @Field("user_id") user_id: String)
+    :Call<ResponseScanCodeForTaskFunction>
 
 }

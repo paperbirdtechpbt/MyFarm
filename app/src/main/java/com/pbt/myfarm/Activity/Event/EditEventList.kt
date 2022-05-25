@@ -12,6 +12,12 @@ data class ResposneUpdateEvent(
     @SerializedName("error")  val error: Boolean,
     @SerializedName("msg")  val msg: String)
 
-data class ResponseOfflineSync(
+data class ResponseScanCodeForTaskFunction(
     @SerializedName("error")  val error: Boolean,
-    @SerializedName("msg")  val msg: Objects)
+    @SerializedName("msg")  val msg: String,
+    @SerializedName("data")  val data: ScannedPersonData,
+    )
+data class ScannedPersonData(
+    @SerializedName("id")  val id: Int,
+    @SerializedName("name")  val name: String,
+    )

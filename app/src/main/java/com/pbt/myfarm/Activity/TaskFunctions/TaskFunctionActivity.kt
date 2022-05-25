@@ -64,14 +64,14 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     var viewmodel: ViewModelTaskFunctionality? = null
     var spinner: Spinner? = null
     var selectedFunctionId = 0
-    var selectedFunctionFieldId = 0
     var body: MultipartBody.Part? = null
-    var fileSizeInMB:Long?=null
+    var fileSizeInMB: Long? = null
     var edAttachMedia: EditText? = null
     val TAG: String = "TaskFunctionActivity"
     private val CAMERA_REQUEST = 1888
     private val GELARY_REQUEST = 1088
     var manager: DownloadManager? = null
+    var selectedFunctionFieldId :Int?= 0
 
     private val VIDEO_CAPTURE = 101
     var recordedVideoPath: String = ""
@@ -91,6 +91,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     val listLocalPrivilegesName = ArrayList<String>()
 
     var taskObject: TaskObject? = null
+    companion object{
+        var functionidFromScanAPi:Int?=null
+    }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,39 +139,44 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         btn_choosefile.setOnClickListener {
             chechpermission()
+
+            val list = mutableListOf<String>("Test Crash")
+            list.get(1)
+
+
 //            if (Environment.isExternalStorageManager()) {
 
-                val options = arrayOf<CharSequence>(
-                    "Take Photo",
-                    "Choose from Gallery",
-                    "Capture Video",
-                    "Cancel"
-                )
+            val options = arrayOf<CharSequence>(
+                "Take Photo",
+                "Choose from Gallery",
+                "Capture Video",
+                "Cancel"
+            )
 //        val options = arrayOf<CharSequence>("Take Photo")
-                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder.setTitle("Choose your profile picture")
-                builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
-                    if (options[item] == "Take Photo") {
-                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                        setResult(CAMERA_REQUEST, cameraIntent)
-                        resultLauncher.launch(cameraIntent)
-                    } else if (options[item] == "Choose from Gallery") {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("Choose your profile picture")
+            builder.setItems(options, DialogInterface.OnClickListener { dialog, item ->
+                if (options[item] == "Take Photo") {
+                    val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                    setResult(CAMERA_REQUEST, cameraIntent)
+                    resultLauncher.launch(cameraIntent)
+                } else if (options[item] == "Choose from Gallery") {
 
-                        val pickPhoto = Intent()
-                        pickPhoto.setType("*/*")
-                        pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
-                        setResult(GELARY_REQUEST, pickPhoto)
-                        gallaryLauncher.launch(pickPhoto)
+                    val pickPhoto = Intent()
+                    pickPhoto.setType("*/*")
+                    pickPhoto.setAction(Intent.ACTION_GET_CONTENT)
+                    setResult(GELARY_REQUEST, pickPhoto)
+                    gallaryLauncher.launch(pickPhoto)
 
-                    } else if (options[item] == "Capture Video") {
+                } else if (options[item] == "Capture Video") {
 
-                        openCameraToCaptureVideo()
+                    openCameraToCaptureVideo()
 
-                    } else if (options[item] == "Cancel") {
-                        dialog.dismiss()
-                    }
-                })
-                builder.show()
+                } else if (options[item] == "Cancel") {
+                    dialog.dismiss()
+                }
+            })
+            builder.show()
 
 //            }
 //            else {
@@ -189,8 +197,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 progressbar_taskexecute.visibility = View.GONE
 
                 Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show()
-            }
-            else if (selectedFunctionId == 174) {
+            } else if (selectedFunctionId == 174) {
                 if (checkStats?.status == "completed" || checkStats?.status == null) {
                     if (checkStats?.status != "completed") {
                         Toast.makeText(
@@ -209,11 +216,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     }
                 }
 
-            }
-            else {
+            } else {
                 if (selectedFunctionId == 173) {
 
-                    if (fileSizeInMB!! <40){
+                    if (fileSizeInMB!! < 40) {
                         progressbar_taskexecute.visibility = View.GONE
 
                         progress_circular?.visibility = View.VISIBLE
@@ -225,14 +231,13 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         btn_execute.visibility = View.GONE
 
 
-                    }
-                    else{
+                    } else {
                         progressbar_taskexecute.visibility = View.GONE
 
-                        Toast.makeText(this, "File Must be Less than 40MB", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "File Must be Less than 40MB", Toast.LENGTH_SHORT)
+                            .show()
                     }
-                }
-                else {
+                } else {
                     progressbar_taskexecute?.visibility = View.VISIBLE
                     callApiTaskExecuteButton()
 
@@ -251,6 +256,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 //            val mTimeZoneId =
 //                MySharedPreference.getUser(this)?.timezone?.toDouble()?.toInt().toString()
         val mFieldID = selectedFunctionFieldId.toString()
+
+        AppUtils.logDebug(TAG,"selectedFunctionFieldId"+mFieldID+"=selectedFunctionId"+mFunctionID)
         if (AppUtils().isInternet(this)) {
 
             val service = ApiClient.client.create(ApiInterFace::class.java)
@@ -288,7 +295,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     AppUtils.logDebug(TAG, response.body().toString())
                     val message = response.body()?.msg.toString()
                     if (response.body()?.error == false) {
-                        AppUtils.logError(TAG,"false on btnexecute"+Gson().toJson(response.body()?.msg.toString()))
+                        AppUtils.logError(
+                            TAG,
+                            "false on btnexecute" + Gson().toJson(response.body()?.msg.toString())
+                        )
 
                         progressbar_taskexecute.visibility = View.GONE
 
@@ -315,7 +325,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
                     } else {
-                        AppUtils.logError(TAG,"failr on btnexecute"+Gson().toJson(response.body()?.msg.toString()))
+                        AppUtils.logError(
+                            TAG,
+                            "failr on btnexecute" + Gson().toJson(response.body()?.msg.toString())
+                        )
 
                         progressbar_taskexecute.visibility = View.GONE
 
@@ -354,8 +367,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 }
 
             })
-        }
-        else {
+        } else {
 //                    val db = DbHelper(this, null)
 //                    viewmodel?.apply {
 //                        this.executeTask(mTaskID,mFunctionID,mUserID,mFieldID,db,mTimeZoneId)
@@ -382,11 +394,13 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
 
     private fun initViewModel(taskConfigID: String, updateTaskID: String) {
+
         viewmodel = ViewModelProvider(
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(ViewModelTaskFunctionality::class.java)
         viewmodel?.context = this@TaskFunctionActivity
+        viewmodel?.progressVideo=progressbar_taskexecute
 
         btnScanCode.setOnClickListener {
 //            qr_scanner.visibility=View.VISIBLE
@@ -396,6 +410,17 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         viewmodel?.checkstatus?.observe(this) {
             if (it != null) {
                 checkStats = it
+            }
+
+        }
+
+
+        viewmodel?.id?.observe(this) {
+            progressbar_taskexecute.visibility=View.GONE
+
+            if (it!=0){
+                progressbar_taskexecute.visibility=View.GONE
+                selectedFunctionFieldId=it
             }
         }
 
@@ -519,7 +544,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 } else {
                     val item = listid.get(position)
                     if (selectedFunctionId == 171 || selectedFunctionId == 176) {
-
+                        scanned_Data.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
@@ -529,7 +554,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
 
+                        if (selectedFunctionId == 217) {
+                            label_fieldname.setText(R.string.addPerson)
 
+                            callApi("171")
+                        }
                         if (selectedFunctionId == 171) {
                             label_fieldname.setText(R.string.addPerson)
 
@@ -539,7 +568,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             callApi("176")
                         }
                     } else if (selectedFunctionId == 173) {
-
+                        scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         label_filename.visibility = View.GONE
@@ -553,6 +582,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         callApi("173")
 
                     } else if (selectedFunctionId == 168 || selectedFunctionId == 169 || selectedFunctionId == 170) {
+                        scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         label_filename.visibility = View.GONE
@@ -589,7 +619,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             finish()
 
                         }
-
+                        scanned_Data.visibility = View.GONE
                         label_filename.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
@@ -599,7 +629,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
                     } else if (item == "175") {
-
+                        scanned_Data.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btn_choosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
@@ -610,6 +640,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_fieldname.visibility = View.VISIBLE
 
                         callApi("175")
+                    } else if (item == "217" || item == "215" || item == "216") {
+                        viewmodel?.edScannedData=scanned_Data
+                        scanned_Data.visibility = View.VISIBLE
+                        openZingScanner()
                     }
                 }
             }
@@ -763,7 +797,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         val filepathfromUri = FilePath.getPath(this, contentURI!!)
                         fileVideo = File(filepathfromUri)
 
-                        fileSizeInMB= viewmodel?.getFileSize(fileVideo!!)
+                        fileSizeInMB = viewmodel?.getFileSize(fileVideo!!)
 
 
 
@@ -839,7 +873,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     recordedVideoPath = fileUri?.let { it1 -> getRealPathFromURI(it1) }.toString()
                     fileVideo = File(recordedVideoPath)
                     taskfunction_media.setText(file.name)
-                    fileSizeInMB= viewmodel?.getFileSize(fileVideo!!)
+                    fileSizeInMB = viewmodel?.getFileSize(fileVideo!!)
                 }
             }
         }
@@ -853,7 +887,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 fileVideo = File(recordedVideoPath)
 
                 taskfunction_media.setText(fileVideo!!.name)
-                fileSizeInMB= viewmodel?.getFileSize(fileVideo!!)
+                fileSizeInMB = viewmodel?.getFileSize(fileVideo!!)
 
 //                compressVideo()
             }
@@ -986,6 +1020,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             override fun onItemSelected(
                 parent: AdapterView<*>, view: View, position: Int, id: Long
             ) {
+                scanned_Data.setText("")
                 selectedFunctionFieldId = function.get(position).id!!.toInt()
                 AppUtils.logDebug(
                     TAG,
@@ -1060,18 +1095,24 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             if (intentResult.contents == null) {
                 Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
             } else {
+                callApiScan(intentResult.contents.toString())
+                progressbar_taskexecute.visibility = View.VISIBLE
 
-                Toast.makeText(this, "${intentResult.contents}", Toast.LENGTH_LONG).show()
-//
-                Demo_adduser.setText(intentResult.contents)
+
+
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
+    private fun callApiScan(content: String) {
+        viewmodel?.callApiForGetIDofPersonScanned(this, selectedFunctionId, content)
+    }
 
-}
+    }
+
+
 
 
 

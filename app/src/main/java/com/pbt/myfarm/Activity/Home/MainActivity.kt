@@ -8,11 +8,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -75,7 +73,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
 
-        if (chechpermission()){
+        if (chechpermission()) {
             if (ContextCompat.checkSelfPermission(
                     this,
                     Manifest.permission.READ_EXTERNAL_STORAGE
@@ -89,19 +87,21 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
 
                     file = File(
-                        Environment.getExternalStorageDirectory()
+                        Environment.getDownloadCacheDirectory()
                             .toString() + File.separator + "/$CONST_CRASH_FOLDER_NAME/"
                     )
+
                 } else {
                     file = File(
-                        Environment.getExternalStorageDirectory()
+                        Environment.getDownloadCacheDirectory()
                             .toString() + File.separator + "/$CONST_CRASH_FOLDER_NAME/"
                     )
                 }
                 if (!file.exists()) {
                     file.mkdirs()
                 }
-            } }
+            }
+        }
 
         val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
@@ -315,7 +315,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             .show()
     }
 
-     fun chechpermission(): Boolean {
+    fun chechpermission(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
                 android.Manifest.permission.READ_CONTACTS
             ) != PackageManager.PERMISSION_GRANTED
@@ -370,7 +370,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode== RESULT_OK ){
+        if (requestCode == RESULT_OK) {
 
             if (Thread.getDefaultUncaughtExceptionHandler() !is CustomExceptionHandler) {
                 Thread.setDefaultUncaughtExceptionHandler(

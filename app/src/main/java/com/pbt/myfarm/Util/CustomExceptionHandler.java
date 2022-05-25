@@ -47,20 +47,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
         }
 
         String version_name = packageInfo.versionName;
-
-        SharedPreferences prefs = context.getSharedPreferences("Login", MODE_PRIVATE);
-        if (prefs != null && !prefs.equals("")) {
-            String role = prefs.getString("role", "");
-            String userId = prefs.getString("userid", "");
-            String fName = prefs.getString("first_name", "");
-            String lName = prefs.getString("last_name", "");
-            String phone = prefs.getString("phone", "");
-            if (!userId.isEmpty() && !role.isEmpty() && !phone.isEmpty())
-                filename = role + "_" + userId + "_" + fName + "_" + lName + "_" + phone + "_" + "Version_" + version_name + "_" + Build.MODEL + "_" + "Android_" + Build.VERSION.RELEASE + "_" + timestamp + ".txt";
-            else
-                filename = "Version_" + version_name + "_" + Build.MODEL + timestamp + ".txt";
-        } else
-            filename = "Version_" + version_name + "_" + Build.MODEL + timestamp + ".txt";
+        filename = "Version_" + version_name + "_" + Build.MODEL + timestamp + ".txt";
 
         if (localPath != null) {
             writeToFile(stacktrace, filename);
@@ -76,6 +63,7 @@ public class CustomExceptionHandler implements Thread.UncaughtExceptionHandler {
             bos.flush();
             bos.close();
         } catch (Exception e) {
+            Log.d("CrashFileWrite","Exception e"+e.getMessage());
             e.printStackTrace();
         }
     }

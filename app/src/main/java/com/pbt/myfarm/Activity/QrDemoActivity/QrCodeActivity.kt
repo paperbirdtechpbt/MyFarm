@@ -19,17 +19,19 @@ class QrCodeActivity : AppCompatActivity() {
     }
 
     private fun openZingScanner() {
+
         val intentIntegrator = IntentIntegrator(this)
         intentIntegrator.setPrompt("My Farm Code Scanner")
         intentIntegrator.setCameraId(0)
         intentIntegrator.setOrientationLocked(true)
         intentIntegrator.setBeepEnabled(true)
         intentIntegrator.initiateScan()
+
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int,  data: Intent?) {
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-
 
         if (intentResult != null) {
             if (intentResult.contents == null) {
@@ -42,5 +44,4 @@ class QrCodeActivity : AppCompatActivity() {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
-
 }

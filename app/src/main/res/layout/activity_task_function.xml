@@ -52,17 +52,17 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <EditText
-            android:id="@+id/Demo_adduser"
+            android:id="@+id/scanned_Data"
             style="@style/Edittext"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginTop="40dp"
             android:background="@drawable/design_edittext"
             android:editable="false"
             android:focusable="false"
             android:visibility="gone"
-            android:text=""
-            app:layout_constraintBottom_toTopOf="@id/btnScanCode" />
+            app:layout_constraintTop_toBottomOf="@id/taskfunction" />
+
 
 
         <EditText
@@ -164,7 +164,6 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/taskfunction_field" />
 
-
         <ProgressBar
             android:id="@+id/progressbar_taskexecute"
             android:layout_width="wrap_content"
@@ -200,6 +199,8 @@
             app:layout_constraintEnd_toEndOf="@id/progress_circular"
             app:layout_constraintStart_toStartOf="@id/progress_circular"
             app:layout_constraintTop_toTopOf="@id/progress_circular" />
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
