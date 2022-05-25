@@ -10,7 +10,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.budiyev.android.codescanner.*
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.DataBase.DbHelper
@@ -22,6 +21,7 @@ import com.pbt.myfarm.Util.AppUtils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 
 class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
@@ -31,8 +31,6 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     var context: Context? = null
     var listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
     var checkstatus = MutableLiveData<HttpResponse>()
-    var codeScannerView: CodeScannerView? = null
-    var codeScanner: CodeScanner? = null
     val path:String?=null
 
 
@@ -129,28 +127,11 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         val slite = choices.name
     }
 
-    fun openScanner(context: Context) {
-        codeScanner = CodeScanner(context, codeScannerView!!)
-        codeScanner!!.camera = CodeScanner.CAMERA_BACK
-        codeScanner!!.formats = CodeScanner.ALL_FORMATS
-        codeScanner!!.autoFocusMode = AutoFocusMode.SAFE
-        codeScanner!!.scanMode = ScanMode.SINGLE
-        codeScanner!!.isAutoFocusEnabled = true
-        codeScanner!!.isFlashEnabled = false
-        codeScanner!!.startPreview()
-
-        codeScanner!!.decodeCallback = DecodeCallback {
-            (context as Activity).runOnUiThread(Runnable {
-                Toast.makeText(context, "${it.text}", Toast.LENGTH_SHORT).show()
-                codeScanner!!.stopPreview()
-                codeScannerView!!.visibility = View.GONE
-            })
-
-        }
-        codeScanner!!.errorCallback = ErrorCallback {
-            Toast.makeText(context, "ERRPR ${it.message}", Toast.LENGTH_SHORT).show()
-
-        }
+    fun getFileSize(fileVideo: File): Long {
+        val  sizeinBytes = fileVideo.length()
+        val fileSizeInKB = sizeinBytes / 1024
+       val fileSizeInMB = fileSizeInKB / 1024
+        return fileSizeInMB
 
     }
 

@@ -9,8 +9,10 @@ import android.os.Build
 import android.os.Environment
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.pbt.myfarm.BuildConfig
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CRASH_FOLDER_NAME
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -172,6 +174,20 @@ class AppUtils {
         return filetype
 
     }
+    fun createCrashFoler(context: Context){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            var extStorageDirectory: String? = null
+            val file: File
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                file = File(context.getFilesDir(), CONST_CRASH_FOLDER_NAME)
+            } else {
+                extStorageDirectory = Environment.getExternalStorageDirectory().toString()
+                file = File(extStorageDirectory, CONST_CRASH_FOLDER_NAME)
+            }
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+        }
 
 
-}
+}}

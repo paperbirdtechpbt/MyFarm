@@ -12,21 +12,16 @@ import com.pbt.myfarm.Activity.TaskFunctions.ListFunctionFieldlist
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
-import es.voghdev.pdfviewpager.library.RemotePDFViewPager
-import es.voghdev.pdfviewpager.library.adapter.PDFPagerAdapter
-import es.voghdev.pdfviewpager.library.remote.DownloadFile
-import es.voghdev.pdfviewpager.library.util.FileUtil
+
 import kotlinx.android.synthetic.main.activity_play_scress.*
 import java.io.*
 
 
-class PlayScreenActivity : AppCompatActivity(), DownloadFile.Listener {
+class PlayScreenActivity : AppCompatActivity() {
     var filetype: String? = null
     var file: ListFunctionFieldlist? = null
     var viewmodel: ViewModelPlayScreen? = null
-    private var remotePDFViewPager: RemotePDFViewPager? = null
 
-    private var pdfPagerAdapter: PDFPagerAdapter? = null
     private var url: String? = null
     private val pdfLayout: LinearLayout? = null
     val TAG = "PlayScreenActivity"
@@ -69,7 +64,6 @@ class PlayScreenActivity : AppCompatActivity(), DownloadFile.Listener {
             viewFullScreenImage.visibility = View.GONE
             pdf_layout.visibility = View.VISIBLE
             progressbar_playvideo.visibility = View.VISIBLE
-            remotePDFViewPager = RemotePDFViewPager(this, file?.link, this)
 
         }
 
@@ -80,29 +74,6 @@ class PlayScreenActivity : AppCompatActivity(), DownloadFile.Listener {
         finish()
         super.onBackPressed()
 
-    }
-
-
-    override fun onSuccess(url: String?, destinationPath: String?) {
-
-        pdfPagerAdapter = PDFPagerAdapter(this, FileUtil.extractFileNameFromURL(url))
-        remotePDFViewPager!!.adapter = pdfPagerAdapter
-        updateLayout()
-
-    }
-
-    private fun updateLayout() {
-        pdfLayout?.addView(
-            remotePDFViewPager,
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT
-        )
-    }
-
-    override fun onFailure(e: Exception?) {
-        AppUtils.logError(TAG, "on failure" + e?.message.toString())
-    }
-
-    override fun onProgressUpdate(progress: Int, total: Int) {
     }
 
     override fun onStop() {

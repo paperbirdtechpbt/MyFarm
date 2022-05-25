@@ -201,17 +201,6 @@
             app:layout_constraintStart_toStartOf="@id/progress_circular"
             app:layout_constraintTop_toTopOf="@id/progress_circular" />
 
-        <com.budiyev.android.codescanner.CodeScannerView
-            android:id="@+id/qr_scanner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:autoFocusButtonColor="@color/white"
-            app:autoFocusButtonVisible="true"
-            app:flashButtonColor="@color/white"
-            app:frameColor="@color/white"
-            app:frameCornersRadius="0dp"
-            app:frameCornersSize="50dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

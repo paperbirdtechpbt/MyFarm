@@ -16,6 +16,7 @@ class AppConstant {
         //media data variables
         const val CONST_MEDIATYPE = "mediatype"
         const val CONST_MEDIAOBJECT= "mediaobject"
+        const val CONST_CRASH_FOLDER_NAME= "MyFarmCrash"
 
 
         //packid
