@@ -16,15 +16,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.pbt.myfarm.BuildConfig
+import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 
 
 class AppUtils {
+
     companion object {
 
 
@@ -94,7 +97,6 @@ class AppUtils {
         }
 
     }
-
 
     fun isServiceRunning(context: Context, serviceClass: Class<*>): Boolean {
         val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -176,10 +178,9 @@ class AppUtils {
             filetype = "video"
         } else if (arrayExtensionDocument.contains(extension)) {
             filetype = "file"
+        } else {
+            filetype = "otherDocument"
         }
-         else{
-             filetype="otherDocument"
-         }
         return filetype
 
     }
@@ -195,11 +196,26 @@ class AppUtils {
     }
 
     fun specialPermissionStorage(context: Activity) {
-        val intent = Intent()
-        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
-        val uri: Uri = Uri.fromParts("package", context.packageName, null)
-        intent.data = uri
-        context.startActivityForResult(intent,  AppConstant.STORAGE_PERMISSION_REQUEST_CODE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    var intent = Intent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        Uri.fromParts("package", context.packageName, null)
+                    )
+                    context.startActivityForResult(
+                        intent,
+                        AppConstant.STORAGE_PERMISSION_REQUEST_CODE
+                    )
+                } catch (e: Exception) {
+                    var intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                    context.startActivityForResult(
+                        intent,
+                        AppConstant.STORAGE_PERMISSION_REQUEST_CODE
+                    )
+                }
+            }
+        }
     }
 
     fun askForCameraPermission(context: Activity) {
@@ -209,6 +225,26 @@ class AppUtils {
             ),
             AppConstant.CAMERA_PERMISSION_REQUEST_CODE
         )
+    }
+
+    fun createCrashFolder(context: Context) {
+            var extStorageDirectory: String? = null
+            val file: File
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                file = File(context.filesDir, AppConstant.CONST_CRASH_FOLDER_NAME)
+            } else {
+                extStorageDirectory = Environment.getExternalStorageDirectory().toString()
+                file = File(extStorageDirectory, AppConstant.CONST_CRASH_FOLDER_NAME)
+            }
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+    }
+
+    fun timeStampCovertToDateTime(): String {
+        val currentTime = Calendar.getInstance().time
+        val sdf = SimpleDateFormat(DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS)
+        return sdf.format(currentTime)
     }
 
 }

@@ -14,7 +14,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.Window
@@ -40,6 +39,7 @@ import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.MyFarmService
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
@@ -82,6 +82,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        initCrash()
+
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
@@ -97,7 +99,10 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 showDialogPermission(this)
             }
         } else {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 showDialogPermission(this)
             }
         }
@@ -331,7 +336,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show()
             }
-        }else if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+        } else if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            Toast.makeText(this, "Storage permission granted ", Toast.LENGTH_LONG).show()
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Storage permission granted ", Toast.LENGTH_LONG).show()
             }
@@ -436,6 +442,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         btnAccess.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
+                    createFolderCall()
                     dialog.dismiss();
                 } else {
                     Toast.makeText(
@@ -447,6 +454,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             } else {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     dialog.dismiss();
+                    createFolderCall()
                 } else {
                     Toast.makeText(
                         this,
@@ -455,8 +463,43 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                     ).show()
                 }
             }
+
+
         }
         dialog.show()
     }
 
+    private fun createFolderCall() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                appUtils.createCrashFolder(this)
+                initCrash()
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                appUtils.createCrashFolder(this)
+                initCrash()
+            }
+        }
+    }
+
+    private fun initCrash() {
+
+        if (Thread.getDefaultUncaughtExceptionHandler() !is CustomExceptionHandler) {
+            Thread.setDefaultUncaughtExceptionHandler(
+                CustomExceptionHandler(
+                    "${this.filesDir}/${AppConstant.CONST_CRASH_FOLDER_NAME}",
+                    "",
+                    applicationContext
+                )
+            )
+        }
+    }
 }
