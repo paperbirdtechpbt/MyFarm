@@ -18,6 +18,9 @@ class AppConstant {
         const val PERMISSION_REQUEST_CODE = 1020
         const val STORAGE_PERMISSION_REQUEST_CODE = 1040
         const val CAMERA_PERMISSION_REQUEST_CODE = 1050
+        const val CONST_CRASH_FOLDER_NAME = "MyFarmCrash"
+
+        const val DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd hh:mm:ss"
 
         //media data variables
         const val CONST_MEDIATYPE = "mediatype"

@@ -372,4 +372,10 @@ fun uploadFile(
     @POST("api/checkTaskStatus")
     fun checkTaskStatus(@Field("id") taksID: String) :Call<HttpResponse>
 
+    @Multipart
+    @POST("api/appLogFileUpload")
+    fun uploadCrashFile(
+        @Part file: MultipartBody.Part?,
+    ): Call<ResponseTaskExecution>
+
 }
