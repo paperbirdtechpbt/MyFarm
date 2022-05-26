@@ -51,7 +51,6 @@
                         android:layout_height="50sp"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="20dp"
-                        android:src="@drawable/ic_photo_camera_black_48dp"
                         app:tint="@color/white" />
 
 
@@ -122,9 +121,9 @@
                         android:layout_height="50sp"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="20dp"
-                        app:tint="@color/white"
                         android:backgroundTint="@color/white"
-                        android:src="@drawable/ic_file" />
+                        android:src="@drawable/ic_file"
+                        app:tint="@color/white" />
 
 
                 </RelativeLayout>

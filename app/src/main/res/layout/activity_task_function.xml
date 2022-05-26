@@ -130,20 +130,19 @@
             app:layout_constraintBottom_toTopOf="@id/taskfunction_media"
             app:layout_constraintStart_toStartOf="@id/taskfunction_media" />
 
-        <TextView
-            android:id="@+id/label_filename"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="50dp"
-            android:text="FileName"
+<!--        <TextView-->
+<!--            android:id="@+id/label_filename"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="20dp"-->
+<!--            android:layout_marginRight="50dp"-->
+<!--            android:text="FileName"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold"-->
+<!--            android:visibility="visible"-->
 
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:visibility="gone"
-
-            app:layout_constraintBottom_toTopOf="@id/recycler_viewMedia"
-            app:layout_constraintLeft_toLeftOf="parent" />
+<!--            app:layout_constraintBottom_toTopOf="@id/recycler_viewMedia"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent" />-->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_viewMedia"
@@ -212,17 +211,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progress_circular" />
 
-        <com.budiyev.android.codescanner.CodeScannerView
-            android:id="@+id/qr_scanner"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:autoFocusButtonColor="@color/white"
-            app:autoFocusButtonVisible="true"
-            app:flashButtonColor="@color/white"
-            app:frameColor="@color/white"
-            app:frameCornersRadius="0dp"
-            app:frameCornersSize="50dp" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

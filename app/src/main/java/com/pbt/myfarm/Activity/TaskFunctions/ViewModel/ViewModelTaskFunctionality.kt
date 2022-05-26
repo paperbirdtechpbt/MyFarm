@@ -15,7 +15,6 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Event.ResponseScanCodeForTaskFunction
 import com.pbt.myfarm.Activity.Event.ScannedPersonData
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
-import com.pbt.myfarm.Activity.TaskFunctions.TaskFunctionActivity.Companion.functionidFromScanAPi
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.BaseTaskFunction
 import com.pbt.myfarm.HttpResponse.HttpResponse
@@ -23,6 +22,7 @@ import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
+import kotlinx.android.synthetic.main.activity_task_function.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -163,8 +163,8 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
                 if (response.body()?.error==false) {
                    val data= Gson().fromJson(Gson().toJson(response.body()!!.data),ScannedPersonData::class.java )
-                    functionidFromScanAPi=data?.id
                     id.postValue(data?.id)
+                    progressVideo?.visibility= View.GONE
 
                     edScannedData?.setText(data.name)
                 } else {
