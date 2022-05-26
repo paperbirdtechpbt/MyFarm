@@ -34,6 +34,8 @@
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_waite_file_is_compress">Please Wait file is compress</string>
+    <string name="attach_media">Attach Media</string>
     <string-array name="array_task_configtype">
         <item>TRANSPORTATION</item>
         <item>FERMENTATION</item>

@@ -1,14 +1,19 @@
 package com.pbt.myfarm.Util
 
 import android.Manifest
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.pbt.myfarm.BuildConfig
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -17,6 +22,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
 import java.util.*
 import java.util.regex.Pattern
+
 
 class AppUtils {
     companion object {
@@ -120,43 +126,44 @@ class AppUtils {
         }
         return false
     }
-     fun checkExtension(extension: String): String {
-         val arrayExtensionIMage = arrayListOf<String>("jpg", "png", "jpeg","JPEG","PNG","JPG")
-         val arrayExtensionVideo = arrayListOf<String>(
-             "MP4",
-             "MOV",
-             "WMV",
-             "AVI",
-             "AVCHD",
-             "MKV",
-             "mp4",
-             "mov",
-             "wmv",
-             "avi",
-             "mkv"
-         )
-         val arrayExtensionDocument = arrayListOf<String>(
-             "DOC",
-             "DOCX",
-             "HTML",
-             "ODT",
-             "PDF",
-             "XLS",
-             "XLSX",
-             "PPT",
-             "PPTX",
-             "TXT" ,
-             "doc",
-             "docx",
-             "html",
-             "odt",
-             "pdf",
-             "xls",
-             "xlsx",
-             "ppt",
-             "pptx",
-             "txt"
-         )
+
+    fun checkExtension(extension: String): String {
+        val arrayExtensionIMage = arrayListOf<String>("jpg", "png", "jpeg", "JPEG", "PNG", "JPG")
+        val arrayExtensionVideo = arrayListOf<String>(
+            "MP4",
+            "MOV",
+            "WMV",
+            "AVI",
+            "AVCHD",
+            "MKV",
+            "mp4",
+            "mov",
+            "wmv",
+            "avi",
+            "mkv"
+        )
+        val arrayExtensionDocument = arrayListOf<String>(
+            "DOC",
+            "DOCX",
+            "HTML",
+            "ODT",
+            "PDF",
+            "XLS",
+            "XLSX",
+            "PPT",
+            "PPTX",
+            "TXT",
+            "doc",
+            "docx",
+            "html",
+            "odt",
+            "pdf",
+            "xls",
+            "xlsx",
+            "ppt",
+            "pptx",
+            "txt"
+        )
 
         var filetype: String = ""
         if (arrayExtensionIMage.contains(extension)) {
@@ -173,5 +180,31 @@ class AppUtils {
 
     }
 
+    fun askForStoragePermission(context: Activity) {
+        ActivityCompat.requestPermissions(
+            context, arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ),
+            AppConstant.STORAGE_PERMISSION_REQUEST_CODE
+        )
+    }
+
+    fun specialPermissionStorage(context: Activity) {
+        val intent = Intent()
+        intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+        val uri: Uri = Uri.fromParts("package", context.packageName, null)
+        intent.data = uri
+        context.startActivityForResult(intent,  AppConstant.STORAGE_PERMISSION_REQUEST_CODE);
+    }
+
+    fun askForCameraPermission(context: Activity) {
+        ActivityCompat.requestPermissions(
+            context, arrayOf(
+                Manifest.permission.CAMERA
+            ),
+            AppConstant.CAMERA_PERMISSION_REQUEST_CODE
+        )
+    }
 
 }

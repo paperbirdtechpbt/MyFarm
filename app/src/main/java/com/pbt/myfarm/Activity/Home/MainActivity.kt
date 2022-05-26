@@ -1,36 +1,48 @@
 package com.pbt.myfarm.Activity.Home
 
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.Window
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
-import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
+import com.pbt.myfarm.AllPriviledgeListResponse
 import com.pbt.myfarm.DataBase.DbHelper
+import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
+import com.pbt.myfarm.Privilege
+import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.MyFarmService
+import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.STORAGE_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,6 +58,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     var viewModel: MainActivityViewModel? = null
     val TAG = "MainActivity"
     var roleID: String? = null
+
+    private lateinit var appUtils: AppUtils
 
     companion object {
         var ExpAmtArray = ArrayList<String>()
@@ -69,8 +83,21 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         recyclerview_main.setLayoutManager(mLayoutManager)
 
         roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+        appUtils = AppUtils()
 
-        chechpermission()
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            askForCameraPermission()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                showDialogPermission(this)
+            }
+        } else {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                showDialogPermission(this)
+            }
+        }
 
         val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
@@ -87,14 +114,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             callPrivilegeAPI(roleID)
 
         }
-
-        if (!Environment.isExternalStorageManager()) {
-            val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
-            val uri = Uri.fromParts("package", packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-
 
     }
 
@@ -140,7 +159,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (!roleID.equals("0")) {
             GlobalScope.launch {
                 callPrivilegeAPI(roleID)
-
             }
         }
 
@@ -162,7 +180,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (AppUtils().isInternet(this)) {
             GlobalScope.launch {
                 callPrivilegeAPI(roleID)
-
             }
         }
     }
@@ -288,22 +305,42 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             .show()
     }
 
-    private fun chechpermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(
-                android.Manifest.permission.READ_CONTACTS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(
-                arrayOf(
-                    android.Manifest.permission.CAMERA,
-                    android.Manifest.permission.INTERNET,
-                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                ), 100
-            )
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        showDialogPermission(this)
+                    }
+                } else {
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        showDialogPermission(this)
+                    }
+                }
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show()
+            }
+        }else if (requestCode == STORAGE_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Storage permission granted ", Toast.LENGTH_LONG).show()
+            }
         }
-        return true
+    }
+
+    private fun askForCameraPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.CAMERA),
+            CAMERA_PERMISSION_REQUEST_CODE
+        );
     }
 
     override fun onResponse(
@@ -346,5 +383,77 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
     }
 
+    private fun showDialogPermission(activity: Activity) {
+
+        val dialog = Dialog(activity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.permission_dialog)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        val btnAccess = dialog.findViewById(R.id.btnAccess) as TextView
+        val switchCamera = dialog.findViewById(R.id.switchCamera) as SwitchCompat
+        val switchStorage = dialog.findViewById(R.id.switchStorage) as SwitchCompat
+
+        switchCamera.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    appUtils.askForCameraPermission(this)
+                }
+            }
+        }
+        switchStorage.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (!Environment.isExternalStorageManager()) {
+                        appUtils.specialPermissionStorage(this)
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Already Permission Allowed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        appUtils.askForStoragePermission(this)
+                    } else {
+                        Toast.makeText(
+                            this,
+                            "Already Permission Allowed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
+        btnAccess.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Please allow permission. without permission you can't upload photo,file or pdf",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Please allow permission. without permission you can't upload photo,file or pdf",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+        dialog.show()
+    }
 
 }

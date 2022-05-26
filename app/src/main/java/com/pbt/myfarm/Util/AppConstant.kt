@@ -12,6 +12,12 @@ class AppConstant {
         const val CONST_USERNAME = "username"
         const val CONST_USERROLE = "userrole"
         const val CONST_USERPASS = "userpass"
+        const val CAMERA_REQUEST = 1888
+        const val GALARY_REQUEST = 1088
+        const val VIDEO_CAPTURE = 101
+        const val PERMISSION_REQUEST_CODE = 1020
+        const val STORAGE_PERMISSION_REQUEST_CODE = 1040
+        const val CAMERA_PERMISSION_REQUEST_CODE = 1050
 
         //media data variables
         const val CONST_MEDIATYPE = "mediatype"
