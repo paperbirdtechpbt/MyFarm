@@ -4,10 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -67,6 +64,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
     var startDate: ObservableField<String>? = null
     var EndDate: ObservableField<String>? = null
     var progressbar: ProgressBar? = null
+    var btnSubmit: Button? = null
 
     init {
         namePrefix = ObservableField("")
@@ -88,8 +86,9 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         description: EditText
     ) {
 
-        if(ViewTaskActivity.updateTaskBoolen){
-            if(checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null){
+        if (ViewTaskActivity.updateTaskBoolen) {
+            if (checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null) {
+                btnSubmit?.visibility = View.GONE
                 edittext?.isEnabled = false
                 edittext?.isFocusable = false
                 edittext?.setBackgroundTintList(
@@ -117,8 +116,9 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                         )
                     )
                 )
-            }
-            else{
+            } else {
+                btnSubmit?.visibility = View.VISIBLE
+
                 spinner?.isEnabled = false
                 spinner?.isFocusable = false
                 spinner?.setBackgroundTintList(
@@ -141,7 +141,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                 description.isFocusable = true
             }
 
-    }}
+        }
+    }
 
     fun createTaskOffline(
         context: Context, configtype: TaskConfig?, isUpdate: Boolean, updateTaskId: Task?

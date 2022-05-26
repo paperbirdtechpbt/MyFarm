@@ -5,6 +5,7 @@ import android.content.Context
 
 import android.util.Log
 import android.view.View
+import android.widget.Button
 
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -40,6 +41,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     var edScannedData: EditText? = null
     var id = MutableLiveData<Int>(0)
     var progressVideo:ProgressBar?=null
+   var btnSubmit: Button?=null
 
 
     init {
@@ -162,12 +164,14 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             ) {
 
                 if (response.body()?.error==false) {
+                    btnSubmit?.visibility=View.VISIBLE
                    val data= Gson().fromJson(Gson().toJson(response.body()!!.data),ScannedPersonData::class.java )
                     id.postValue(data?.id)
                     progressVideo?.visibility= View.GONE
 
                     edScannedData?.setText(data.name)
                 } else {
+                    btnSubmit?.visibility=View.GONE
                     progressVideo?.visibility= View.GONE
                     Toast.makeText(context, response.body()?.msg.toString(), Toast.LENGTH_SHORT)
                         .show()
@@ -176,6 +180,8 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
             }
 
             override fun onFailure(call: Call<ResponseScanCodeForTaskFunction>, t: Throwable) {
+                btnSubmit?.visibility=View.GONE
+
                 progressVideo?.visibility= View.GONE
                 AppUtils.logError(TAG, t.localizedMessage)
             }

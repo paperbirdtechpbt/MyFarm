@@ -41,7 +41,7 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
         val item = list.get(position)
 
         val file = File(list.get(position).name)
-        val type = AppUtils().checkExtension(file.extension)
+        var type = AppUtils().checkExtension(file.extension)
 
         if (type == "image") {
 
@@ -107,7 +107,7 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
           }
             if (extension=="mp3"||extension=="MP3" ||extension=="WAV"||extension=="wav" || extension=="AIFF"||extension=="aiff" ){
                 holder.viewfile.setImageResource(R.drawable.ic_musicicon)
-
+                type="music"
             }
 
 

@@ -153,7 +153,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
         setCommunityGroup(communitGroup)
 
-        viewmodel?.setEditableOrNot(field_prefix, field_communitygroup, this, field_desciption)
 
 
         communitGroup.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -199,7 +198,15 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         }
         viewmodel?.checkstatusObject?.observe(this, androidx.lifecycle.Observer {
             if (it.error == false) {
+
                 checkFieldStatus = it
+                viewmodel?.btnSubmit = btn_create_task
+                viewmodel?.setEditableOrNot(
+                    field_prefix,
+                    field_communitygroup,
+                    this,
+                    field_desciption
+                )
             }
 
         })
@@ -334,7 +341,7 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                         ).enqueue(this)
                 } else {
                     viewmodel?.desciption = field_desciption.text.toString()
-                    var success =
+                    val success =
                         viewmodel?.createTaskOffline(this, configtype, true, updateTaskList)
                     if (success == true) {
                         finish()

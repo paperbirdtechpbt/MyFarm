@@ -481,6 +481,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 scanned_Data.setText("")
 
                 if (selectedFunctionId == 0) {
+                    hideButtonVisibility(false)
+
 //                    label_filename.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE
                     label_fieldname.visibility = View.GONE
@@ -492,6 +494,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 } else {
                     val item = listOfID[position]
                     if (selectedFunctionId == 171 || selectedFunctionId == 176) {
+                        hideButtonVisibility(false)
+
                         scanned_Data.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
@@ -516,6 +520,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                             callApi("176")
                         }
                     } else if (selectedFunctionId == 173) {
+                        hideButtonVisibility(false)
+
                         scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
@@ -530,6 +536,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         callApi("173")
 
                     } else if (selectedFunctionId == 168 || selectedFunctionId == 169 || selectedFunctionId == 170) {
+
+                        hideButtonVisibility(false)
                         scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
@@ -540,6 +548,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         recycler_viewMedia.visibility = View.GONE
 //                        label_filename.visibility = View.GONE
                     } else if (item == "174") {
+                        hideButtonVisibility(false)
+
                         if (checkStats?.status == "completed" || checkStats?.status == null) {
                             if (checkStats?.status != "completed") {
                                 Toast.makeText(
@@ -577,6 +587,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         btnChoosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
                     } else if (item == "175") {
+                        hideButtonVisibility(false)
+
                         scanned_Data.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
@@ -589,6 +601,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
                         callApi("175")
                     } else if (item == "217" || item == "215" || item == "216") {
+                        hideButtonVisibility(true)
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         scanned_Data.visibility = View.VISIBLE
@@ -602,6 +615,17 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
+    }
+
+    private fun hideButtonVisibility(isHidden:Boolean) {
+        if(isHidden){
+            btnExecute.visibility=View.GONE
+        }
+        else{
+            btnExecute.visibility=View.VISIBLE
+
+        }
+
     }
 
     private fun callApi(selectedFunctionId: String) {
@@ -979,14 +1003,18 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (intentResult != null) {
             if (intentResult.contents == null) {
+                hideButtonVisibility(true)
+
                 progressbar_taskexecute.visibility = View.GONE
 
                 Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
             } else {
+
                 callApiScan(intentResult.contents.toString())
                 progressbar_taskexecute.visibility = View.VISIBLE
             }
-        } else {
+        }
+        else {
             progressbar_taskexecute.visibility = View.GONE
 
             super.onActivityResult(requestCode, resultCode, data)
@@ -994,6 +1022,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     private fun callApiScan(content: String) {
+        viewModel?.btnSubmit=btnExecute
         viewModel?.callApiForGetIDofPersonScanned(this, selectedFunctionId, content)
     }
 

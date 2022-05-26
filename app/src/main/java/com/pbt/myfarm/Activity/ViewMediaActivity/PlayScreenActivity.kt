@@ -1,9 +1,7 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.app.DownloadManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.pbt.myfarm.Activity.TaskFunctions.ListFunctionFieldlist
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant
-import com.pbt.myfarm.Util.AppUtils
 
 import kotlinx.android.synthetic.main.activity_play_scress.*
-import java.io.*
 
 
 class PlayScreenActivity : AppCompatActivity() {
@@ -60,10 +56,30 @@ class PlayScreenActivity : AppCompatActivity() {
 
             viewmodel?.playVideo(this, file!!)
         if (filetype == "file") {
+
             playvideoView.visibility = View.GONE
             viewFullScreenImage.visibility = View.GONE
             pdf_layout.visibility = View.VISIBLE
             progressbar_playvideo.visibility = View.VISIBLE
+            webView.visibility=View.VISIBLE
+            viewmodel?.openWebView(this, file!!, webView)
+
+        }
+        if (filetype=="pdf"|| filetype=="PDF"){
+            playvideoView.visibility = View.GONE
+            viewFullScreenImage.visibility = View.GONE
+            pdf_layout.visibility = View.GONE
+            progressbar_playvideo.visibility = View.GONE
+            webView.visibility=View.GONE
+
+            pdfView.visibility=View.VISIBLE
+            viewmodel?.openPdfViewver(this, file!!,pdfView)
+
+
+        }
+        if (filetype == "music") {
+
+            viewmodel?.playVideo(this, file!!)
 
         }
 

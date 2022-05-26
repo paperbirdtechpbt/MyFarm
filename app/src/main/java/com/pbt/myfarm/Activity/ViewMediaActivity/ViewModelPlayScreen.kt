@@ -2,10 +2,14 @@ package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.app.Application
 import android.content.Context
+import android.os.AsyncTask
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import androidx.lifecycle.AndroidViewModel
 import com.bumptech.glide.Glide
+import com.github.barteksc.pdfviewer.PDFView
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
@@ -15,6 +19,13 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.pbt.myfarm.Activity.TaskFunctions.ListFunctionFieldlist
 import com.pbt.myfarm.R
+import kotlinx.android.synthetic.main.activity_play_scress.*
+import java.io.BufferedInputStream
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class ViewModelPlayScreen(val activity: Application) : AndroidViewModel(activity) {
     val TAG = "ViewModelPlayScreen"
@@ -26,40 +37,7 @@ class ViewModelPlayScreen(val activity: Application) : AndroidViewModel(activity
     private var mPlayer: SimpleExoPlayer? = null
 
 
-    //    fun playVideo(context: Context,item: ListFunctionFieldlist){
-//
-//        imgView?.visibility=View.GONE
-//        videoView?.visibility = View.VISIBLE
-//        progressbar?.visibility = View.VISIBLE
-//        pdflayout?.visibility = View.VISIBLE
-//
-//        val uri: Uri = Uri.parse(item.link)
-//        videoView?.setVideoURI(uri)
-//        val mediaController = MediaController(context)
-//
-//        mediaController.setAnchorView(videoView)
-//
-//        mediaController.setMediaPlayer(videoView)
-//        videoView?.setMediaController(mediaController)
-//        videoView?.start()
-//
-//        videoView?.setOnPreparedListener(object : MediaPlayer.OnPreparedListener {
-//            override fun onPrepared(mp: MediaPlayer) {
-//
-//                mp.setOnBufferingUpdateListener(object : MediaPlayer.OnBufferingUpdateListener {
-//                    override fun onBufferingUpdate(mp: MediaPlayer?, percent: Int) {
-//                        if (percent == 100) {
-//
-//                            progressbar?.visibility = View.GONE
-//                        }
-//                        else{
-//                        }
-//                    }
-//                })
-//            }
-//        })
-//
-//    }
+
     fun playVideo(context: Context, item: ListFunctionFieldlist) {
 
         imgView?.visibility = View.GONE
@@ -71,7 +49,7 @@ class ViewModelPlayScreen(val activity: Application) : AndroidViewModel(activity
 
         // Bind the player to the view.
         playerview?.player = mPlayer
-
+        playerview?.useArtwork=true
         //setting exoplayer when it is ready.
         mPlayer!!.playWhenReady = true
 
@@ -116,5 +94,50 @@ class ViewModelPlayScreen(val activity: Application) : AndroidViewModel(activity
         mPlayer = null
     }
 
+    fun openWebView(context: Context, file: ListFunctionFieldlist, webView: WebView) {
+        webView.webViewClient = WebViewClient()
+        webView.settings.setSupportZoom(true)
+        webView.settings.javaScriptEnabled = true
+        webView.loadUrl("${file.link}")
+    }
+
+    fun openPdfViewver(context: Context, file: ListFunctionFieldlist, pdfView: PDFView) {
+        RetrivePDFfromUrl(pdfView).execute(file.link)
+    }
+    internal class RetrivePDFfromUrl(var pdfView: PDFView) :
+        AsyncTask<String?, Void?, InputStream?>() {
+         override fun doInBackground(vararg strings: String?): InputStream? {
+            // we are using inputstream
+            // for getting out PDF.
+            var inputStream: InputStream? = null
+            try {
+                val url = URL(strings[0])
+                // below is the step where we are
+                // creating our connection.
+                val urlConnection: HttpURLConnection = url.openConnection() as HttpsURLConnection
+                if (urlConnection.getResponseCode() === 200) {
+                    // response is success.
+                    // we are getting input stream from url
+                    // and storing it in our variable.
+                    inputStream = BufferedInputStream(urlConnection.getInputStream())
+                }
+            } catch (e: IOException) {
+                // this is the method
+                // to handle errors.
+                e.printStackTrace()
+                return null
+            }
+            return inputStream
+        }
+
+        override fun onPostExecute(inputStream: InputStream?) {
+            // after the execution of our async
+            // task we are loading our pdf in our pdf view.
+            pdfView.fromStream(inputStream).load()
+        }
+    }
 
 }
+
+
+

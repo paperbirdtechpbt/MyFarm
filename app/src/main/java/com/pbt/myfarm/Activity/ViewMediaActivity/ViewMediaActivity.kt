@@ -1,6 +1,8 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -62,8 +64,25 @@ class ViewMediaActivity : AppCompatActivity() {
                         intent.putExtra(CONST_MEDIAOBJECT, item)
                         startActivity(intent)
 
-                    } else {
-                        viewModel?.downloadFile(item.link, item.name, this)
+                    }
+                    else if (filetype =="music"){
+
+                        val intent = Intent(this, PlayScreenActivity::class.java)
+                        intent.putExtra(CONST_MEDIATYPE, filetype)
+                        intent.putExtra(CONST_MEDIAOBJECT, item)
+                        startActivity(intent)
+
+                    }
+                    else if (filetype=="file"){
+                        val intent = Intent(this, PlayScreenActivity::class.java)
+                        intent.putExtra(CONST_MEDIATYPE, "pdf")
+                        intent.putExtra(CONST_MEDIAOBJECT, item)
+                        startActivity(intent)
+
+                    }
+                    else{
+                                                viewModel?.downloadFile(item.link, item.name, this)
+
                     }
                 }
             }
