@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/button_border.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/gradient.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic__delete.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_baseline_arrow_circle_down_24.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_box.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/ic_calender.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/drawable/raounded_corner.xml" value="0.131" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/activity_task_function.xml" value="0.2" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/custom_layout_task_object.xml" value="0.12360688956433637" />
+        <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/permission_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_playbutton.xml" value="0.1115" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_videosidebar.xml" value="0.1115" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.18" />

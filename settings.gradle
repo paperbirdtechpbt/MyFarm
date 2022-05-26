@@ -1,2 +1,3 @@
 rootProject.name = "MyFarm"
 include ':app'
+include ':lightcompressor'

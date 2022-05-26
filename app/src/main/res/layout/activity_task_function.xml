@@ -10,7 +10,7 @@
         tools:context=".Activity.TaskFunctions.TaskFunctionActivity">
 
         <Button
-            android:id="@+id/btn_choosefile"
+            android:id="@+id/btnChoosefile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -26,7 +26,7 @@
 
 
         <Button
-            android:id="@+id/btn_execute"
+            android:id="@+id/btnExecute"
             style="@style/Edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:textSize="16sp"
             android:visibility="gone"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/btn_execute"
+            app:layout_constraintBottom_toTopOf="@id/btnExecute"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
@@ -151,7 +151,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="150dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/btn_execute"
+            app:layout_constraintBottom_toTopOf="@id/btnExecute"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/taskfunction_field"
             tools:listitem="@layout/item_viewmedia" />
@@ -179,9 +179,9 @@
             android:id="@+id/progress_circular"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:visibility="gone"
             app:indicatorColor="@color/white"
             app:indicatorSize="64dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -192,16 +192,37 @@
             android:id="@+id/progress_circular_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="100%"
-            android:textColor="@color/black"
             android:visibility="gone"
+            android:textColor="@color/black"
+            android:text="0%"
             app:layout_constraintBottom_toBottomOf="@id/progress_circular"
             app:layout_constraintEnd_toEndOf="@id/progress_circular"
             app:layout_constraintStart_toStartOf="@id/progress_circular"
             app:layout_constraintTop_toTopOf="@id/progress_circular" />
 
+        <TextView
+            android:id="@+id/progress_circular_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/please_waite_file_is_compress"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progress_circular" />
 
-
+        <com.budiyev.android.codescanner.CodeScannerView
+            android:id="@+id/qr_scanner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:autoFocusButtonColor="@color/white"
+            app:autoFocusButtonVisible="true"
+            app:flashButtonColor="@color/white"
+            app:frameColor="@color/white"
+            app:frameCornersRadius="0dp"
+            app:frameCornersSize="50dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
