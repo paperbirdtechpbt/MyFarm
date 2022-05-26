@@ -157,7 +157,12 @@ class AppUtils {
              "xlsx",
              "ppt",
              "pptx",
-             "txt"
+             "txt",
+             "mp3",
+             "MP3",
+             "WAV",
+             "wav",
+             "AIFF","aiff"
          )
 
         var filetype: String = ""

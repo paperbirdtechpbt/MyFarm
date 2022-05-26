@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.TYPE_APPLICATION_OVERLAY " />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="MyProvider._READ_PERMISSION" />
+    <uses-permission android:name="MyProvider.muS" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.INTERNET" />

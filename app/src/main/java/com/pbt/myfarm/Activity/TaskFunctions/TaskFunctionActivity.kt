@@ -140,9 +140,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         btn_choosefile.setOnClickListener {
             chechpermission()
 
-            val list = mutableListOf<String>("Test Crash")
-            list.get(1)
-
 
 //            if (Environment.isExternalStorageManager()) {
 

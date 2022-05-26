@@ -1,9 +1,9 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -62,9 +62,19 @@ class ViewMediaActivity : AppCompatActivity() {
                         intent.putExtra(CONST_MEDIAOBJECT, item)
                         startActivity(intent)
 
-                    } else {
+                    }
+                    else if(filetype=="mp3" || filetype=="MP3"){
+                        viewModel?.downloadFile(item.link, item.name, this)
+//
+//                      val  mediaPlayer = MediaPlayer()
+//                        mediaPlayer.setDataSource(item.link)
+//                        mediaPlayer.prepare()
+//                        mediaPlayer.start()
+                    }
+                    else {
                         viewModel?.downloadFile(item.link, item.name, this)
                     }
+
                 }
             }
             else {

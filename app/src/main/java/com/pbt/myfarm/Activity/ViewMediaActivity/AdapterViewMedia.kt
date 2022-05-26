@@ -105,6 +105,10 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
                 holder.viewfile.setImageResource(R.drawable.ic_doc_icon)
 
           }
+            if (extension=="mp3"||extension=="MP3" ||extension=="WAV"||extension=="wav" || extension=="AIFF"||extension=="aiff" ){
+                holder.viewfile.setImageResource(R.drawable.ic_musicicon)
+
+          }
 
 
 
