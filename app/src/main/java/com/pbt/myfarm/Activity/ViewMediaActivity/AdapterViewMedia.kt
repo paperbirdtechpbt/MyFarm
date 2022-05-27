@@ -87,10 +87,6 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
             holder.viewfile.visibility = View.VISIBLE
             hideViews(holder.imageView, holder.viewvideo)
 
-            holder.viewfile?.setOnClickListener{
-                onitemClick?.invoke(item,type)
-
-            }
             val f = File(item.link)
             val extension=f.extension
           if (extension=="pdf"||extension=="PDF"){
@@ -111,6 +107,13 @@ class AdapterViewMedia(var context: Context, var list: List<ListFunctionFieldlis
             }
 
 
+            holder.viewfile?.setOnClickListener{
+                if (extension=="pdf"||extension=="PDF") {
+                    type="pdf"
+                }
+                    onitemClick?.invoke(item,type)
+
+            }
 
         } else {
             holder.imageView.visibility = View.VISIBLE

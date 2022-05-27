@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         initCrash()
 
+
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
@@ -120,11 +121,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
         GlobalScope.launch {
             callPrivilegeAPI(roleID)
-
         }
-
     }
-
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {

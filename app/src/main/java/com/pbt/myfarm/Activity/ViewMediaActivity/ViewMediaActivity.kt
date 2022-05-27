@@ -9,11 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_MEDIAOBJECT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_MEDIATYPE
+import com.pbt.myfarm.Util.AppUtils
 import kotlinx.android.synthetic.main.activity_view_media.*
+import kotlinx.android.synthetic.main.activity_view_task.*
 
 
 class ViewMediaActivity : AppCompatActivity() {
@@ -46,6 +49,7 @@ class ViewMediaActivity : AppCompatActivity() {
 
         viewModel?.mediaList?.observe(this) { list ->
 
+
             recyclerview_viewMediaList.setLayoutManager(GridLayoutManager(this, 3))
 
 
@@ -56,6 +60,7 @@ class ViewMediaActivity : AppCompatActivity() {
 
                 adapter = AdapterViewMedia(this, list)
                 adapter?.onitemClick = { item, filetype ->
+
 
                     if (filetype == "image" || filetype == "video") {
 
@@ -74,17 +79,23 @@ class ViewMediaActivity : AppCompatActivity() {
 
                     }
                     else if (filetype=="file"){
+
+                             viewModel?.downloadFile(item.link, item.name, this)
+                         }
+                    else  if (filetype=="pdf"){
                         val intent = Intent(this, PlayScreenActivity::class.java)
                         intent.putExtra(CONST_MEDIATYPE, "pdf")
                         intent.putExtra(CONST_MEDIAOBJECT, item)
                         startActivity(intent)
 
                     }
-                    else{
-                                                viewModel?.downloadFile(item.link, item.name, this)
+                    else
+                        viewModel?.downloadFile(item.link, item.name, this)
 
-                    }
                 }
+
+
+
             }
             else {
 

@@ -1,15 +1,12 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
-import android.app.DownloadManager
 import android.os.Bundle
 import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.pbt.myfarm.Activity.TaskFunctions.ListFunctionFieldlist
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant
-
 import kotlinx.android.synthetic.main.activity_play_scress.*
 
 
@@ -18,10 +15,15 @@ class PlayScreenActivity : AppCompatActivity() {
     var file: ListFunctionFieldlist? = null
     var viewmodel: ViewModelPlayScreen? = null
 
-    private var url: String? = null
-    private val pdfLayout: LinearLayout? = null
+
     val TAG = "PlayScreenActivity"
-    var manager: DownloadManager? = null
+
+    override fun onResume() {
+        super.onResume()
+
+        initViewModel()
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +31,7 @@ class PlayScreenActivity : AppCompatActivity() {
         setContentView(R.layout.activity_play_scress)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initViewModel()
+//        initViewModel()
     }
 
     private fun initViewModel() {
@@ -46,38 +48,55 @@ class PlayScreenActivity : AppCompatActivity() {
         viewmodel?.progressbar = progressbar_playvideo
         viewmodel?.pdflayout = pdf_layout
         viewmodel?.playerview = playerView
+        progressbar_playvideo.visibility = View.VISIBLE
 
-        if (filetype == "image")
+
+        if (filetype == "image"){
+            playerView.visibility = View.GONE
+            viewFullScreenImage.visibility = View.VISIBLE
+            pdf_layout.visibility = View.GONE
+            webView.visibility=View.GONE
             progressbar_playvideo.visibility = View.GONE
+            viewmodel?.viewImage(this, file!!)
+        }
 
-        viewmodel?.viewImage(this, file!!)
-        if (filetype == "video")
-//            progressbar_playvideo.visibility=View.VISIBLE
+        if (filetype == "video"){
+            playerView.visibility = View.VISIBLE
+            viewFullScreenImage.visibility = View.GONE
+            pdf_layout.visibility = View.GONE
+            webView.visibility=View.GONE
 
             viewmodel?.playVideo(this, file!!)
-        if (filetype == "file") {
-
-            playvideoView.visibility = View.GONE
-            viewFullScreenImage.visibility = View.GONE
-            pdf_layout.visibility = View.VISIBLE
-            progressbar_playvideo.visibility = View.VISIBLE
-            webView.visibility=View.VISIBLE
-            viewmodel?.openWebView(this, file!!, webView)
-
         }
+//
+//        if (filetype == "file") {
+//
+//            playvideoView.visibility = View.GONE
+//            viewFullScreenImage.visibility = View.GONE
+//            pdf_layout.visibility = View.VISIBLE
+//            progressbar_playvideo.visibility = View.VISIBLE
+//            webView.visibility=View.VISIBLE
+//            viewmodel?.openWebView(this, file!!, webView)
+//
+//        }
         if (filetype=="pdf"|| filetype=="PDF"){
             playvideoView.visibility = View.GONE
             viewFullScreenImage.visibility = View.GONE
-            pdf_layout.visibility = View.GONE
-            progressbar_playvideo.visibility = View.GONE
+            pdf_layout.visibility = View.VISIBLE
             webView.visibility=View.GONE
 
             pdfView.visibility=View.VISIBLE
+            progressbar_playvideo.visibility = View.VISIBLE
+
             viewmodel?.openPdfViewver(this, file!!,pdfView)
 
 
         }
         if (filetype == "music") {
+            playerView.visibility = View.VISIBLE
+            viewFullScreenImage.visibility = View.GONE
+            pdf_layout.visibility = View.GONE
+            webView.visibility=View.GONE
 
             viewmodel?.playVideo(this, file!!)
 
@@ -97,6 +116,9 @@ class PlayScreenActivity : AppCompatActivity() {
         viewmodel?.releasePlayer()
 
     }
+
+
+
 
 }
 
