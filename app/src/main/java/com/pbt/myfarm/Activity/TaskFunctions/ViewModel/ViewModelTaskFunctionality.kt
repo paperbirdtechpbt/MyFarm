@@ -1,29 +1,34 @@
 package com.pbt.myfarm.Activity.TaskFunctions.ViewModel
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 
 import android.util.Log
 import android.view.View
-import android.widget.Button
+import android.widget.*
 
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
+import com.hbisoft.pickit.PickiTCallbacks
 import com.pbt.myfarm.Activity.Event.ResponseScanCodeForTaskFunction
 import com.pbt.myfarm.Activity.Event.ScannedPersonData
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
+import com.pbt.myfarm.Activity.TaskFunctions.ProgressRequestBody
+import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.BaseTaskFunction
 import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
+import com.pbt.myfarm.Service.ResponseTaskExecution
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +36,7 @@ import java.io.File
 
 
 class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(activity),
-    retrofit2.Callback<HttpResponse> {
+    retrofit2.Callback<HttpResponse>,  ProgressRequestBody.UploadCallback {
 
     val TAG = "ViewModelTaskFunctionality"
     var context: Context? = null
@@ -42,6 +47,8 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     var id = MutableLiveData<Int>(0)
     var progressVideo:ProgressBar?=null
    var btnSubmit: Button?=null
+     var mprogressCircular: CircularProgressIndicator? = null
+     var mprogressCircularLabel: TextView? = null
 
 
     init {
@@ -188,6 +195,116 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
         })
 
+    }
+
+    fun showToast(context: Context, msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+
+    }
+
+    fun uploadFile(
+        context: Context,
+        mTaskID: String,
+        mFunctionID: String,
+        mUserID: String,
+        mFieldID: String,
+        fileVideo: File?,
+        progressCircular: CircularProgressIndicator?,
+        progressbarTaskexecute: ProgressBar?,
+        progressCircularLabel: TextView?,
+        btnExecute: Button?,
+        istaskFunctionUpdate: Boolean
+    ) {
+        this.mprogressCircular=progressCircular
+        this.mprogressCircularLabel=progressCircularLabel
+        val tag="ViewModelTaskFunctionility"
+        val service = ApiClient.client.create(ApiInterFace::class.java)
+
+        val body = if (fileVideo?.let { it1 -> AppUtils().checkImageFile(it1) } == true)
+            fileVideo?.let { it1 -> ProgressRequestBody(it1, "image", this) }
+        else
+            fileVideo?.let { it1 -> ProgressRequestBody(it1, "file", this) }
+
+        val dataVideo: MultipartBody.Part? =
+            body?.let {
+                MultipartBody.Part.createFormData(
+                    "file",
+                    fileVideo!!.name,
+                    it
+                )
+            }
+        val taskID = AppUtils.paramRequestTextBody(mTaskID)
+        val functionID = AppUtils.paramRequestTextBody(mFunctionID)
+        val userID = AppUtils.paramRequestTextBody(mUserID)
+        val fieldID = AppUtils.paramRequestTextBody(mFieldID)
+
+        val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
+        apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
+            override fun onResponse(
+                call: Call<ResponseTaskExecution>,
+                response: Response<ResponseTaskExecution>
+            ) {
+                AppUtils.logDebug(tag, response.body().toString())
+                val message = response.body()?.msg.toString()
+                if (response.body()?.error == false) {
+                    progressbarTaskexecute?.visibility = View.GONE
+
+
+                    progressCircular?.visibility = View.GONE
+                    progressCircularLabel?.visibility = View.GONE
+                    progressbarTaskexecute?.visibility = View.GONE
+                    btnExecute?.visibility = View.VISIBLE
+                    if (istaskFunctionUpdate) {
+                        context.startActivity(
+                            Intent(
+                                context,
+                                ViewTaskObjectActivity::class.java
+                            )
+                        )
+                    }
+                    showToast(context,message)
+
+                    (context as Activity).finish()
+                } else {
+                    progressbarTaskexecute?.visibility = View.GONE
+                    progressCircular?.visibility = View.GONE
+                    progressCircularLabel?.visibility = View.GONE
+                    progressbarTaskexecute?.visibility = View.GONE
+
+                    btnExecute?.visibility = View.VISIBLE
+                    showToast(context,message)
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseTaskExecution>, t: Throwable) {
+                progressbarTaskexecute?.visibility = View.GONE
+
+                try {
+                    progressCircular?.visibility = View.GONE
+                    progressCircularLabel?.visibility = View.GONE
+                    btnExecute?.visibility = View.VISIBLE
+                    AppUtils.logError(tag, t.message.toString())
+                } catch (e: Exception) {
+                    progressCircular?.visibility = View.GONE
+                    progressCircularLabel?.visibility = View.GONE
+                    btnExecute?.visibility = View.VISIBLE
+                    AppUtils.logError(tag, t.message.toString())
+
+                }
+                showToast(context,"Failed")
+
+
+            }
+
+        })
+
+    }
+
+    override fun onProgressUpdate(percentage: Int) {
+        mprogressCircular?.setProgressCompat(percentage, true)
+        mprogressCircularLabel?.text = "$percentage%"
     }
 
 

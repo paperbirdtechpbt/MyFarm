@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.pbt.myfarm.BuildConfig
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_CRASH_FOLDER_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.DATE_TIME_FORMATE_YYYY_MM_DD_HH_MM_SS
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -164,11 +165,11 @@ class AppUtils {
             "xlsx",
             "ppt",
             "pptx",
-            "txt","mp3",
+            "txt", "mp3",
             "MP3",
             "WAV",
             "wav",
-            "AIFF","aiff"
+            "AIFF", "aiff"
         )
 
         var filetype: String = ""
@@ -228,17 +229,21 @@ class AppUtils {
     }
 
     fun createCrashFolder(context: Context) {
-            var extStorageDirectory: String? = null
-            val file: File
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
-                file = File(context.filesDir, AppConstant.CONST_CRASH_FOLDER_NAME)
-            } else {
-                extStorageDirectory = Environment.getExternalStorageDirectory().toString()
-                file = File(extStorageDirectory, AppConstant.CONST_CRASH_FOLDER_NAME)
-            }
-            if (!file.exists()) {
-                file.mkdirs()
-            }
+        var extStorageDirectory: String? = null
+        val file: File
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            file = File(context.filesDir, CONST_CRASH_FOLDER_NAME)
+
+        } else {
+            extStorageDirectory = Environment.getExternalStorageDirectory().toString()
+
+            file = File(extStorageDirectory, CONST_CRASH_FOLDER_NAME)
+
+        }
+        if (!file.exists()) {
+            file.mkdirs()
+        }
     }
 
     fun timeStampCovertToDateTime(): String {

@@ -7156,10 +7156,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             var count: Int
             try {
 
-                val storage = File(
-                    Environment.getExternalStorageDirectory()
-                        .toString() + File.separator + "/MyFarm/"
-                )
+                val storage = File(Environment.getExternalStorageDirectory().toString() + File.separator + "/MyFarm/")
 
                 if (!storage.exists()) {
                     storage.mkdirs()

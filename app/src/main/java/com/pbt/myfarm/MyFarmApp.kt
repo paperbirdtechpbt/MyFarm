@@ -44,19 +44,25 @@ class MyFarmApp : Application(),ProgressRequestBody.UploadCallback{
 
     private fun uploadCrashFiles(context: Context) {
 
-        val path = "${context.filesDir}/${AppConstant.CONST_CRASH_FOLDER_NAME}"
+        val path  = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            "${context.filesDir.path}/${AppConstant.CONST_CRASH_FOLDER_NAME}"
+        } else {
+            "${Environment.getExternalStorageDirectory().path}/${AppConstant.CONST_CRASH_FOLDER_NAME}"
+        }
+
         Log.e("Files", "Path: $path")
         val directory = File(path)
-        val files: Array<File> = directory.listFiles() as Array<File>
-        files.let {
-            for (i in files.indices) {
-                GlobalScope.launch {
-                    doUpload(files[i],context)
-                    Log.e("Files", "FileName:" + Uri.fromFile(files[i]).path)
-                }
-
-            }
-        }
+       if(directory.listFiles() != null) {
+           val files: Array<File> = directory.listFiles() as Array<File>
+           files.let {
+               for (i in files.indices) {
+                   GlobalScope.launch {
+                       doUpload(files[i], context)
+                       Log.e("Files", "FileName:" + Uri.fromFile(files[i]).path)
+                   }
+               }
+           }
+       }
 
     }
 

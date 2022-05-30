@@ -24,7 +24,6 @@ import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Task
-import com.pbt.myfarm.TasklistDataModel
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_BOOLEAN
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_LIST
@@ -38,13 +37,11 @@ import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
 import retrofit2.Call
 import retrofit2.Response
-import java.util.*
 
 
-class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
+class ViewTaskActivity : AppCompatActivity(){
     private var adapter: AdapterViewTask? = null
     var db: DbHelper? = null
-    var tasklist: ArrayList<TasklistDataModel>? = null
 
 
     var viewModell: ViewTaskViewModel? = null
@@ -54,7 +51,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         val TAG = "ViewTaskActivity"
         var mytasklist: Task? = null
         var updateTaskBoolen = false
-        var selectedComunityGroupTask:Int=0
+        var selectedComunityGroupTask: Int = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +60,6 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_view_task)
 
         actionBar?.setDisplayHomeAsUpEnabled(true)
-
 
         initViewModel()
 
@@ -74,14 +70,13 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
     }
 
     private fun initViewModel() {
-        if (AppUtils().isInternet(this)){
-            if (privilegeListName.contains("InsertTask")){
-                binding?.btnCreateTask?.visibility=View.VISIBLE
+        if (AppUtils().isInternet(this)) {
+            if (privilegeListName.contains("InsertTask")) {
+                binding?.btnCreateTask?.visibility = View.VISIBLE
             }
-        }
-        else{
-            if (privilegeListNameOffline.contains("InsertTask")){
-                binding?.btnCreateTask?.visibility=View.VISIBLE
+        } else {
+            if (privilegeListNameOffline.contains("InsertTask")) {
+                binding?.btnCreateTask?.visibility = View.VISIBLE
             }
         }
 
@@ -114,17 +109,19 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
                 if (checkAction) {
 
-                    showAlertDailog(taskname, position, mytasklist!!)
+                    viewModell?.showAlertDailog(taskname, position, mytasklist!!,this)
 
-                }
-                else {
+                } else {
                     updateTaskBoolen = true
-                    selectedComunityGroupTask= list.com_group!!
+                    selectedComunityGroupTask = list.com_group!!
                     val intent = Intent(this, CreateTaskActivity::class.java)
                     intent.putExtra(CONST_TASK_UPDATE, mytasklist?.id)
                     intent.putExtra(CONST_TASK_UPDATE_BOOLEAN, "1")
                     intent.putExtra(CONST_TASK_UPDATE_LIST, mytasklist)
-                    AppUtils.logDebug(TAG,"mytasklist?.id=${mytasklist?.id}"+"mytasklist=$mytasklist")
+                    AppUtils.logDebug(
+                        TAG,
+                        "mytasklist?.id=${mytasklist?.id}" + "mytasklist=$mytasklist"
+                    )
                     startActivity(intent)
                     finish()
                 }
@@ -141,62 +138,7 @@ class ViewTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
 
     }
 
-    private fun showAlertDailog(taskname: String, position: Int, mytasklist: Task) {
-        AlertDialog.Builder(this)
-            .setTitle("Delete")
-            .setMessage("Are you sure you want to Delete $taskname")
-            .setPositiveButton("Yes",
-                DialogInterface.OnClickListener { dialog, which ->
-                    if (AppUtils().isInternet(this)){
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .deleteTask(mytasklist.id!!.toString())
-                            .enqueue(this)
-                    }
-                    else{
-                    val db=DbHelper(this,null)
 
-                   val issucess= db.deleteTaskNew(mytasklist.id!!.toString())
-                        if (issucess){
-                            startActivity(Intent(this,ViewTaskActivity::class.java))
-                            this.finish()
-                        }
-
-                    }
-                    Toast.makeText(this, "Deleted $taskname", Toast.LENGTH_SHORT).show()
-                })
-            .setNegativeButton(android.R.string.no, null)
-            .setIcon(android.R.drawable.ic_delete)
-            .show()
-    }
-
-
-
-    override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        try {
-            if (response.body()?.error == false) {
-                Toast.makeText(this, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this,ViewTaskActivity::class.java))
-                this.finish()
-            } else {
-                Toast.makeText(this, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.localizedMessage)
-
-        }
-
-    }
-
-    override fun onFailure(call: Call<testresponse>, t: Throwable) {
-        Toast.makeText(this, "Failed to delete", Toast.LENGTH_SHORT).show()
-
-        try {
-            AppUtils.logError(TAG, t.localizedMessage)
-        } catch (e: Exception) {
-            AppUtils.logError(TAG, e.localizedMessage)
-
-        }
-    }
 
     override fun onResume() {
         super.onResume()

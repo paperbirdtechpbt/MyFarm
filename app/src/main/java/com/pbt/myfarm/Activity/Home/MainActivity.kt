@@ -54,7 +54,6 @@ import retrofit2.Call
 import retrofit2.Response
 import java.io.File
 
-
 class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListResponse> {
 
     val data = ArrayList<EventList>()
@@ -82,8 +81,10 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initCrash()
-
+        if (AppUtils().isInternet(this)) {
+            initViewModel()
+        }
+        viewModel?.initCrash(this)
 
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
@@ -92,43 +93,45 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         appUtils = AppUtils()
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            askForCameraPermission()
+           askForCameraPermission()
+
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (!Environment.isExternalStorageManager()) {
+                   viewModel?.showDialogPermission(this)
+                }
+            } else {
+                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    viewModel?.showDialogPermission(this)
+                }
+            }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (!Environment.isExternalStorageManager()) {
-                showDialogPermission(this)
-            }
-        } else {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                showDialogPermission(this)
-            }
-        }
 
         val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
         label_username_main.setText(MySharedPreference.getUser(this)?.name)
         label_userrole_main.setText(adminname)
 
-        if (AppUtils().isInternet(this)) {
-            initViewModel()
-        }
-        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
-            startService(Intent(this, MyFarmService::class.java))
-        }
+
+//        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
+//            startService(Intent(this, MyFarmService::class.java))
+//        }
         GlobalScope.launch {
             callPrivilegeAPI(roleID)
         }
+
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
-                ApiClient.client.create(ApiInterFace::class.java)
-                    .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+                viewModel?.callPrivilegeAPi(this,selectedroldid.toString())
+//                ApiClient.client.create(ApiInterFace::class.java)
+//                    .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
 
             }
         }
@@ -142,8 +145,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             setdata(privilegeListNameOffline)
         }
-
-
     }
 
     private fun initViewModel() {
@@ -151,7 +152,13 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
-        AppUtils().isServiceRunning(this, MyFarmService::class.java)
+//        AppUtils().isServiceRunning(this, MyFarmService::class.java)
+        viewModel?.mprivilegeListName?.observe(this){ list->
+            if (!list.isNullOrEmpty()){
+                setdata(list)
+            }
+
+        }
     }
 
     private fun setadapter(dataa: ArrayList<EventList>) {
@@ -167,7 +174,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 callPrivilegeAPI(roleID)
             }
         }
-
     }
 
     override fun onResume() {
@@ -321,14 +327,13 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     if (!Environment.isExternalStorageManager()) {
-                        showDialogPermission(this)
+                        viewModel?.showDialogPermission(this)
                     }
                 } else {
                     if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        showDialogPermission(this)
+                        viewModel?.showDialogPermission(this)
                     }
                 }
             } else {
@@ -382,122 +387,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
-        try {
             println(t.message.toString())
-
-        } catch (e: Exception) {
-            println(e.message.toString())
-        }
     }
 
-    private fun showDialogPermission(activity: Activity) {
-
-        val dialog = Dialog(activity)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(false)
-        dialog.setContentView(R.layout.permission_dialog)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        val btnAccess = dialog.findViewById(R.id.btnAccess) as TextView
-        val switchCamera = dialog.findViewById(R.id.switchCamera) as SwitchCompat
-        val switchStorage = dialog.findViewById(R.id.switchStorage) as SwitchCompat
-
-        switchCamera.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    appUtils.askForCameraPermission(this)
-                }
-            }
-        }
-        switchStorage.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    if (!Environment.isExternalStorageManager()) {
-                        appUtils.specialPermissionStorage(this)
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "Already Permission Allowed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                } else {
-                    if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        appUtils.askForStoragePermission(this)
-                    } else {
-                        Toast.makeText(
-                            this,
-                            "Already Permission Allowed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
-
-        btnAccess.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    createFolderCall()
-                    dialog.dismiss();
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Please allow permission. without permission you can't upload photo,file or pdf",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } else {
-                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    dialog.dismiss();
-                    createFolderCall()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Please allow permission. without permission you can't upload photo,file or pdf",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-
-
-        }
-        dialog.show()
-    }
-
-    private fun createFolderCall() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
-                appUtils.createCrashFolder(this)
-                initCrash()
-            }
-        } else {
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                appUtils.createCrashFolder(this)
-                initCrash()
-            }
-        }
-    }
-
-    private fun initCrash() {
-
-        if (Thread.getDefaultUncaughtExceptionHandler() !is CustomExceptionHandler) {
-            Thread.setDefaultUncaughtExceptionHandler(
-                CustomExceptionHandler(
-                    "${this.filesDir}/${AppConstant.CONST_CRASH_FOLDER_NAME}",
-                    "",
-                    applicationContext
-                )
-            )
-        }
-    }
 }

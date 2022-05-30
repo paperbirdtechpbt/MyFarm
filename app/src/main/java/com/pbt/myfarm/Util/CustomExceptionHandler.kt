@@ -1,7 +1,10 @@
 package com.pbt.myfarm.Util
 
 import android.content.Context
+import android.os.Build
+import android.os.Environment
 import android.text.format.DateFormat
+import java.io.File
 
 class CustomExceptionHandler(
     private val localPath: String?,
@@ -44,9 +47,16 @@ class CustomExceptionHandler(
 
     private fun writeToFile(stacktrace: String, filename: String) {
         try {
+
+            val path  = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+                "${context.filesDir.path}/${AppConstant.CONST_CRASH_FOLDER_NAME}"
+            } else {
+                "${Environment.getExternalStorageDirectory().path}/${AppConstant.CONST_CRASH_FOLDER_NAME}"
+            }
+
             val bos: java.io.BufferedWriter = java.io.BufferedWriter(
                 java.io.FileWriter(
-                    "$localPath/$filename"
+                    "$path/$filename"
                 )
             )
             bos.write(stacktrace)

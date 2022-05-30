@@ -2,10 +2,16 @@ package com.pbt.myfarm
 
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -18,6 +24,7 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
@@ -160,6 +167,71 @@ class ViewTaskViewModel(val activity: Application) : AndroidViewModel(activity),
             AppUtils.logError(TAG, " onFailure : " + e.message)
 
         }
+
+    }
+
+    fun showAlertDailog(
+        taskname: String,
+        position: Int,
+        mytasklist: Task,
+        context: Context
+    ) {
+
+            AlertDialog.Builder(context)
+                .setTitle("Delete")
+                .setMessage("Are you sure you want to Delete $taskname")
+                .setPositiveButton("Yes",
+                    DialogInterface.OnClickListener { dialog, which ->
+                        if (AppUtils().isInternet(context)) {
+
+                            callApiForDeleteTask(mytasklist?.id.toString(),context)
+
+                        } else {
+                            val db = DbHelper(context, null)
+
+                            val issucess = db.deleteTaskNew(mytasklist.id!!.toString())
+                            if (issucess) {
+                                context.startActivity(Intent(context, ViewTaskActivity::class.java))
+                                (context as Activity).finish()
+                            }
+
+                        }
+                        Toast.makeText(context, "Deleted $taskname", Toast.LENGTH_SHORT).show()
+                    })
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(android.R.drawable.ic_delete)
+                .show()
+
+
+    }
+
+    private fun callApiForDeleteTask(id: String, context: Context) {
+
+        val apiclient=ApiClient.client.create(ApiInterFace::class.java)
+        val call=apiclient.deleteTask(id)
+        call.enqueue(object :Callback<testresponse>{
+            override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
+                try {
+                    if (response.body()?.error == false) {
+                        Toast.makeText(context, "Task Deleted SuccessFullly", Toast.LENGTH_SHORT).show()
+                        context.startActivity(Intent(context, ViewTaskActivity::class.java))
+                        (context as Activity).finish()
+                    } else {
+                        Toast.makeText(context, response.body()?.msg.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    AppUtils.logError(ViewTaskActivity.TAG, e.localizedMessage)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<testresponse>, t: Throwable) {
+                Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+                    AppUtils.logError(ViewTaskActivity.TAG, t.localizedMessage)
+
+            }
+        })
 
     }
 

@@ -59,7 +59,7 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
                 context.startActivity(Intent(context, QrCodeActivity::class.java))
             }
 
-            AppUtils().isServiceRunning(context, MyFarmService::class.java)
+//            AppUtils().isServiceRunning(context, MyFarmService::class.java)
         }
 
     }

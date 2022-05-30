@@ -86,14 +86,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
 
 
-//        getSupportActionBar()?.setDisplayHomeAsUpEnabled(true)
-//        getSupportActionBar()?.setDisplayShowHomeEnabled(true)
-
-
-//        initViewModel()
-//        setButtonListner()
-
-//
     }
 
     private fun setButtonListner() {
