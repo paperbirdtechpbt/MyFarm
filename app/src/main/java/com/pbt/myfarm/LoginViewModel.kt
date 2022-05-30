@@ -1,14 +1,13 @@
 package com.pbt.myfarm
 
+import android.R
 import android.app.Application
 import android.content.Context
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
@@ -23,9 +22,11 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
+import kotlinx.android.synthetic.main.activity_login2.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.Exception
 
 
 class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
@@ -45,6 +46,9 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
     var rolesName: String? = null
     var loginListener: LoginListner? = null
     var isPasswordShow: ObservableBoolean? = null
+    var spinnerRole: Spinner? = null
+    var roleList = ArrayList<String>()
+    var roleListId = ArrayList<String>()
 
     init {
         email = ObservableField("")
@@ -75,16 +79,15 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
     }
 
     fun showHidePassword(view: View) {
-        if (isPasswordShow?.get() == false){
+        if (isPasswordShow?.get() == false) {
 
             isPasswordShow?.set(true)
+        } else {
+            isPasswordShow?.set(false)
         }
-        else {
-            isPasswordShow?.set(false)}
 
         isPasswordShow?.get()?.let { loginListener!!.showPassword(it) }
     }
-
 
 
     override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
@@ -110,6 +113,86 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
         btnlogin.visibility = View.VISIBLE
         Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
         AppUtils.logError(TAG, "Failure Response : " + t.message)
+
+    }
+
+    fun callApiGetRoleList(context: Context, email: String) {
+        val apiclient = ApiClient.client.create(ApiInterFace::class.java)
+        val call = apiclient.getRoleList(email)
+        call.enqueue(object : Callback<CollectdataRespose> {
+            override fun onResponse(
+                call: Call<CollectdataRespose>,
+                response: Response<CollectdataRespose>
+            ) {
+                AppUtils.logDebug("##LoginActivity", response.body().toString())
+                try {
+                    if (response.body()!!.error == false) {
+                        val baseresponse: CollectdataRespose =
+                            Gson().fromJson(
+                                Gson().toJson(response.body()),
+                                CollectdataRespose::class.java
+                            )
+                        val list = baseresponse.roles
+
+                        roleList.clear()
+                        roleListId.clear()
+                        roleList.add("Select Role")
+                        roleListId.add("0")
+
+                        for (i in 0 until list.size) {
+
+                            val item = baseresponse.roles.get(i).name
+                            val id = baseresponse.roles.get(i).id
+                            roleList.add(item)
+                            roleListId.add(id)
+
+                        }
+
+                        val dd = ArrayAdapter(context, R.layout.simple_spinner_item, roleList)
+                        dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinnerRole?.setAdapter(dd)
+                        setListner(spinnerRole)
+                    }
+
+                } catch (e: Exception) {
+                    println(e.message.toString())
+                }
+
+            }
+
+            override fun onFailure(call: Call<CollectdataRespose>, t: Throwable) {
+                try {
+                    println(t.message.toString())
+
+                } catch (e: Exception) {
+                    println(e.message.toString())
+
+                }
+            }
+        })
+
+
+    }
+
+    private fun setListner(spinnerRole: Spinner?) {
+        spinnerRole?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View,
+                position: Int,
+                id: Long
+            ) {
+
+                rolesIdString = roleListId.get(position)
+                rolesName = roleList.get(position)
+                AppUtils.logDebug("####LoginActivity", roleListId.get(position))
+
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
 
     }
 

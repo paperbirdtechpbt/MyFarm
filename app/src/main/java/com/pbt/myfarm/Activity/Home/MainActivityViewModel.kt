@@ -41,6 +41,7 @@ import retrofit2.Response
 
 class MainActivityViewModel(val activity: Application) : AndroidViewModel(activity),
     Callback<PackConfigResponse> {
+
     @SuppressLint("StaticFieldLeak")
     private var mycontext: Context? = null
 
@@ -130,7 +131,6 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                             }
                             Toast.makeText(context, "Uploaded SuccessFull", Toast.LENGTH_SHORT)
                                 .show()
-//                           MainActivity().showAlertDialog(context)
                             showAlertDialog(context)
 
                             AppUtils.logDebug(
@@ -198,16 +198,9 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                 packconfiglist.add(routes)
 
             }
-//            if (!packconfiglist.isNullOrEmpty()){
-//                addPackToDatabase(packconfiglist)
-//
-//            }
+
             packCOnfigFielList(mycontext!!, packconfiglist)
-
-
         }
-
-
     }
 
 
@@ -293,14 +286,10 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
     }
 
-    fun getFileAccessPermission(context: Context) {
 
+    fun initCrash(context: Context) {
 
-    }
-
-     fun initCrash(context: Context) {
-
-        val path  = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+        val path = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
             context.filesDir
         } else {
             Environment.getExternalStorageDirectory().toString()
@@ -317,7 +306,8 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
         }
 
 
-     }
+    }
+
     fun createFolderCall(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
@@ -338,7 +328,8 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
             }
         }
     }
-     fun showDialogPermission(context: Context) {
+
+    fun showDialogPermission(context: Context) {
 
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -351,7 +342,11 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
         switchCamera.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                if (ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.CAMERA
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
                     AppUtils().askForCameraPermission(context as Activity)
                 }
             }
@@ -369,8 +364,11 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                         ).show()
                     }
                 } else {
-                    if (ContextCompat.checkSelfPermission(context,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                            context,Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    if (ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                            context, Manifest.permission.WRITE_EXTERNAL_STORAGE
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
                         AppUtils().askForStoragePermission(context as Activity)
@@ -399,7 +397,11 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                     ).show()
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(context,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
                     dialog.dismiss()
                     createFolderCall(context)
                 } else {
@@ -418,51 +420,51 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
     fun askForCameraPermission(context: Context) {
 
-            ActivityCompat.requestPermissions(
-                context as Activity,
-                arrayOf(Manifest.permission.CAMERA),
-                AppConstant.CAMERA_PERMISSION_REQUEST_CODE
-            )
+        ActivityCompat.requestPermissions(
+            context as Activity,
+            arrayOf(Manifest.permission.CAMERA),
+            AppConstant.CAMERA_PERMISSION_REQUEST_CODE
+        )
 
     }
 
-    fun callPrivilegeAPi(context: Context,selectedRoleid: String) {
-        val apiclient=ApiClient.client.create(ApiInterFace::class.java)
-        val call=apiclient.getAllprivileges(selectedRoleid.toString())
-      call.enqueue(object :Callback<AllPriviledgeListResponse>{
-          override fun onResponse(
-              call: Call<AllPriviledgeListResponse>,
-              response: Response<AllPriviledgeListResponse>
-          ) {
-              if (response.body()?.error == false) {
-                  val baseResponse: AllPriviledgeListResponse = Gson().fromJson(
-                      Gson().toJson(response.body()),
-                      AllPriviledgeListResponse::class.java
-                  )
-                  MainActivity.privilegeListName.clear()
-                  MainActivity.privilegeListNameID.clear()
-                  MainActivity.privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
-                  for (i in 0 until MainActivity.privilegeList.size) {
-                      val privilege = Privilege(
-                          MainActivity.privilegeList.get(i).id.toDouble().toInt(),
-                          MainActivity.privilegeList.get(i).privilege
-                      )
+    fun callPrivilegeAPi(context: Context, selectedRoleid: String) {
+        val apiclient = ApiClient.client.create(ApiInterFace::class.java)
+        val call = apiclient.getAllprivileges(selectedRoleid.toString())
+        call.enqueue(object : Callback<AllPriviledgeListResponse> {
+            override fun onResponse(
+                call: Call<AllPriviledgeListResponse>,
+                response: Response<AllPriviledgeListResponse>
+            ) {
+                if (response.body()?.error == false) {
+                    val baseResponse: AllPriviledgeListResponse = Gson().fromJson(
+                        Gson().toJson(response.body()),
+                        AllPriviledgeListResponse::class.java
+                    )
+                    MainActivity.privilegeListName.clear()
+                    MainActivity.privilegeListNameID.clear()
+                    MainActivity.privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
+                    for (i in 0 until MainActivity.privilegeList.size) {
+                        val privilege = Privilege(
+                            MainActivity.privilegeList.get(i).id.toDouble().toInt(),
+                            MainActivity.privilegeList.get(i).privilege
+                        )
 
-                      val db = DbHelper(context, null)
-                      db.addPrivilege(privilege)
+                        val db = DbHelper(context, null)
+                        db.addPrivilege(privilege)
 
-                      MainActivity.privilegeListName.add(MainActivity.privilegeList.get(i).privilege)
-                      MainActivity.privilegeListNameID.add(MainActivity.privilegeList.get(i).id)
-                  }
-mprivilegeListName.value=MainActivity.privilegeListName
-              }
+                        MainActivity.privilegeListName.add(MainActivity.privilegeList.get(i).privilege)
+                        MainActivity.privilegeListNameID.add(MainActivity.privilegeList.get(i).id)
+                    }
+                    mprivilegeListName.value = MainActivity.privilegeListName
+                }
 
-          }
+            }
 
-          override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
-              println(t.message.toString())
-          }
-      })
+            override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
+                println(t.message.toString())
+            }
+        })
     }
 
 

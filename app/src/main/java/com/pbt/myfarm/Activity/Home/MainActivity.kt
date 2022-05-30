@@ -117,9 +117,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         label_userrole_main.setText(adminname)
 
 
-//        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
-//            startService(Intent(this, MyFarmService::class.java))
-//        }
+        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
+            startService(Intent(this, MyFarmService::class.java))
+        }
         GlobalScope.launch {
             callPrivilegeAPI(roleID)
         }
@@ -129,9 +129,11 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
-                viewModel?.callPrivilegeAPi(this,selectedroldid.toString())
-//                ApiClient.client.create(ApiInterFace::class.java)
-//                    .getAllprivileges(selectedroldid.toString()).enqueue(this@MainActivity)
+                GlobalScope.launch {
+                    viewModel?.callPrivilegeAPi(this@MainActivity,selectedroldid.toString())
+
+                }
+
 
             }
         }
@@ -152,7 +154,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
-//        AppUtils().isServiceRunning(this, MyFarmService::class.java)
+        AppUtils().isServiceRunning(this, MyFarmService::class.java)
         viewModel?.mprivilegeListName?.observe(this){ list->
             if (!list.isNullOrEmpty()){
                 setdata(list)
