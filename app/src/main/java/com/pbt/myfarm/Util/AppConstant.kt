@@ -26,6 +26,9 @@ class AppConstant {
         const val CONST_MEDIATYPE = "mediatype"
         const val CONST_MEDIAOBJECT= "mediaobject"
 
+        //Notification Message
+        const val CONST_PAYLOAD="payload"
+
 
         //packid
         val PACK_LIST_PACKID="packlistpackid"
