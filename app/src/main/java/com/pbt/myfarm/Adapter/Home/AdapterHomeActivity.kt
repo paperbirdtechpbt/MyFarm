@@ -26,7 +26,7 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val imageView: ImageView = itemView.findViewById(R.id.img_itemlist)
         val textView: TextView = itemView.findViewById(R.id.label_itemlist)
-        val layout: ConstraintLayout = itemView.findViewById(R.id.layout_itemlist)
+        val layout: ConstraintLayout = itemView.findViewById(R.id.layout_itemlist_main)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -59,12 +59,15 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
                 context.startActivity(Intent(context, QrCodeActivity::class.java))
             }
 
-            AppUtils().isServiceRunning(context, MyFarmService::class.java)
+//            AppUtils().isServiceRunning(context, MyFarmService::class.java)
         }
 
     }
 
     override fun getItemCount(): Int {
 return list.size
+    }
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 }

@@ -29,8 +29,7 @@ import com.pbt.myfarm.CreatetaskViewModel.Companion.groupArrayId
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.HttpResponse.testresponse
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
+
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_LIST
@@ -47,20 +46,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse> {
+class CreateTaskActivity : AppCompatActivity() {
 
-    val myCalendar: Calendar = Calendar.getInstance()
     var viewmodel: CreatetaskViewModel? = null
     var binding: ActivityCreateTaskBinding? = null
     private val TAG = "CreateTaskActivity"
     var viewtask: TasklistDataModel? = null
     var adapter: CreateTaskAdapter? = null
     val successObject = JSONArray()
-    var toolbar: Toolbar? = null
-
-    //    var updateTaskList: TasklistDataModel? = null
     var updateTaskList: Task? = null
-
     val fieldModel = ArrayList<FieldModel>()
     var configtype: TaskConfig? = null
 
@@ -81,7 +75,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_create_task)
 
@@ -141,6 +134,8 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(CreatetaskViewModel::class.java)
+
+        viewmodel?.layoutProgressbar=layout_ProgressBar
 
         val communitGroup: Spinner = findViewById(R.id.field_communitygroup)
         setCommunityGroup(communitGroup)
@@ -283,25 +278,16 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             if (!updateTaskBoolen) {
                 if (AppUtils().isInternet(this)) {
                     if (configtype?.name_prefix.isNullOrEmpty()) {
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .storeTask(
-                                configtype?.id.toString(),
-                                prefix,
-                                selectedCommunityGroup,
-                                userId.toString(),
-                                successObject.toString(),
-                                ""
-                            ).enqueue(this)
+                        viewmodel?.callApiStoreTask(this,configtype?.id.toString(),
+                        prefix, selectedCommunityGroup,userId.toString(),
+                        successObject.toString(),"",true)
+//
                     } else {
-                        ApiClient.client.create(ApiInterFace::class.java)
-                            .storeTask(
-                                configtype?.id.toString(),
-                                prefix,
-                                selectedCommunityGroup,
-                                userId.toString(),
-                                successObject.toString(),
-                                configtype?.name_prefix.toString()
-                            ).enqueue(this)
+                        viewmodel?.callApiStoreTask(this,configtype?.id.toString(),
+                            prefix, selectedCommunityGroup,userId.toString(),
+                            successObject.toString(), configtype?.name_prefix.toString(),false)
+
+//
                     }
                 } else {
                     //Store Task Offline In Database
@@ -321,16 +307,11 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
                 if (AppUtils().isInternet(this)) {
                     btn_create_task.visibility = View.GONE
 
-                    ApiClient.client.create(ApiInterFace::class.java)
-                        .updateTask(
-                            updateTaskList?.task_config_id.toString(),
-                            prefix,
-                            selectedCommunityGroup,
-                            userId.toString(),
-                            successObject.toString(),
-                            updateTaskList?.taskConfigNamePrefix.toString() + updateTaskList?.padzero.toString(),
-                            updateTaskList?.id.toString()
-                        ).enqueue(this)
+                    viewmodel?.callApiUpdatetask(this,updateTaskList?.task_config_id.toString(),
+                    prefix, selectedCommunityGroup,userId.toString(),
+                    successObject.toString(),updateTaskList?.taskConfigNamePrefix.toString() + updateTaskList?.padzero.toString(),
+                        updateTaskList?.id.toString() )
+
                 } else {
                     viewmodel?.desciption = field_desciption.text.toString()
                     val success =
@@ -373,41 +354,6 @@ class CreateTaskActivity : AppCompatActivity(), retrofit2.Callback<testresponse>
             }
         }, 1500)
 
-    }
-
-    override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
-        try {
-            if (response.body()?.error == false) {
-                Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
-
-                finish()
-                btn_create_task.visibility = View.VISIBLE
-                layout_ProgressBar.visibility = View.GONE
-                createtaskProgressbar.visibility = View.GONE
-
-            } else {
-                Toast.makeText(this, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
-
-                btn_create_task.visibility = View.VISIBLE
-                layout_ProgressBar.visibility = View.GONE
-                createtaskProgressbar.visibility = View.GONE
-            }
-
-        } catch (e: Exception) {
-            AppUtils.logDebug(TAG, "failure" + e.message)
-
-        }
-
-    }
-
-    override fun onFailure(call: Call<testresponse>, t: Throwable) {
-
-        AppUtils.logDebug(TAG, "failure" + t.message)
-
-
-        btn_create_task.visibility = View.VISIBLE
-        layout_ProgressBar.visibility = View.GONE
-        createtaskProgressbar.visibility = View.GONE
     }
 
 

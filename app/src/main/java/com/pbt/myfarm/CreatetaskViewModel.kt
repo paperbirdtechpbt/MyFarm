@@ -1,10 +1,12 @@
 package com.pbt.myfarm
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.View
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -23,15 +25,14 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.HttpResponse.ComunityGroup
+import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.HttpResponse.Field
-import com.pbt.myfarm.HttpResponse.HttpResponse
-import com.pbt.myfarm.HttpResponse.TaskFieldResponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
+import kotlinx.android.synthetic.main.activity_create_task.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +50,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         var field_list: ArrayList<String>? = ArrayList()
         var field: ArrayList<Field>? = ArrayList()
 
+
+
     }
 
     val context: Context = activity
@@ -65,6 +68,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
     var EndDate: ObservableField<String>? = null
     var progressbar: ProgressBar? = null
     var btnSubmit: Button? = null
+    var layoutProgressbar :ConstraintLayout?=null
 
     init {
         namePrefix = ObservableField("")
@@ -517,6 +521,130 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         }
 
     }
+
+    fun callApiStoreTask(context: Context, configtypeId: String, prefix: String,
+                         selectedCommunityGroup: String,
+                         userid: String, successobject: String, nameprefix: String,isPrefixNull:Boolean) {
+        var call:Call<testresponse>?=null
+        if (isPrefixNull){
+            val apiClient=ApiClient.client.create(ApiInterFace::class.java)
+            call=apiClient.storeTask( configtypeId,
+                prefix,
+                selectedCommunityGroup,
+                userid,
+                successobject,
+                "")
+        }
+        else{
+            val apiClient=ApiClient.client.create(ApiInterFace::class.java)
+             call=apiClient.storeTask( configtypeId,
+                prefix,
+                selectedCommunityGroup,
+                userid,
+                successobject,
+                nameprefix)
+
+        }
+        call.enqueue(object :Callback<testresponse>{
+            override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
+                try {
+                    if (response.body()?.error == false) {
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                        (context as Activity).finish()
+                        btnSubmit?.visibility = View.VISIBLE
+                        layoutProgressbar?.visibility = View.GONE
+                        progressbar?.visibility = View.GONE
+
+                    } else {
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                        btnSubmit?.visibility = View.VISIBLE
+                        layoutProgressbar?.visibility = View.GONE
+                        progressbar?.visibility = View.GONE
+                    }
+
+                } catch (e: Exception) {
+                    AppUtils.logDebug(TAG, "failure" + e.message)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<testresponse>, t: Throwable) {
+
+                AppUtils.logDebug(TAG, "failure" + t.message)
+
+
+                btnSubmit?.visibility = View.VISIBLE
+                layoutProgressbar?.visibility = View.GONE
+                progressbar?.visibility = View.GONE
+            }
+        })
+
+
+    }
+
+    fun callApiUpdatetask(
+        context: Context,
+        configtypeId: String,
+        prefix: String,
+        selectedCommunityGroup: String,
+        userid: String,
+        successObject: String,
+        nameprefix: String,
+        taskid: String
+    ) {
+       val apiClient=ApiClient.client.create(ApiInterFace::class.java)
+        val call=apiClient.updateTask(   configtypeId,
+            prefix,
+            selectedCommunityGroup,
+            userid,
+            successObject,
+            nameprefix,
+            taskid)
+        call.enqueue(object :Callback<testresponse>{
+            override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
+                try {
+                    if (response.body()?.error == false) {
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                        (context as Activity).finish()
+                        btnSubmit?.visibility = View.VISIBLE
+                        layoutProgressbar?.visibility = View.GONE
+                        progressbar?.visibility = View.GONE
+
+                    } else {
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+
+                        btnSubmit?.visibility = View.VISIBLE
+                        layoutProgressbar?.visibility = View.GONE
+                        progressbar?.visibility = View.GONE
+                    }
+
+                } catch (e: Exception) {
+                    AppUtils.logDebug(TAG, "failure" + e.message)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<testresponse>, t: Throwable) {
+
+                AppUtils.logDebug(TAG, "failure" + t.message)
+
+
+                btnSubmit?.visibility = View.VISIBLE
+                layoutProgressbar?.visibility = View.GONE
+                progressbar?.visibility = View.GONE
+            }
+        })
+
+
+
+    }
+
+
 
 
 }

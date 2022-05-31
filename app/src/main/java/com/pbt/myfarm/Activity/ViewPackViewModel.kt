@@ -109,54 +109,21 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
                 val upCommingPackList = ArrayList<PacksNew>()
                 packconfigList = database!!.getAllPackConfig()
 
+
                 packListModel.data.forEach { routes ->
-                    if (packconfigList.isNotEmpty()) {
-                        for (i in 0 until packconfigList.size) {
-                            if (routes.pack_config_id == packconfigList.get(i).id.toString()) {
-                                val configname = packconfigList.get(i).name_prefix
-                                if (configname != null) {
-                                    routes.padzero = configname + routes.name!!.padStart(4, '0')
+                                val nameprefix = routes.name_prefix
+                                if (nameprefix != null) {
+                                    routes.padzero = nameprefix + routes.name!!.padStart(4, '0')
                                 } else {
                                     routes.padzero = routes.name!!.padStart(4, '0')
                                 }
                                 routes.type = " Type: "
                                 routes.labeldesciption = " Desciption: "
-                                routes.pack_config_name = packconfigList.get(i).name.toString()
-
-                            }
-                        }
-                    }
-
-//                if (packconfig.isNotEmpty()){
-//                    for (i in 0 until  packconfig.size){
-//                        if (routes.pack_config_id==packconfig.get(i).id.toString()){
-//                            val configname=packconfig.get(i).name_prefix
-//                            if (configname!=null){
-//                                routes.padzero= configname+routes.name.padStart(4, '0')
-//
-//                            }
-//                            else{
-//                    routes.padzero= routes.name!!.padStart(4, '0')
-//
-//                            }
-
-//                    routes.type=" Type: "
-//                    routes.labeldesciption=" Desciption: "
-
-//                            routes.pack_config_id= packconfig.get(i).name.toString()
-//                            routes.pack_config_name= packconfig.get(i).name.toString()
-
-//                        }
-//                    }
-//                }
+                                routes.pack_config_name = routes.pack_config_name.toString()
 
 
                     upCommingPackList.add(routes)
-//
-//                viewPackModeClass.add(ViewPackModelClass(routes.id,routes.name,routes.name_prefix,
-//                    routes.pack_config_id,
-//                    routes.pack_config_name," Type: "," Desciption: ",routes.description,
-//                    routes.com_group,routes.created_by,routes.padzero) )
+
 
                 }
 
@@ -192,7 +159,6 @@ class ViewPackViewModel(val activity: Application) : AndroidViewModel(activity),
             progressBAr?.visibility = View.GONE
 
         }
-
 
         AppUtils.logDebug(TAG, " Failure : " + t.localizedMessage)
     }

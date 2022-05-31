@@ -518,7 +518,6 @@ data class PacksNew(
     var name: String?=null,
     var pack_config_id: String?=null,
     var pack_config_name: String?=null,
-
 var type:String?=null,
     var labeldesciption:String?=null,
     var padzero:String?=null,

@@ -117,9 +117,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         label_userrole_main.setText(adminname)
 
 
-        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
-            startService(Intent(this, MyFarmService::class.java))
-        }
+//        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
+//            startService(Intent(this, MyFarmService::class.java))
+//        }
         GlobalScope.launch {
             callPrivilegeAPI(roleID)
         }
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
-        AppUtils().isServiceRunning(this, MyFarmService::class.java)
+//        AppUtils().isServiceRunning(this, MyFarmService::class.java)
         viewModel?.mprivilegeListName?.observe(this){ list->
             if (!list.isNullOrEmpty()){
                 setdata(list)
@@ -168,15 +168,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         recyclerview_main.adapter = adapter
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        val roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
-        if (!roleID.equals("0")) {
-            GlobalScope.launch {
-                callPrivilegeAPI(roleID)
-            }
-        }
-    }
 
     override fun onResume() {
         super.onResume()
@@ -191,11 +182,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             setdata(privilegeListNameOffline)
         }
-        if (AppUtils().isInternet(this)) {
-            GlobalScope.launch {
-                callPrivilegeAPI(roleID)
-            }
-        }
+
     }
 
     private fun setdata(privilegeList: ArrayList<String>) {

@@ -1,7 +1,6 @@
 package com.pbt.myfarm.Activity.CreatePack
 
-import android.content.Intent
-import android.net.ConnectivityManager
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,19 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.*
-import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
-
 import com.pbt.myfarm.Activity.CreateTask.FieldModel
-
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.selectedCommunityGroup
-import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity.Companion.desciptioncompanian
-
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.HttpResponse.PackConfigFieldList
 import com.pbt.myfarm.HttpResponse.PackFieldResponse
-import com.pbt.myfarm.PackViewModel.Companion.labelPackConfigPrefix
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityList
 import com.pbt.myfarm.PackViewModel.Companion.packCommunityListname
 import com.pbt.myfarm.Service.ApiClient
@@ -35,13 +27,10 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityCreatePackBinding
 import kotlinx.android.synthetic.main.activity_create_pack.*
-import kotlinx.android.synthetic.main.activity_create_task.*
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 
 class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResponse> {
