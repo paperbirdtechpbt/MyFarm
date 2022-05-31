@@ -14,9 +14,16 @@ import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ResponseTaskExecution
 import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
+import com.pbt.myfarm.module.repositoryModule
+import com.pbt.myfarm.module.retrofitBuilderModule
+import com.pbt.myfarm.module.viewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidFileProperties
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.startKoin
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,6 +34,13 @@ class MyFarmApp : Application(),ProgressRequestBody.UploadCallback{
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@MyFarmApp)
+            androidFileProperties()
+            loadKoinModules(listOf(retrofitBuilderModule,viewModel,repositoryModule ))
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 uploadCrashFiles(this)
@@ -39,6 +53,7 @@ class MyFarmApp : Application(),ProgressRequestBody.UploadCallback{
                 uploadCrashFiles(this)
             }
         }
+
 
     }
 

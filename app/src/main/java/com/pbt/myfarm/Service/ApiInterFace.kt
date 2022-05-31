@@ -22,10 +22,10 @@ import retrofit2.http.Field
 interface ApiInterFace {
     @FormUrlEncoded
     @POST("api/login")
-    fun login(
+  suspend  fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ): Call<HttpResponse>
+    ): HttpResponse
 
     @FormUrlEncoded
     @POST("api/taskList")
@@ -357,8 +357,8 @@ fun uploadFile(
     @FormUrlEncoded
 
     @POST("api/getAllprivileges")
-    fun getAllprivileges(
-        @Field("role_id") role_id: String) :Call<AllPriviledgeListResponse>
+   suspend fun getAllprivileges(
+        @Field("role_id") role_id: String) :AllPriviledgeListResponse
 
     @FormUrlEncoded
     @POST("api/gettaskobjects")

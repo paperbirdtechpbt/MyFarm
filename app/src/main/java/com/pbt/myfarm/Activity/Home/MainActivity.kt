@@ -4,62 +4,53 @@ package com.pbt.myfarm.Activity.Home
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
-import android.view.Window
-import android.widget.TextView
+
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
+import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
-import com.pbt.myfarm.AllPriviledgeListResponse
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
-import com.pbt.myfarm.Privilege
-import com.pbt.myfarm.R
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Service.MyFarmService
-import com.pbt.myfarm.Util.AppConstant
+
 import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
 import com.pbt.myfarm.Util.AppConstant.Companion.STORAGE_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppUtils
-import com.pbt.myfarm.Util.CustomExceptionHandler
 import com.pbt.myfarm.Util.MySharedPreference
+import com.pbt.myfarm.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import retrofit2.Call
 import retrofit2.Response
-import java.io.File
 
-class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListResponse> {
+class MainActivity : AppCompatActivity() {
 
     val data = ArrayList<EventList>()
-    var viewModel: MainActivityViewModel? = null
+    val viewModel by inject<MainActivityViewModel>()
     val TAG = "MainActivity"
     var roleID: String? = null
+    lateinit var binding: ActivityMainBinding
+
 
     private lateinit var appUtils: AppUtils
 
@@ -79,26 +70,28 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.viewmodel=viewModel
+        binding.lifecycleOwner = this
+
 
         if (AppUtils().isInternet(this)) {
             initViewModel()
         }
-        viewModel?.initCrash(this)
+        viewModel.initCrash(this)
 
         val mLayoutManager: LayoutManager = GridLayoutManager(this, 2)
         recyclerview_main.setLayoutManager(mLayoutManager)
 
-        roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
         appUtils = AppUtils()
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-           askForCameraPermission()
+            askForCameraPermission()
 
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
-                   viewModel?.showDialogPermission(this)
+                    viewModel?.showDialogPermission(this)
                 }
             } else {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
@@ -120,19 +113,18 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 //        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
 //            startService(Intent(this, MyFarmService::class.java))
 //        }
-        GlobalScope.launch {
-            callPrivilegeAPI(roleID)
-        }
+
+
 
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
-                GlobalScope.launch {
-                    viewModel?.callPrivilegeAPi(this@MainActivity,selectedroldid.toString())
 
-                }
+                    viewModel.callPrivilegeAPi(this@MainActivity, selectedroldid.toString())
+
+
 
 
             }
@@ -150,13 +142,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(MainActivityViewModel::class.java)
+        roleID = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_ID, "0")
+
+        callPrivilegeAPI(roleID)
 //        AppUtils().isServiceRunning(this, MyFarmService::class.java)
-        viewModel?.mprivilegeListName?.observe(this){ list->
-            if (!list.isNullOrEmpty()){
+        viewModel.mprivilegeListName.observe(this) { list ->
+            if (!list.isNullOrEmpty()) {
                 setdata(list)
             }
 
@@ -238,12 +229,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-        menuInflater.inflate(R.menu.main, menu)
-        return true
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
@@ -344,39 +329,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         );
     }
 
-    override fun onResponse(
-        call: Call<AllPriviledgeListResponse>,
-        response: Response<AllPriviledgeListResponse>
-    ) {
-        if (response.body()?.error == false) {
-            val baseResponse: AllPriviledgeListResponse = Gson().fromJson(
-                Gson().toJson(response.body()),
-                AllPriviledgeListResponse::class.java
-            )
-            privilegeListName.clear()
-            privilegeListNameID.clear()
-            privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
-            for (i in 0 until privilegeList.size) {
-                val privilege = Privilege(
-                    privilegeList.get(i).id.toDouble().toInt(),
-                    privilegeList.get(i).privilege
-                )
 
-                val db = DbHelper(this, null)
-                db.addPrivilege(privilege)
 
-                privilegeListName.add(privilegeList.get(i).privilege)
-                privilegeListNameID.add(privilegeList.get(i).id)
-            }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
 
-            setdata(privilegeListName)
-
-        }
-
-    }
-
-    override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
-            println(t.message.toString())
+        menuInflater.inflate(R.menu.main, menu)
+        return true
     }
 
 }

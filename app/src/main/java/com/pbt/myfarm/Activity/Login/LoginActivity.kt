@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.LoginViewModel
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_IS_LOGIN
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_ROLEID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_SHARED_PREF_USERNAME
@@ -22,29 +24,28 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import com.pbt.myfarm.databinding.ActivityLogin2Binding
 import kotlinx.android.synthetic.main.activity_login2.*
+import org.koin.android.ext.android.inject
 
 
 class LoginActivity : AppCompatActivity(), LoginListner {
 
-    var viewModel: LoginViewModel? = null
-    var binding: ActivityLogin2Binding? = null
+    val  viewModel by inject<LoginViewModel>()
+    lateinit var binding: ActivityLogin2Binding
     var selectedroleId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_login2)
-
         supportActionBar?.hide()
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-        ).get(LoginViewModel::class.java)
 
-        binding?.loginmodel = viewModel
-        viewModel!!.loginListener = this
-        viewModel?.progressBar = progressLogin
-        viewModel?.btnlogin = btn_login
-        viewModel?.spinnerRole = spinner_role
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login2)
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = this
+
+
+
+        viewModel.loginListener = this
+        viewModel.btnlogin = btn_login
+        viewModel.spinnerRole = spinner_role
 
         initObservable()
 
@@ -60,7 +61,7 @@ class LoginActivity : AppCompatActivity(), LoginListner {
 
             override fun afterTextChanged(editable: Editable) {
                 AppUtils.logDebug("##LoginActvity", editable.toString())
-                viewModel?.callApiGetRoleList(this@LoginActivity, editable.toString())
+                viewModel.callApiGetRoleList(this@LoginActivity, editable.toString())
 
             }
         })
@@ -68,9 +69,15 @@ class LoginActivity : AppCompatActivity(), LoginListner {
 
 
     private fun initObservable() {
+        viewModel.context = this
 
-        viewModel?.userLogin?.observe(this, Observer { response ->
+
+
+
+        viewModel.userLogin?.observe(this, Observer { response ->
             if (response?.error == false) {
+
+                viewModel.isProgressbar.postValue(View.VISIBLE)
 
                 MySharedPreference.setStringValue(
                     this,
@@ -86,17 +93,20 @@ class LoginActivity : AppCompatActivity(), LoginListner {
                 finish()
 
                 Toast.makeText(this, "${response.message}", Toast.LENGTH_LONG).show()
-            } else
+            } else{
+                viewModel.isProgressbar.postValue(View.GONE)
                 Toast.makeText(this, "${response.message}", Toast.LENGTH_LONG).show()
+
+            }
         })
     }
 
 
     override fun showPassword(isShow: Boolean) {
         if (isShow == true)
-            binding?.edPassword?.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
+            binding.edPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance())
         else
-            binding?.edPassword?.setTransformationMethod(PasswordTransformationMethod.getInstance())
+            binding.edPassword.setTransformationMethod(PasswordTransformationMethod.getInstance())
     }
 
 

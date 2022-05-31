@@ -1,10 +1,9 @@
-package com.pbt.myfarm.Activity.Home
+package com.pbt.myfarm
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Application
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
@@ -20,10 +19,11 @@ import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.pbt.myfarm.*
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
 import com.pbt.myfarm.DataBase.DbHelper
@@ -35,11 +35,14 @@ import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.CustomExceptionHandler
 import com.pbt.myfarm.Util.MySharedPreference
+import com.pbt.myfarm.module.MainRepository
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainActivityViewModel(val activity: Application) : AndroidViewModel(activity),
+class MainActivityViewModel
+constructor(private  val mainRespository: MainRepository) :ViewModel(),
     Callback<PackConfigResponse> {
 
     @SuppressLint("StaticFieldLeak")
@@ -205,7 +208,7 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
 
 
     override fun onFailure(call: Call<PackConfigResponse>, t: Throwable) {
-        Toast.makeText(activity, "Configlist failure response", Toast.LENGTH_SHORT).show()
+        Toast.makeText(mycontext, "Configlist failure response", Toast.LENGTH_SHORT).show()
     }
 
     fun truncateAllTables(context: Context) {
@@ -429,42 +432,28 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
     }
 
     fun callPrivilegeAPi(context: Context, selectedRoleid: String) {
-        val apiclient = ApiClient.client.create(ApiInterFace::class.java)
-        val call = apiclient.getAllprivileges(selectedRoleid.toString())
-        call.enqueue(object : Callback<AllPriviledgeListResponse> {
-            override fun onResponse(
-                call: Call<AllPriviledgeListResponse>,
-                response: Response<AllPriviledgeListResponse>
-            ) {
-                if (response.body()?.error == false) {
-                    val baseResponse: AllPriviledgeListResponse = Gson().fromJson(
-                        Gson().toJson(response.body()),
-                        AllPriviledgeListResponse::class.java
+        viewModelScope.launch {
+            mainRespository.callPrivilegeApi(selectedRoleid).let {
+                MainActivity.privilegeListName.clear()
+                MainActivity.privilegeListNameID.clear()
+                MainActivity.privilegeList = it.privilage as ArrayList<ListPrivilege>
+                for (i in 0 until MainActivity.privilegeList.size) {
+                    val privilege = Privilege(
+                        MainActivity.privilegeList.get(i).id?.toDouble()?.toInt(),
+                        MainActivity.privilegeList.get(i).privilege
                     )
-                    MainActivity.privilegeListName.clear()
-                    MainActivity.privilegeListNameID.clear()
-                    MainActivity.privilegeList = baseResponse.privilage as ArrayList<ListPrivilege>
-                    for (i in 0 until MainActivity.privilegeList.size) {
-                        val privilege = Privilege(
-                            MainActivity.privilegeList.get(i).id.toDouble().toInt(),
-                            MainActivity.privilegeList.get(i).privilege
-                        )
 
-                        val db = DbHelper(context, null)
-                        db.addPrivilege(privilege)
+                    val db = DbHelper(context, null)
+                    db.addPrivilege(privilege)
 
-                        MainActivity.privilegeListName.add(MainActivity.privilegeList.get(i).privilege)
-                        MainActivity.privilegeListNameID.add(MainActivity.privilegeList.get(i).id)
-                    }
-                    mprivilegeListName.value = MainActivity.privilegeListName
+                    MainActivity.privilegeListName.add(MainActivity.privilegeList.get(i).privilege.toString())
+                    MainActivity.privilegeListNameID.add(MainActivity.privilegeList.get(i).id.toString())
                 }
-
+                mprivilegeListName.value = MainActivity.privilegeListName
             }
+        }
 
-            override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
-                println(t.message.toString())
-            }
-        })
+
     }
 
 

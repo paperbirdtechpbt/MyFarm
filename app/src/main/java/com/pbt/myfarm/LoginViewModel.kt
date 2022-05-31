@@ -1,49 +1,46 @@
 package com.pbt.myfarm
 
 import android.R
-import android.app.Application
+import android.app.Activity
 import android.content.Context
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginListner
 import com.pbt.myfarm.HttpResponse.HttpResponse
-import com.pbt.myfarm.HttpResponse.loginResult
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
+import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
-import kotlinx.android.synthetic.main.activity_login2.*
+import com.pbt.myfarm.repository.LoginRepository
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 
 
-class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
-    Callback<HttpResponse> {
+class LoginViewModel constructor(
+    private val repository: LoginRepository,
+) : ViewModel(){
 
     companion object {
         const val TAG: String = "LoginViewModel"
     }
-
-    val context = activity
+    var context:Context?=null
     var email: ObservableField<String>? = null
     var password: ObservableField<String>? = null
     var userLogin: MutableLiveData<HttpResponse>? = null
-    lateinit var progressBar: ProgressBar
+     var isProgressbar=MutableLiveData(View.GONE)
     lateinit var btnlogin: Button
-    var rolesIdString: String? = null
-    var rolesName: String? = null
+    var rolesIdString:String ?= null
+    var rolesName:String?= null
     var loginListener: LoginListner? = null
     var isPasswordShow: ObservableBoolean? = null
     var spinnerRole: Spinner? = null
@@ -60,17 +57,26 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
     fun login(view: View) {
 
         AppUtils.logDebug(TAG, "RoleidString==" + rolesIdString.toString())
-        progressBar.visibility = View.VISIBLE
+isProgressbar.postValue(View.VISIBLE)
         btnlogin.visibility = View.GONE
 
         if (rolesIdString != "0") {
-            ApiClient.client.create(ApiInterFace::class.java).login(
-                email = email?.get()!!, password = password?.get()!!
-            ).enqueue(this)
+            viewModelScope.launch {
+                repository.doLogin(email?.get().toString(), password?.get().toString()).let {
+                    MySharedPreference.setStringValue(context as Activity,
+                        AppConstant.CONST_PREF_ROLE_ID, rolesIdString)
+                    MySharedPreference.setStringValue(context as Activity,
+                        AppConstant.CONST_PREF_ROLE_NAME, rolesName)
+                    userLogin?.postValue(it)
+                }
+            }
+//            ApiClient.client.create(ApiInterFace::class.java).login(
+//                email = email?.get()!!, password = password?.get()!!
+//            ).enqueue(this)
         } else {
             Toast.makeText(context, "Please Select Role ", Toast.LENGTH_SHORT).show()
             btnlogin.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
+            isProgressbar.postValue(View.GONE)
 
 
         }
@@ -90,31 +96,30 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
     }
 
 
-    override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
-        if (response.body()?.error == false) {
-            progressBar.visibility = View.GONE
-            btnlogin.visibility = View.VISIBLE
-            userLogin?.value = response.body()
-            MySharedPreference.setStringValue(context, CONST_PREF_ROLE_ID, rolesIdString)
-            MySharedPreference.setStringValue(context, CONST_PREF_ROLE_NAME, rolesName)
-
-        } else {
-            Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
-
-            progressBar.visibility = View.GONE
-            btnlogin.visibility = View.VISIBLE
-        }
-
-//        val list: loginResult = Gson().fromJson(Gson().toJson(response.body()?.data), loginResult::class.java)
-    }
-
-    override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
-        progressBar.visibility = View.GONE
-        btnlogin.visibility = View.VISIBLE
-        Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
-        AppUtils.logError(TAG, "Failure Response : " + t.message)
-
-    }
+//    override fun onResponse(call: Call<HttpResponse>, response: Response<HttpResponse>) {
+//        if (response.body()?.error == false) {
+//            progressBar.visibility = View.GONE
+//            btnlogin.visibility = View.VISIBLE
+//            userLogin?.value = response.body()
+//
+//
+//        } else {
+//            Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
+//
+//            progressBar.visibility = View.GONE
+//            btnlogin.visibility = View.VISIBLE
+//        }
+//
+////        val list: loginResult = Gson().fromJson(Gson().toJson(response.body()?.data), loginResult::class.java)
+//    }
+//
+//    override fun onFailure(call: Call<HttpResponse>, t: Throwable) {
+//        progressBar.visibility = View.GONE
+//        btnlogin.visibility = View.VISIBLE
+//        Toast.makeText(context, "Invalid User", Toast.LENGTH_SHORT).show()
+//        AppUtils.logError(TAG, "Failure Response : " + t.message)
+//
+//    }
 
     fun callApiGetRoleList(context: Context, email: String) {
         val apiclient = ApiClient.client.create(ApiInterFace::class.java)
@@ -182,9 +187,9 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
                 position: Int,
                 id: Long
             ) {
+                rolesIdString=roleListId.get(position)
+                rolesName=roleList.get(position)
 
-                rolesIdString = roleListId.get(position)
-                rolesName = roleList.get(position)
                 AppUtils.logDebug("####LoginActivity", roleListId.get(position))
 
 
