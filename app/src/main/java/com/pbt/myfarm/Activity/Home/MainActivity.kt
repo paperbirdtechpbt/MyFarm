@@ -32,6 +32,7 @@ import com.pbt.myfarm.R
 import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TOKEN
 import com.pbt.myfarm.Util.AppConstant.Companion.STORAGE_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -187,7 +188,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             if (privilegeList.contains("DashboardEvent")) {
                 data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
-
             }
             if (privilegeList.contains("Event")) {
                 data.add(EventList("Event", R.drawable.ic_icon_list))
@@ -207,22 +207,17 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             if (privilegeListNameOffline.contains("Task")) {
                 data.add(EventList("Task", R.drawable.ic__task))
-
             }
             if (privilegeListNameOffline.contains("DashboardEvent")) {
                 data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
-
             }
             if (privilegeListNameOffline.contains("Event")) {
                 data.add(EventList("Event", R.drawable.ic_icon_list))
-
             }
             if (!data.isNullOrEmpty()) {
                 setadapter(data)
             }
         }
-
-
     }
 
 

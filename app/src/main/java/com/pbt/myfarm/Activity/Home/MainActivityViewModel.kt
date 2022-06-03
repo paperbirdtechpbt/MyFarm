@@ -109,8 +109,6 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                                             item.pack_config_id.toString(), item
                                         )
                                     }
-
-
                                 }
                             }
                             if (!eventlist.isNullOrEmpty()) {
@@ -132,7 +130,6 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
                             Toast.makeText(context, "Uploaded SuccessFull", Toast.LENGTH_SHORT)
                                 .show()
                             showAlertDialog(context)
-
                             AppUtils.logDebug(
                                 TAG,
                                 "Send Data SuccessFull " + response.body()?.msg.toString()
@@ -149,15 +146,12 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
             override fun onFailure(call: Call<testresponse>, t: Throwable) {
                 try {
                     AppUtils.logDebug(TAG, "Send Data Failur " + t.message.toString())
-
                     AppUtils.logError(TAG, t.message.toString())
 
                 } catch (e: java.lang.Exception) {
                     AppUtils.logError(TAG, t.message.toString())
-
                 }
             }
-
         })
     }
 

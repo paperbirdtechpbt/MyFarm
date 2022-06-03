@@ -1,6 +1,7 @@
 package com.pbt.myfarm
 
 import android.R
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.view.KeyEvent
@@ -20,6 +21,7 @@ import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TOKEN
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_login2.*
@@ -36,7 +38,7 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
         const val TAG: String = "LoginViewModel"
     }
 
-    val context = activity
+    var context =activity
     var email: ObservableField<String>? = null
     var password: ObservableField<String>? = null
     var userLogin: MutableLiveData<HttpResponse>? = null
@@ -62,16 +64,17 @@ class LoginViewModel(val activity: Application) : AndroidViewModel(activity),
         AppUtils.logDebug(TAG, "RoleidString==" + rolesIdString.toString())
         progressBar.visibility = View.VISIBLE
         btnlogin.visibility = View.GONE
+        val token=MySharedPreference.getStringTokenValue(context , CONST_TOKEN,"0")
 
         if (rolesIdString != "0") {
             ApiClient.client.create(ApiInterFace::class.java).login(
-                email = email?.get()!!, password = password?.get()!!
+                email = email?.get()!!, password = password?.get()!!,token.toString()
             ).enqueue(this)
-        } else {
+        }
+        else {
             Toast.makeText(context, "Please Select Role ", Toast.LENGTH_SHORT).show()
             btnlogin.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
-
 
         }
 

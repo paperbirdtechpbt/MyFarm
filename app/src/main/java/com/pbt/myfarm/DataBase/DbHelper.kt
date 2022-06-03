@@ -20,7 +20,6 @@ import com.pbt.myfarm.Activity.Graph.ListPoints
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.ViewPackModelClass
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
-import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
 import com.pbt.myfarm.HttpResponse.PackCommunityList
 import com.pbt.myfarm.Service.EventSts
 import com.pbt.myfarm.Service.EventTyp
@@ -1263,7 +1262,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getLastValue_pack_new(configid: String): String {
 
         var myid = ""
-        val list: ArrayList<PackCommunityList> = ArrayList()
         val db = this.readableDatabase
 
         val selectQuery = "SELECT  * FROM $TABLE_CREAT_PACK WHERE $COL_PACK_CONFIG_ID =$configid "
@@ -1279,7 +1277,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
         if (cursor.moveToFirst()) {
             do {
-                val result = cursor.getInt(0)
+//                val result = cursor.getInt(0)
                 myid = cursor.getString(cursor.getColumnIndex(COL_PACK_NAME))
             } while (cursor.moveToNext())
         }
@@ -1291,7 +1289,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
     fun getLastValueEvents(configid: String): String {
 
         var myid = ""
-        val list: ArrayList<PackCommunityList> = ArrayList()
+//        val list: ArrayList<PackCommunityList> = ArrayList()
         val db = this.readableDatabase
 
         val selectQuery = "SELECT  * FROM $TABLE_events"
@@ -1307,7 +1305,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
         if (cursor.moveToFirst()) {
             do {
-                val result = cursor.getInt(0)
+//                val result = cursor.getInt(0)
                 myid = cursor.getString(cursor.getColumnIndex(COL_events_SERVERID))
             } while (cursor.moveToNext())
         }
@@ -1335,7 +1333,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         }
         if (cursor.moveToFirst()) {
             do {
-                val result = cursor.getInt(0)
+//                val result = cursor.getInt(0)
                 myid = cursor.getString(cursor.getColumnIndex(COL_tasks_NAME))
             } while (cursor.moveToNext())
         }
@@ -4302,7 +4300,6 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                     val packsNew = Privilege(id = id?.toInt(), name = name)
 
                     upCommingPackList.add(packsNew)
-
 
                 } while (cursor.moveToNext())
             }

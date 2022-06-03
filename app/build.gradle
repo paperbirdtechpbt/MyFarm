@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id 'maven-publish'
+    id 'com.google.gms.google-services'
 
 }
 
@@ -20,7 +21,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'project.properties'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/library_release.kotlin_module'
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -111,5 +117,8 @@ dependencies {
     //Pdf Viewwe
     implementation 'com.github.barteksc:android-pdf-viewer:3.1.0-beta.1'
     implementation 'com.github.HBiSoft:PickiT:2.0.5'
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+            implementation 'com.google.firebase:firebase-database-ktx:20.0.5'
 
 }

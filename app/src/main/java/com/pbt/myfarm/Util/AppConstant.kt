@@ -28,7 +28,7 @@ class AppConstant {
 
         //Notification Message
         const val CONST_PAYLOAD="payload"
-
+        const val CONST_TOKEN="token"
 
         //packid
         val PACK_LIST_PACKID="packlistpackid"

@@ -522,6 +522,20 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         viewModel?.edScannedData = scanned_Data
                         openZingScanner()
                     }
+                    else if(item == "218" ){
+                        hideButtonVisibility(false)
+
+                        scanned_Data.visibility = View.GONE
+                        taskfunction_media.visibility = View.GONE
+                        btnChoosefile.visibility = View.GONE
+                        label_attachmedia.visibility = View.GONE
+                        recycler_viewMedia.visibility = View.GONE
+                        taskfunction_field.visibility = View.GONE
+                        label_fieldname.visibility = View.GONE
+                    }
+                    else if(item == "219" ){
+
+                    }
                 }
             }
 
