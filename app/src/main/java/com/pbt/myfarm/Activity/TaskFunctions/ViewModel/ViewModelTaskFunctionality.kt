@@ -19,12 +19,14 @@ import com.pbt.myfarm.Activity.Event.ScannedPersonData
 import com.pbt.myfarm.Activity.TaskFunctions.ListTaskFunctions
 import com.pbt.myfarm.Activity.TaskFunctions.ProgressRequestBody
 import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
+import com.pbt.myfarm.BaseHttpResponse
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.BaseTaskFunction
 import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Service.ResponseTaskExecution
+import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
@@ -49,12 +51,15 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
    var btnSubmit: Button?=null
      var mprogressCircular: CircularProgressIndicator? = null
      var mprogressCircularLabel: TextView? = null
+    var taskObjectList = MutableLiveData<List<TaskObject>>()
+
 
 
     init {
         listTaskFuntions = MutableLiveData<List<ListTaskFunctions>>()
         checkstatus = MutableLiveData<HttpResponse>()
-        id
+        taskObjectList = MutableLiveData<List<TaskObject>>()
+
     }
 
 
@@ -305,6 +310,40 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
     override fun onProgressUpdate(percentage: Int) {
         mprogressCircular?.setProgressCompat(percentage, true)
         mprogressCircularLabel?.text = "$percentage%"
+    }
+
+    fun getTaskObjectList( taskId: String) {
+        val apiInterFace=ApiClient.client.create(ApiInterFace::class.java)
+        val call=apiInterFace.getTaskObject(taskId)
+
+        call.enqueue(object :Callback<BaseHttpResponse>{
+            override fun onResponse(call: Call<BaseHttpResponse>, response: Response<BaseHttpResponse>) {
+
+                if(response.body()?.error==false) {
+                    taskObjectList.postValue(emptyList())
+
+                    val list=ArrayList<TaskObject>()
+
+response.body()?.data?.task_objects?.forEach { it ->
+    if((it.function=="PACK" || it.function=="CREATE_PACK") && it.status==null){
+        list.add(it)
+    }
+
+
+}
+                    taskObjectList.postValue(list)
+                }else{
+                    taskObjectList.postValue(emptyList())
+                }
+            }
+
+            override fun onFailure(call: Call<BaseHttpResponse>, t: Throwable) {
+                println("Get VierwTAskoBject list response Failure "+t.localizedMessage.toString())
+
+            }
+        })
+
+
     }
 
 

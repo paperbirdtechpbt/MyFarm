@@ -32,9 +32,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             try {
                 val title = it.data.get("title")
                 val notificationmsg = it.data.get("message")
-
-                AppUtils.logError("##MyFirebaseMessagingService", title.toString())
-                popUpNotificaiton(title, notificationmsg)
+                val target_user = it.data.get("target_user")
+                if (target_user==MySharedPreference.getUser(this)?.id.toString()){
+                    AppUtils.logError("##MyFirebaseMessagingService", title.toString())
+                    popUpNotificaiton(title, notificationmsg)
+                }
 
             } catch (e: Exception) {
                 AppUtils.logError("##MyFirebaseMessagingService", e.message.toString())
@@ -44,6 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         MySharedPreference.setStringTokenValue(this, CONST_TOKEN, token)
+        AppUtils.logError("TAGTAG",token)
     }
 
     private fun popUpNotificaiton(title: String?, message: String?) {

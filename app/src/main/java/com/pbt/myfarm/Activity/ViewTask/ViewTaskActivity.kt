@@ -1,11 +1,9 @@
 package com.pbt.myfarm.Activity.ViewTask
 
-import android.app.AlertDialog
-import android.content.DialogInterface
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -19,10 +17,7 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffl
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigTypeActivity
 import com.pbt.myfarm.Adapter.ViewTask.AdapterViewTask
 import com.pbt.myfarm.DataBase.DbHelper
-import com.pbt.myfarm.HttpResponse.testresponse
 import com.pbt.myfarm.R
-import com.pbt.myfarm.Service.ApiClient
-import com.pbt.myfarm.Service.ApiInterFace
 import com.pbt.myfarm.Task
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_BOOLEAN
@@ -35,9 +30,6 @@ import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
-import retrofit2.Call
-import retrofit2.Response
-
 
 class ViewTaskActivity : AppCompatActivity(){
     private var adapter: AdapterViewTask? = null
@@ -92,8 +84,6 @@ class ViewTaskActivity : AppCompatActivity(){
         viewModell?.eventlist?.observe(this, Observer { eventlistt ->
 
             val linearLayoutManager = LinearLayoutManager(this)
-            linearLayoutManager.reverseLayout = true
-            linearLayoutManager.stackFromEnd = true
             recyclerview_viewtask.setLayoutManager(linearLayoutManager)
 
             val animator: ItemAnimator = recyclerview_viewtask.getItemAnimator()!!

@@ -38,6 +38,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity),
@@ -51,11 +52,11 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         var field: ArrayList<Field>? = ArrayList()
 
 
-
     }
 
     val context: Context = activity
     var configlist = MutableLiveData<List<ConfigFieldList>>()
+    var allUserList = MutableLiveData<List<AllUserList>>()
     var checkstatusObject = MutableLiveData<HttpResponse>()
 
 
@@ -68,7 +69,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
     var EndDate: ObservableField<String>? = null
     var progressbar: ProgressBar? = null
     var btnSubmit: Button? = null
-    var layoutProgressbar :ConstraintLayout?=null
+    var layoutProgressbar: ConstraintLayout? = null
 
     init {
         namePrefix = ObservableField("")
@@ -491,6 +492,23 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                     Gson().toJson(response.body()?.CommunityGroup),
                     ArrayList<ComunityGroup>()::class.java
                 )
+
+
+                val userslist = Gson().fromJson(
+                    Gson().toJson(response.body()?.users),
+                    ArrayList<AllUserList>()::class.java
+                )
+                val list=ArrayList<AllUserList>()
+                for (i in 0 until userslist!!.size) {
+                    val row: Any = userslist.get(i)
+                    val rowmap: LinkedTreeMap<Any, Any> = row as LinkedTreeMap<Any, Any>
+                    val name = rowmap["name"].toString()
+                    val id = rowmap["id"].toString()
+
+                    list.add(AllUserList(id,name))
+                }
+                allUserList.value=list
+
                 configlist.value = configlistt
                 groupArray?.clear()
                 groupArrayId?.clear()
@@ -522,34 +540,40 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
 
     }
 
-    fun callApiStoreTask(context: Context, configtypeId: String, prefix: String,
-                         selectedCommunityGroup: String,
-                         userid: String, successobject: String, nameprefix: String,isPrefixNull:Boolean) {
-        var call:Call<testresponse>?=null
-        if (isPrefixNull){
-            val apiClient=ApiClient.client.create(ApiInterFace::class.java)
-            call=apiClient.storeTask( configtypeId,
+    fun callApiStoreTask(
+        context: Context, configtypeId: String, prefix: String,
+        selectedCommunityGroup: String,
+        userid: String, successobject: String, nameprefix: String, isPrefixNull: Boolean
+    ) {
+        var call: Call<testresponse>? = null
+        if (isPrefixNull) {
+            val apiClient = ApiClient.client.create(ApiInterFace::class.java)
+            call = apiClient.storeTask(
+                configtypeId,
                 prefix,
                 selectedCommunityGroup,
                 userid,
                 successobject,
-                "")
-        }
-        else{
-            val apiClient=ApiClient.client.create(ApiInterFace::class.java)
-             call=apiClient.storeTask( configtypeId,
+                ""
+            )
+        } else {
+            val apiClient = ApiClient.client.create(ApiInterFace::class.java)
+            call = apiClient.storeTask(
+                configtypeId,
                 prefix,
                 selectedCommunityGroup,
                 userid,
                 successobject,
-                nameprefix)
+                nameprefix
+            )
 
         }
-        call.enqueue(object :Callback<testresponse>{
+        call.enqueue(object : Callback<testresponse> {
             override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
                 try {
                     if (response.body()?.error == false) {
-                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT)
+                            .show()
 
                         (context as Activity).finish()
                         btnSubmit?.visibility = View.VISIBLE
@@ -557,7 +581,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                         progressbar?.visibility = View.GONE
 
                     } else {
-                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT)
+                            .show()
 
                         btnSubmit?.visibility = View.VISIBLE
                         layoutProgressbar?.visibility = View.GONE
@@ -595,19 +620,22 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         nameprefix: String,
         taskid: String
     ) {
-       val apiClient=ApiClient.client.create(ApiInterFace::class.java)
-        val call=apiClient.updateTask(   configtypeId,
+        val apiClient = ApiClient.client.create(ApiInterFace::class.java)
+        val call = apiClient.updateTask(
+            configtypeId,
             prefix,
             selectedCommunityGroup,
             userid,
             successObject,
             nameprefix,
-            taskid)
-        call.enqueue(object :Callback<testresponse>{
+            taskid
+        )
+        call.enqueue(object : Callback<testresponse> {
             override fun onResponse(call: Call<testresponse>, response: Response<testresponse>) {
                 try {
                     if (response.body()?.error == false) {
-                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT)
+                            .show()
 
                         (context as Activity).finish()
                         btnSubmit?.visibility = View.VISIBLE
@@ -615,7 +643,8 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
                         progressbar?.visibility = View.GONE
 
                     } else {
-                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "${response.body()?.msg}", Toast.LENGTH_SHORT)
+                            .show()
 
                         btnSubmit?.visibility = View.VISIBLE
                         layoutProgressbar?.visibility = View.GONE
@@ -641,10 +670,7 @@ class CreatetaskViewModel(var activity: Application) : AndroidViewModel(activity
         })
 
 
-
     }
-
-
 
 
 }

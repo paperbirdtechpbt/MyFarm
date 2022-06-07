@@ -31,6 +31,7 @@ import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.HttpResponse.testresponse
 
 import com.pbt.myfarm.Service.ConfigFieldList
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_ALLUSERS
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASK_UPDATE_LIST
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_VIEWMODELCLASS_LIST
@@ -56,6 +57,7 @@ class CreateTaskActivity : AppCompatActivity() {
     val successObject = JSONArray()
     var updateTaskList: Task? = null
     val fieldModel = ArrayList<FieldModel>()
+    var allUsersList = ArrayList<AllUserList>()
     var configtype: TaskConfig? = null
 
 
@@ -67,9 +69,9 @@ class CreateTaskActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        setButtonListner()
 
         initViewModel()
+        setButtonListner()
 
     }
 
@@ -85,6 +87,8 @@ class CreateTaskActivity : AppCompatActivity() {
         btn_taskfuntion.setOnClickListener {
             val intent = Intent(this, TaskFunctionActivity::class.java)
             intent.putExtra(CONST_TASKFUNCTION_TASKID, updateTaskList)
+            intent.putExtra(CONST_TASKFUNCTION_ALLUSERS, allUsersList)
+            AppUtils.logError(TAG,"intentlist"+allUsersList.toString())
             startActivity(intent)
         }
         btn_taskobject.setOnClickListener {
@@ -261,8 +265,16 @@ class CreateTaskActivity : AppCompatActivity() {
                 }
 
             }
+
             recycler_taskconfiglist.adapter = adapter
         })
+
+        viewmodel?.allUserList?.observe(this){ list ->
+            if (!list.isNullOrEmpty())
+            allUsersList.addAll(list)
+            AppUtils.logError(TAG,"alluSerslist"+allUsersList.toString())
+
+        }
 
 
         btn_create_task.setOnClickListener {

@@ -64,6 +64,7 @@ class AppConstant {
         const val CONST_TASK_UPDATE_LIST = "taskupdatelist"
         const val CONST_PACK_UPDATE_LIST = "packupdatelist"
         const val CONST_TASKFUNCTION_TASKID = "taskfunction"
+        const val CONST_TASKFUNCTION_ALLUSERS = "allUsersList"
         const val CONST_TASKFUNCTION_TASKLIST = "tasklistforpack"
         const val CONST_TASKFUNCTION_OBJECT = "task_object"
         const val CONST_TASKFUNCTION_OBJECTI_ISUPDATE = "task_object_isupdate"

@@ -31,21 +31,17 @@ import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
 import com.hbisoft.pickit.PickiT
 import com.hbisoft.pickit.PickiTCallbacks
+import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigListActivity
 import com.pbt.myfarm.Activity.TaskFunctions.ViewModel.ViewModelTaskFunctionality
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
-import com.pbt.myfarm.Activity.task_object.ViewTaskObjectActivity
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.HttpResponse
-import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ApiClient
 import com.pbt.myfarm.Service.ApiInterFace
-import com.pbt.myfarm.Service.ResponseTaskExecution
-import com.pbt.myfarm.Task
-import com.pbt.myfarm.TaskMediaFile
-import com.pbt.myfarm.TaskObject
 import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_REQUEST
+import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_ALLUSERS
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_OBJECT
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_OBJECTI_ISUPDATE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKID
@@ -53,13 +49,11 @@ import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TASKFUNCTION_TASKLIST
 import com.pbt.myfarm.Util.AppConstant.Companion.GALARY_REQUEST
 import com.pbt.myfarm.Util.AppConstant.Companion.VIDEO_CAPTURE
 import com.pbt.myfarm.Util.AppUtils
-import com.pbt.myfarm.Util.AppUtils.Companion.paramRequestTextBody
 import com.pbt.myfarm.Util.FilePath
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -71,6 +65,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
     private val tag: String = "TaskFunctionActivity"
     private var updateTaskID: Task? = null
+    private var allUserList: ArrayList<AllUserList>? = null
     private var viewModel: ViewModelTaskFunctionality? = null
     private var spinner: Spinner? = null
     private var selectedFunctionId = 0
@@ -92,6 +87,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     private var taskObject: TaskObject? = null
     private val uris = mutableListOf<Uri>()
     private var fileSizeInMB: Long? = null
+    private var transferPackList = ArrayList<TaskObject>()
+    private var transferPackListID = ArrayList<String>()
+    private var transferPackListNAME = ArrayList<String>()
+    private var transferPackListNAMEString = ""
+
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +113,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra(CONST_TASKFUNCTION_TASKID)
+            allUserList = intent.getParcelableArrayListExtra(CONST_TASKFUNCTION_ALLUSERS)
+            AppUtils.logError(tag,"alluserlist"+allUserList.toString())
             isTaskFunctionUpdate =
                 intent.getBooleanExtra(CONST_TASKFUNCTION_OBJECTI_ISUPDATE, false)
 
@@ -283,6 +285,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             openZingScanner()
         }
         viewModel?.oncheckStatuApi(this, updateTaskID)
+
+
         viewModel?.checkstatus?.observe(this) {
             if (it != null) {
                 checkStats = it
@@ -404,11 +408,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 if (selectedFunctionId == 0) {
                     hideButtonVisibility(false)
 
-//                    label_filename.visibility = View.GONE
+                    label_TargetUser.visibility = View.GONE
                     taskfunction_field.visibility = View.GONE
                     label_fieldname.visibility = View.GONE
                     recycler_viewMedia.visibility = View.GONE
-//                    label_filename.visibility = View.GONE
+                    taskfunction_alluser.visibility = View.GONE
                     taskfunction_media.visibility = View.GONE
                     btnChoosefile.visibility = View.GONE
                     label_attachmedia.visibility = View.GONE
@@ -421,9 +425,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        taskfunction_alluser.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
 
@@ -446,12 +450,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
                         taskfunction_media.visibility = View.VISIBLE
                         btnChoosefile.visibility = View.VISIBLE
                         label_attachmedia.visibility = View.VISIBLE
                         recycler_viewMedia.visibility = View.VISIBLE
-//                        label_filename.visibility = View.GONE
+                        taskfunction_alluser.visibility = View.GONE
 
                         label_attachmedia.text = getString(R.string.attach_media)
                         callApi("173")
@@ -462,12 +466,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        taskfunction_alluser.visibility = View.GONE
                     } else if (item == "174") {
                         hideButtonVisibility(false)
 
@@ -491,11 +495,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
 
                         }
                         scanned_Data.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        taskfunction_alluser.visibility = View.GONE
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
@@ -508,9 +512,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_attachmedia.visibility = View.GONE
 //                        label_filename.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
-//                        label_filename.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
+                        taskfunction_alluser.visibility = View.GONE
 
                         callApi("175")
                     } else if (item == "217" || item == "215" || item == "216") {
@@ -518,11 +523,12 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
                         scanned_Data.visibility = View.VISIBLE
-
+                        taskfunction_alluser.visibility = View.GONE
                         viewModel?.edScannedData = scanned_Data
+                        label_TargetUser.visibility = View.GONE
+
                         openZingScanner()
-                    }
-                    else if(item == "218" ){
+                    } else if (item == "218") {
                         hideButtonVisibility(false)
 
                         scanned_Data.visibility = View.GONE
@@ -532,8 +538,62 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         recycler_viewMedia.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
-                    }
-                    else if(item == "219" ){
+                        taskfunction_alluser.visibility = View.GONE
+                        label_TargetUser.visibility = View.GONE
+
+                    } else if (item == "219") {
+                        hideButtonVisibility(false)
+
+                        scanned_Data.visibility = View.GONE
+                        btnChoosefile.visibility = View.GONE
+                        recycler_viewMedia.visibility = View.GONE
+                        taskfunction_field.visibility = View.GONE
+                        label_fieldname.visibility = View.GONE
+                        taskfunction_alluser.visibility = View.VISIBLE
+                        label_TargetUser.visibility = View.VISIBLE
+                        label_attachmedia.visibility = View.VISIBLE
+                        taskfunction_media.visibility = View.VISIBLE
+
+                        val userlist = ArrayList<String>()
+
+                        transferPackListNAMEString=""
+
+                        label_attachmedia.setText("Packs To Transfer")
+                        label_TargetUser.setText("Target User")
+
+                        allUserList?.add(AllUserList("0","Select"))
+                        for (i in 0 until  allUserList?.size!!){
+                            userlist.add(allUserList!!.get(i).name)
+                        }
+
+
+                        val dd = ArrayAdapter(
+                            this@TaskFunctionActivity,
+                            android.R.layout.simple_spinner_item,
+                            userlist
+                        )
+                        dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        taskfunction_alluser.adapter = dd
+
+                        setTransferListner(taskfunction_alluser,allUserList)
+
+                        viewModel?.getTaskObjectList(updateTaskID?.id.toString())
+
+                        viewModel?.taskObjectList?.observe(this@TaskFunctionActivity) { it ->
+                            if (!it.isNullOrEmpty()) {
+                                transferPackList = it as ArrayList<TaskObject>
+                                transferPackList.forEach { data ->
+                                    transferPackListNAMEString += " " + data.name + ","
+                                }
+                                val i = transferPackListNAMEString.lastIndex
+                                transferPackListNAMEString.dropLast(i - 1)
+                                taskfunction_media.setText(transferPackListNAMEString)
+
+
+                            }
+
+                        }
+
 
                     }
                 }
@@ -542,6 +602,22 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
+    }
+
+    private fun setTransferListner(taskfunctionMedia: Spinner, userlistid: ArrayList<AllUserList>?) {
+        taskfunctionMedia.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>, view: View, position: Int, id: Long
+                ) {
+                        selectedFunctionFieldId = userlistid!![position].id.toDouble().toInt()
+
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
     }
 
     private fun hideButtonVisibility(isHidden: Boolean) {

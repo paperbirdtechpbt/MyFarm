@@ -25,7 +25,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ViewTaskObjectViewModel (val activity: Application) : AndroidViewModel(activity) , retrofit2.Callback<BaseHttpResponse>{
+class ViewTaskObjectViewModel (val activity: Application) : AndroidViewModel(activity) ,
+    retrofit2.Callback<BaseHttpResponse>{
 
 
     var taskObjectList = MutableLiveData<List<TaskObject>>()

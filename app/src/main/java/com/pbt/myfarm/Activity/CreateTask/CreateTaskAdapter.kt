@@ -98,6 +98,7 @@ class CreateTaskAdapter(
         val d: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
 
+AppUtils.logError(TAG,"vaklues"+valued)
         val l = list.size
         val f = fieldId!!.size
         if (l != f) {
@@ -179,7 +180,8 @@ class CreateTaskAdapter(
 
             holder.labelname.setText(namee)
 
-        } else if (fieldtype == "List" || fieldtype == "Multilist") {
+        }
+        else if (fieldtype == "List" || fieldtype == "Multilist") {
 
             holder.date.visibility = View.GONE
             holder.spinner.visibility = View.GONE
@@ -195,7 +197,10 @@ class CreateTaskAdapter(
 //                        holder.name.setText("")
                     } else {
                         for (i in 0 until fieldListid!!.size) {
-                            if (valued == fieldListid.get(i)) {
+                            AppUtils.logDebug(TAG, "fieldlist set Selection" +valued +"  "+ fieldListid.get(i))
+
+                            if (valued == fieldListid.get(i) ||valued+".0" ==fieldListid.get(i)) {
+
                                 holder.mysppinner.setSelection(i)
 
                             }
@@ -223,12 +228,10 @@ class CreateTaskAdapter(
                         holder.name.setText("")
                     } else {
                         for (i in 0 until fieldListid!!.size) {
-                            AppUtils.logDebug(
-                                TAG,
-                                "VALUES FOR SET SLECT#E ITEM =$valued.0 == $fieldListid.get(i)"
-                            )
-                            if (valued + ".0" == fieldListid.get(i)) {
-                                AppUtils.logDebug(TAG, "VALUES FOR SET SLECT#E ITEM =$valued")
+
+                            if (valued  == fieldListid.get(i) || valued+".0" ==fieldListid.get(i)) {
+                                AppUtils.logDebug(TAG, "fieldlist set Selection" + fieldListid.get(i) + valued)
+
                                 holder.mysppinner.setSelection(i)
 
                             }
@@ -330,8 +333,10 @@ class CreateTaskAdapter(
         }
         if (!valued.isEmpty()) {
             for (i in 0 until fieldList!!.size) {
-                if (valued == fieldListid?.get(i)) {
-                    AppUtils.logDebug(TAG, "fieldlist" + fieldListid.get(i) + valued)
+
+                if (valued == fieldListid?.get(i) || valued+".0" ==fieldListid?.get(i)) {
+                    AppUtils.logDebug(TAG, "fieldlist set Selection" + fieldListid?.get(i) + valued)
+
                     holder.mysppinner.setSelection(i)
                 }
             }

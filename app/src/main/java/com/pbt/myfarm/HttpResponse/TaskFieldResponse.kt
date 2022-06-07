@@ -1,26 +1,17 @@
 package com.pbt.myfarm.HttpResponse
 
+import android.os.Parcelable
 import com.google.gson.JsonArray
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class TaskFieldResponse(
     @SerializedName("CommunityGroup") val CommunityGroup: JsonArray,
     @SerializedName("data")   val data: JsonArray,
-    @SerializedName("error")  val error: Boolean
+    @SerializedName("error")  val error: Boolean,
+    @SerializedName("users")  val users: JsonArray
 )
 
-//data class CommunityGroup(
-//    val community_group: String,
-//    val created_at: String,
-//    val created_by: Int,
-//    val deleted_at: Any,
-//    val deleted_by: Any,
-//    val description: String,
-//    val id: Int,
-//    val name: String,
-//    val updated_at: String,
-//    val updated_by: Int
-//)
 
 //data class Data(
 //    val editable: Int,
