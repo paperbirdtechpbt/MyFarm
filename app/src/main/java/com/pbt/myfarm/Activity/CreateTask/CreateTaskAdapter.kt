@@ -24,13 +24,10 @@ import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpAmtArrayKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.ExpNameKey
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
-import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
 import com.pbt.myfarm.HttpResponse.Field
-import com.pbt.myfarm.HttpResponse.HttpResponse
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.ConfigFieldList
 import com.pbt.myfarm.Util.AppUtils
-import kotlinx.android.synthetic.main.activity_create_task.*
 import kotlinx.android.synthetic.main.itemcongiffeildlist.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +43,7 @@ class CreateTaskAdapter(
     val ss = ""
     var item: ConfigFieldList? = null
     var TAG = "CreateTaskAdapter"
-    val fieldId: ArrayList<String>? = ArrayList()
+    val fieldId: ArrayList<String> = ArrayList()
     var isOnTextChanged = false
     val myCalendar: Calendar = Calendar.getInstance()
 
@@ -89,18 +86,16 @@ class CreateTaskAdapter(
         val field_id = t["field_id"].toString()
         val namee = t["field_description"].toString()
         val editable = t["editable"].toString().toDouble().toInt()
-//        val value = t["field_value"].toString()
         val field: ArrayList<Field> = t["field_list"] as ArrayList<Field>
 
 
-//        val row: Any = this.list.get(positionn)
 
         val d: LinkedTreeMap<Any, Any> = getrow as LinkedTreeMap<Any, Any>
         val valued = d["field_value"].toString()
 
-AppUtils.logError(TAG,"vaklues"+valued)
+        AppUtils.logError(TAG, "vaklues" + valued)
         val l = list.size
-        val f = fieldId!!.size
+        val f = fieldId.size
         if (l != f) {
             fieldId.add(field_id)
 
@@ -176,8 +171,6 @@ AppUtils.logError(TAG,"vaklues"+valued)
             }, 1500)
             checkFoucusable(holder.itemView.field_name, null, editable)
 
-
-
             holder.labelname.setText(namee)
 
         }
@@ -197,9 +190,12 @@ AppUtils.logError(TAG,"vaklues"+valued)
 //                        holder.name.setText("")
                     } else {
                         for (i in 0 until fieldListid!!.size) {
-                            AppUtils.logDebug(TAG, "fieldlist set Selection" +valued +"  "+ fieldListid.get(i))
+                            AppUtils.logDebug(
+                                TAG,
+                                "fieldlist set Selection" + valued + "  " + fieldListid.get(i)
+                            )
 
-                            if (valued == fieldListid.get(i) ||valued+".0" ==fieldListid.get(i)) {
+                            if (valued == fieldListid.get(i) || valued + ".0" == fieldListid.get(i)) {
 
                                 holder.mysppinner.setSelection(i)
 
@@ -208,11 +204,11 @@ AppUtils.logError(TAG,"vaklues"+valued)
                     }
                 }
             }, 500)
-            checkFoucusable(null,holder.itemView.field_spinner, editable)
+            checkFoucusable(null, holder.itemView.field_spinner, editable)
 
 
-
-        } else if (fieldtype == "Table") {
+        }
+        else if (fieldtype == "Table") {
 
             holder.date.visibility = View.GONE
             holder.labeldate.visibility = View.GONE
@@ -229,8 +225,11 @@ AppUtils.logError(TAG,"vaklues"+valued)
                     } else {
                         for (i in 0 until fieldListid!!.size) {
 
-                            if (valued  == fieldListid.get(i) || valued+".0" ==fieldListid.get(i)) {
-                                AppUtils.logDebug(TAG, "fieldlist set Selection" + fieldListid.get(i) + valued)
+                            if (valued == fieldListid.get(i) || valued + ".0" == fieldListid.get(i)) {
+                                AppUtils.logDebug(
+                                    TAG,
+                                    "fieldlist set Selection" + fieldListid.get(i) + valued
+                                )
 
                                 holder.mysppinner.setSelection(i)
 
@@ -239,8 +238,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
                     }
                 }
             }, 500)
-            checkFoucusable(null,holder.itemView.field_spinner, editable)
-
+            checkFoucusable(null, holder.itemView.field_spinner, editable)
 
 
         } else if (fieldtype == "DateTime") {
@@ -264,10 +262,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
                 }
             }, 1000)
             holder.labeldate.setText(namee)
-            checkFoucusable(holder.itemView.field_expectedDate,null, editable)
-
-
-
+            checkFoucusable(holder.itemView.field_expectedDate, null, editable)
 
 
         } else if (fieldtype == "Text") {
@@ -291,7 +286,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
 
 
             holder.labelname.setText(namee)
-            checkFoucusable(holder.itemView.field_name,null, editable)
+            checkFoucusable(holder.itemView.field_name, null, editable)
 
 
         }
@@ -334,7 +329,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
         if (!valued.isEmpty()) {
             for (i in 0 until fieldList!!.size) {
 
-                if (valued == fieldListid?.get(i) || valued+".0" ==fieldListid?.get(i)) {
+                if (valued == fieldListid?.get(i) || valued + ".0" == fieldListid?.get(i)) {
                     AppUtils.logDebug(TAG, "fieldlist set Selection" + fieldListid?.get(i) + valued)
 
                     holder.mysppinner.setSelection(i)
@@ -581,8 +576,8 @@ AppUtils.logError(TAG,"vaklues"+valued)
 
     private fun checkFoucusable(myview: EditText?, spinner: Spinner?, iseditable: In) {
 
-        if(updateTaskIdBoolean){
-            if(checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null){
+        if (updateTaskIdBoolean) {
+            if (checkFieldStatus?.status == "completed" || checkFieldStatus?.status == null) {
                 myview?.isEnabled = false
                 myview?.isFocusable = false
                 myview?.setBackgroundTintList(
@@ -601,8 +596,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
                         )
                     )
                 )
-            }
-            else{
+            } else {
                 if (AppUtils().isInternet(context)) {
                     if (!privilegeListName.contains("CanOverideEditTask")) {
                         if (iseditable == 0) {
@@ -631,15 +625,13 @@ AppUtils.logError(TAG,"vaklues"+valued)
                             }
 
 
-                        }
-                        else{
+                        } else {
                             myview?.isEnabled = true
                             myview?.isFocusable = true
                             spinner?.isEnabled = true
                             spinner?.isFocusable = true
                         }
-                    }
-                    else{
+                    } else {
                         myview?.isEnabled = true
                         myview?.isFocusable = true
                         spinner?.isEnabled = true
@@ -792,6 +784,7 @@ AppUtils.logError(TAG,"vaklues"+valued)
     override fun getItemCount(): In {
         return list.size
     }
+
     override fun getItemViewType(position: In): In {
         return position
     }

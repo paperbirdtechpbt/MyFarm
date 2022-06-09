@@ -2,10 +2,14 @@ package com.pbt.myfarm.Service
 
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.Nullable
 import com.google.gson.Gson
+import com.pbt.myfarm.Activity.Event.ResposneNotificationCount
+import com.pbt.myfarm.Activity.Home.MainActivity
 import com.pbt.myfarm.Activity.SelectConfigType.SelectConfigViewModel
 import com.pbt.myfarm.DataBase.DbHelper
 import com.pbt.myfarm.HttpResponse.ConfigResponse
@@ -22,8 +26,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.TimeUnit
-import kotlin.system.measureTimeMillis
 
 class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
@@ -45,16 +47,57 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         userID = MySharedPreference.getUser(this)?.id.toString()
         roleID = MySharedPreference.getStringValue(this, AppConstant.CONST_PREF_ROLE_ID, "0")
 
-        GlobalScope.launch {
+//        GlobalScope.launch {
+//
+//            sendDataMastersApi(userID!!)
+//            syncOfflineData(userID!!,roleID!!)
+//            getEventTypeListAndOtherList(userID!!)
+//        }
+        val mainHandler = Handler(Looper.getMainLooper())
 
-            sendDataMastersApi(userID!!)
-            syncOfflineData(userID!!,roleID!!)
-            getEventTypeListAndOtherList(userID!!)
-        }
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                GlobalScope.launch {
+                    val userID = MySharedPreference.getUser(this@MyFarmService)?.id.toString()
 
-
-
+                    fetchNotificationApi(userID)
+                }
+                mainHandler.postDelayed(this, 7000)
+            }
+        })
         return START_STICKY
+    }
+
+    private fun fetchNotificationApi(userID: String) {
+        val apiInterFace = ApiClient.client.create(ApiInterFace::class.java)
+        val call = apiInterFace.notificationCount(userID)
+        call.enqueue(object : Callback<ResposneNotificationCount> {
+            override fun onResponse(
+                call: Call<ResposneNotificationCount>,
+                response: Response<ResposneNotificationCount>
+            ) {
+                if (response.isSuccessful) {
+                    val baserespose: ResposneNotificationCount = Gson().fromJson(
+                        Gson().toJson(response.body()),
+                        ResposneNotificationCount::class.java
+                    )
+                    val count = baserespose.count
+                    MainActivity().setupBadge(count)
+
+
+                    AppUtils.logError(
+                        TAG,
+                        "NotificationCount" + Gson().toJson(response.body()).toString()
+                    )
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<ResposneNotificationCount>, t: Throwable) {
+            }
+
+        })
     }
 
     fun sendDataMastersApi(userID: String) {
@@ -62,7 +105,6 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
         val collectData = db.getCollectDataToBeSend(userID)
         collecrDataList = collectData
-
 
 
         val evnet = db.getEventsTobeSend(userID)
@@ -83,7 +125,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         val task = db.getTasksToBeSend(userID)
         tasklist = task
 
-        AppUtils.logError(TAG,"Packs To Send==>"+Gson().toJson(task).toString())
+        AppUtils.logError(TAG, "Packs To Send==>" + Gson().toJson(task).toString())
 
 
         senddata = SendDataMasterList(collectData, evnet, packnew, taskField, taskobject, task)
@@ -104,16 +146,16 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    private fun syncOfflineData(userID: String,roleID : String) {
+    private fun syncOfflineData(userID: String, roleID: String) {
 
         val service = ApiClient.getClient()!!.create(ApiInterFace::class.java)
-        val apiInterFace = service.offLineSync(userID,roleID)
+        val apiInterFace = service.offLineSync(userID, roleID)
 
         apiInterFace.enqueue(object : Callback<OffLineSyncModel> {
 
             override fun onFailure(call: Call<OffLineSyncModel>, t: Throwable) {
 
-                    AppUtils.logError(TAG, t.message.toString())
+                AppUtils.logError(TAG, t.message.toString())
 
             }
 
@@ -123,255 +165,254 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
             ) {
 
 
-
-                    if (p1.isSuccessful) {
-                        p1.body()?.let {
-                            GlobalScope.launch {
-                                if (it.Data.packs_new.isNotEmpty()) {
-                                    for (pack in it.Data.packs_new) {
-                                        db.addNewPack(pack, "0")
-                                    }
+                if (p1.isSuccessful) {
+                    p1.body()?.let {
+                        GlobalScope.launch {
+                            if (it.Data.packs_new.isNotEmpty()) {
+                                for (pack in it.Data.packs_new) {
+                                    db.addNewPack(pack, "0")
                                 }
                             }
-                            GlobalScope.launch {
-                                if (it.Data.pack_configs.isNotEmpty()) {
-                                    for (pack in it.Data.pack_configs) {
-                                        db.pack_configscreate(pack)
-                                    }
+                        }
+                        GlobalScope.launch {
+                            if (it.Data.pack_configs.isNotEmpty()) {
+                                for (pack in it.Data.pack_configs) {
+                                    db.pack_configscreate(pack)
                                 }
                             }
-                            GlobalScope.launch {
-                                if (it.Data.pack_collect_activity.isNotEmpty()) {
-                                    for (pack in it.Data.pack_collect_activity) {
-                                        db.pack_collect_activity_create(pack)
-                                    }
-                                }
-                            }
-
-                            GlobalScope.launch {
-                                if (it.Data.pack_config_fields.isNotEmpty()) {
-                                    for (pack in it.Data.pack_config_fields) {
-                                        db.pack_config_fields_create(pack)
-                                    }
-                                }
-                            }
-                            GlobalScope.launch {
-                                if (it.Data.pack_fields.isNotEmpty()) {
-                                    for (pack in it.Data.pack_fields) {
-                                        db.pack_fields_create(pack)
-                                    }
-                                }
-                            }
-
-                            GlobalScope.launch {
-                                if (it.Data.tasks.isNotEmpty()) {
-                                    for (pack in it.Data.tasks) {
-                                        db.tasksCreate(pack)
-                                    }
-                                }
-                            }
-                            GlobalScope.launch {
-
-                                if (it.Data.task_fields.isNotEmpty()) {
-                                    for (pack in it.Data.task_fields) {
-                                        db.task_fields_create(pack)
-                                    }
-                                }
-                            }
-
-                            GlobalScope.launch {
-                                if (it.Data.task_configs.isNotEmpty()) {
-                                    for (pack in it.Data.task_configs) {
-                                        db.task_configs_create(pack)
-                                    }
-                                } else {
-                                    calltaskConfigApi()
-                                }
-                            }
-
-                            GlobalScope.launch {
-                                if (it.Data.task_config_fields.isNotEmpty()) {
-                                    for (pack in it.Data.task_config_fields) {
-                                        db.task_config_fields_create(pack)
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.task_config_functions.isNotEmpty()) {
-                                        for (pack in it.Data.task_config_functions) {
-                                            db.task_config_functions_create(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.collect_data.isNotEmpty()) {
-                                        for (pack in it.Data.collect_data) {
-                                            db.collectDataCreate(pack)
-                                        }
-                                    }
-                                    db.close()
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.collect_activities.isNotEmpty()) {
-                                        for (pack in it.Data.collect_activities) {
-                                            db.collectActivitiesCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.collect_activity_results.isNotEmpty()) {
-                                        for (pack in it.Data.collect_activity_results) {
-                                            db.collectActivitiesResultsCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.people.isNotEmpty()) {
-                                        for (pack in it.Data.people) {
-                                            db.peopleCreate(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.container.isNotEmpty()) {
-                                        for (pack in it.Data.container) {
-                                            db.containerCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.events.isNotEmpty()) {
-                                        for (pack in it.Data.events) {
-                                            db.eventsCreate(pack, false)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.graph_charts.isNotEmpty()) {
-                                        for (pack in it.Data.graph_charts) {
-                                            db.graphChartsCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.list_choices.isNotEmpty()) {
-                                        for (pack in it.Data.list_choices) {
-                                            db.listChoicesCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.units.isNotEmpty()) {
-                                        for (pack in it.Data.units) {
-                                            db.unitsCreate(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.teams.isNotEmpty()) {
-                                        for (pack in it.Data.teams) {
-                                            db.teamCreate(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.task_media_files.isNotEmpty()) {
-                                        for (pack in it.Data.task_media_files) {
-                                            db.taskMediaFilescCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.privileges.isNotEmpty()) {
-                                        for (pack in it.Data.privileges) {
-                                            db.addPrivilege(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-
-                                    if (it.Data.role_privileges.isNotEmpty()) {
-                                        for (privileges in it.Data.role_privileges) {
-                                            db.insertRolPrivileges(privileges)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.task_objects.isNotEmpty()) {
-                                        for (pack in it.Data.task_objects) {
-                                            db.addTaskObjectCreate(pack, "0")
-                                        }
-                                    }
-                                }
-                                //all are working fine above Crash here
-                                GlobalScope.launch {
-                                    if (it.Data.collect_activity_result_unit.isNotEmpty()) {
-                                        for (pack in it.Data.collect_activity_result_unit) {
-                                            db.collectActivitiesResultsUnitCreate(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.community_groups.isNotEmpty()) {
-                                        for (pack in it.Data.community_groups) {
-                                            db.communityGroupsCreate(pack)
-                                        }
-                                    }
-                                }
-                                GlobalScope.launch {
-                                    if (it.Data.container_object.isNotEmpty()) {
-                                        for (pack in it.Data.container_object) {
-                                            db.containerObjectCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.fields.isNotEmpty()) {
-                                        for (pack in it.Data.fields) {
-                                            db.fieldsCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.graph_chart_objects.isNotEmpty()) {
-                                        for (pack in it.Data.graph_chart_objects) {
-                                            db.graphChartObjectsCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.lists.isNotEmpty()) {
-                                        for (pack in it.Data.lists) {
-                                            db.listsCreate(pack)
-                                        }
-                                    }
-                                }
-
-                                GlobalScope.launch {
-                                    if (it.Data.sensors.isNotEmpty()) {
-                                        for (pack in it.Data.sensors) {
-                                            db.sensorCreate(pack)
-                                        }
-                                    }
-                                    db.close()
+                        }
+                        GlobalScope.launch {
+                            if (it.Data.pack_collect_activity.isNotEmpty()) {
+                                for (pack in it.Data.pack_collect_activity) {
+                                    db.pack_collect_activity_create(pack)
                                 }
                             }
                         }
 
+                        GlobalScope.launch {
+                            if (it.Data.pack_config_fields.isNotEmpty()) {
+                                for (pack in it.Data.pack_config_fields) {
+                                    db.pack_config_fields_create(pack)
+                                }
+                            }
+                        }
+                        GlobalScope.launch {
+                            if (it.Data.pack_fields.isNotEmpty()) {
+                                for (pack in it.Data.pack_fields) {
+                                    db.pack_fields_create(pack)
+                                }
+                            }
+                        }
+
+                        GlobalScope.launch {
+                            if (it.Data.tasks.isNotEmpty()) {
+                                for (pack in it.Data.tasks) {
+                                    db.tasksCreate(pack)
+                                }
+                            }
+                        }
+                        GlobalScope.launch {
+
+                            if (it.Data.task_fields.isNotEmpty()) {
+                                for (pack in it.Data.task_fields) {
+                                    db.task_fields_create(pack)
+                                }
+                            }
+                        }
+
+                        GlobalScope.launch {
+                            if (it.Data.task_configs.isNotEmpty()) {
+                                for (pack in it.Data.task_configs) {
+                                    db.task_configs_create(pack)
+                                }
+                            } else {
+                                calltaskConfigApi()
+                            }
+                        }
+
+                        GlobalScope.launch {
+                            if (it.Data.task_config_fields.isNotEmpty()) {
+                                for (pack in it.Data.task_config_fields) {
+                                    db.task_config_fields_create(pack)
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.task_config_functions.isNotEmpty()) {
+                                    for (pack in it.Data.task_config_functions) {
+                                        db.task_config_functions_create(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.collect_data.isNotEmpty()) {
+                                    for (pack in it.Data.collect_data) {
+                                        db.collectDataCreate(pack)
+                                    }
+                                }
+                                db.close()
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.collect_activities.isNotEmpty()) {
+                                    for (pack in it.Data.collect_activities) {
+                                        db.collectActivitiesCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.collect_activity_results.isNotEmpty()) {
+                                    for (pack in it.Data.collect_activity_results) {
+                                        db.collectActivitiesResultsCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.people.isNotEmpty()) {
+                                    for (pack in it.Data.people) {
+                                        db.peopleCreate(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.container.isNotEmpty()) {
+                                    for (pack in it.Data.container) {
+                                        db.containerCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.events.isNotEmpty()) {
+                                    for (pack in it.Data.events) {
+                                        db.eventsCreate(pack, false)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.graph_charts.isNotEmpty()) {
+                                    for (pack in it.Data.graph_charts) {
+                                        db.graphChartsCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.list_choices.isNotEmpty()) {
+                                    for (pack in it.Data.list_choices) {
+                                        db.listChoicesCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.units.isNotEmpty()) {
+                                    for (pack in it.Data.units) {
+                                        db.unitsCreate(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.teams.isNotEmpty()) {
+                                    for (pack in it.Data.teams) {
+                                        db.teamCreate(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.task_media_files.isNotEmpty()) {
+                                    for (pack in it.Data.task_media_files) {
+                                        db.taskMediaFilescCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.privileges.isNotEmpty()) {
+                                    for (pack in it.Data.privileges) {
+                                        db.addPrivilege(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+
+                                if (it.Data.role_privileges.isNotEmpty()) {
+                                    for (privileges in it.Data.role_privileges) {
+                                        db.insertRolPrivileges(privileges)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.task_objects.isNotEmpty()) {
+                                    for (pack in it.Data.task_objects) {
+                                        db.addTaskObjectCreate(pack, "0")
+                                    }
+                                }
+                            }
+                            //all are working fine above Crash here
+                            GlobalScope.launch {
+                                if (it.Data.collect_activity_result_unit.isNotEmpty()) {
+                                    for (pack in it.Data.collect_activity_result_unit) {
+                                        db.collectActivitiesResultsUnitCreate(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.community_groups.isNotEmpty()) {
+                                    for (pack in it.Data.community_groups) {
+                                        db.communityGroupsCreate(pack)
+                                    }
+                                }
+                            }
+                            GlobalScope.launch {
+                                if (it.Data.container_object.isNotEmpty()) {
+                                    for (pack in it.Data.container_object) {
+                                        db.containerObjectCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.fields.isNotEmpty()) {
+                                    for (pack in it.Data.fields) {
+                                        db.fieldsCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.graph_chart_objects.isNotEmpty()) {
+                                    for (pack in it.Data.graph_chart_objects) {
+                                        db.graphChartObjectsCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.lists.isNotEmpty()) {
+                                    for (pack in it.Data.lists) {
+                                        db.listsCreate(pack)
+                                    }
+                                }
+                            }
+
+                            GlobalScope.launch {
+                                if (it.Data.sensors.isNotEmpty()) {
+                                    for (pack in it.Data.sensors) {
+                                        db.sensorCreate(pack)
+                                    }
+                                }
+                                db.close()
+                            }
+                        }
                     }
+
+                }
             }
         })
     }
@@ -452,7 +493,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
 
             override fun onFailure(call: Call<ResponseDashBoardEvent>, t: Throwable) {
 
-                    println(t.localizedMessage.toString())
+                println(t.localizedMessage.toString())
 
             }
         })
@@ -518,7 +559,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
     }
 
     override fun onFailure(call: Call<testresponse>, t: Throwable) {
-            AppUtils.logError(TAG, t.message.toString())
+        AppUtils.logError(TAG, t.message.toString())
 
     }
 }

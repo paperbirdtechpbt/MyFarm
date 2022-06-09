@@ -1,6 +1,7 @@
 package com.pbt.myfarm.Activity.Event
 
 import com.google.gson.annotations.SerializedName
+import com.pbt.myfarm.ListNotificationData
 import org.json.JSONObject
 import java.util.*
 
@@ -21,3 +22,11 @@ data class ScannedPersonData(
     @SerializedName("id")  val id: Int,
     @SerializedName("name")  val name: String,
     )
+data class ResposneNotificationCount(
+    @SerializedName("count")  val count: Int,
+    @SerializedName("data")  val data: List<ListNotificationData>,
+)
+//data class ListNotificationData(
+//    @SerializedName("message")  val message: String,
+//    @SerializedName("formatted_dob")  val formatted_dob: String,
+//)

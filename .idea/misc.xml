@@ -14,20 +14,32 @@
         <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/custom_layout_task_object.xml" value="0.12360688956433637" />
         <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/itempackfeildlistfrgm.xml" value="0.25416666666666665" />
         <entry key="..\:/Paperbird/MyFarm/app/src/main/res/layout/permission_dialog.xml" value="0.176" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/badge_background.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__dashboardevent.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic__task.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_box.xml" value="0.13" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_circleblack.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_dashboaradicon.xml" value="0.13" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_doc_icon.xml" value="0.13" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_dot.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_playbutton.xml" value="0.1115" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_reddot.xml" value="0.13" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/drawable/ic_videosidebar.xml" value="0.1115" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_create_task.xml" value="0.18" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_login2.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_my_notificiation.xml" value="0.15" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_pack.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_play_scress.xml" value="0.14990942028985507" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_task_function.xml" value="0.1" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_transaction.xml" value="0.1983695652173913" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_media.xml" value="0.14990942028985507" />
-        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/item_incoming_notification.xml" value="0.1983695652173913" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/activity_view_task.xml" value="0.1" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/custom_action_item_layout.xml" value="0.1983695652173913" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/item_incoming_notification.xml" value="0.3962962962962963" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/item_notificationlist.xml" value="0.18" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_main.xml" value="0.1983695652173913" />
         <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/layout/itemlist_medialist.xml" value="0.25" />
+        <entry key="..\:/Users/Admin/StudioProjects/Farm/app/src/main/res/menu/main.xml" value="0.9" />
       </map>
     </option>
   </component>

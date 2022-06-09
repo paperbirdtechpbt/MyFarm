@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginActivity
+import com.pbt.myfarm.Activity.NotificationActivity.MyNotificiationActivity
 import com.pbt.myfarm.Adapter.Home.AdapterHomeActivity
 import com.pbt.myfarm.AllPriviledgeListResponse
 import com.pbt.myfarm.DataBase.DbHelper
@@ -29,10 +32,10 @@ import com.pbt.myfarm.ListPrivilege
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.Privilege
 import com.pbt.myfarm.R
+import com.pbt.myfarm.Service.MyFarmService
 import com.pbt.myfarm.Util.AppConstant.Companion.CAMERA_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_ID
 import com.pbt.myfarm.Util.AppConstant.Companion.CONST_PREF_ROLE_NAME
-import com.pbt.myfarm.Util.AppConstant.Companion.CONST_TOKEN
 import com.pbt.myfarm.Util.AppConstant.Companion.STORAGE_PERMISSION_REQUEST_CODE
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.MySharedPreference
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     val TAG = "MainActivity"
     var roleID: String? = null
 
+
     private lateinit var appUtils: AppUtils
 
     companion object {
@@ -62,6 +66,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val privilegeListNameID = ArrayList<String>()
         val privilegeListNameOffline = ArrayList<String>()
         val privilegeListNameOfflineID = ArrayList<String>()
+
+        var textCartItemCount: TextView? = null
+        val mCartItemCount = 0
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
@@ -81,12 +88,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         appUtils = AppUtils()
 
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-           askForCameraPermission()
+            askForCameraPermission()
 
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
-                   viewModel?.showDialogPermission(this)
+                    viewModel?.showDialogPermission(this)
                 }
             } else {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
@@ -105,9 +112,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         label_userrole_main.setText(adminname)
 
 
-//        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
-//            startService(Intent(this, MyFarmService::class.java))
-//        }
+        if (!AppUtils().isServiceRunning(this, MyFarmService::class.java)) {
+            startService(Intent(this, MyFarmService::class.java))
+        }
         GlobalScope.launch {
             callPrivilegeAPI(roleID)
         }
@@ -118,7 +125,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (AppUtils().isInternet(this)) {
             if (selectedroldid != "0") {
                 GlobalScope.launch {
-                    viewModel?.callPrivilegeAPi(this@MainActivity,selectedroldid.toString())
+                    viewModel?.callPrivilegeAPi(this@MainActivity, selectedroldid.toString())
 
                 }
 
@@ -142,9 +149,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             this,
             ViewModelProvider.AndroidViewModelFactory.getInstance(application)
         ).get(MainActivityViewModel::class.java)
-//        AppUtils().isServiceRunning(this, MyFarmService::class.java)
-        viewModel?.mprivilegeListName?.observe(this){ list->
-            if (!list.isNullOrEmpty()){
+        AppUtils().isServiceRunning(this, MyFarmService::class.java)
+        viewModel?.mprivilegeListName?.observe(this) { list ->
+            if (!list.isNullOrEmpty()) {
                 setdata(list)
             }
 
@@ -222,20 +229,54 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         menuInflater.inflate(R.menu.main, menu)
+        val menuItem = menu!!.findItem(R.id.notifications)
+
+        val actionView: View = menuItem.actionView
+        textCartItemCount = actionView.findViewById(R.id.cart_badge) as TextView
+
+        setupBadge(mCartItemCount)
+
+        actionView.setOnClickListener { onOptionsItemSelected(menuItem) }
+
         return true
     }
 
+    fun setupBadge(mCartItemCount: Int) {
+        if (textCartItemCount != null) {
+            if (mCartItemCount == 0) {
+                if (textCartItemCount!!.visibility != View.GONE) {
+                    textCartItemCount!!.visibility = View.GONE
+                }
+            } else {
+                textCartItemCount!!.text = Math.min(mCartItemCount, 99).toString()
+                if (textCartItemCount!!.visibility != View.VISIBLE) {
+                    textCartItemCount!!.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
+
         if (id == R.id.action_logout) {
             checkOfflineDataToSync()
 //            showAlertDialog()
 
             return true
         }
+        if (id == R.id.notifications) {
+openNotificationAcitivity()
+            return true
+        }
         return true
+    }
+
+    private fun openNotificationAcitivity() {
+        startActivity(Intent(this, MyNotificiationActivity::class.java))
+
     }
 
     private fun checkOfflineDataToSync() {
@@ -358,7 +399,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     }
 
     override fun onFailure(call: Call<AllPriviledgeListResponse>, t: Throwable) {
-            println(t.message.toString())
+        println(t.message.toString())
     }
 
 }

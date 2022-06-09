@@ -33,8 +33,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val title = it.data.get("title")
                 val notificationmsg = it.data.get("message")
                 val target_user = it.data.get("target_user")
-                if (target_user==MySharedPreference.getUser(this)?.id.toString()){
-                    AppUtils.logError("##MyFirebaseMessagingService", title.toString())
+                if (target_user == MySharedPreference.getUser(this)?.id.toString()) {
                     popUpNotificaiton(title, notificationmsg)
                 }
 
@@ -46,7 +45,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         MySharedPreference.setStringTokenValue(this, CONST_TOKEN, token)
-        AppUtils.logError("TAGTAG",token)
     }
 
     private fun popUpNotificaiton(title: String?, message: String?) {
@@ -55,7 +53,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         notificationLayout.setTextViewText(R.id.label_title, title)
         notificationLayout.setTextViewText(R.id.label_message, message)
 
-        val sound: Uri = Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.alertringtone)
+        val sound: Uri =
+            Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.alertringtone)
 
         val ringtone = RingtoneManager.getRingtone(applicationContext, sound)
         ringtone?.play()
@@ -82,13 +81,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             notificationManager.createNotificationChannel(channel)
         }
 
-
         val buildNotification = notificationBuilder.build()
         buildNotification.visibility = (Notification.VISIBILITY_PUBLIC)
 
         val mNotifyMgr = this.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         mNotifyMgr.notify(1, buildNotification)
-
 
     }
 
