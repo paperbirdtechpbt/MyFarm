@@ -252,13 +252,15 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 isTaskFunctionUpdate
             )
 
-        } else {
+        }
+
+        else {
 
             val db = DbHelper(this, null)
-            val taskObject = TaskObject(
-                task_id = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
-                function = selectedFunctionId.toString(),
-            )
+            val taskObject = TaskObjectOffline(
+                taskid = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
+                task_function = selectedFunctionId.toString(),)
+
             val isSuccess = db.addTaskObjectOffline(taskObject, "1")
             if (isSuccess) {
                 progressbar_taskexecute.visibility = View.GONE

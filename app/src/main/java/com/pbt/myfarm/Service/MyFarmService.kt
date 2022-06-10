@@ -47,12 +47,12 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
         userID = MySharedPreference.getUser(this)?.id.toString()
         roleID = MySharedPreference.getStringValue(this, AppConstant.CONST_PREF_ROLE_ID, "0")
 
-//        GlobalScope.launch {
-//
-//            sendDataMastersApi(userID!!)
-//            syncOfflineData(userID!!,roleID!!)
-//            getEventTypeListAndOtherList(userID!!)
-//        }
+        GlobalScope.launch {
+
+            sendDataMastersApi(userID!!)
+            syncOfflineData(userID!!,roleID!!)
+            getEventTypeListAndOtherList(userID!!)
+        }
         val mainHandler = Handler(Looper.getMainLooper())
 
         mainHandler.post(object : Runnable {
@@ -85,10 +85,7 @@ class MyFarmService() : Service(), retrofit2.Callback<testresponse> {
                     MainActivity().setupBadge(count)
 
 
-                    AppUtils.logError(
-                        TAG,
-                        "NotificationCount" + Gson().toJson(response.body()).toString()
-                    )
+                    AppUtils.logError(TAG, "NotificationCount" + Gson().toJson(response.body()).toString())
                 }
 
 

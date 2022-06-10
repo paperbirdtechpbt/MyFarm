@@ -784,6 +784,14 @@ class AppConstant {
         const val COL_TASKOBJECT_LASTCHANGED_BY = "last_changed_by"
 
 
+        const val TABLE_task_objectsOffline = "task_objects_Offline"
+        const val COL_task_objects_offline_PRIMARYID = "id"
+        const val COL_task_objects_offline_TASKID = "task_Id"
+        const val COL_task_objects_offline_FUNCTIONId = "task_func_Id"
+        const val COL_task_objects_offline_CONTAINER= "task_function_fieldId"
+        const val COL_task_objects_offline_STATUS= "status"
+
+
 
         const val TABLE_privileges = "table_privileges"
         const val COL_privileges_SERVERID = "privileges_serverid"

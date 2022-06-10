@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.pbt.myfarm.Activity.DashBoardEvent.DashBoardEventActivity
 import com.pbt.myfarm.Activity.Event.ViewEventActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeList
+import com.pbt.myfarm.Activity.Map.MapsActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity
 import com.pbt.myfarm.Activity.QrDemoActivity.QrCodeActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
@@ -57,6 +58,9 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
             }
             else if(item.evenetName=="QR Demo"){
                 context.startActivity(Intent(context, QrCodeActivity::class.java))
+            }
+            else if(item.evenetName=="DashBoard"){
+                context.startActivity(Intent(context, MapsActivity::class.java))
             }
 
             AppUtils().isServiceRunning(context, MyFarmService::class.java)

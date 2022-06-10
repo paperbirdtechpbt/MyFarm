@@ -420,6 +420,11 @@ import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_PRIMARYID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_SERVERID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_STATUS
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_TASKID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_offline_CONTAINER
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_offline_FUNCTIONId
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_offline_PRIMARYID
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_offline_STATUS
+import com.pbt.myfarm.Util.AppConstant.Companion.COL_task_objects_offline_TASKID
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_BY
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_CREATED_DATE
 import com.pbt.myfarm.Util.AppConstant.Companion.COL_tasks_DELTED_AT
@@ -544,6 +549,7 @@ import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_configs
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_fields
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_media_files
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_objects
+import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_task_objectsOffline
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_tasks
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_team
 import com.pbt.myfarm.Util.AppConstant.Companion.TABLE_units
@@ -658,6 +664,16 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
                 COL_task_objects_LASTCHANGEDDATE + " TEXT " + ")")
 
         db?.execSQL(task_objects)
+
+
+        val task_objects_offline = ("CREATE TABLE " + TABLE_task_objectsOffline + " ("
+                + COL_task_objects_offline_PRIMARYID + " INTEGER PRIMARY KEY, " +
+                COL_task_objects_offline_TASKID + " TEXT," +
+                COL_task_objects_offline_STATUS + " TEXT," +
+                COL_task_objects_offline_FUNCTIONId + " TEXT," +
+                COL_task_objects_offline_CONTAINER + " TEXT " + ")")
+
+        db?.execSQL(task_objects_offline)
 
         //ravi -offline---------table-----EventType
 
@@ -1740,28 +1756,21 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return isAdded
     }
 
-    fun addTaskObjectOffline(pack: TaskObject, status: String): Boolean {
+    fun addTaskObjectOffline(pack: TaskObjectOffline, status: String): Boolean {
         var isAdded = false
+
         try {
-
-
             val values = ContentValues()
-            values.put(COL_task_objects_TASKID, pack.task_id)
-            values.put(COL_task_objects_FUNCTION, pack.function)
+            values.put(COL_task_objects_offline_TASKID, pack.taskid)
+            values.put(COL_task_objects_offline_FUNCTIONId, pack.task_function)
             values.put(COL_task_objects_CONTAINER, pack.container)
-            values.put(COL_task_objects_STATUS, status)
-            values.put(COL_task_objects_LASTCHANGEDDATE, pack.last_changed_date)
-            values.put(COL_TASKOBJECT_TYPE, pack.type)
-            values.put(COL_TASKOBJECT_ORIGIN, pack.origin)
-            values.put(COL_TASKOBJECT_NO, pack.no)
-            values.put(COL_TASKOBJECT_NAME, pack.name)
-            values.put(COL_TASKOBJECT_LASTCHANGED_BY, pack.last_changed_by)
-            values.put(COL_TASKOBJECT_DELETEDAT, pack.deleted_at)
-            values.put(COL_TASKOBJECT_CLASS, pack.`class`)
+            values.put(COL_task_objects_offline_CONTAINER, pack.container)
+            values.put(COL_task_objects_offline_STATUS, status)
 
 
             val db = this.writableDatabase
-            val result = db.insert(TABLE_task_objects, null, values)
+            val result = db.insert(TABLE_task_objectsOffline, null, values)
+
             // // db.close()
 
             if (result >= 0) {
@@ -1770,9 +1779,7 @@ class DbHelper(var context: Context, factory: SQLiteDatabase.CursorFactory?) :
             } else {
                 isAdded = false
 //                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-
             }
-
         } catch (e: Exception) {
             AppUtils.logError(TAG, e.message!!)
         }

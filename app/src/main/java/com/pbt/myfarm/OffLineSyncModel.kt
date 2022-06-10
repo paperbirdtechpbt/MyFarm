@@ -730,6 +730,13 @@ data class TaskObject(
     var status: String?=null,
 ):Parcelable
 
+data class TaskObjectOffline(
+    val taskid:Int?=null,
+    val task_function:String?=null,
+    val user_id:String?=null,
+    val container:String?=null,
+)
+
 @Parcelize
 data class Task(
     val com_group: Int?=null,

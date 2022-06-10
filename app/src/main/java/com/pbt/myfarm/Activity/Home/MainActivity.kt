@@ -90,7 +90,8 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             askForCameraPermission()
 
-        } else {
+        }
+        else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
                     viewModel?.showDialogPermission(this)
@@ -154,7 +155,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             if (!list.isNullOrEmpty()) {
                 setdata(list)
             }
-
         }
     }
 
@@ -177,7 +177,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             }
             setdata(privilegeListNameOffline)
         }
-
     }
 
     private fun setdata(privilegeList: ArrayList<String>) {
@@ -187,18 +186,15 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
             if (privilegeList.contains("Pack")) {
                 data.add(EventList("Pack", R.drawable.ic_box))
-
             }
             if (privilegeList.contains("Task")) {
                 data.add(EventList("Task", R.drawable.ic__task))
-
             }
             if (privilegeList.contains("DashboardEvent")) {
                 data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
             }
             if (privilegeList.contains("Event")) {
                 data.add(EventList("Event", R.drawable.ic_icon_list))
-
             }
             data.add(EventList("QR Demo", R.drawable.ic_qrcode))
             if (!data.isNullOrEmpty()) {
@@ -210,7 +206,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
             if (privilegeListNameOffline.contains("Pack")) {
                 data.add(EventList("Pack", R.drawable.ic_box))
-
             }
             if (privilegeListNameOffline.contains("Task")) {
                 data.add(EventList("Task", R.drawable.ic__task))
@@ -227,21 +222,17 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         val menuItem = menu!!.findItem(R.id.notifications)
 
         val actionView: View = menuItem.actionView
         textCartItemCount = actionView.findViewById(R.id.cart_badge) as TextView
-
         setupBadge(mCartItemCount)
-
         actionView.setOnClickListener { onOptionsItemSelected(menuItem) }
 
         return true
     }
-
     fun setupBadge(mCartItemCount: Int) {
         if (textCartItemCount != null) {
             if (mCartItemCount == 0) {
@@ -257,14 +248,12 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         }
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
         if (id == R.id.action_logout) {
             checkOfflineDataToSync()
 //            showAlertDialog()
-
             return true
         }
         if (id == R.id.notifications) {
@@ -276,7 +265,6 @@ openNotificationAcitivity()
 
     private fun openNotificationAcitivity() {
         startActivity(Intent(this, MyNotificiationActivity::class.java))
-
     }
 
     private fun checkOfflineDataToSync() {
