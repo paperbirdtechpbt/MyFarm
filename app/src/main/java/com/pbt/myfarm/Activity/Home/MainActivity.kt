@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,6 +23,8 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Activity.NotificationActivity.MyNotificiationActivity
@@ -42,8 +45,10 @@ import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
+import java.net.URL
 
 class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListResponse> {
 
@@ -90,8 +95,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             askForCameraPermission()
 
-        }
-        else {
+        } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (!Environment.isExternalStorageManager()) {
                     viewModel?.showDialogPermission(this)
@@ -105,8 +109,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 }
             }
         }
-
-
         val adminname = MySharedPreference.getStringValue(this, CONST_PREF_ROLE_NAME, "")
 
         label_username_main.setText(MySharedPreference.getUser(this)?.name)
@@ -120,6 +122,13 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             callPrivilegeAPI(roleID)
         }
 
+//            Handler().postDelayed({
+//                GlobalScope.launch {
+//                viewModel?.getPolygonPointFromApi(this@MainActivity)}
+//            }, 10000)
+
+//        AppUtils.logDebug(TAG, "pointss==" + Gson().toJson(json).toString())
+
     }
 
     private fun callPrivilegeAPI(selectedroldid: String?) {
@@ -127,10 +136,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             if (selectedroldid != "0") {
                 GlobalScope.launch {
                     viewModel?.callPrivilegeAPi(this@MainActivity, selectedroldid.toString())
-
                 }
-
-
             }
         }
 
@@ -162,7 +168,6 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         val adapter = AdapterHomeActivity(this, dataa)
         recyclerview_main.adapter = adapter
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -233,6 +238,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
 
         return true
     }
+
     fun setupBadge(mCartItemCount: Int) {
         if (textCartItemCount != null) {
             if (mCartItemCount == 0) {
@@ -257,7 +263,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             return true
         }
         if (id == R.id.notifications) {
-openNotificationAcitivity()
+            openNotificationAcitivity()
             return true
         }
         return true

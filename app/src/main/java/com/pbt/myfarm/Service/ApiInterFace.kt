@@ -1,10 +1,7 @@
 package com.pbt.myfarm.Service
 
 import com.pbt.myfarm.*
-import com.pbt.myfarm.Activity.Event.EditEventList
-import com.pbt.myfarm.Activity.Event.ResponseScanCodeForTaskFunction
-import com.pbt.myfarm.Activity.Event.ResposneNotificationCount
-import com.pbt.myfarm.Activity.Event.ResposneUpdateEvent
+import com.pbt.myfarm.Activity.Event.*
 import com.pbt.myfarm.Activity.Graph.ResponseGraphDetail
 import com.pbt.myfarm.Activity.Pack.PackListModel
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
@@ -33,14 +30,13 @@ interface ApiInterFace {
     @POST("api/taskList")
     fun eventList(
         @Field("id") id: String,
-        ): Call<testresponse>
+    ): Call<testresponse>
 
     @FormUrlEncoded
     @POST("api/taskConfigList")
     fun taskConfigList(
         @Field("id") id: String,
-        ): Call<ConfigResponse>
-
+    ): Call<ConfigResponse>
 
 
     @FormUrlEncoded
@@ -49,79 +45,79 @@ interface ApiInterFace {
         @Field("id") id: String,
         @Field("taskconfig_id") taskconfig_id: String,
         @Field("task_id") task_id: String,
-    ):Call<TaskFieldResponse>
+    ): Call<TaskFieldResponse>
 
 
-@FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/storeTask")
-   fun storeTask(
+    fun storeTask(
         @Field("config_type") config_type: String,
         @Field("description") description: String,
         @Field("community_group") community_group: String,
         @Field("user_id") user_id: String,
-        @Field("field_array") field_array:String,
+        @Field("field_array") field_array: String,
         @Field("name_prefix") name_prefix: String,
-    ):Call<testresponse>
+    ): Call<testresponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/updateTask")
-   fun updateTask(
+    fun updateTask(
         @Field("config_type") config_type: String,
         @Field("description") description: String,
         @Field("community_group") community_group: String,
         @Field("user_id") user_id: String,
-        @Field("field_array") field_array:String,
+        @Field("field_array") field_array: String,
         @Field("name_prefix") name_prefix: String,
         @Field("task_id") task_id: String,
-    ):Call<testresponse>
+    ): Call<testresponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/updatePack")
-   fun updatePack(
+    fun updatePack(
 
-        @Field("config_type") config_type: String?=null,
-        @Field("description") description: String?=null,
-        @Field("community_group") community_group: String?=null,
-        @Field("user_id") user_id: String?=null,
-        @Field("field_array") field_array:String?=null,
-        @Field("name_prefix") name_prefix: String?=null,
-        @Field("pack_id") task_id: String?=null,
-    ):Call<testresponse>
+        @Field("config_type") config_type: String? = null,
+        @Field("description") description: String? = null,
+        @Field("community_group") community_group: String? = null,
+        @Field("user_id") user_id: String? = null,
+        @Field("field_array") field_array: String? = null,
+        @Field("name_prefix") name_prefix: String? = null,
+        @Field("pack_id") task_id: String? = null,
+    ): Call<testresponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/storePack")
-   fun storePack(
+    fun storePack(
         @Field("config_type") config_type: String,
         @Field("description") description: String,
         @Field("community_group") community_group: String,
         @Field("user_id") user_id: String,
-        @Field("field_array") field_array:String,
+        @Field("field_array") field_array: String,
         @Field("name_prefix") name_prefix: String,
-    ):Call<PackFieldResponse>
+    ): Call<PackFieldResponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/storePack")
-   fun storePackwithTaskid(
+    fun storePackwithTaskid(
         @Field("config_type") config_type: String,
         @Field("description") description: String,
         @Field("community_group") community_group: String,
         @Field("user_id") user_id: String,
-        @Field("field_array") field_array:String,
+        @Field("field_array") field_array: String,
         @Field("name_prefix") name_prefix: String,
         @Field("task_id") task_id: String,
-    ):Call<PackFieldResponse>
+    ): Call<PackFieldResponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/deleteTask")
-   fun deleteTask(
+    fun deleteTask(
         @Field("id") id: String,
-    ):Call<testresponse>
+    ): Call<testresponse>
 
-   @FormUrlEncoded
+    @FormUrlEncoded
     @POST("api/packList")
-   fun packList(
+    fun packList(
         @Field("user_id") id: String,
-    ):Call<PackListModel>
+    ): Call<PackListModel>
 
     @FormUrlEncoded
     @POST("api/packConfigList")
@@ -141,7 +137,7 @@ interface ApiInterFace {
     @POST("api/deletePack")
     fun deletePack(
         @Field("id") id: String,
-    ):Call<testresponse>
+    ): Call<testresponse>
 
 
     @FormUrlEncoded
@@ -149,28 +145,27 @@ interface ApiInterFace {
     fun collectDataList(
         @Field("user_id") user_id: String,
         @Field("pack_id") pack_id: String,
-    ):Call<CollectdataRespose>
+    ): Call<CollectdataRespose>
 
     @FormUrlEncoded
     @POST("api/getRoleList")
     fun getRoleList(
         @Field("email") email: String,
-    ):Call<CollectdataRespose>
+    ): Call<CollectdataRespose>
 
     @FormUrlEncoded
     @POST("api/collectDataFieldList")
     fun collectDataFieldList(
         @Field("user_id") user_id: String,
         @Field("pack_id") pack_id: String,
-    ):Call<testresponse>
+    ): Call<testresponse>
 
     @FormUrlEncoded
     @POST("api/collectAcitivityResultList")
     fun collectAcitivityResultList(
         @Field("user_id") user_id: String,
         @Field("collectactivity_id") collectactivity_id: String,
-    ):Call<ResponseCollectAcitivityResultList>
-
+    ): Call<ResponseCollectAcitivityResultList>
 
 
     @FormUrlEncoded
@@ -178,7 +173,7 @@ interface ApiInterFace {
     fun collectAcitivityResultValue(
         @Field("user_id") user_id: String,
         @Field("result_id") result_id: String,
-    ):Call<ResponsecollectAcitivityResultValue>
+    ): Call<ResponsecollectAcitivityResultValue>
 
     @FormUrlEncoded
     @POST("api/storecollectdata")
@@ -192,14 +187,15 @@ interface ApiInterFace {
         @Field("sensor_id") sensor_id: String,
         @Field("duration") duration: String,
         @Field("user_id") user_id: String,
-    ):Call<ResponseCollectAcitivityResultList>
+    ): Call<ResponseCollectAcitivityResultList>
 
     @FormUrlEncoded
     @POST("api/deletecollectdata")
     fun deletecollectdata(
 
         @Field("id") id: String,
-    ):Call<ResponseCollectAcitivityResultList>
+    ): Call<ResponseCollectAcitivityResultList>
+
     @FormUrlEncoded
     @POST("api/updateCollectData")
     fun updateCollectData(
@@ -212,7 +208,7 @@ interface ApiInterFace {
         @Field("sensor_id0") sensor_id0: String,
         @Field("duration0") duration0: String,
         @Field("collect_id") collect_id: String,
-    ):Call<ResponseCollectAcitivityResultList>
+    ): Call<ResponseCollectAcitivityResultList>
 
     @FormUrlEncoded
     @POST("api/editcollectdata")
@@ -220,11 +216,14 @@ interface ApiInterFace {
 
         @Field("collect_id") collect_id: String,
 
-    ):Call<Responseeditcollectdata>
+        ): Call<Responseeditcollectdata>
 
     @FormUrlEncoded
     @POST("api/taskFunctionList")
-    fun taskFunctionList(@Field("user_id") user_id: String, @Field("task_id") task_id: String):Call<HttpResponse>
+    fun taskFunctionList(
+        @Field("user_id") user_id: String,
+        @Field("task_id") task_id: String
+    ): Call<HttpResponse>
 
 
     @FormUrlEncoded
@@ -235,7 +234,7 @@ interface ApiInterFace {
         @Field("task_id") task_id: String,
         @Field("lists_id") lists_id: String,
 
-    ):Call<ResponseTaskFunctionaliyt>
+        ): Call<ResponseTaskFunctionaliyt>
 
     @FormUrlEncoded
     @POST("api/getGraphList")
@@ -243,7 +242,7 @@ interface ApiInterFace {
 
         @Field("user_id") user_id: String,
         @Field("pack_config_id") pack_config_id: String,
-        ):Call<ResponseTaskFunctionaliyt>
+    ): Call<ResponseTaskFunctionaliyt>
 
     @FormUrlEncoded
     @POST("api/getgraphdetail")
@@ -251,8 +250,7 @@ interface ApiInterFace {
 
         @Field("pack_id") pack_id: String,
         @Field("graph_id") graph_id: String,
-        ):Call<ResponseGraphDetail>
-
+    ): Call<ResponseGraphDetail>
 
 
     @FormUrlEncoded
@@ -260,31 +258,31 @@ interface ApiInterFace {
     fun eventTeamList(
 
         @Field("user_id") user_id: String,
-        ):Call<ResponseDashBoardEvent>
+    ): Call<ResponseDashBoardEvent>
 
     @FormUrlEncoded
     @POST("api/eventList")
     fun myeventList(
 
         @Field("user_id") user_id: String,
-        ):Call<ResponseEventList>
+    ): Call<ResponseEventList>
 
     @FormUrlEncoded
     @POST("api/deleteEvent")
     fun deleteEvent(
         @Field("id") id: String,
-        ):Call<ResponseEventList>
+    ): Call<ResponseEventList>
 
-//    @FormUrlEncoded
-@Multipart
-@POST("api/taskExecuteFunction")
-fun uploadFile(
-    @Part file: MultipartBody.Part?,
-    @Part("task_id") task_id: RequestBody,
-    @Part("task_func") task_func: RequestBody,
-    @Part("user_id") user_id: RequestBody,
-    @Part("container") container: RequestBody,
-): Call<ResponseTaskExecution>
+    //    @FormUrlEncoded
+    @Multipart
+    @POST("api/taskExecuteFunction")
+    fun uploadFile(
+        @Part file: MultipartBody.Part?,
+        @Part("task_id") task_id: RequestBody,
+        @Part("task_func") task_func: RequestBody,
+        @Part("user_id") user_id: RequestBody,
+        @Part("container") container: RequestBody,
+    ): Call<ResponseTaskExecution>
 
 
     @FormUrlEncoded
@@ -297,14 +295,14 @@ fun uploadFile(
         @Field("container") container: String,
 //        @Part( file: MultipartBody.Part),
 //    @Part file: MultipartBody.Part
-        ):Call<ResponseTaskExecution>
+    ): Call<ResponseTaskExecution>
 
     @FormUrlEncoded
     @POST("api/editEvent")
     fun editEvent(
         @Field("user_id") user_id: String,
         @Field("event_id") event_id: String,
-    ):Call<EditEventList>
+    ): Call<EditEventList>
 
     @FormUrlEncoded
     @POST("api/storeEvent")
@@ -325,7 +323,7 @@ fun uploadFile(
         @Field("responsible") responsible: String,
         @Field("assigned_team") assigned_team: String,
         @Field("closed") closed: String,
-    ):Call<ResposneUpdateEvent>
+    ): Call<ResposneUpdateEvent>
 
     @FormUrlEncoded
     @POST("api/updateEvent")
@@ -346,34 +344,38 @@ fun uploadFile(
         @Field("responsible") responsible: String,
         @Field("assigned_team") assigned_team: String,
         @Field("closed") closed: String,
-    ):Call<ResposneUpdateEvent>
+    ): Call<ResposneUpdateEvent>
 
-        @POST("api/storeAllDatalist")
-        fun postJson(@Body body: SendDataMasterList?): Call<testresponse>
+    @POST("api/storeAllDatalist")
+    fun postJson(@Body body: SendDataMasterList?): Call<testresponse>
 
 
     @FormUrlEncoded
     @POST("api/getAllDatalist")
-    fun offLineSync(@Field("user_id") userId: String,@Field("RoleId") roleID: String) :Call<OffLineSyncModel>
+    fun offLineSync(
+        @Field("user_id") userId: String,
+        @Field("RoleId") roleID: String
+    ): Call<OffLineSyncModel>
 
     @FormUrlEncoded
 
     @POST("api/getAllprivileges")
     fun getAllprivileges(
-        @Field("role_id") role_id: String) :Call<AllPriviledgeListResponse>
+        @Field("role_id") role_id: String
+    ): Call<AllPriviledgeListResponse>
 
     @FormUrlEncoded
     @POST("api/gettaskobjects")
-    fun getTaskObject(@Field("task_id") taksID: String) :Call<BaseHttpResponse>
+    fun getTaskObject(@Field("task_id") taksID: String): Call<BaseHttpResponse>
 
     @FormUrlEncoded
     @POST("api/deletetaskobjects")
-    fun deleteTaskObject(@Field("id") taksID: String) :Call<HttpResponse>
+    fun deleteTaskObject(@Field("id") taksID: String): Call<HttpResponse>
 
 
     @FormUrlEncoded
     @POST("api/checkTaskStatus")
-    fun checkTaskStatus(@Field("id") taksID: String) :Call<HttpResponse>
+    fun checkTaskStatus(@Field("id") taksID: String): Call<HttpResponse>
 
     @Multipart
     @POST("api/appLogFileUpload")
@@ -386,13 +388,22 @@ fun uploadFile(
     fun scanCodeTaskFunction(
         @Field("scan_code") scan_code: String,
         @Field("func_id") func_id: String,
-        @Field("user_id") user_id: String)
-    :Call<ResponseScanCodeForTaskFunction>
+        @Field("user_id") user_id: String
+    )
+            : Call<ResponseScanCodeForTaskFunction>
 
     @FormUrlEncoded
     @POST("api/notificationCount")
     fun notificationCount(
-        @Field("user_id") user_id: String)
-    :Call<ResposneNotificationCount>
+        @Field("user_id") user_id: String
+    )
+            : Call<ResposneNotificationCount>
+
+    @FormUrlEncoded
+    @POST("api/fieldFarm")
+    fun fieldFarm(
+        @Field("user_id") user_id: String
+    )
+            : Call<ResposneMarkerPoints>
 
 }

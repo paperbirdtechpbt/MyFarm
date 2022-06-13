@@ -22,7 +22,11 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.PolygonOptions
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.pbt.myfarm.*
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Activity.PackConfigList.PackConfigResponse
@@ -35,9 +39,16 @@ import com.pbt.myfarm.Util.AppConstant
 import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.CustomExceptionHandler
 import com.pbt.myfarm.Util.MySharedPreference
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
+import java.lang.reflect.Array
+
 
 class MainActivityViewModel(val activity: Application) : AndroidViewModel(activity),
     Callback<PackConfigResponse> {
@@ -460,6 +471,7 @@ class MainActivityViewModel(val activity: Application) : AndroidViewModel(activi
             }
         })
     }
+
 
 
 }

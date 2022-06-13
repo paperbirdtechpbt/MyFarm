@@ -26,6 +26,14 @@ data class ResposneNotificationCount(
     @SerializedName("count")  val count: Int,
     @SerializedName("data")  val data: List<ListNotificationData>,
 )
+data class ResposneMarkerPoints(
+    @SerializedName("data")  val data: List<ListOFMarkerPoints>,
+)
+data class ListOFMarkerPoints(
+    @SerializedName("name") val name: String,
+    @SerializedName("latitude")val lat:String,
+    @SerializedName("longitude")val lng:String
+)
 //data class ListNotificationData(
 //    @SerializedName("message")  val message: String,
 //    @SerializedName("formatted_dob")  val formatted_dob: String,

@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
@@ -30,6 +32,8 @@ import kotlinx.android.synthetic.main.activity_view_task.btn_create_task
 import kotlinx.android.synthetic.main.activity_view_task.layout_nodatavailable
 import kotlinx.android.synthetic.main.activity_view_task.recyclerview_viewtask
 import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
+import okhttp3.OkHttpClient
+import java.net.URL
 
 class ViewTaskActivity : AppCompatActivity(){
     private var adapter: AdapterViewTask? = null
@@ -59,6 +63,8 @@ class ViewTaskActivity : AppCompatActivity(){
             startActivity(Intent(this, SelectConfigTypeActivity::class.java))
 
         }
+
+
     }
 
     private fun initViewModel() {

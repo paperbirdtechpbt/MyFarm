@@ -253,7 +253,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             )
 
         }
-
         else {
 
             val db = DbHelper(this, null)
