@@ -19,8 +19,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#20B6E4D4"
+        android:layout_height="100dp"
+        android:background="@color/green"
         app:layout_constraintBottom_toTopOf="@id/map"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,14 +28,13 @@
             android:id="@+id/label_showAreas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"
+            app:layout_constraintStart_toStartOf="@id/spinner_fieldclasses"
             android:text="Show Protected Areas:-"
-            android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-
+android:layout_marginTop="10dp"
             />
 
         <CheckBox
@@ -43,10 +42,30 @@
             android:layout_width="0dp"
             android:layout_height="20sp"
             android:checked="true"
+            app:layout_constraintTop_toTopOf="@id/label_showAreas"
             app:layout_constraintBottom_toBottomOf="@id/label_showAreas"
             app:layout_constraintLeft_toRightOf="@id/label_showAreas"
           />
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner_fieldclasses"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:background="@drawable/design_edittext"-->
+<!--            style="@style/Edittext"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/isShowAreaChecked"/>-->
 
+        <com.anurag.multiselectionspinner.MultiSpinner
+            android:id="@+id/spinner_fieldclasses"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/design_edittext"
+            style="@style/Edittext"
+            android:text="Select Location to Display"
+            android:textColor="@color/black"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@id/isShowAreaChecked"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -54,7 +73,16 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="100dp"
         tools:context=".Activity.Map.MapsActivity" />
+    <ProgressBar
+        android:id="@+id/prgsBar_mapScreen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,16 @@ data class ListOFMarkerPoints(
     @SerializedName("latitude")val lat:String,
     @SerializedName("longitude")val lng:String
 )
+
+data class ResponsefieldClasses(
+    @SerializedName("data") val data: List<ListofFieldClasses>,
+
+) {
+   data class ListofFieldClasses (
+       @SerializedName("id") val id: String,
+       @SerializedName("name")val name:String,
+           )
+}
 //data class ListNotificationData(
 //    @SerializedName("message")  val message: String,
 //    @SerializedName("formatted_dob")  val formatted_dob: String,

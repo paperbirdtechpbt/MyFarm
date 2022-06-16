@@ -402,8 +402,16 @@ interface ApiInterFace {
     @FormUrlEncoded
     @POST("api/fieldFarm")
     fun fieldFarm(
-        @Field("user_id") user_id: String
+        @Field("user_id") user_id: String,
+        @Field("class_id") class_id: String
     )
             : Call<ResposneMarkerPoints>
+
+    @FormUrlEncoded
+    @POST("api/fieldClasses")
+    fun fieldClasses(
+        @Field("user_id") user_id: String
+    )
+            : Call<ResponsefieldClasses>
 
 }
