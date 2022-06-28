@@ -98,7 +98,7 @@
     </string-array>
     <string name="title_activity_dash_board_map">DashBoardMapActivity</string>
     <string name="title_activity_maps">Map</string>
-<!--    <string name="google_maps_key">AIzaSyCxyhfBkdDTPpZ8CkihhRattc9LSHjwE4c</string>-->
+    <!--    <string name="google_maps_key">AIzaSyCxyhfBkdDTPpZ8CkihhRattc9LSHjwE4c</string>-->
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyA6j9juIKElTL81OCvMyTEY7C-p4lIA0_U</string>
 

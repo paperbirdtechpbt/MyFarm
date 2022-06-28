@@ -136,6 +136,9 @@ dependencies {
     implementation   'com.beust:klaxon:5.0.5'
 
         implementation 'com.github.AnuraganuPunalur:Multi-Selection-Spinner-Android:1.0'
+    implementation 'com.github.tejpratap46:PDFCreatorAndroid:3.0.2'
+    implementation 'com.github.Gkemon:Android-XML-to-PDF-Generator:2.6.2'
+
 
 
 

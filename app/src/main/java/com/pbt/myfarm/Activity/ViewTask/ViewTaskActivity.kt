@@ -61,10 +61,7 @@ class ViewTaskActivity : AppCompatActivity(){
 
         btn_create_task.setOnClickListener {
             startActivity(Intent(this, SelectConfigTypeActivity::class.java))
-
         }
-
-
     }
 
     private fun initViewModel() {

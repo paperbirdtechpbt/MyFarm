@@ -1,6 +1,10 @@
 package com.pbt.myfarm.Activity.Map
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,10 +16,8 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.Polygon
+import com.google.android.gms.maps.model.*
+import com.pbt.myfarm.Activity.Event.ListOFMarkerPoints
 import com.pbt.myfarm.Activity.Event.ResponsefieldClasses
 import com.pbt.myfarm.Activity.Map.MapActivityViewModel.Companion.jsonFeature
 import com.pbt.myfarm.R
@@ -24,6 +26,11 @@ import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_maps.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     MultiSelectionSpinnerDialog.OnMultiSpinnerSelectionListener {
@@ -35,20 +42,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     var fieldclassID = ArrayList<String>()
     var TAG = "MapsActivity"
     var progressDialog: ProgressDialog? = null
+   private var markersList: List<ListOFMarkerPoints> =ArrayList()
 
     companion object {
         var list = ArrayList<LatLng>()
         var hollowPolygon: Polygon? = null
         val myMarker = MarkerOptions()
         var markerName: Marker? = null
-        var markerList: ArrayList<Marker> = ArrayList()
+//        var markerList: ArrayList<Marker> = ArrayList()
         val selectedItemAreas = ArrayList<String>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
-
+supportActionBar?.hide()
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
 
@@ -68,6 +76,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         ).get(MapActivityViewModel::class.java)
         viewModel?.context = this
         viewModel?.mCheckBox = progressDialog
+        viewModel?.imgview = img1
         viewModel?.getPolygonPointFromApi(this)
 
         setCheckBoxListner()
@@ -88,6 +97,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 }
             }
         }
+
+
+        viewModel?.let { model ->
+            model.listMaker.observe(this) {
+                markersList=it
+
+                setMarker(it, mMap)
+            }
+        }
     }
 
     private fun setSpinner(fieldclassName: ArrayList<String>, fieldclassID: ArrayList<String>) {
@@ -100,7 +118,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun OnMultiSpinnerItemSelected(chosenItems: MutableList<String>?) {
-        prgsBar_mapScreen.visibility= View.VISIBLE
+        prgsBar_mapScreen.visibility = View.VISIBLE
         //This is where you get all your items selected from the Multi Selection Spinner :)
         selectedItemAreas.clear()
         mMap.clear()
@@ -120,8 +138,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         val isfinishedLoop = viewModel?.setAreas(jsonFeature!!, this@MapsActivity)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            prgsBar_mapScreen.visibility= View.GONE
-        },1500)
+            prgsBar_mapScreen.visibility = View.GONE
+        }, 1500)
 
     }
 
@@ -145,9 +163,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             } else {
                 progressD.dismiss()
                 mMap.clear()
-                GlobalScope.launch {
-                    viewModel?.setMarker(MapActivityViewModel.markersdata)
-                }
+//                GlobalScope.launch {
+                    setMarker(markersList,mMap)
+//                    viewModel?.setMarker(MapActivityViewModel.markersdata, mMap)
+
+//                }
             }
         }
     }
@@ -169,6 +189,53 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         )
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Gabon"))
 
+    }
+
+    fun setMarker(markersdata: List<ListOFMarkerPoints>?, mMap: GoogleMap) {
+
+        markersdata?.forEach {
+            val locate = LatLng(it.lat.toDouble(), it.lng.toDouble())
+
+            val url = URL(it.icon)
+
+             var bmp :Bitmap?=null
+
+            val obj = @SuppressLint("StaticFieldLeak")
+            object : MyAsync(it.icon) {
+                @Deprecated("Deprecated in Java")
+                override fun onPostExecute(result: Bitmap?) {
+                    super.onPostExecute(result)
+                    bmp = result
+                    val b = Bitmap.createScaledBitmap(result!!, 120, 120, false)
+
+                    markerName = mMap.addMarker(
+                        myMarker
+                            .position(locate).title(it.name)
+                            .icon(BitmapDescriptorFactory.fromBitmap(b!!)))
+
+                }
+            }
+            obj.execute()
+
+
+
+
+        }
+    }
+}
+open class MyAsync(var urlString:String) : AsyncTask<Void?, Void?, Bitmap?>() {
+    override fun doInBackground(vararg params: Void?): Bitmap? {
+        return try {
+            val url = URL(urlString)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.setDoInput(true)
+            connection.connect()
+            val input: InputStream = connection.getInputStream()
+            BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
     }
 }
 

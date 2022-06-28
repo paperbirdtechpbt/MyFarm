@@ -32,7 +32,10 @@ data class ResposneMarkerPoints(
 data class ListOFMarkerPoints(
     @SerializedName("name") val name: String,
     @SerializedName("latitude")val lat:String,
-    @SerializedName("longitude")val lng:String
+    @SerializedName("longitude")val lng:String,
+    @SerializedName("field_class")val field_class:String,
+    @SerializedName("filedName")val filedName:String,
+    @SerializedName("icon")val icon:String
 )
 
 data class ResponsefieldClasses(

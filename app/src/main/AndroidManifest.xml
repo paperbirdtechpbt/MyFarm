@@ -48,7 +48,19 @@
         android:theme="@style/Theme.MyFarm"
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
+        <activity
+            android:name=".Activity.PdfReport.PdfDemoActivity"
+            android:exported="true" >
 
+        </activity>
+        <activity
+            android:name=".Activity.PdfReport.ScrollActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PdfReport.PackReportActivity"
+            android:exported="true">
+
+        </activity>
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

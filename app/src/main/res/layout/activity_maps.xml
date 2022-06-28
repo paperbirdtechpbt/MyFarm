@@ -19,9 +19,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="180dp"
         android:background="@color/green"
-        app:layout_constraintBottom_toTopOf="@id/map"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -46,6 +45,141 @@ android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="@id/label_showAreas"
             app:layout_constraintLeft_toRightOf="@id/label_showAreas"
           />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#246E26"
+
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="100dp">
+
+            <ImageView
+                android:id="@+id/img1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/markerfarm"
+                android:visibility="visible"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/label_farm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FARM"
+                android:textColor="@color/white"
+                android:src="@drawable/markerfarm"
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="@id/img1"
+                app:layout_constraintBottom_toBottomOf="@id/img1"
+                app:layout_constraintLeft_toRightOf="@id/img1"
+                tools:ignore="MissingConstraints" />
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/markerkkkmcenter"
+                android:visibility="visible"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintLeft_toRightOf="@id/viewlineforIcons"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/label_kkmcenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/markerfarm"
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                android:textColor="@color/white"
+                android:text="KKM_CENTER"
+                app:layout_constraintTop_toTopOf="@id/img1"
+                app:layout_constraintBottom_toBottomOf="@id/img1"
+                app:layout_constraintLeft_toRightOf="@id/img2"
+                tools:ignore="MissingConstraints" />
+            <View
+                android:id="@+id/viewlineforIcons"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#246E26"
+            android:id="@+id/layout_markers"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="140dp">
+
+            <ImageView
+                android:id="@+id/img3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/markercaistabcenter"
+                android:visibility="visible"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/label_caistab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CAISTAB_CENTER"
+                android:textColor="@color/white"
+                android:src="@drawable/markerfarm"
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                app:layout_constraintTop_toTopOf="@id/img3"
+                app:layout_constraintBottom_toBottomOf="@id/img3"
+                app:layout_constraintLeft_toRightOf="@id/img3"
+                tools:ignore="MissingConstraints" />
+
+            <ImageView
+                android:id="@+id/img4"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_mapmarker"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/viewlineforIcons2"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+            <TextView
+                android:id="@+id/label_other"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/markerfarm"
+                android:layout_marginLeft="10dp"
+                android:visibility="visible"
+                android:textColor="@color/white"
+                android:text="Other"
+                app:layout_constraintTop_toTopOf="@id/img4"
+                app:layout_constraintBottom_toBottomOf="@id/img4"
+                app:layout_constraintLeft_toRightOf="@id/img4"
+                tools:ignore="MissingConstraints" />
+            <View
+                android:id="@+id/viewlineforIcons2"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 <!--        <Spinner-->
 <!--            android:id="@+id/spinner_fieldclasses"-->
 <!--            android:layout_width="match_parent"-->
@@ -73,7 +207,7 @@ android:layout_marginTop="10dp"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="180dp"
         tools:context=".Activity.Map.MapsActivity" />
     <ProgressBar
         android:id="@+id/prgsBar_mapScreen"

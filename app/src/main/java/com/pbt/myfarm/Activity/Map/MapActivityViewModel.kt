@@ -4,10 +4,15 @@ import android.app.Activity
 import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.gson.Gson
@@ -16,7 +21,6 @@ import com.pbt.myfarm.Activity.Event.ResponsefieldClasses
 import com.pbt.myfarm.Activity.Event.ResposneMarkerPoints
 import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.hollowPolygon
 import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.list
-import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.markerList
 import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.markerName
 import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.myMarker
 import com.pbt.myfarm.Activity.Map.MapsActivity.Companion.selectedItemAreas
@@ -32,29 +36,40 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.net.URL
 
 
-class MapActivityViewModel(val activity: Application) : AndroidViewModel(activity),Callback<ResposneMarkerPoints> {
-    var gMap:GoogleMap?=null
-    var context:Context?=null
-    var mCheckBox:ProgressDialog?=null
-    var isLoopFinished=MutableLiveData<Boolean>()
-    companion object{
-         var jsonFeature:JSONArray?=null
-         var markersdata:List<ListOFMarkerPoints>?=null
+class MapActivityViewModel(val activity: Application) : AndroidViewModel(activity),
+    Callback<ResposneMarkerPoints> {
+    var gMap: GoogleMap? = null
+    var context: Context? = null
+    var imgview: ImageView? = null
+    var mCheckBox: ProgressDialog? = null
+    var isLoopFinished = MutableLiveData<Boolean>()
+    private val markerLiveList = MutableLiveData<List<ListOFMarkerPoints>>()
+
+    val listMaker: LiveData<List<ListOFMarkerPoints>>
+        get() = markerLiveList
+
+    companion object {
+        var jsonFeature: JSONArray? = null
+        var markersdata: List<ListOFMarkerPoints>? = null
 
     }
+
     init {
-        isLoopFinished=MutableLiveData<Boolean>()
+        isLoopFinished = MutableLiveData<Boolean>()
     }
-    val fieldClaseslist= MutableLiveData<List<ResponsefieldClasses.ListofFieldClasses>>()
+
+    val fieldClaseslist = MutableLiveData<List<ResponsefieldClasses.ListofFieldClasses>>()
 
     fun setMarkerPoints(mMap: GoogleMap, context: Context, classid: String) {
-        AppUtils.logError("TAG", "chooseItem" +classid)
+        AppUtils.logError("TAG", "chooseItem" + classid)
 
         ApiClient.client.create(ApiInterFace::class.java).fieldFarm(
             MySharedPreference.getUser(context)?.id.toString(),
-            selectedItemAreas.toString() ).enqueue(this)
+            selectedItemAreas.toString()
+        ).enqueue(this)
 
     }
 
@@ -62,30 +77,40 @@ class MapActivityViewModel(val activity: Application) : AndroidViewModel(activit
         call: Call<ResposneMarkerPoints>,
         response: Response<ResposneMarkerPoints>
     ) {
-        AppUtils.logError("TAG", "chooseItem response " +response.body().toString())
-
-        if (!response.body()?.data.isNullOrEmpty()){
-            markersdata=ArrayList()
-            markersdata=response.body()?.data
-            setMarker(response.body()?.data)
-            AppUtils.logError("TAG", "chooseItem response body" +response.body()?.data.toString())
-
+        if (!response.body()?.data.isNullOrEmpty()) {
+            markersdata = ArrayList()
+            markersdata = response.body()?.data
+            markerLiveList.postValue(response.body()?.data)
         }
-
     }
 
-    fun setMarker(markersdata: List<ListOFMarkerPoints>?) {
-        (context as Activity).runOnUiThread(Runnable {
-            markersdata?.forEach {
-                val locate = LatLng(it.lat.toDouble(), it.lng.toDouble())
+//    fun setMarker(markersdata: List<ListOFMarkerPoints>?, mMap: GoogleMap) {
+//
+//        markersdata?.forEach {
+//            val locate = LatLng(it.lat.toDouble(), it.lng.toDouble())
+//
+//
+//            var bmp: Bitmap? = null
+//            val url = URL(it.icon)
+//
+//            try {
+//                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream())
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+//
+//
+//            markerName = gMap?.addMarker(
+//                myMarker
+//                    .position(locate).title(it.name)
+//                    .icon(BitmapDescriptorFactory.fromBitmap(bmp))
+//            )
+//
+//        }
+//
+//
+//    }
 
-                markerName=   gMap?.addMarker(myMarker.position(locate).title(it.name))
-                markerList.add(markerName!!)
-
-            }
-        })
-
-    }
 
     override fun onFailure(call: Call<ResposneMarkerPoints>, t: Throwable) {
     }
@@ -106,17 +131,17 @@ class MapActivityViewModel(val activity: Application) : AndroidViewModel(activit
                 val str_response = response.body?.string()
                 val json_contact = JSONObject(str_response)
 //                val jsonFeature = json_contact.getJSONArray("features")
-                 jsonFeature = json_contact.getJSONArray("features")
+                jsonFeature = json_contact.getJSONArray("features")
 
-                setAreas(jsonFeature!!,context)
+                setAreas(jsonFeature!!, context)
 
             }
         })
     }
 
-     fun setAreas(jsonFeature: JSONArray, context: Context) {
+    fun setAreas(jsonFeature: JSONArray, context: Context) {
 
-         for (i in 0 until jsonFeature.length()) {
+        for (i in 0 until jsonFeature.length()) {
 
             val cordinate = jsonFeature.getJSONObject(i).getJSONObject("geometry")
                 .getJSONArray("coordinates")
@@ -140,18 +165,19 @@ class MapActivityViewModel(val activity: Application) : AndroidViewModel(activit
                         )
                     }
 
-                        (context as Activity).runOnUiThread(Runnable {
-                            if (!list.isNullOrEmpty()) {
-                                val mlist=ArrayList<LatLng>()
-                                mlist.addAll(list)
+                    (context as Activity).runOnUiThread(Runnable {
+                        if (!list.isNullOrEmpty()) {
+                            val mlist = ArrayList<LatLng>()
+                            mlist.addAll(list)
 //
-                                hollowPolygon =  gMap?.addPolygon(
-                                    PolygonOptions()
-                                        .addAll(mlist)
-                                        .fillColor(Color.GREEN)
-                                        .strokeWidth(2f))
-                            }
-                        })
+                            hollowPolygon = gMap?.addPolygon(
+                                PolygonOptions()
+                                    .addAll(mlist)
+                                    .fillColor(Color.GREEN)
+                                    .strokeWidth(2f)
+                            )
+                        }
+                    })
 
 
                     AppUtils.logDebug("##map", "jso0" + Gson().toJson(list))
@@ -159,22 +185,25 @@ class MapActivityViewModel(val activity: Application) : AndroidViewModel(activit
                 }
             }
         }
-         isLoopFinished.postValue(true)
-         mCheckBox?.dismiss()
+        isLoopFinished.postValue(true)
+        mCheckBox?.dismiss()
 
     }
 
     fun callFieldClasesListApi(context: Context, userid: String) {
-val apiInterFace=ApiClient.client.create(ApiInterFace::class.java)
-        val call=apiInterFace.fieldClasses(userid)
-        call.enqueue(object  :Callback<ResponsefieldClasses>{
+        val apiInterFace = ApiClient.client.create(ApiInterFace::class.java)
+        val call = apiInterFace.fieldClasses(userid)
+        call.enqueue(object : Callback<ResponsefieldClasses> {
             override fun onResponse(
                 call: Call<ResponsefieldClasses>,
                 response: Response<ResponsefieldClasses>
             ) {
-                if (response.isSuccessful){
-                    if (!response.body()?.data.isNullOrEmpty()){
-                        val baseResponse:ResponsefieldClasses=Gson().fromJson(Gson().toJson(response.body()),ResponsefieldClasses::class.java)
+                if (response.isSuccessful) {
+                    if (!response.body()?.data.isNullOrEmpty()) {
+                        val baseResponse: ResponsefieldClasses = Gson().fromJson(
+                            Gson().toJson(response.body()),
+                            ResponsefieldClasses::class.java
+                        )
 
                         fieldClaseslist.postValue(baseResponse.data)
                     }
@@ -188,3 +217,9 @@ val apiInterFace=ApiClient.client.create(ApiInterFace::class.java)
     }
 
 }
+
+
+
+
+
+
