@@ -49,18 +49,36 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="n">
         <activity
-            android:name=".Activity.PdfReport.PdfDemoActivity"
-            android:exported="true" >
-
+            android:name=".Activity.kpi.details.KpiDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.kpi.KpiActivity"
+            android:exported="true"
+            android:label="KPI`s" />
+        <activity
+            android:name=".Activity.Testing.DemoHtmlToPdfActivity"
+            android:exported="true" />
+        <activity
+            android:name=".Activity.Transaction.DemoWebViewActivity"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:label="Pack Reports">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.Home.MainActivity" />
         </activity>
+        <activity
+            android:name=".Activity.PdfReport.ViewPdfReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PdfReport.PdfDemoActivity"
+            android:exported="true" />
         <activity
             android:name=".Activity.PdfReport.ScrollActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.PdfReport.PackReportActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

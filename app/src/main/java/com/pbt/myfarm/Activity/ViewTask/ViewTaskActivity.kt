@@ -11,8 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.ItemAnimator
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
+//import com.beust.klaxon.JsonObject
+//import com.beust.klaxon.Parser
 import com.pbt.myfarm.Activity.CreateTask.CreateTaskActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListName
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeListNameOffline
@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_view_task.tasklistSize
 import okhttp3.OkHttpClient
 import java.net.URL
 
-class ViewTaskActivity : AppCompatActivity(){
+class ViewTaskActivity : AppCompatActivity() {
     private var adapter: AdapterViewTask? = null
     var db: DbHelper? = null
 
@@ -102,7 +102,7 @@ class ViewTaskActivity : AppCompatActivity(){
 
                 if (checkAction) {
 
-                    viewModell?.showAlertDailog(taskname, position, mytasklist!!,this)
+                    viewModell?.showAlertDailog(taskname, position, mytasklist!!, this)
 
                 } else {
                     updateTaskBoolen = true
@@ -116,7 +116,7 @@ class ViewTaskActivity : AppCompatActivity(){
                         "mytasklist?.id=${mytasklist?.id}" + "mytasklist=$mytasklist"
                     )
                     startActivity(intent)
-                    finish()
+//                    finish()
                 }
             }
             recyclerview_viewtask.adapter = adapter
@@ -130,7 +130,6 @@ class ViewTaskActivity : AppCompatActivity(){
         })
 
     }
-
 
 
     override fun onResume() {

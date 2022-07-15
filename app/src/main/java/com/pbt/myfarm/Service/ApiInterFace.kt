@@ -12,7 +12,9 @@ import com.pbt.myfarm.HttpResponse.*
 import com.pbt.myfarm.ModelClass.SendDataMasterList
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.http.*
 import retrofit2.http.Field
 
@@ -282,6 +284,7 @@ interface ApiInterFace {
         @Part("task_func") task_func: RequestBody,
         @Part("user_id") user_id: RequestBody,
         @Part("container") container: RequestBody,
+        @Part("media_type") media_type: RequestBody,
     ): Call<ResponseTaskExecution>
 
 
@@ -413,5 +416,12 @@ interface ApiInterFace {
         @Field("user_id") user_id: String
     )
             : Call<ResponsefieldClasses>
+
+    @FormUrlEncoded
+    @POST("api/printPdf")
+    fun printPdf(
+        @Field("pack_id") packid: String
+    )
+            : Call<ResponseBody>
 
 }

@@ -23,8 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import com.google.gson.Gson
 import com.pbt.myfarm.Activity.Login.LoginActivity
 import com.pbt.myfarm.Activity.NotificationActivity.MyNotificiationActivity
@@ -167,6 +165,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
     private fun setadapter(dataa: ArrayList<EventList>) {
         val adapter = AdapterHomeActivity(this, dataa)
         recyclerview_main.adapter = adapter
+        progressbar_main.visibility=View.GONE
     }
 
     override fun onResume() {
@@ -188,6 +187,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
         data.clear()
         if (AppUtils().isInternet(this)) {
             data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
+            data.add(EventList("Kpi", R.drawable.ic_kpi))
 
             if (privilegeList.contains("Pack")) {
                 data.add(EventList("Pack", R.drawable.ic_box))
@@ -201,7 +201,9 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
             if (privilegeList.contains("Event")) {
                 data.add(EventList("Event", R.drawable.ic_icon_list))
             }
-            data.add(EventList("QR Demo", R.drawable.ic_qrcode))
+            if (privilegeList.contains("Event")) {
+                data.add(EventList("View Report", R.drawable.ic_report))
+            }
             if (!data.isNullOrEmpty()) {
 //            data.add(EventList("DashBoard", R.drawable.ic_dashboaradicon))
                 setadapter(data)
@@ -219,7 +221,7 @@ class MainActivity : AppCompatActivity(), retrofit2.Callback<AllPriviledgeListRe
                 data.add(EventList("DashboardEvent", R.drawable.ic__dashboardevent))
             }
             if (privilegeListNameOffline.contains("Event")) {
-                data.add(EventList("Event", R.drawable.ic_icon_list))
+                data.add(EventList("Event", R.drawable.ic_pdficon))
             }
             if (!data.isNullOrEmpty()) {
                 setadapter(data)

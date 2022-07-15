@@ -11,6 +11,7 @@ data class ResponseTaskFunctionaliyt(
     @SerializedName("Task Function") var TaskFunction: ArrayList<FieldListTaskFunctions>,
     @SerializedName("Function Field list") var Function: ArrayList<ListFunctionFieldlist>,
     @SerializedName("MediaFile") var MediaFile: ArrayList<ListMediaFile>,
+    @SerializedName("media_types") var media_types: ArrayList<Listmedia_types>,
 )
 
 
@@ -18,6 +19,10 @@ data class HttpResponse (
     @SerializedName("error") var error:Boolean,
     @SerializedName("data") private  var data: Map<String?, Any?>,
     @SerializedName("msg") var msg:String
+    )
+data class Listmedia_types (
+    @SerializedName("id") var id:Int,
+    @SerializedName("name")   var name: String,
     )
 
 data class ListTaskFunctions (

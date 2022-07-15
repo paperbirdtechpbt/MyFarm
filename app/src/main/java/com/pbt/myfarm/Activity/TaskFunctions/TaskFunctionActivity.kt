@@ -20,6 +20,7 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.abedelazizshe.lightcompressorlibrary.CompressionListener
@@ -70,6 +71,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     private var spinner: Spinner? = null
     private var selectedFunctionId = 0
     private var selectedFunctionFieldId = 0
+    private var selectedMediatype = 0
     private var edAttachMedia: EditText? = null
     private var manager: DownloadManager? = null
     private var recordedVideoPath: String = ""
@@ -92,7 +94,6 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     private var transferPackListNAME = ArrayList<String>()
     private var transferPackListNAMEString = ""
 
-
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,7 +115,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         if (intent.extras != null) {
             updateTaskID = intent.getParcelableExtra(CONST_TASKFUNCTION_TASKID)
             allUserList = intent.getParcelableArrayListExtra(CONST_TASKFUNCTION_ALLUSERS)
-            AppUtils.logError(tag,"alluserlist"+allUserList.toString())
+            AppUtils.logError(tag, "alluserlist" + allUserList.toString())
             isTaskFunctionUpdate =
                 intent.getBooleanExtra(CONST_TASKFUNCTION_OBJECTI_ISUPDATE, false)
 
@@ -236,6 +237,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         val mFunctionID = selectedFunctionId.toString()
         val mUserID = MySharedPreference.getUser(this)?.id.toString()
         val mFieldID = selectedFunctionFieldId.toString()
+        val mMediaTypeID = selectedMediatype.toString()
 
         if (AppUtils().isInternet(this)) {
             viewModel?.uploadFile(
@@ -249,16 +251,16 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 progressbar_taskexecute,
                 progressCircularLabel,
                 btnExecute,
-                isTaskFunctionUpdate
+                isTaskFunctionUpdate, mMediaTypeID
             )
 
-        }
-        else {
+        } else {
 
             val db = DbHelper(this, null)
             val taskObject = TaskObjectOffline(
                 taskid = updateTaskID?.id, container = selectedFunctionFieldId.toString(),
-                task_function = selectedFunctionId.toString(),)
+                task_function = selectedFunctionId.toString(),
+            )
 
             val isSuccess = db.addTaskObjectOffline(taskObject, "1")
             if (isSuccess) {
@@ -417,6 +419,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     taskfunction_media.visibility = View.GONE
                     btnChoosefile.visibility = View.GONE
                     label_attachmedia.visibility = View.GONE
+                    field_mediatype.visibility = View.GONE
+                    label_MediaType.visibility = View.GONE
+
                 } else {
                     val item = listOfID[position]
                     if (selectedFunctionId == 171 || selectedFunctionId == 176) {
@@ -431,6 +436,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_TargetUser.visibility = View.GONE
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
 
                         if (selectedFunctionId == 217) {
                             label_fieldname.setText(R.string.addPerson)
@@ -447,7 +455,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         }
                     } else if (selectedFunctionId == 173) {
                         hideButtonVisibility(false)
-
+                        field_mediatype.visibility = View.VISIBLE
                         scanned_Data.visibility = View.GONE
                         taskfunction_field.visibility = View.GONE
                         label_fieldname.visibility = View.GONE
@@ -457,6 +465,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_attachmedia.visibility = View.VISIBLE
                         recycler_viewMedia.visibility = View.VISIBLE
                         taskfunction_alluser.visibility = View.GONE
+                        label_MediaType.visibility = View.VISIBLE
 
                         label_attachmedia.text = getString(R.string.attach_media)
                         callApi("173")
@@ -473,6 +482,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_attachmedia.visibility = View.GONE
                         recycler_viewMedia.visibility = View.GONE
                         taskfunction_alluser.visibility = View.GONE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
+
                     } else if (item == "174") {
                         hideButtonVisibility(false)
 
@@ -504,6 +517,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_media.visibility = View.GONE
                         btnChoosefile.visibility = View.GONE
                         label_attachmedia.visibility = View.GONE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
+
                     } else if (item == "175") {
                         hideButtonVisibility(false)
 
@@ -517,6 +534,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_field.visibility = View.VISIBLE
                         label_fieldname.visibility = View.VISIBLE
                         taskfunction_alluser.visibility = View.GONE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
+
 
                         callApi("175")
                     } else if (item == "217" || item == "215" || item == "216") {
@@ -527,6 +548,10 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         taskfunction_alluser.visibility = View.GONE
                         viewModel?.edScannedData = scanned_Data
                         label_TargetUser.visibility = View.GONE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
+
 
                         openZingScanner()
                     } else if (item == "218") {
@@ -541,6 +566,9 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_fieldname.visibility = View.GONE
                         taskfunction_alluser.visibility = View.GONE
                         label_TargetUser.visibility = View.GONE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
 
                     } else if (item == "219") {
                         hideButtonVisibility(false)
@@ -554,16 +582,19 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         label_TargetUser.visibility = View.VISIBLE
                         label_attachmedia.visibility = View.VISIBLE
                         taskfunction_media.visibility = View.VISIBLE
+                        field_mediatype.visibility = View.GONE
+                        label_MediaType.visibility = View.GONE
+
 
                         val userlist = ArrayList<String>()
 
-                        transferPackListNAMEString=""
+                        transferPackListNAMEString = ""
 
                         label_attachmedia.setText("Packs To Transfer")
                         label_TargetUser.setText("Target User")
 
-                        allUserList?.add(AllUserList("0","Select"))
-                        for (i in 0 until  allUserList?.size!!){
+                        allUserList?.add(AllUserList("0", "Select"))
+                        for (i in 0 until allUserList?.size!!) {
                             userlist.add(allUserList!!.get(i).name)
                         }
 
@@ -576,7 +607,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                         dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         taskfunction_alluser.adapter = dd
 
-                        setTransferListner(taskfunction_alluser,allUserList)
+                        setTransferListner(taskfunction_alluser, allUserList)
 
                         viewModel?.getTaskObjectList(updateTaskID?.id.toString())
 
@@ -605,15 +636,16 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
         }
     }
 
-    private fun setTransferListner(taskfunctionMedia: Spinner, userlistid: ArrayList<AllUserList>?) {
+    private fun setTransferListner(
+        taskfunctionMedia: Spinner,
+        userlistid: ArrayList<AllUserList>?
+    ) {
         taskfunctionMedia.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     parent: AdapterView<*>, view: View, position: Int, id: Long
                 ) {
-                        selectedFunctionFieldId = userlistid!![position].id.toDouble().toInt()
-
-
+                    selectedFunctionFieldId = userlistid!![position].id.toDouble().toInt()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -626,9 +658,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
             btnExecute.visibility = View.GONE
         } else {
             btnExecute.visibility = View.VISIBLE
-
         }
-
     }
 
     private fun callApi(selectedFunctionId: String) {
@@ -752,8 +782,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                                 val type = AppUtils().checkExtension(it.extension)
                                 if (type == "video") {
                                     uris.clear()
-                                    progressVisible(true)
-                                    handleResult(result.data)
+//                                    progressVisible(true)
+//                                    handleResult(result.data)
                                 }
                             }
                         } else {
@@ -891,6 +921,7 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 val fieldListTaskFunctions = ArrayList<FieldListTaskFunctions>()
                 var functionName = ""
                 val function = ArrayList<ListFunctionFieldlist>()
+                val mediatype = ArrayList<Listmedia_types>()
 
                 if (!baseResponse.TaskFunction.isNullOrEmpty()) {
                     baseResponse.TaskFunction.forEach { tsk ->
@@ -902,16 +933,71 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                     baseResponse.Function.forEach {
                         function.add(it)
                     }
+
                     setAdapterField(function)
+
+                }
+                if (!baseResponse.media_types.isNullOrEmpty()) {
+                    baseResponse.media_types.forEach {
+                        mediatype.add(it)
+                    }
+
+                    setAdapterField(function)
+
                 }
                 if (functionName == "ATTACH_MEDIA") {
+
                     setAdapter(function)
+                    setAdapterFieldMediaType(mediatype)
+
                 }
             }
 
         } else {
             AppUtils.logDebug(tag, "on Failure")
         }
+    }
+
+    private fun setAdapterFieldMediaType(mediatype: ArrayList<Listmedia_types>) {
+        field_mediatype?.visibility = View.VISIBLE
+        val functionName = ArrayList<String>()
+        val functionId = ArrayList<String>()
+
+
+        for (i in 0 until mediatype.size) {
+            functionName.add(mediatype[i].name)
+            functionId.add(mediatype[i].id.toString())
+        }
+        val dd = ArrayAdapter(this, android.R.layout.simple_spinner_item, functionName)
+        dd.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        field_mediatype.adapter = dd
+
+        if (selectedFunctionNo.isNotEmpty()) {
+            for ((count, item) in functionId.withIndex()) {
+                if (item == selectedFunctionNo) {
+                    field_mediatype.setSelection(count)
+                }
+            }
+        }
+
+        setFieldListenerMediatype(field_mediatype, mediatype)
+    }
+
+    private fun setFieldListenerMediatype(
+        taskfunctionField: Spinner?,
+        mediatype: ArrayList<Listmedia_types>
+    ) {
+        field_mediatype?.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>, view: View, position: Int, id: Long
+                ) {
+                    selectedMediatype = mediatype[position].id
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
     }
 
     override fun onFailure(call: Call<ResponseTaskFunctionaliyt>, t: Throwable) {
@@ -926,6 +1012,8 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     private fun setAdapterField(function: ArrayList<ListFunctionFieldlist>) {
         val functionName = ArrayList<String>()
         val functionId = ArrayList<String>()
+
+
         for (i in 0 until function.size) {
             functionName.add(function[i].name.toString())
             functionId.add(function[i].id.toString())

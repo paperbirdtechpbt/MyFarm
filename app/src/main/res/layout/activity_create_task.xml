@@ -166,7 +166,7 @@
             android:layout_marginRight="50dp"
             android:padding="15dp"
             android:text="Create Task"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/card_recycler_taskfunctions"
             app:layout_constraintTop_toBottomOf="@id/layout_recyclerview"
             tools:ignore="MissingConstraints" />
 
@@ -178,7 +178,7 @@
             android:layout_marginRight="50dp"
             android:padding="15dp"
             android:text="Update Task"
-
+            app:layout_constraintBottom_toTopOf="@id/card_recycler_taskfunctions"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/layout_recyclerview" />
 
@@ -200,7 +200,77 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardUseCompatPadding="true"
+            app:cardMaxElevation="3dp"
+            android:elevation="3dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#F1EEEE"
+            android:id="@+id/card_recycler_taskfunctions"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_taskfunctions"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/Createtask_progress_circular"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:indicatorColor="@color/white"
+            app:indicatorSize="64dp"
+            android:visibility="gone"
+            android:layout_marginTop="250dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:trackColor="@color/green" />
+
+        <TextView
+            android:id="@+id/Createtask_progress_circular_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:textColor="@color/black"
+            android:text="0%"
+            app:layout_constraintBottom_toBottomOf="@id/Createtask_progress_circular"
+            app:layout_constraintEnd_toEndOf="@id/Createtask_progress_circular"
+            app:layout_constraintStart_toStartOf="@id/Createtask_progress_circular"
+            app:layout_constraintTop_toTopOf="@id/Createtask_progress_circular" />
+
+        <TextView
+            android:id="@+id/Createtask_progress_circular_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/please_waite_file_is_compress"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Createtask_progress_circular" />
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

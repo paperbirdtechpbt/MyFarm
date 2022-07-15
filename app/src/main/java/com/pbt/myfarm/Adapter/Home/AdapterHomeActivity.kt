@@ -14,8 +14,11 @@ import com.pbt.myfarm.Activity.Event.ViewEventActivity
 import com.pbt.myfarm.Activity.Home.MainActivity.Companion.privilegeList
 import com.pbt.myfarm.Activity.Map.MapsActivity
 import com.pbt.myfarm.Activity.Pack.PackActivity
+import com.pbt.myfarm.Activity.PdfReport.ViewPdfReportActivity
 import com.pbt.myfarm.Activity.QrDemoActivity.QrCodeActivity
+import com.pbt.myfarm.Activity.Transaction.DemoWebViewActivity
 import com.pbt.myfarm.Activity.ViewTask.ViewTaskActivity
+import com.pbt.myfarm.Activity.kpi.KpiActivity
 import com.pbt.myfarm.ModelClass.EventList
 import com.pbt.myfarm.R
 import com.pbt.myfarm.Service.MyFarmService
@@ -61,6 +64,12 @@ class AdapterHomeActivity(var context: Context, var list:List<EventList>):
             }
             else if(item.evenetName=="DashBoard"){
                 context.startActivity(Intent(context, MapsActivity::class.java))
+            }
+            else if(item.evenetName=="View Report"){
+                context.startActivity(Intent(context, DemoWebViewActivity::class.java))
+            }
+            else if(item.evenetName=="Kpi"){
+                context.startActivity(Intent(context, KpiActivity::class.java))
             }
 
             AppUtils().isServiceRunning(context, MyFarmService::class.java)

@@ -218,7 +218,8 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         progressbarTaskexecute: ProgressBar?,
         progressCircularLabel: TextView?,
         btnExecute: Button?,
-        istaskFunctionUpdate: Boolean
+        istaskFunctionUpdate: Boolean,
+        mMediaTypeID: String
     ) {
         this.mprogressCircular=progressCircular
         this.mprogressCircularLabel=progressCircularLabel
@@ -242,8 +243,9 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
         val functionID = AppUtils.paramRequestTextBody(mFunctionID)
         val userID = AppUtils.paramRequestTextBody(mUserID)
         val fieldID = AppUtils.paramRequestTextBody(mFieldID)
+        val mediaTypeID = AppUtils.paramRequestTextBody(mMediaTypeID)
 
-        val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID)
+        val apiInterFace = service.uploadFile(dataVideo, taskID, functionID, userID, fieldID,mediaTypeID)
         apiInterFace.enqueue(object : Callback<ResponseTaskExecution> {
             override fun onResponse(
                 call: Call<ResponseTaskExecution>,
@@ -302,6 +304,7 @@ class ViewModelTaskFunctionality(val activity: Application) : AndroidViewModel(a
 
 
             }
+
 
         })
 
