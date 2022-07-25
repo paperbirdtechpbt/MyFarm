@@ -23,10 +23,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.abedelazizshe.lightcompressorlibrary.CompressionListener
-import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
-import com.abedelazizshe.lightcompressorlibrary.VideoQuality
-import com.abedelazizshe.lightcompressorlibrary.config.Configuration
+//import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+//import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+//import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+//import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
@@ -53,8 +53,6 @@ import com.pbt.myfarm.Util.AppUtils
 import com.pbt.myfarm.Util.FilePath
 import com.pbt.myfarm.Util.MySharedPreference
 import kotlinx.android.synthetic.main.activity_task_function.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -889,11 +887,11 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
                 val videoItem = clipData.getItemAt(i)
                 uris.add(videoItem.uri)
             }
-            processVideo()
+//            processVideo()
         } else if (data != null && data.data != null) {
             val uri = data.data
             uris.add(uri!!)
-            processVideo()
+//            processVideo()
         }
     }
 
@@ -1130,60 +1128,60 @@ class TaskFunctionActivity : AppCompatActivity(), ProgressRequestBody.UploadCall
     }
 
     @SuppressLint("SetTextI18n")
-    private fun processVideo() {
-
-        GlobalScope.launch {
-            VideoCompressor.start(
-                context = applicationContext,
-                uris,
-                isStreamable = true,
-                saveAt = Environment.DIRECTORY_MOVIES,
-                listener = object : CompressionListener {
-                    override fun onProgress(index: Int, percentage: Float) {
-                        if (percentage <= 100 && percentage.toInt() % 5 == 0)
-                            runOnUiThread {
-                                progressCircular?.setProgressCompat(
-                                    percentage.toInt(),
-                                    true
-                                )
-                                progressCircularLabel?.text = "${percentage.toInt()}%"
-                            }
-                    }
-
-                    override fun onStart(index: Int) {
-                        runOnUiThread {
-                            progressVisible(true)
-                        }
-                    }
-
-                    override fun onSuccess(index: Int, size: Long, path: String?) {
-                        runOnUiThread {
-                            path?.let {
-                                fileVideo = File(it)
-                                progressVisible(false)
-                            }
-                        }
-                    }
-
-                    override fun onFailure(index: Int, failureMessage: String) {
-                        runOnUiThread {
-                            progressVisible(false)
-                        }
-                    }
-
-                    override fun onCancelled(index: Int) {
-                        runOnUiThread {
-                            progressVisible(false)
-                        }
-                    }
-                },
-                configureWith = Configuration(
-                    quality = VideoQuality.LOW,
-                    isMinBitrateCheckEnabled = true,
-                )
-            )
-        }
-    }
+//    private fun processVideo() {
+//
+//        GlobalScope.launch {
+//            VideoCompressor.start(
+//                context = applicationContext,
+//                uris,
+//                isStreamable = true,
+//                saveAt = Environment.DIRECTORY_MOVIES,
+//                listener = object : CompressionListener {
+//                    override fun onProgress(index: Int, percentage: Float) {
+//                        if (percentage <= 100 && percentage.toInt() % 5 == 0)
+//                            runOnUiThread {
+//                                progressCircular?.setProgressCompat(
+//                                    percentage.toInt(),
+//                                    true
+//                                )
+//                                progressCircularLabel?.text = "${percentage.toInt()}%"
+//                            }
+//                    }
+//
+//                    override fun onStart(index: Int) {
+//                        runOnUiThread {
+//                            progressVisible(true)
+//                        }
+//                    }
+//
+//                    override fun onSuccess(index: Int, size: Long, path: String?) {
+//                        runOnUiThread {
+//                            path?.let {
+//                                fileVideo = File(it)
+//                                progressVisible(false)
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onFailure(index: Int, failureMessage: String) {
+//                        runOnUiThread {
+//                            progressVisible(false)
+//                        }
+//                    }
+//
+//                    override fun onCancelled(index: Int) {
+//                        runOnUiThread {
+//                            progressVisible(false)
+//                        }
+//                    }
+//                },
+//                configureWith = Configuration(
+//                    quality = VideoQuality.LOW,
+//                    isMinBitrateCheckEnabled = true,
+//                )
+//            )
+//        }
+//    }
 
     private fun progressVisible(isVisible: Boolean) {
         if (isVisible) {

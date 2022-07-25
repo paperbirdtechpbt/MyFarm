@@ -42,7 +42,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
     var db: DbHelper? = null
     var task: Task? = null
 
-
     companion object {
         val TAG = "CreatePackActivity"
         var packName: String = ""
@@ -53,7 +52,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
         var arrayIDKey: ArrayList<String>? = null
         var arrayNameKey: ArrayList<String>? = null
     }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,8 +70,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
 
         desciptioncompanian = ""
         initViewModel()
-
-
     }
 
     private fun initViewModel() {
@@ -94,8 +90,6 @@ class CreatePackActivity : AppCompatActivity(), retrofit2.Callback<PackFieldResp
             if (!list.isNullOrEmpty()) {
                 progressbar_createPackActivity.visibility = View.GONE
             }
-
-//            setCommunityGroup()
             val config =
                 Gson().fromJson(Gson().toJson(list), ArrayList<PackConfigFieldList>()::class.java)
             recyclerview_createPack?.layoutManager = LinearLayoutManager(this)

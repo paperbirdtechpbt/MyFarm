@@ -29,7 +29,8 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -71,7 +72,6 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.2.0'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation project(path: ':lightcompressor')
     implementation 'com.googlecode.mp4parser:isoparser:1.1.22'
     implementation 'com.google.firebase:firebase-messaging-ktx:23.0.5'
     testImplementation 'junit:junit:4.+'
@@ -110,7 +110,10 @@ dependencies {
     //Qr Code Scanner
     implementation 'com.journeyapps:zxing-android-embedded:4.2.0'
     implementation 'com.google.zxing:core:3.4.0'
-    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
+//    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.18.0'
+    implementation 'com.google.android.exoplayer:exoplayer-dash:2.18.0'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.18.0'
 
     //Volley Librayr
     implementation 'com.android.volley:volley:1.2.1'

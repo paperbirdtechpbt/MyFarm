@@ -1,9 +1,6 @@
 package com.pbt.myfarm.Activity.ViewMediaActivity
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.media.ThumbnailUtils
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

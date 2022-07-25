@@ -21,10 +21,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.abedelazizshe.lightcompressorlibrary.CompressionListener
-import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
-import com.abedelazizshe.lightcompressorlibrary.VideoQuality
-import com.abedelazizshe.lightcompressorlibrary.config.Configuration
+//import com.abedelazizshe.lightcompressorlibrary.CompressionListener
+//import com.abedelazizshe.lightcompressorlibrary.VideoCompressor
+//import com.abedelazizshe.lightcompressorlibrary.VideoQuality
+//import com.abedelazizshe.lightcompressorlibrary.config.Configuration
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
@@ -736,11 +736,11 @@ class CreateTaskActivity : AppCompatActivity(), PickiTCallbacks, DialogInterface
                 val videoItem = clipData.getItemAt(i)
                 uris.add(videoItem.uri)
             }
-            processVideo()
+//            processVideo()
         } else if (data != null && data.data != null) {
             val uri = data.data
             uris.add(uri!!)
-            processVideo()
+//            processVideo()
         }
     }
 
@@ -884,70 +884,70 @@ class CreateTaskActivity : AppCompatActivity(), PickiTCallbacks, DialogInterface
     }
 
     @SuppressLint("SetTextI18n")
-    private fun processVideo() {
-
-        GlobalScope.launch {
-            VideoCompressor.start(
-                context = applicationContext,
-                uris,
-                isStreamable = true,
-                saveAt = Environment.DIRECTORY_MOVIES,
-                listener = object : CompressionListener {
-                    override fun onProgress(index: Int, percentage: Float) {
-                        if (percentage <= 100 && percentage.toInt() % 5 == 0)
-                            runOnUiThread {
-                                AppUtils.logDebug(TAG, "onProgress" + percentage.toInt().toString())
-                                progressCircular?.setProgressCompat(
-                                    percentage.toInt(),
-                                    true
-                                )
-                                progressCircularLabel?.text = "${percentage.toInt()}%"
-                            }
-                    }
-
-                    override fun onStart(index: Int) {
-                        runOnUiThread {
-                            AppUtils.logDebug(TAG, "on onCancelled" + index.toString())
-
-                            progressVisible(true)
-                        }
-                    }
-
-                    override fun onSuccess(index: Int, size: Long, path: String?) {
-                        runOnUiThread {
-                            path?.let {
-                                AppUtils.logDebug(TAG, "on onSuccess" + path)
-
-                                fileVideo = File(it)
-                                progressVisible(false)
-
-                            }
-                        }
-                    }
-
-                    override fun onFailure(index: Int, failureMessage: String) {
-                        runOnUiThread {
-                            AppUtils.logDebug(TAG, "on Failure" + failureMessage)
-
-                            progressVisible(false)
-                        }
-                    }
-
-                    override fun onCancelled(index: Int) {
-                        runOnUiThread {
-                            AppUtils.logDebug(TAG, "on onCancelled" + index.toString())
-
-                            progressVisible(false)
-                        }
-                    }
-                },
-                configureWith = Configuration(
-                    quality = VideoQuality.LOW,
-                    isMinBitrateCheckEnabled = true
-                )
-            )
-        }
-    }
+//    private fun processVideo() {
+//
+//        GlobalScope.launch {
+//            VideoCompressor.start(
+//                context = applicationContext,
+//                uris,
+//                isStreamable = true,
+//                saveAt = Environment.DIRECTORY_MOVIES,
+//                listener = object : CompressionListener {
+//                    override fun onProgress(index: Int, percentage: Float) {
+//                        if (percentage <= 100 && percentage.toInt() % 5 == 0)
+//                            runOnUiThread {
+//                                AppUtils.logDebug(TAG, "onProgress" + percentage.toInt().toString())
+//                                progressCircular?.setProgressCompat(
+//                                    percentage.toInt(),
+//                                    true
+//                                )
+//                                progressCircularLabel?.text = "${percentage.toInt()}%"
+//                            }
+//                    }
+//
+//                    override fun onStart(index: Int) {
+//                        runOnUiThread {
+//                            AppUtils.logDebug(TAG, "on onCancelled" + index.toString())
+//
+//                            progressVisible(true)
+//                        }
+//                    }
+//
+//                    override fun onSuccess(index: Int, size: Long, path: String?) {
+//                        runOnUiThread {
+//                            path?.let {
+//                                AppUtils.logDebug(TAG, "on onSuccess" + path)
+//
+//                                fileVideo = File(it)
+//                                progressVisible(false)
+//
+//                            }
+//                        }
+//                    }
+//
+//                    override fun onFailure(index: Int, failureMessage: String) {
+//                        runOnUiThread {
+//                            AppUtils.logDebug(TAG, "on Failure" + failureMessage)
+//
+//                            progressVisible(false)
+//                        }
+//                    }
+//
+//                    override fun onCancelled(index: Int) {
+//                        runOnUiThread {
+//                            AppUtils.logDebug(TAG, "on onCancelled" + index.toString())
+//
+//                            progressVisible(false)
+//                        }
+//                    }
+//                },
+//                configureWith = Configuration(
+//                    quality = VideoQuality.LOW,
+//                    isMinBitrateCheckEnabled = true
+//                )
+//            )
+//        }
+//    }
 
     private fun progressVisible(isVisible: Boolean) {
         if (isVisible) {
